@@ -1,11 +1,20 @@
 import { RequestOptionsInterface } from "./request-options.interface";
+import { HttpException } from "./http-exception";
+
+export interface HttpReturnValue<T> {
+  data: T;
+  error: HttpException;
+}
 
 export interface HttpClientInterface {
   /**
    * @param {string} url
    * @param {RequestOptionsInterface} options
    */
-  get: <T>(url: string, options?: RequestOptionsInterface) => Promise<T | any>;
+  get: <T>(
+    url: string,
+    options?: RequestOptionsInterface
+  ) => Promise<HttpReturnValue<T>>;
 
   /**
    * @param {string} url
@@ -16,7 +25,7 @@ export interface HttpClientInterface {
     url: string,
     body?: BodyInit | any | null,
     options?: RequestOptionsInterface
-  ) => Promise<T | any>;
+  ) => Promise<HttpReturnValue<T>>;
 
   /**
    * @param {string} url
@@ -27,7 +36,7 @@ export interface HttpClientInterface {
     url: string,
     body?: BodyInit | any | null,
     options?: RequestOptionsInterface
-  ) => Promise<T | any>;
+  ) => Promise<HttpReturnValue<T>>;
 
   /**
    * @param {string} url
@@ -38,7 +47,7 @@ export interface HttpClientInterface {
     url: string,
     body?: BodyInit | any | null,
     options?: RequestOptionsInterface
-  ) => Promise<T | any>;
+  ) => Promise<HttpReturnValue<T>>;
 
   /**
    * @param {string} url
@@ -49,5 +58,5 @@ export interface HttpClientInterface {
     url: string,
     body?: BodyInit | any | null,
     options?: RequestOptionsInterface
-  ) => Promise<T | any>;
+  ) => Promise<HttpReturnValue<T>>;
 }
