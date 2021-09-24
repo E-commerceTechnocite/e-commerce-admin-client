@@ -10,19 +10,20 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.0",
+    "@vitejs/plugin-react": "^1.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router": "^5.2.1",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
-    "typescript": "^4.1.2",
+    "typescript": "^4.4.3",
+    "vite": "^2.5.10",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "eslint src && vite build",
+    "build:force": "vite build"
   },
   "eslintConfig": {
     "extends": [
