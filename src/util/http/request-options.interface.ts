@@ -1,7 +1,7 @@
 export interface RequestOptionsInterface {
   cache?: RequestCache;
   credentials?: RequestCredentials;
-  headers?: Map<string, string> & HeadersInit;
+  headers?: HeadersInit;
   integrity?: string;
   keepalive?: boolean;
   mode?: RequestMode;
