@@ -1,3 +1,5 @@
 export const Home = () => {
-  return <p>Homepage</p>;
+  return (
+    <div> Dashboard Home </div>
+  );
 };
