@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpServerSideException,
 } from "./http-exception";
+import { HttpResponseInterface } from "./http-response.interface";
 
 const sendRequest = async <T>(
   url: string,
@@ -15,27 +16,45 @@ const sendRequest = async <T>(
   if (override.body instanceof Object && !(override.body instanceof FormData)) {
     override.body = JSON.stringify(override.body);
   }
-  const [response, err] = await handleAsync<Response>(
+  const [res, err] = await handleAsync<Response>(
     fetch(url, { ...options, ...override })
   );
 
   let exception: HttpException = null;
-  if (response.status >= 400 && response.status < 500) {
+  if (res.status >= 400 && res.status < 500) {
     exception = new HttpClientSideException(
-      `Error ${response.status} ${response.statusText}`
+      `Error ${res.status} ${res.statusText}`
     );
-  } else if (response.status >= 500) {
+  } else if (res.status >= 500) {
     exception = new HttpServerSideException(
-      `Error ${response.status} ${response.statusText}`
+      `Error ${res.status} ${res.statusText}`
     );
   }
   if (exception) {
-    exception.statusCode = response.status;
+    exception.statusCode = res.status;
   }
   if (err) throw err;
-  const data = await response.json();
+  const data = await res.json();
   const error: HttpException = exception;
-  return { data, error };
+  const {
+    ok,
+    status,
+    statusText,
+    url: responseUrl,
+    headers,
+    redirected,
+    type,
+  } = res;
+  const response: HttpResponseInterface = {
+    ok,
+    status,
+    statusText,
+    url: responseUrl,
+    headers,
+    redirected,
+    type,
+  };
+  return { data, error, response };
 };
 
 export const http: HttpClientInterface = {

@@ -24,8 +24,9 @@ describe("Http Client", () => {
       const uri = "/get-resource";
       global.fetch = mockFetch(response, 200);
 
-      const { data, error } = await http.get(uri);
+      const { data, error, response: res } = await http.get(uri);
 
+      expect(res.status).toEqual(200);
       expect(data).toEqual(response);
       expect(error).toEqual(null);
       expect(global.fetch).toHaveBeenCalledWith(uri, { method: "GET" });
@@ -36,8 +37,9 @@ describe("Http Client", () => {
       const uri = "/unreachable-resource";
       global.fetch = mockFetch(response, 404);
 
-      const { data, error } = await http.get(uri);
+      const { data, error, response: res } = await http.get(uri);
 
+      expect(res.status).toEqual(404);
       expect(error).toBeInstanceOf(HttpClientSideException);
       expect(data).toEqual(response);
 
@@ -49,8 +51,9 @@ describe("Http Client", () => {
       const uri = "/server-go-boom";
       global.fetch = mockFetch(response, 500);
 
-      const { data, error } = await http.get(uri);
+      const { data, error, response: res } = await http.get(uri);
 
+      expect(res.status).toEqual(500);
       expect(error).toBeInstanceOf(HttpServerSideException);
       expect(data).toEqual(response);
       expect(global.fetch).toHaveBeenCalledWith(uri, { method: "GET" });
@@ -64,8 +67,9 @@ describe("Http Client", () => {
       const body = { title: "hello world" };
       global.fetch = mockFetch(response, 201);
 
-      const { data, error } = await http.post(uri, body);
+      const { data, error, response: res } = await http.post(uri, body);
 
+      expect(res.status).toEqual(201);
       expect(data).toEqual(response);
       expect(error).toEqual(null);
       expect(global.fetch).toHaveBeenCalledWith(uri, {
@@ -84,10 +88,15 @@ describe("Http Client", () => {
 
       const headers = { Authorization: "Bearer 1234" };
 
-      const { data, error } = await http.post(uri, body, {
+      const {
+        data,
+        error,
+        response: res,
+      } = await http.post(uri, body, {
         headers,
       });
 
+      expect(res.status).toEqual(200);
       expect(data).toEqual(response);
       expect(error).toEqual(null);
       expect(global.fetch).toHaveBeenCalledWith(uri, {
