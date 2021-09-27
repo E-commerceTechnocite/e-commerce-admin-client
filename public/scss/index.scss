@@ -1,0 +1,154 @@
+// Colors variables
+$primary-color: #eee;
+$primary-color-elts: #fff;
+$primary-color-font: #535353;
+$primary-elts-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+$secondary-color: #0a0a0a;
+$secondary-color-elts: #292929;
+$secondary-color-font: #fff;
+$primary-button: #4262d6;
+$primary-button-event: #5a77e0;
+$secondary-button: #fff;
+$delete-button: #d74040;
+@import "./modules/loading.module.scss";
+
+// Fonts variables
+$font-regular: Roboto-Regular;
+$font-medium: Roboto-Medium;
+$font-bold: Roboto-Bold;
+$primary-font: $font-regular, -apple-system, BlinkMacSystemFont, "Segoe UI",
+  "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+  "Helvetica Neue", sans-serif;
+
+// Font declaration
+@font-face {
+  font-family: "Roboto-Regular";
+  src: url(../font/Roboto-Regular.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Roboto-Medium";
+  src: url(./font/Roboto-Medium.ttf) format("truetype");
+}
+@font-face {
+  font-family: "Roboto-Bold";
+  src: url(./font/Roboto-Bold.ttf) format("truetype");
+}
+
+// Global
+* {
+  margin: 0;
+  padding: 0;
+  color: $primary-color-font;
+  font-family: $primary-font;
+  list-style: none;
+  text-decoration: none;
+}
+body {
+  background: #eee;
+}
+input {
+  outline: none;
+}
+input[type="submit"],
+button {
+  cursor: pointer;
+}
+.action {
+  background: $primary-button;
+  border-radius: 7px;
+  border: none;
+  color: $secondary-color-font;
+  padding: 8px 27px;
+  transition: 0.2s;
+  font-size: 15px;
+}
+.action:hover {
+  background: $primary-button-event;
+}
+/* Login Admin */
+.login-admin {
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, 15%);
+  width: 560px;
+  height: 600px;
+
+  > div:nth-child(n + 2) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  > div:first-child {
+    height: 185px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+  }
+  h2 {
+    font-family: Roboto-Medium, Avenir, Helvetica, Arial, sans-serif;
+    font-weight: normal;
+  }
+  > div:nth-child(2) {
+    background: #ffffff;
+    height: 415px;
+    box-shadow: $primary-elts-shadow;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  form {
+    width: 60%;
+    margin-bottom: 30px;
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+  }
+  .email,
+  .password,
+  .checkbox {
+    display: flex;
+    align-items: flex-start;
+  }
+  .email,
+  .password {
+    flex-direction: column;
+  }
+  .email label,
+  .password label {
+    margin: 50px 0 15px 0;
+  }
+  [type="email"],
+  [type="password"] {
+    border: none;
+    border-bottom: 1px solid #dddddd;
+    width: 100%;
+    height: 30px;
+  }
+  .checkbox {
+    margin: 20px 0 50px 0;
+  }
+  [type="checkbox"] {
+    margin: 1px 15px 0 0;
+  }
+  [type="checkbox"] + label {
+    position: relative;
+  }
+  [type="checkbox"] + label::before {
+    content: "";
+    position: absolute;
+    left: -29px;
+    top: 0;
+    width: 15px;
+    height: 15px;
+    background: #eeeeee;
+    border-radius: 4px;
+  }
+  [type="checkbox"]:focus + label::before {
+    background: 0;
+  }
+  [type="submit"] {
+    align-self: center;
+  }
+}

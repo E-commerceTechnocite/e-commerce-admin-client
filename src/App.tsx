@@ -1,10 +1,10 @@
 import React from "react"
 import { Route, Switch } from "react-router-dom"
-import { Home } from "./views/Home"
-import { Products } from "./views/Products"
-import { DashboardLayout } from "./views/layout/DashboardLayout"
 import { store } from "./store/store"
 import { Provider } from "react-redux"
+import { DashboardLayout } from "./views/layout/DashboardLayout"
+import Home  from "./views/Home"
+import Products  from "./views/Products"
 import Login from "./views/Login"
 
 export const App = () => {
