@@ -152,3 +152,150 @@ button {
     align-self: center;
   }
 }
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background: #0a0a0a;
+  width: 260px;
+  height: 100vh;
+  padding: 30px 0;
+  position: fixed;
+  .logo {
+    display: flex;
+    justify-content: flex-start;
+    margin: 0 0 30px 20px;
+  }
+  .logo h1 {
+    font-size: 20px;
+    color: white;
+  }
+  .search-bar {
+    background: #292929;
+    border-radius: 10px;
+    padding: 10px 0;
+    width: 220px;
+    align-self: center;
+  }
+  .search-bar div {
+    height: 20px;
+  }
+  .search-bar i {
+    color: white;
+    margin: 0 13px;
+    font-size: 15px;
+  }
+  .search-bar input {
+    background: none;
+    border: none;
+    color: white;
+  }
+  .search-bar input::placeholder {
+    color: #828282;
+    font-size: 15px;
+  }
+  nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    height: 100%;
+    width: 242px;
+    margin: 30px 0;
+    overflow: hidden;
+    margin-left: -4px;
+  }
+  nav > div:first-child {
+    margin-bottom: 20px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    direction: rtl;
+    height: 470px;
+    width: 242px;
+  }
+  nav > div:first-child::-webkit-scrollbar {
+    background: none;
+  }
+  nav > div:first-child::-webkit-scrollbar-track {
+    background: none;
+  }
+  nav > div:first-child::-webkit-scrollbar-thumb {
+    background: #292929;
+    border-radius: 50px;
+    width: 5px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  nav > div:first-child ul {
+    direction: ltr;
+  }
+  nav > div:first-child li {
+    margin-left: 4px;
+  }
+  ul {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 220px;
+  }
+  li {
+    width: 140px;
+    padding: 5px 0 5px 7px;
+    margin: 3px 0;
+    transition: 0.2s;
+    position: relative;
+    border-radius: 7px 0 0 7px;
+  }
+  li::after {
+    content: "";
+    position: absolute;
+    left: 100%;
+    top: 0;
+    background: none;
+    height: 46px;
+    width: 69px;
+    transition: 0.2s;
+    z-index: 3;
+    border-radius: 0 7px 7px 0;
+  }
+  li a {
+    display: flex;
+    align-items: center;
+    color: white;
+  }
+  li span {
+    position: relative;
+    display: block;
+    width: 36px;
+    height: 36px;
+    transition: 0.2s;
+  }
+  ul span i {
+    color: white;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  div > span {
+    margin-left: -31px;
+  }
+  nav > div:nth-child(2) span {
+    color: white;
+  }
+  nav > div:nth-child(2) ul {
+    margin-top: 20px;
+    margin-left: 20px;
+  }
+  li:hover {
+    background: #292929;
+  }
+  li:hover::after,
+  li:hover::before {
+    background: #292929;
+  }
+  -active,
+  -active::after {
+    background: #292929;
+  }
+}

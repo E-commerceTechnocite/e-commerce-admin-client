@@ -1,9 +1,6 @@
 import * as React from 'react';
 
-interface IUpperBarProps {
-}
-
-const UpperBar: React.FunctionComponent<IUpperBarProps> = (props) => {
+const UpperBar: React.FunctionComponent = () => {
   return (
       <div></div>
   );

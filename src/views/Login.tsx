@@ -4,9 +4,7 @@ import { useHistory, withRouter } from "react-router"
 import Loading from "../components/Loading"
 import { http } from "../util/http"
 
-interface ILoginProps {}
-
-const Login: React.FunctionComponent<ILoginProps> = (props) => {
+const Login: React.FunctionComponent = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [checkbox] = useState(false)
