@@ -21,9 +21,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
     http
       .get("http://localhost:3000/v1/product?limit=1&page=1", options)
       .then(({ error }) => {
-        if (!error) {
-          return history.push("/")
-        }
+        if (!error) return history.push("/")
         setIsPending(false)
       })
   }, [])

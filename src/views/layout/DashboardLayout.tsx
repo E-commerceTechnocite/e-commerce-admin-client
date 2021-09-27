@@ -20,9 +20,7 @@ export const DashboardLayout = ({ children }): ReactElement => {
     http
       .get("http://localhost:3000/v1/product?limit=1&page=1", options)
       .then(({ error }) => {
-        if (error) {
-          history.push("/login")
-        }
+        if (error) return history.push("/login")
         setIsPending(false)
       })
     return () => controller.abort()
