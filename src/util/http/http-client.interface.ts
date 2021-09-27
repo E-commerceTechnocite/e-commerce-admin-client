@@ -1,9 +1,11 @@
 import { RequestOptionsInterface } from "./request-options.interface";
 import { HttpException } from "./http-exception";
+import { HttpResponseInterface } from "./http-response.interface";
 
 export interface HttpReturnValue<T> {
   data: T;
   error: HttpException;
+  response: HttpResponseInterface;
 }
 
 export interface HttpClientInterface {
