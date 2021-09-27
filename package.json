@@ -23,7 +23,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "vite",
+    "start": "vite --port=3006",
     "build": "eslint src && vite build",
     "build:force": "vite build"
   },

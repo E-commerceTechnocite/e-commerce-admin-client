@@ -5,6 +5,7 @@ import { Products } from "./views/Products"
 import { DashboardLayout } from "./views/layout/DashboardLayout"
 import { store } from "./store/store"
 import { Provider } from "react-redux"
+import Login from "./views/Login"
 
 export const App = () => {
   return (
@@ -12,6 +13,7 @@ export const App = () => {
       <Provider store={store}>
         <DashboardLayout>
           <Switch>
+            <Route path="/login" component={Login} />
             <Route exact path="/" component={Home} />
             <Route path="/products" component={Products} />
           </Switch>
