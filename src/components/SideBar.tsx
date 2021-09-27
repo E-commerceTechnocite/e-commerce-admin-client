@@ -5,7 +5,7 @@ interface ISideBarProps {
 
 const SideBar: React.FunctionComponent<ISideBarProps> = (props) => {
   return (
-      <nav></nav>
+      <div>hello</div>
   );
 };
 

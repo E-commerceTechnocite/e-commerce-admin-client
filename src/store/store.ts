@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import exampleReducer from './reducer/exampleReducer'
+import authUpdate from './reducer/authUpdate'
 
 export const store = configureStore({
   reducer: {
       counter: exampleReducer,
+      update: authUpdate,
   },
 })
 

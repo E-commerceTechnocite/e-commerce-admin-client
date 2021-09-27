@@ -1,6 +1,6 @@
 import * as React from "react"
 import { useEffect, useState } from "react"
-import { useHistory } from "react-router"
+import { useHistory, withRouter } from "react-router"
 import Loading from "../components/Loading"
 import { http } from "../util/http"
 
