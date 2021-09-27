@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useHistory } from "react-router"
 import Loading from "../components/Loading"
 import { http } from "../util/http"
@@ -10,8 +10,23 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [checkbox] = useState(false)
-  const [isPending, setIsPending] = useState(false)
+  const [isPending, setIsPending] = useState(true)
   const history = useHistory()
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token")
+    const options = {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+    http
+      .get("http://localhost:3000/v1/product?limit=1&page=1", options)
+      .then(({ error }) => {
+        if (!error) {
+          return history.push("/")
+        }
+        setIsPending(false)
+      })
+  }, [])
 
   const onSubmit = (e: React.FormEvent): void => {
     e.preventDefault()

@@ -10,8 +10,6 @@ export const DashboardLayout = ({ children }): ReactElement => {
       <div>
         <SideBar />
         <UpperBar />
-        <div></div> {/* Upperbar */}
-        <nav></nav> {/* Sidebar */}
       </div>
       {children}
     </Router>
