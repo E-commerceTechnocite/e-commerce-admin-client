@@ -6,7 +6,6 @@ import { DashboardLayout } from "./views/layout/DashboardLayout"
 import Home from "./views/Home"
 import Products from "./views/Products"
 import Login from "./views/Login"
-import {  useHistory } from "react-router"
 
 export const App = () => {
   return (

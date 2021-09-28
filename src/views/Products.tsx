@@ -10,4 +10,3 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
 };
 
 export default Products;
-

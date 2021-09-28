@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { useHistory, withRouter } from "react-router"
 import Loading from "../components/Loading"
 import { http } from "../util/http"
-import  { domain }  from "../util/environnement"
+import { domain } from "../util/environnement"
 
 const Login: React.FunctionComponent = () => {
   const [email, setEmail] = useState("")
@@ -17,7 +17,7 @@ const Login: React.FunctionComponent = () => {
     const options = {
       headers: { Authorization: `Bearer ${token}` },
     }
-    http 
+    http
       .get(`${domain}/v1/product?limit=1&page=1`, options)
       .then(({ error }) => {
         if (!error) return history.push("/")
@@ -33,7 +33,7 @@ const Login: React.FunctionComponent = () => {
     const options = {
       headers: { "Content-Type": "application/json" },
     }
-    http 
+    http
       .post<{ access_token: string; refresh_token: string }>(
         `${domain}/v1/o-auth/login`,
         body,

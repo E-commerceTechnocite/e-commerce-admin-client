@@ -5,13 +5,12 @@ import { useLocation } from "react-router-dom"
 const UpperBar: React.FunctionComponent = () => {
   const [breadcrumbs, setBreadcrumbs] = useState<string[]>([])
   const location = useLocation()
-  const isFirstOrLast = (array, index) => {
+  const isFirstOrLast = (array: string[], index: number): boolean => {
     if (index === array.length - 1) return true
   }
 
   useEffect(() => {
     const crumb = location.pathname
-
     let treatedPath = crumb.split("/")
     for (let i = 0; i < treatedPath.length; i++) {
       treatedPath[i] =
@@ -29,7 +28,11 @@ const UpperBar: React.FunctionComponent = () => {
         {breadcrumbs.map((item, index) => (
           <span key={index}>
             {item}
-            {!isFirstOrLast(breadcrumbs, index) ? (<i className="fas fa-chevron-right"></i>) : ("")}
+            {!isFirstOrLast(breadcrumbs, index) ? (
+              <i className="fas fa-chevron-right"></i>
+            ) : (
+              ""
+            )}
           </span>
         ))}
       </div>
