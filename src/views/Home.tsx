@@ -7,7 +7,7 @@ interface IHomeProps {}
 const Home: React.FunctionComponent<IHomeProps> = (props) => {
   return (
     <>
-      <div>Hello</div>
+      <div className="home">This is the Home page</div>
     </>
   )
 }

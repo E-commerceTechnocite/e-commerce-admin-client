@@ -5,6 +5,7 @@ import Loading from "../../components/Loading"
 import SideBar from "../../components/SideBar"
 import UpperBar from "../../components/UpperBar"
 import { http } from "../../util/http"
+import { domain } from "../../util/environnement"
 
 export const DashboardLayout = ({ children }): ReactElement => {
   const [isPending, setIsPending] = useState(true)
@@ -18,7 +19,7 @@ export const DashboardLayout = ({ children }): ReactElement => {
       signal: controller.signal,
     }
     http
-      .get("http://localhost:3000/v1/product?limit=1&page=1", options)
+      .get(`${domain}/v1/product?limit=1&page=1`, options)
       .then(({ error }) => {
         if (error) return history.push("/login")
         setIsPending(false)
@@ -27,12 +28,14 @@ export const DashboardLayout = ({ children }): ReactElement => {
   }, [toggle])
   return (
     <>
-      <div>
-        <SideBar />
+      <SideBar />
+      <div className="container">
         <UpperBar />
+        <div className="content">
+          {isPending && <Loading />}
+          {!isPending && children}
+        </div>
       </div>
-      {isPending && <Loading />}
-      {!isPending && children}
     </>
   )
 }

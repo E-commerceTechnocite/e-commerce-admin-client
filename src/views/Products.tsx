@@ -5,9 +5,8 @@ interface IProductsProps {
 
 const Products: React.FunctionComponent<IProductsProps> = (props) => {
   return (
-    <div>Products</div>
+    <div className="products">This is the Product page</div>
   );
 };
 
 export default Products;
-
