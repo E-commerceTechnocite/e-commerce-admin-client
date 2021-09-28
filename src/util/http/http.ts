@@ -34,7 +34,12 @@ const sendRequest = async <T>(
     exception.statusCode = res.status;
   }
   if (err) throw err;
-  const data = await res.json();
+  let data;
+  try {
+    data = await res.json();
+  } catch (err) {
+    data = null
+  }
   const error: HttpException = exception;
   const {
     ok,

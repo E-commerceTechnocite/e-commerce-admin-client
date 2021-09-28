@@ -2,14 +2,33 @@ import * as React from "react"
 import { useEffect, useState } from "react"
 import { useHistory, useLocation } from "react-router"
 import { Link } from "react-router-dom"
+import { http } from "../util/http"
+import { domain } from "../util/environnement"
 
 const SideBar: React.FunctionComponent = () => {
   const location = useLocation()
+  const history = useHistory()
   const isActive = (uri: string): boolean => {
     if (location.pathname === uri) return true
   }
-  useEffect(() => {
-  }, [])
+  const logout = () => {
+    const refresh_token = sessionStorage.getItem("refresh")
+    const token = sessionStorage.getItem("token")
+    const options = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+    http
+      .post(`${domain}/v1/o-auth/logout`, { refresh_token }, options)
+      .then(({ error }) => {
+        if (error) return console.error(error.message)
+        sessionStorage.removeItem("refresh")
+        sessionStorage.removeItem("token")
+        history.push("/login")
+      })
+  }
 
   return (
     <div className="sidebar">
@@ -56,7 +75,7 @@ const SideBar: React.FunctionComponent = () => {
               </a>
             </li>
             <li>
-              <a href="#">
+              <a href="#" onClick={logout}>
                 <span>
                   <i className="fas fa-sign-out-alt"></i>
                 </span>
