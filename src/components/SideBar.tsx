@@ -1,12 +1,22 @@
 import * as React from "react"
+import { useEffect, useState } from "react"
+import { useHistory, useLocation } from "react-router"
+import { Link } from "react-router-dom"
 
 const SideBar: React.FunctionComponent = () => {
+  const location = useLocation()
+  const isActive = (uri: string): boolean => {
+    if (location.pathname === uri) return true
+  }
+  useEffect(() => {
+  }, [])
+
   return (
     <div className="sidebar">
       <div className="logo">
-        <a href="{name 'DashboardHome'}">
+        <Link to="/">
           <h1>LOGO</h1>
-        </a>
+        </Link>
       </div>
       <div className="search-bar">
         <div>
@@ -17,45 +27,21 @@ const SideBar: React.FunctionComponent = () => {
       <nav>
         <div>
           <ul>
-            <li className="{ 'sidebar-active' isRouteActive({name 'DashboardHome'}) }">
-              <a href="{name 'DashboardHome'}">
+            <li className={`${isActive("/") ? "sidebar-active" : ""}`}>
+              <Link to="/">
                 <span>
                   <i className="fas fa-tachometer-alt "></i>
                 </span>
                 Dashboard
-              </a>
+              </Link>
             </li>
-            <li className="{ 'sidebar-active' isRouteActive({name 'Products'}) }">
-              <a href="{name 'Products'}">
+            <li className={`${isActive("/products") ? "sidebar-active" : ""}`}>
+              <Link to="/products">
                 <span>
                   <i className="fas fa-folder-open"></i>
                 </span>
                 Products
-              </a>
-            </li>
-            <li className="{ 'sidebar-active' isRouteActive({name 'Billing'}) }">
-              <a href="{name 'Billing'}">
-                <span>
-                  <i className="fas fa-file-invoice-dollar"></i>
-                </span>
-                Billing
-              </a>
-            </li>
-            <li className="{ 'sidebar-active' isRouteActive({name 'Cushrefmers'}) }">
-              <a href="{name 'Cushrefmers'}">
-                <span>
-                  <i className="fas fa-user"></i>
-                </span>
-                Cushrefmers
-              </a>
-            </li>
-            <li className="{ 'sidebar-active' isRouteActive({name 'Shipping'}) }">
-              <a href="{name 'Shipping'}">
-                <span>
-                  <i className="fas fa-dolly"></i>
-                </span>
-                Shipping
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
