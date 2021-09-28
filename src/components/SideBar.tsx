@@ -1,15 +1,16 @@
 import * as React from "react"
 import { useEffect, useState } from "react"
+import { useDispatch } from "react-redux"
 import { useHistory, useLocation } from "react-router"
 import { Link } from "react-router-dom"
+import { update } from "../store/reducer/authUpdate"
 
 const SideBar: React.FunctionComponent = () => {
   const location = useLocation()
+  // const dispatch = useDispatch()
   const isActive = (uri: string): boolean => {
     if (location.pathname === uri) return true
   }
-  useEffect(() => {
-  }, [])
 
   return (
     <div className="sidebar">
@@ -21,11 +22,11 @@ const SideBar: React.FunctionComponent = () => {
       <div className="search-bar">
         <div>
           <i className="fas fa-search"></i>
-          <input type="text" placeholder="Search..." />
+          <input type="text" placeholder="Search..."/>
         </div>
       </div>
       <nav>
-        <div>
+        <div >
           <ul>
             <li className={`${isActive("/") ? "sidebar-active" : ""}`}>
               <Link to="/">

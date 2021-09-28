@@ -9,11 +9,12 @@ const initialState: isUpdate = {
 }
 
 export const authUpdate = createSlice({
-  name: 'counter',
+  name: 'update',
   initialState,
   reducers: {
     update: (state) => {
       state.value = !state.value
+      console.log('update')
     }
   },
 })
