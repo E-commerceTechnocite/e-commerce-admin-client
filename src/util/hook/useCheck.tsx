@@ -17,8 +17,26 @@ const useCheckUser = () => {
     http
       .get(`${domain}/v1/product?limit=1&page=1`, options)
       .then(({ error }) => {
-        if (error) return history.push("/login")
-          setIsPending(false)
+        if (error) {
+          const refresh_token = sessionStorage.getItem("refresh")
+          const options = {
+            headers: { "Content-Type": "application/json" },
+          }
+          http
+            .post<{ access_token: string; refresh_token: string }>(
+              `${domain}/v1/o-auth/refresh`,
+              { refresh_token },
+              options
+            )
+            .then(({ data, error }) => {
+              if (error) return history.push("/login")
+              const { access_token, refresh_token } = data
+              sessionStorage.setItem("token", access_token)
+              sessionStorage.setItem("refresh", refresh_token)
+              setIsPending(false)
+            })
+        }
+        setIsPending(false)
       })
     return () => controller.abort()
   }, [location.pathname])
