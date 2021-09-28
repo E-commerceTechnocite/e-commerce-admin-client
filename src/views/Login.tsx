@@ -20,6 +20,7 @@ const Login: React.FunctionComponent = () => {
     http
       .get(`${domain}/v1/product?limit=1&page=1`, options)
       .then(({ error }) => {
+        setIsPending(true)
         if (!error) return history.push("/")
         setIsPending(false)
       })

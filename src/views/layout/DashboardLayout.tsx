@@ -9,14 +9,18 @@ export const DashboardLayout = ({ children }): ReactElement => {
   const { isPending } = useCheckUser()
   return (
     <>
-      <SideBar />
-      <div className="container">
-        <UpperBar />
-        <div className="content">
-          {isPending && <Loading />}
-          {!isPending && children}
-        </div>
-      </div>
+      {isPending && <Loading />}
+      {!isPending && (
+        <>
+          <SideBar />
+          <div className="container">
+            <UpperBar />
+            <div className="content">
+              {children}
+            </div>
+          </div>
+        </>
+      )}
     </>
   )
 }

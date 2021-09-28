@@ -18,7 +18,7 @@ const useCheckUser = () => {
       .get(`${domain}/v1/product?limit=1&page=1`, options)
       .then(({ error }) => {
         if (error) return history.push("/login")
-        setIsPending(false)
+          setIsPending(false)
       })
     return () => controller.abort()
   }, [location.pathname])
