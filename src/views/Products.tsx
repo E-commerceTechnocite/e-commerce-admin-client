@@ -8,7 +8,7 @@ import { PaginationMetadataModel } from "../models/pagination/pagination-metadat
 import { PaginationModel } from "../models/pagination/pagination.model";
 import { ProductModel } from "../models/product/product.model";
 import { domain } from "../util/environnement";
-import refresh from "../util/helpers/refresh";
+import { sendRequest } from "../util/helpers/refresh";
 import { http } from "../util/http";
 
 interface IProductsProps {}
@@ -35,13 +35,7 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
             },
           }
         );
-      let { data, error } = await request();
-      if (error && error.statusCode === 401) {
-        await refresh();
-        const res = await request();
-        data = res.data;
-        error = res.error;
-      }
+      let { data, error } = await sendRequest(request);
       if (error) {
         history.push("/login");
       }
