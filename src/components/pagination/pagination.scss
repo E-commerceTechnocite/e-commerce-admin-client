@@ -1,0 +1,32 @@
+@import '../../../public/scss/variables.scss';
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  button {
+    width: 30px;
+    height: 30px;
+    border: none;
+    margin: 0 3px;
+    background: $primary-color-elts;
+    border-radius: 4px;
+    font-family: $font-bold;
+    transition: 0.2s;
+    i {
+      font-size: 12px;
+    }
+  }
+  button:hover,
+  button:hover i {
+    color: $primary-button-event;
+  }
+  .current {
+    background: $primary-button;
+    color: $secondary-color-font;
+  }
+  .current:hover {
+    background: $primary-button-event;
+    color: $secondary-color-font;
+  }
+}
