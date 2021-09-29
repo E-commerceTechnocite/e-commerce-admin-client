@@ -55,7 +55,7 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
   return (
     <div className="products" onClick={onClick}>
       <div className="add-search">
-        <Link to="/product/add" className="action">
+        <Link to="/products/add" className="action">
           Product +
         </Link>
         <div className="search">
