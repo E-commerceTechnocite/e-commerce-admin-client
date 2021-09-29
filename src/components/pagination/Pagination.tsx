@@ -16,31 +16,30 @@ const Pagination: FunctionComponent<PaginationPropsInterface> = ({
   const lastPage = () => setPage(meta.maxPages);
 
   return (
-    <>
-      <div style={{ display: "flex", justifyItems: "center", width: "100%" }}>
+      <div className="pagination" >
+        
         {meta.prevPage && (
           <>
-            <button onClick={firstPage}>&lt;&lt;</button>
-            <button onClick={() => prevPage()}>&lt;</button>
+            <button onClick={firstPage}><i className="fas fa-chevron-double-left"></i></button>
+            <button onClick={() => prevPage()}><i className="fas fa-chevron-left"></i></button>
             {meta.prevPage - 1 > 0 && (
               <button onClick={() => prevPage(1)}>{meta.prevPage - 1}</button>
             )}
             <button onClick={() => prevPage()}>{meta.prevPage}</button>
           </>
         )}
-        <button disabled>{meta.currentPage}</button>
+        <button className="current">{meta.currentPage}</button>
         {meta.nextPage && (
           <>
             <button onClick={() => nextPage()}>{meta.nextPage}</button>
             {meta.nextPage + 1 <= meta.maxPages && (
               <button onClick={() => nextPage(1)}>{meta.nextPage + 1}</button>
             )}
-            <button onClick={() => nextPage()}>&gt;</button>
-            <button onClick={lastPage}>&gt;&gt;</button>
+            <button onClick={() => nextPage()}><i className="fas fa-chevron-right"></i></button>
+            <button onClick={lastPage}><i className="fas fa-chevron-double-right"></i></button>
           </>
         )}
       </div>
-    </>
   );
 };
 
