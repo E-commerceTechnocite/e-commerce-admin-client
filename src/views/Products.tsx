@@ -2,14 +2,14 @@ import * as React from "react"
 import { useEffect, useState } from "react"
 import { useHistory } from "react-router"
 import { Link } from "react-router-dom"
-import Loading from "../components/Loading"
+import Loading from "../components//loading/Loading"
 import Pagination from "../components/pagination/Pagination"
 import { PaginationMetadataModel } from "../models/pagination/pagination-metadata.model"
 import { PaginationModel } from "../models/pagination/pagination.model"
 import { ProductModel } from "../models/product/product.model"
 import { domain } from "../util/environnement"
 import refresh from "../util/helpers/refresh"
-import { http } from "../util/http"
+import { http, HttpException } from "../util/http"
 
 interface IProductsProps {}
 
@@ -19,13 +19,14 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
   const [page, setPage] = useState<number>(1)
   const history = useHistory()
 
+
   const onClick = () => {
     console.log(products)
   }
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token")
-    const options = {
+    let token = sessionStorage.getItem("token")
+    let options = {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -39,16 +40,18 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
       .then(({ data, error }) => {
         if (error) {
         }
-        console.log(data.data)
         setProducts(data.data)
         setMeta(data.meta)
       })
   }, [page])
 
+
   return (
     <div className="products" onClick={onClick}>
       <div className="add-search">
-        <Link to="/product/add" className="action">Product +</Link>
+        <Link to="/product/add" className="action">
+          Product +
+        </Link>
         <div className="search">
           <i className="fas fa-search"></i>
           <input type="text" placeholder="Search..." />
@@ -57,39 +60,39 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
       {!products && !meta && <Loading />}
       {products && meta && (
         <>
-        <div className="product-list">
-          <div className="legend">
-            <div>
-            <span>Title</span>
-            <span>Reference</span>
-            <span>Description</span>
-            <span>Category</span>
-            <span>Price</span>
-            </div>
-          </div>
-          {products.map((product) => (
-            <div className="product" key={product.id}>
-              <div className="info ">
-                <span>{product.title}</span>
-                <span>{product.reference}</span>
-                <span>
-                  {product.description.length >= 100
-                    ? product.description.substr(0, 50) + "..."
-                    : product.description}
-                </span>
-                <span>{product.category.label}</span>
-                <span>{product.price} €</span>
+          <div className="product-list">
+            <div className="legend">
+              <div>
+                <span>Title</span>
+                <span>Reference</span>
+                <span>Description</span>
+                <span>Category</span>
+                <span>Price</span>
               </div>
-              <div className="actions">
-                <button className="action">Edit</button>
-                <button className="delete">
-                  <i className="fas fa-trash"></i>
-                </button>
-                </div>
             </div>
-          ))}
-        </div>
-        <Pagination meta={meta} pageSetter={setPage}/>
+            {products.map((product) => (
+              <div className="product" key={product.id}>
+                <div className="info ">
+                  <span>{product.title}</span>
+                  <span>{product.reference}</span>
+                  <span>
+                    {product.description.length >= 100
+                      ? product.description.substr(0, 50) + "..."
+                      : product.description}
+                  </span>
+                  <span>{product.category.label}</span>
+                  <span>{product.price} €</span>
+                </div>
+                <div className="actions">
+                  <button className="action">Edit</button>
+                  <button className="delete">
+                    <i className="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <Pagination meta={meta} pageSetter={setPage} />
         </>
       )}
     </div>

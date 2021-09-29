@@ -1,5 +1,6 @@
 import { Dispatch, FunctionComponent, SetStateAction } from "react";
 import { PaginationMetadataModel } from "../../models/pagination/pagination-metadata.model";
+import './pagination.scss'
 
 export interface PaginationPropsInterface {
   meta: PaginationMetadataModel;
@@ -17,7 +18,7 @@ const Pagination: FunctionComponent<PaginationPropsInterface> = ({
 
   return (
       <div className="pagination" >
-        
+
         {meta.prevPage && (
           <>
             <button onClick={firstPage}><i className="fas fa-chevron-double-left"></i></button>
