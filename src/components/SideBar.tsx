@@ -63,6 +63,14 @@ const SideBar: React.FunctionComponent = () => {
                 Products
               </Link>
             </li>
+            <li className={`${isActive("/medias") ? "sidebar-active" : ""}`}>
+              <Link to="/medias">
+                <span>
+                  <i className="fas fa-image"></i>
+                </span>
+                Media library
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
