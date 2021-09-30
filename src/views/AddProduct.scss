@@ -1,5 +1,6 @@
 .product-form {
-  background: #eee;
+  background: lightgray;
+
 }
 
 .product-form form {
@@ -9,7 +10,7 @@
   .form-control {
     display: flex;
     flex-direction: column;
-    margin: 10px 20px;
+    margin: 30px 20px 20px 20px;
 
     label {
       margin-bottom: 18px;
@@ -28,6 +29,9 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+    .pictures {
+      background: red;
+    }
 
     .inputs > div:not(:last-child) {
       margin: 25px 0 75px;
