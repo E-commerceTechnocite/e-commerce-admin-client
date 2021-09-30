@@ -1,53 +1,48 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { useHistory } from "react-router";
-import { Link } from "react-router-dom";
-import Loading from "../components//loading/Loading";
-import Pagination from "../components/pagination/Pagination";
-import { PaginationMetadataModel } from "../models/pagination/pagination-metadata.model";
-import { PaginationModel } from "../models/pagination/pagination.model";
-import { ProductModel } from "../models/product/product.model";
-import { domain } from "../util/environnement";
-import { sendRequest } from "../util/helpers/refresh";
-import { http } from "../util/http";
+import * as React from "react"
+import { useEffect, useState } from "react"
+import { useHistory } from "react-router"
+import { Link } from "react-router-dom"
+import Loading from "../components//loading/Loading"
+import Pagination from "../components/pagination/Pagination"
+import { PaginationMetadataModel } from "../models/pagination/pagination-metadata.model"
+import { PaginationModel } from "../models/pagination/pagination.model"
+import { ProductModel } from "../models/product/product.model"
+import { domain } from "../util/environnement"
+import { sendRequest } from "../util/helpers/refresh"
+import { http } from "../util/http"
 
 interface IProductsProps {}
 
 const Products: React.FunctionComponent<IProductsProps> = (props) => {
-  const [products, setProducts] = useState<ProductModel[]>();
-  const [meta, setMeta] = useState<PaginationMetadataModel>();
-  const [page, setPage] = useState<number>(1);
-  const history = useHistory();
-
-  const onClick = () => {
-    console.log(products);
-  };
-
-  useEffect(() => {
-    const getProducts = async () => {
-      const request = () =>
-        http.get<PaginationModel<ProductModel>>(
-          `${domain}/v1/product?page=${page}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-            },
-          }
-        );
-      let { data, error } = await sendRequest(request);
-      if (error) {
-        history.push("/login");
+  const [products, setProducts] = useState<ProductModel[]>()
+  const [meta, setMeta] = useState<PaginationMetadataModel>()
+  const [page, setPage] = useState<number>(1)
+  const history = useHistory()
+  const request = () =>
+    http.get<PaginationModel<ProductModel>>(
+      `${domain}/v1/product?page=${page}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
       }
-      setProducts(data.data);
-      setMeta(data.meta);
-    };
+    )
 
-    getProducts().then();
-  }, [page]);
+  const getProducts = async () => {
+    let { data, error } = await sendRequest(request)
+    if (error) {
+      history.push("/login")
+    }
+    setProducts(data.data)
+    setMeta(data.meta)
+  }
+  useEffect(() => {
+    getProducts().then()
+  }, [page])
 
   return (
-    <div className="products" onClick={onClick}>
+    <div className="products">
       <div className="add-search">
         <Link to="/products/add" className="action">
           Product +
@@ -96,7 +91,7 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Products;
+export default Products
