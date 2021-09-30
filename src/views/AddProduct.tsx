@@ -25,16 +25,37 @@ interface ISelectProps extends IFormInputProps {
   options: Option[]
 }
 
+interface ProductPost {
+  title: string
+  reference: string
+  description: string
+  price: number
+  categoryId: string
+  taxRuleGroupId: string
+  picturesId: string[]
+  thumbnailId: string
+}
+
 const AddProduct: FC<IAddProductProps> = () => {
+  const [title, setTitle] = useState<string>("")
+  const [reference, setReference] = useState<string>("")
   const [description, setDescription] = useState<string>("")
+  const [price, setPrice] = useState<number | null>(null)
+  const [categoryId, setCategoryId] = useState<string>("")
+  const [taxRuleGroupId, setTaxRuleGroupId] = useState<string>("")
+  const [picturesId, setPicturesId] = useState<string[]>([])
+  const [thumbnailId, SetThumbnailId] = useState<string>("")
   const formSubmit = (e) => {
     e.preventDefault()
   }
+  useEffect(() => {
+    
+  }, [title])
 
   const FormControl: FC<IFormControlProps> = ({ type, id, title, name }) => (
     <div className="form-control">
       <label htmlFor={id}>{title}</label>
-      <input type={type} name={name} id={id} />
+      <input type={type} name={name} id={id} value={`set${name}`} /> {/* onChange={`set${name}`} */}
     </div>
   )
 
@@ -131,7 +152,9 @@ const AddProduct: FC<IAddProductProps> = () => {
             />
           </div>
           <div className="buttons">
-            <button className="action" type="submit">Add Product</button>
+            <button className="action" type="submit">
+              Add Product
+            </button>
           </div>
         </form>
       </div>
@@ -140,7 +163,3 @@ const AddProduct: FC<IAddProductProps> = () => {
 }
 
 export default AddProduct
-function useEffetc() {
-  throw new Error("Function not implemented.")
-}
-
