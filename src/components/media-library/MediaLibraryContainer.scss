@@ -1,11 +1,64 @@
+@import "../../../public/scss/variables.scss";
+
 .media-library-container-component {
+  background: $primary-color-elts;
+  min-height: 425px;
+  border-bottom: 1px solid $primary-border-color;
+
+  > div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: $primary-color-elts;
+    padding: 5px 30px;
+    border-bottom: 1px solid $primary-border-color;
+    div:nth-child(1) {
+      background: $primary-color-elts;
+      display: flex;
+      align-items: center;
+      border-radius: 10px;
+      border: 1px solid $primary-border-color;
+      padding: 10px;
+      i {
+        margin: 0 10px;
+      }
+      input {
+        padding: 1px 0;
+        border: none;
+        border-radius: 10px;
+      }
+    }
+    div:nth-child(2) {
+      button:nth-child(1) {
+        border-radius: 7px 0 0 7px;
+        border-right: 1px solid $primary-button-event;
+      }
+      button:nth-child(2) {
+        border-radius: 0 7px 7px 0;
+      }
+    }
+  }
   ul {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
+    flex-wrap: wrap;
+    padding: 20px 10px 10px;
     li {
-      width: 150px;
-      padding: 10px;
+      margin: -2px 3px;
+      width: 72px;
+      overflow: hidden;
+      height: 78px;
+      picture {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img {
+          max-width: 90px;
+        }
+      }
     }
+  }
+  .pagination {
+    margin: 0 0 18px 0;
   }
 }

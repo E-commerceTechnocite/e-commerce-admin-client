@@ -1,31 +1,26 @@
-import { FC, useEffect, useState } from "react";
-import Pagination from "../pagination/Pagination";
-import * as React from "react";
-import { PaginationModel } from "../../models/pagination/pagination.model";
-import { PictureModel } from "../../models/files/picture.model";
-import { useHistory } from "react-router";
-import { http } from "../../util/http";
-import { domain } from "../../util/environnement";
-import { sendRequest } from "../../util/helpers/refresh";
-import "./MediaLibraryContainer.scss";
-import {
-  Button,
-  Image,
-  Input,
-  InputGroup,
-  InputLeftElement,
-} from "@chakra-ui/react";
+import { FC, useEffect, useState } from "react"
+import Pagination from "../pagination/Pagination"
+import * as React from "react"
+import { PaginationModel } from "../../models/pagination/pagination.model"
+import { PictureModel } from "../../models/files/picture.model"
+import { useHistory } from "react-router"
+import { http } from "../../util/http"
+import { domain } from "../../util/environnement"
+import { sendRequest } from "../../util/helpers/refresh"
+import "./MediaLibraryContainer.scss"
 
 interface MediaLibraryContainerPropsInterface {
-  numberOfImages?: number;
+  numberOfImages?: number
+  upperPagination?: boolean
 }
 
 const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
-  numberOfImages = 30,
+  numberOfImages = 5,
+  upperPagination = true,
 }) => {
-  const [pictures, setPictures] = useState<PaginationModel<PictureModel>>(null);
-  const [page, setPage] = useState(1);
-  const history = useHistory();
+  const [pictures, setPictures] = useState<PaginationModel<PictureModel>>(null)
+  const [page, setPage] = useState(1)
+  const history = useHistory()
 
   const imagesRequest = () =>
     http.get<PaginationModel<PictureModel>>(
@@ -35,46 +30,44 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
       }
-    );
+    )
 
   const fetchImages = async () => {
-    const { data, error } = await sendRequest(imagesRequest);
+    const { data, error } = await sendRequest(imagesRequest)
     if (error) {
-      return history.push("/login");
+      return history.push("/login")
     }
-    console.log(data);
-    setPictures(data);
-  };
+    console.log(data)
+    setPictures(data)
+  }
 
   useEffect(() => {
-    fetchImages().then();
-  }, [page]);
+    fetchImages().then()
+  }, [page])
 
   return (
     <>
       <div className="media-library-container-component">
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <InputGroup size="md" width="40%">
-            <InputLeftElement
-              pointerEvents="none"
-              children={<i className="fas fa-search" />}
-            />
-            <Input type="text" placeholder="Search..." />
-          </InputGroup>
+        <div>
           <div>
-            <Button colorScheme="blue">ADD</Button>
-            <Button colorScheme="blue" style={{ margin: "0 30px" }}>
-              SELECT
-            </Button>
+            <i className="fas fa-search" />
+            <input type="text" placeholder="Search..." />
+          </div>
+
+          <div className="button-group">
+            <button className="action">Add</button>
+            <button className="action">Select</button>
           </div>
         </div>
-        {pictures && <Pagination meta={pictures.meta} pageSetter={setPage} />}
+        {pictures && upperPagination && (
+          <Pagination meta={pictures.meta} pageSetter={setPage} />
+        )}
         <ul>
           {pictures &&
             pictures.data.map((pic) => (
               <li key={pic.id}>
                 <picture>
-                  <Image src={pic.uri} alt={pic.caption} />
+                  <img src={pic.uri} alt={pic.caption} />
                 </picture>
               </li>
             ))}
@@ -82,7 +75,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
         {pictures && <Pagination meta={pictures.meta} pageSetter={setPage} />}
       </div>
     </>
-  );
-};
+  )
+}
 
-export default MediaLibraryContainer;
+export default MediaLibraryContainer

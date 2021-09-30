@@ -1,4 +1,6 @@
 @import "../../public/scss/variables.scss";
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
 
 .product-form {
   background: none;
@@ -33,6 +35,43 @@
     justify-content: space-between;
     .pictures {
       box-shadow: $primary-elts-shadow;
+      background: $primary-color-elts;
+
+      .slick-next::before,
+      .slick-prev::before {
+        opacity: 1;
+        border-radius: 50%;
+        top: 3px;
+        font-size: 25px;
+        color: $primary-button;
+      }
+      .slick-prev.slick-disabled:before,
+      .slick-next.slick-disabled:before {
+        opacity: 0;
+      }
+
+      .slick-next {
+        right: -1px !important;
+      }
+      .slick-prev {
+        z-index: 1;
+        left: -6px !important;
+      }
+      .slider {
+        .slide {
+          width: 120px !important;
+          overflow: hidden !important;
+          height: 120px;
+          display: flex !important;
+          justify-content: space-between !important;
+          align-items: center;
+          background: #eee;
+
+          img {
+            max-width: 180px !important;
+          }
+        }
+      }
     }
 
     .inputs > div:not(:last-child) {
@@ -51,6 +90,7 @@
     > .inputs {
       background: $primary-color-elts;
       box-shadow: $primary-elts-shadow;
+
       border-radius: 4px;
     }
   }

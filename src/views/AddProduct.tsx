@@ -3,6 +3,8 @@ import ReactQuill from "react-quill"
 import "react-quill/dist/quill.snow.css"
 import { FC, HTMLInputTypeAttribute, useEffect, useState } from "react"
 import "./AddProduct.scss"
+import MediaLibraryContainer from "../components/media-library/MediaLibraryContainer"
+import Slider from "react-slick"
 
 export interface IAddProductProps {}
 
@@ -37,25 +39,23 @@ interface ProductPost {
 }
 
 const AddProduct: FC<IAddProductProps> = () => {
-  const [title, setTitle] = useState<string>("")
-  const [reference, setReference] = useState<string>("")
+  /*  const [title, setTitle] = useState<string>("")
+  const [reference, setReference] = useState<string>("") */
   const [description, setDescription] = useState<string>("")
-  const [price, setPrice] = useState<number | null>(null)
+  /*  const [price, setPrice] = useState<number | null>(null)
   const [categoryId, setCategoryId] = useState<string>("")
   const [taxRuleGroupId, setTaxRuleGroupId] = useState<string>("")
   const [picturesId, setPicturesId] = useState<string[]>([])
-  const [thumbnailId, SetThumbnailId] = useState<string>("")
+  const [thumbnailId, SetThumbnailId] = useState<string>("") */
   const formSubmit = (e) => {
     e.preventDefault()
   }
-  useEffect(() => {
-    
-  }, [title])
+  useEffect(() => {}, [])
 
   const FormControl: FC<IFormControlProps> = ({ type, id, title, name }) => (
     <div className="form-control">
       <label htmlFor={id}>{title}</label>
-      <input type={type} name={name} id={id} value={`set${name}`} /> {/* onChange={`set${name}`} */}
+      <input type={type} name={name} id={id} /> {/* onChange={`set${name}`} */}
     </div>
   )
 
@@ -64,8 +64,10 @@ const AddProduct: FC<IAddProductProps> = () => {
       <div className="form-control">
         <label htmlFor={id}>{title}</label>
         <select name={name} id={id}>
-          {options.map((option) => (
-            <option value={option.value}>{option.name}</option>
+          {options.map((option, index) => (
+            <option key={index} value={option.value}>
+              {option.name}
+            </option>
           ))}
         </select>
       </div>
@@ -120,6 +122,14 @@ const AddProduct: FC<IAddProductProps> = () => {
     "align",
   ]
 
+  var settings = {
+    dots: true,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 5,
+    slidesToScroll: 5,
+  }
+
   return (
     <>
       <div className="product-form">
@@ -140,7 +150,44 @@ const AddProduct: FC<IAddProductProps> = () => {
                 <FormControl type="number" id="price" title="Price" />
               </div>
             </div>
-            <div className="pictures"></div>
+            <div className="pictures">
+              <MediaLibraryContainer
+                numberOfImages={28}
+                upperPagination={false}
+              />
+              <Slider className="slider" {...settings}>
+                <div className="slide">
+                  <img src="http://placekitten.com/g/400/200" />
+                </div>
+                <div className="slide">
+                  <img src="http://placekitten.com/g/400/200" />
+                </div>
+                <div className="slide">
+                  <img src="http://placekitten.com/g/400/200" />
+                </div>
+                <div className="slide">
+                  <img src="http://placekitten.com/g/400/200" />
+                </div>
+                <div className="slide">
+                  <img src="http://placekitten.com/g/400/200" />
+                </div>
+                <div className="slide">
+                  <img src="http://placekitten.com/g/400/200" />
+                </div>
+                <div className="slide">
+                  <img src="http://placekitten.com/g/400/200" />
+                </div>
+                <div className="slide">
+                  <img src="http://placekitten.com/g/400/200" />
+                </div>
+                <div className="slide">
+                  <img src="http://placekitten.com/g/400/200" />
+                </div>
+                <div className="slide">
+                  <img src="http://placekitten.com/g/400/200" />
+                </div>
+              </Slider>
+            </div>
           </div>
           <div className="description">
             <ReactQuill

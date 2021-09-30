@@ -178,6 +178,8 @@ button {
   }
   .search-bar div {
     height: 20px;
+    display: flex;
+    align-items: center;
   }
   .search-bar i {
     color: white;
