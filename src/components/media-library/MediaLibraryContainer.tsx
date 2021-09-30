@@ -16,14 +16,20 @@ import {
   InputLeftElement,
 } from "@chakra-ui/react";
 
-const MediaLibraryContainer: FC = () => {
+interface MediaLibraryContainerPropsInterface {
+  numberOfImages?: number;
+}
+
+const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
+  numberOfImages = 30,
+}) => {
   const [pictures, setPictures] = useState<PaginationModel<PictureModel>>(null);
   const [page, setPage] = useState(1);
   const history = useHistory();
 
   const imagesRequest = () =>
     http.get<PaginationModel<PictureModel>>(
-      `${domain}/v1/file?mimetype=image&page=${page}&limit=30`,
+      `${domain}/v1/file?mimetype=image&page=${page}&limit=${numberOfImages}`,
       {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,
