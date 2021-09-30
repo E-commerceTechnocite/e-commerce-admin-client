@@ -1,0 +1,11 @@
+.media-library-container-component {
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    li {
+      width: 150px;
+      padding: 10px;
+    }
+  }
+}

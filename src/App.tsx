@@ -7,22 +7,27 @@ import Home from "./views/Home";
 import Products from "./views/Products";
 import Login from "./views/Login";
 import AddProduct from "./views/AddProduct";
+import MediaLibrary from "./views/MediaLibrary";
+import { ChakraProvider } from "@chakra-ui/react";
 
 export const App = () => {
   return (
     <>
-      <Provider store={store}>
-        <Router>
-          <Switch>
-            <Route path="/login" component={Login} />
-            <DashboardLayout>
-              <Route exact path="/" component={Home} />
-              <Route exact path="/products" component={Products} />
-              <Route path="/products/add" component={AddProduct} />
-            </DashboardLayout>
-          </Switch>
-        </Router>
-      </Provider>
+      <ChakraProvider>
+        <Provider store={store}>
+          <Router>
+            <Switch>
+              <Route path="/login" component={Login} />
+              <DashboardLayout>
+                <Route exact path="/" component={Home} />
+                <Route exact path="/products" component={Products} />
+                <Route path="/products/add" component={AddProduct} />
+                <Route path="/medias" component={MediaLibrary} />
+              </DashboardLayout>
+            </Switch>
+          </Router>
+        </Provider>
+      </ChakraProvider>
     </>
   );
 };

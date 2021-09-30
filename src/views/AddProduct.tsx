@@ -1,39 +1,42 @@
-import * as React from "react";
-import { FC, HTMLInputTypeAttribute } from "react";
-import "./AddProduct.scss";
+import * as React from "react"
+import ReactQuill from "react-quill"
+import "react-quill/dist/quill.snow.css"
+import { FC, HTMLInputTypeAttribute, useState } from "react"
+import "./AddProduct.scss"
 
 export interface IAddProductProps {}
 
 interface IFormInputProps {
-  id: string;
-  title: string;
-  name?: string;
+  id: string
+  title: string
+  name?: string
 }
 
 interface IFormControlProps extends IFormInputProps {
-  type: HTMLInputTypeAttribute;
+  type: HTMLInputTypeAttribute
 }
 
 interface Option {
-  name: string;
-  value: string;
+  name: string
+  value: string
 }
 
 interface ISelectProps extends IFormInputProps {
-  options: Option[];
+  options: Option[]
 }
 
 const AddProduct: FC<IAddProductProps> = () => {
+  const [description, setDescription] = useState<string>("")
   const formSubmit = (e) => {
-    e.preventDefault();
-  };
+    e.preventDefault()
+  }
 
   const FormControl: FC<IFormControlProps> = ({ type, id, title, name }) => (
     <div className="form-control">
       <label htmlFor={id}>{title}</label>
       <input type={type} name={name} id={id} />
     </div>
-  );
+  )
 
   const Select: FC<ISelectProps> = ({ options, id, title, name }) => (
     <>
@@ -46,18 +49,55 @@ const AddProduct: FC<IAddProductProps> = () => {
         </select>
       </div>
     </>
-  );
+  )
 
   const categoryOptions: Option[] = [
     { name: "Electronics", value: "1" },
     { name: "Computers", value: "2" },
     { name: "Cooking", value: "3" },
-  ];
+  ]
 
   const taxOptions: Option[] = [
     { name: "Alcohol", value: "1" },
     { name: "Goods", value: "2" },
-  ];
+  ]
+
+  const modules = {
+    toolbar: {
+      container: [
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        [{ size: ["small", false, "large", "huge"] }, { color: [] }],
+        [
+          { list: "ordered" },
+          { list: "bullet" },
+          { indent: "-1" },
+          { indent: "+1" },
+          { align: [] },
+        ],
+        ["link", "image", "video"],
+        ["clean"],
+      ],
+    },
+    clipboard: { matchVisual: false },
+  }
+
+  const formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "size",
+    "color",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+    "video",
+    "align",
+  ]
 
   return (
     <>
@@ -81,15 +121,22 @@ const AddProduct: FC<IAddProductProps> = () => {
             </div>
             <div className="pictures"></div>
           </div>
-          <div className="description"></div>
+          <div className="description">
+            <ReactQuill
+              theme="snow"
+              modules={modules}
+              formats={formats}
+              value={description}
+              onChange={setDescription}
+            />
+          </div>
           <div className="buttons">
-            <button type="submit">ADD</button>
-            <button type="button">PREVIEW</button>
+            <button type="submit">Add Product</button>
           </div>
         </form>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default AddProduct;
+export default AddProduct
