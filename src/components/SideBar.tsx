@@ -1,34 +1,35 @@
-import * as React from "react"
-import { useEffect, useState } from "react"
-import { useHistory, useLocation } from "react-router"
-import { Link } from "react-router-dom"
-import { http } from "../util/http"
-import { domain } from "../util/environnement"
+import * as React from "react";
+import { useHistory, useLocation } from "react-router";
+import { Link } from "react-router-dom";
+import { http } from "../util/http";
+import { domain } from "../util/environnement";
 
 const SideBar: React.FunctionComponent = () => {
-  const location = useLocation()
-  const history = useHistory()
-  const isActive = (uri: string): boolean => {
-    if (location.pathname === uri) return true
-  }
+  const location = useLocation();
+  const history = useHistory();
+  const isActive = (uri: string, exact = false): boolean => {
+    return exact
+      ? location.pathname === uri
+      : location.pathname.startsWith(uri);
+  };
   const logout = () => {
-    const refresh_token = sessionStorage.getItem("refresh")
-    const token = sessionStorage.getItem("token")
+    const refresh_token = sessionStorage.getItem("refresh");
+    const token = sessionStorage.getItem("token");
     const options = {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-    }
+    };
     http
       .post(`${domain}/v1/o-auth/logout`, { refresh_token }, options)
       .then(({ error }) => {
-        if (error) return console.error(error.message)
-        sessionStorage.removeItem("refresh")
-        sessionStorage.removeItem("token")
-        history.push("/login")
-      })
-  }
+        if (error) return console.error(error.message);
+        sessionStorage.removeItem("refresh");
+        sessionStorage.removeItem("token");
+        history.push("/login");
+      });
+  };
 
   return (
     <div className="sidebar">
@@ -46,7 +47,7 @@ const SideBar: React.FunctionComponent = () => {
       <nav>
         <div>
           <ul>
-            <li className={`${isActive("/") ? "sidebar-active" : ""}`}>
+            <li className={`${isActive("/", true) ? "sidebar-active" : ""}`}>
               <Link to="/">
                 <span>
                   <i className="fas fa-tachometer-alt "></i>
@@ -86,7 +87,7 @@ const SideBar: React.FunctionComponent = () => {
         </div>
       </nav>
     </div>
-  )
-}
+  );
+};
 
-export default SideBar
+export default SideBar;
