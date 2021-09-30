@@ -1,11 +1,13 @@
-.product-form {
-  background: lightgray;
+@import "../../public/scss/variables.scss";
 
+.product-form {
+  background: none;
 }
 
 .product-form form {
   display: flex;
   flex-direction: column;
+  margin-bottom: 50px;
 
   .form-control {
     display: flex;
@@ -30,7 +32,7 @@
     display: flex;
     justify-content: space-between;
     .pictures {
-      background: red;
+      box-shadow: $primary-elts-shadow;
     }
 
     .inputs > div:not(:last-child) {
@@ -47,9 +49,29 @@
     }
 
     > .inputs {
-      background: white;
-      box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.25);
+      background: $primary-color-elts;
+      box-shadow: $primary-elts-shadow;
       border-radius: 4px;
+    }
+  }
+
+  .description {
+    margin-top: 30px;
+    background: $primary-color-elts;
+    box-shadow: $primary-elts-shadow;
+
+    .ql-toolbar.ql-snow {
+      padding: 18px;
+    }
+    .ql-formats > span,
+    .ql-formats select,
+    .ql-formats button {
+      margin: 0 5px;
+      border: 1px solid $primary-border-color;
+      border-radius: 4px;
+    }
+    .ql-editor {
+      min-height: 600px;
     }
   }
 
@@ -63,23 +85,11 @@
       padding: 10px 25px;
       margin-right: 10px;
       border: none;
-      box-shadow: 0 0 5px #4262d6;
       font-size: 1rem;
       font-style: normal;
       display: flex;
       align-items: center;
       text-align: center;
-    }
-
-    button[type=submit] {
-      background: #4262D6;
-      color: #fff;
-      font-weight: bold;
-    }
-
-    button[type=button] {
-      background: #fff;
-      color: #4262D6;
     }
   }
 }

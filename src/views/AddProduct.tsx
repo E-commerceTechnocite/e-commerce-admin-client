@@ -1,7 +1,7 @@
 import * as React from "react"
 import ReactQuill from "react-quill"
 import "react-quill/dist/quill.snow.css"
-import { FC, HTMLInputTypeAttribute, useState } from "react"
+import { FC, HTMLInputTypeAttribute, useEffect, useState } from "react"
 import "./AddProduct.scss"
 
 export interface IAddProductProps {}
@@ -131,7 +131,7 @@ const AddProduct: FC<IAddProductProps> = () => {
             />
           </div>
           <div className="buttons">
-            <button type="submit">Add Product</button>
+            <button className="action" type="submit">Add Product</button>
           </div>
         </form>
       </div>
@@ -140,3 +140,7 @@ const AddProduct: FC<IAddProductProps> = () => {
 }
 
 export default AddProduct
+function useEffetc() {
+  throw new Error("Function not implemented.")
+}
+
