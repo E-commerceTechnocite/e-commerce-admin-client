@@ -16,9 +16,8 @@ const sendRequest = async <T>(
   if (override.body instanceof Object && !(override.body instanceof FormData)) {
     override.body = JSON.stringify(override.body);
   }
-  const [res, err] = await handleAsync<Response>(
-    fetch(url, { ...options, ...override })
-  );
+  const opts = { ...options, ...override }
+  const res = await fetch(url, opts)
 
   let exception: HttpException = null;
   if (res.status >= 400 && res.status < 500) {
@@ -33,7 +32,6 @@ const sendRequest = async <T>(
   if (exception) {
     exception.statusCode = res.status;
   }
-  if (err) throw err;
   let data;
   try {
     data = await res.json();

@@ -36,6 +36,7 @@
     .pictures {
       box-shadow: $primary-elts-shadow;
       background: $primary-color-elts;
+      border-radius: 4px;
 
       .slick-next::before,
       .slick-prev::before {
@@ -58,17 +59,18 @@
         left: -6px !important;
       }
       .slider {
+        border-bottom: 1px solid $primary-border-color;
         .slide {
           width: 120px !important;
           overflow: hidden !important;
           height: 120px;
           display: flex !important;
-          justify-content: space-between !important;
+          justify-content: center !important;
           align-items: center;
           background: #eee;
 
           img {
-            max-width: 180px !important;
+            max-width: 200px !important;
           }
         }
       }

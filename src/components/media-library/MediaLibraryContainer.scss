@@ -4,6 +4,7 @@
   background: $primary-color-elts;
   min-height: 425px;
   border-bottom: 1px solid $primary-border-color;
+  border-radius: 4px 4px 0 0;
 
   > div:first-child {
     display: flex;
@@ -12,6 +13,8 @@
     background: $primary-color-elts;
     padding: 5px 30px;
     border-bottom: 1px solid $primary-border-color;
+    border-radius: 4px 4px 0 0;
+
     div:nth-child(1) {
       background: $primary-color-elts;
       display: flex;
@@ -29,9 +32,10 @@
       }
     }
     div:nth-child(2) {
-      button:nth-child(1) {
+      label:nth-child(1) {
         border-radius: 7px 0 0 7px;
         border-right: 1px solid $primary-button-event;
+        cursor: pointer;
       }
       button:nth-child(2) {
         border-radius: 0 7px 7px 0;
@@ -40,6 +44,7 @@
   }
   ul {
     display: flex;
+    min-height: 300px;
     justify-content: center;
     flex-wrap: wrap;
     padding: 20px 10px 10px;

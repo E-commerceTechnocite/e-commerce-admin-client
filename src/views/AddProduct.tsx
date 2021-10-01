@@ -152,7 +152,7 @@ const AddProduct: FC<IAddProductProps> = () => {
             </div>
             <div className="pictures">
               <MediaLibraryContainer
-                numberOfImages={28}
+                numberOfImages={27}
                 upperPagination={false}
               />
               <Slider className="slider" {...settings}>
