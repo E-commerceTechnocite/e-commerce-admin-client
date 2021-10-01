@@ -46,17 +46,24 @@
     display: flex;
     min-height: 300px;
     justify-content: center;
+    align-content: center;
+    align-items: center;
     flex-wrap: wrap;
     padding: 20px 10px 10px;
     li {
-      margin: -2px 3px;
+      margin: 3px 3px;
       width: 72px;
       overflow: hidden;
-      height: 78px;
+      height: 72px;
+      background: #eee;
+      position: relative;
+      box-sizing: border-box;
+      border: 0px solid $primary-button-event;
       picture {
         display: flex;
         justify-content: center;
         align-items: center;
+        height: 100%;
         img {
           max-width: 90px;
         }

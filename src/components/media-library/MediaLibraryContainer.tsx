@@ -12,21 +12,22 @@ import "./MediaLibraryContainer.scss"
 interface MediaLibraryContainerPropsInterface {
   numberOfImages?: number
   upperPagination?: boolean
+  libraryToParent: (data) => void
 }
 
 const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   numberOfImages = 100,
   upperPagination = true,
+  libraryToParent,
 }) => {
   const [pictures, setPictures] = useState<PaginationModel<PictureModel>>(null)
   const [page, setPage] = useState(1)
   const [files, setFiles] = useState<File[]>([])
+  const [filesSelected, setFilesSelected] = useState<PictureModel[]>([])
   const [imagePending, setImagePending] = useState(false)
   const history = useHistory()
 
   const request = () => {
-    const controller = new AbortController()
-
     const formData = new FormData()
     files.forEach((file) => {
       formData.append("files", file)
@@ -35,7 +36,6 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
-      signal: controller.signal,
     })
   }
 
@@ -46,11 +46,6 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
     }
     setImagePending(!imagePending)
   }
-
-  useEffect(() => {
-    if (files.length) sendFiles().then()
-    setImagePending(!imagePending)
-  }, [files])
 
   const imagesRequest = () =>
     http.get<PaginationModel<PictureModel>>(
@@ -70,9 +65,20 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
     setPictures(data)
   }
 
+  const sendData = () => {
+    libraryToParent(filesSelected)
+  }
+
+  useEffect(() => {
+    if (files.length) sendFiles().then()
+    setImagePending(!imagePending)
+  }, [files])
+
   useEffect(() => {
     fetchImages().then()
   }, [page, imagePending])
+
+  useEffect(() => {}, [filesSelected])
 
   return (
     <>
@@ -94,7 +100,9 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                 onChange={(e) => setFiles([].slice.call(e.target.files))}
               />
             </label>
-            <button className="action">Select</button>
+            <button className="action" onClick={sendData}>
+              Select
+            </button>
           </div>
         </div>
         {pictures && upperPagination && (
@@ -109,6 +117,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                     src={`${domain}` + pic.uri}
                     alt={pic.caption}
                     id={pic.id}
+                    onClick={() => setFilesSelected([...filesSelected, pic])}
                   />
                 </picture>
               </li>

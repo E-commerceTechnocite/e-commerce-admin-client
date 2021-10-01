@@ -5,6 +5,8 @@ import { FC, HTMLInputTypeAttribute, useEffect, useState } from "react"
 import "./AddProduct.scss"
 import MediaLibraryContainer from "../components/media-library/MediaLibraryContainer"
 import Slider from "react-slick"
+import { PictureModel } from "../models/files/picture.model"
+import { domain } from "../util/environnement"
 
 export interface IAddProductProps {}
 
@@ -44,9 +46,31 @@ const AddProduct: FC<IAddProductProps> = () => {
   const [description, setDescription] = useState<string>("")
   /*  const [price, setPrice] = useState<number | null>(null)
   const [categoryId, setCategoryId] = useState<string>("")
-  const [taxRuleGroupId, setTaxRuleGroupId] = useState<string>("")
+  const [taxRuleGroupId, setTaxRuleGroupId] = useState<string>("")*/
   const [picturesId, setPicturesId] = useState<string[]>([])
-  const [thumbnailId, SetThumbnailId] = useState<string>("") */
+  // const [thumbnailId, SetThumbnailId] = useState<string>("")
+  const [libraryData, setLibraryData] = useState<PictureModel[]>([])
+
+  const libraryToParent = (data: PictureModel[]) => {
+    setLibraryData(data)
+    const pics: string[] = []
+    data.forEach((pic) => pics.push(pic.id))
+    setPicturesId([...picturesId, ...pics])
+  }
+
+  const removeImage = (id) => {
+    const libraryArray = libraryData.filter((item) => item.id !== id)
+
+    const picturesArray = picturesId
+    for (let i = 0; i < picturesArray.length; i++) {
+      if (picturesArray[i] === id) picturesArray.splice(i, 1)
+    }
+    setLibraryData(libraryArray)
+    setPicturesId(picturesArray)
+    console.log(libraryData)
+    console.log(picturesId)
+  }
+
   const formSubmit = (e) => {
     e.preventDefault()
   }
@@ -154,39 +178,23 @@ const AddProduct: FC<IAddProductProps> = () => {
               <MediaLibraryContainer
                 numberOfImages={27}
                 upperPagination={false}
+                libraryToParent={libraryToParent}
               />
-              <Slider className="slider" {...settings}>
-                <div className="slide">
-                  <img src="http://placekitten.com/g/400/200" />
-                </div>
-                <div className="slide">
-                  <img src="http://placekitten.com/g/400/200" />
-                </div>
-                <div className="slide">
-                  <img src="http://placekitten.com/g/400/200" />
-                </div>
-                <div className="slide">
-                  <img src="http://placekitten.com/g/400/200" />
-                </div>
-                <div className="slide">
-                  <img src="http://placekitten.com/g/400/200" />
-                </div>
-                <div className="slide">
-                  <img src="http://placekitten.com/g/400/200" />
-                </div>
-                <div className="slide">
-                  <img src="http://placekitten.com/g/400/200" />
-                </div>
-                <div className="slide">
-                  <img src="http://placekitten.com/g/400/200" />
-                </div>
-                <div className="slide">
-                  <img src="http://placekitten.com/g/400/200" />
-                </div>
-                <div className="slide">
-                  <img src="http://placekitten.com/g/400/200" />
-                </div>
-              </Slider>
+              {!!libraryData.length && (
+                <Slider className="slider" {...settings}>
+                  {libraryData.map((image) => (
+                    <div className="slide" key={image.id}>
+                      <div
+                        className="top-border"
+                        onClick={() => removeImage(image.id)}
+                      >
+                        <i className="fas fa-window-close"></i>
+                      </div>
+                      <img src={domain + image.uri} />
+                    </div>
+                  ))}
+                </Slider>
+              )}
             </div>
           </div>
           <div className="description">

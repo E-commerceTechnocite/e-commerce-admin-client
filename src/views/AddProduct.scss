@@ -68,6 +68,18 @@
           justify-content: center !important;
           align-items: center;
           background: #eee;
+          position: relative;
+
+          .top-border {
+            position: absolute;
+            top: 0;
+            right: 0;
+            cursor: pointer;
+            i {
+              font-size: 20px;
+              color: $delete-button;
+            }
+          }
 
           img {
             max-width: 200px !important;
