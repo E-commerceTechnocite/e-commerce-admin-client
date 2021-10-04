@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react"
+import { FC, useEffect, useRef, useState } from "react"
 import Pagination from "../pagination/Pagination"
 import * as React from "react"
 import { PaginationModel } from "../../models/pagination/pagination.model"
@@ -8,6 +8,7 @@ import { http } from "../../util/http"
 import { domain } from "../../util/environnement"
 import { sendRequest } from "../../util/helpers/refresh"
 import "./MediaLibraryContainer.scss"
+import { isPending } from "@reduxjs/toolkit"
 
 interface MediaLibraryContainerPropsInterface {
   numberOfImages?: number
@@ -25,6 +26,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   const [files, setFiles] = useState<File[]>([])
   const [filesSelected, setFilesSelected] = useState<PictureModel[]>([])
   const [imagePending, setImagePending] = useState(false)
+  const inputEl = useRef<HTMLInputElement>()
   const history = useHistory()
 
   const request = () => {
@@ -40,11 +42,12 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   }
 
   const sendFiles = async () => {
+    setImagePending(true)
     let { error } = await sendRequest(request)
     if (error) {
       history.push("/login")
     }
-    setImagePending(!imagePending)
+    setImagePending(false)
   }
 
   const imagesRequest = () =>
@@ -71,14 +74,15 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
 
   useEffect(() => {
     if (files.length) sendFiles().then()
-    setImagePending(!imagePending)
   }, [files])
 
   useEffect(() => {
     fetchImages().then()
   }, [page, imagePending])
 
-  useEffect(() => {}, [filesSelected])
+  useEffect(() => {
+    console.log(pictures)
+  }, [filesSelected])
 
   return (
     <>
@@ -97,6 +101,8 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                 name="filename"
                 style={{ display: "none" }}
                 multiple
+                ref={inputEl}
+                onClick={(e) => (e.currentTarget.value = null)}
                 onChange={(e) => setFiles([].slice.call(e.target.files))}
               />
             </label>
@@ -110,6 +116,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
         )}
         <ul>
           {pictures &&
+            !imagePending &&
             pictures.data.map((pic) => (
               <li key={pic.id}>
                 <picture>
