@@ -6,6 +6,7 @@ import { DashboardLayout } from "./views/layout/DashboardLayout"
 import Home from "./views/Home"
 import Products from "./views/Products"
 import Login from "./views/Login"
+import Users from "./views/Users"
 
 export const App = () => {
   return (
@@ -17,6 +18,7 @@ export const App = () => {
             <DashboardLayout>
               <Route exact path="/" component={Home} />
               <Route path="/products" component={Products} />
+              <Route path="/users" component={Users} />
             </DashboardLayout>
           </Switch>
         </Router>
