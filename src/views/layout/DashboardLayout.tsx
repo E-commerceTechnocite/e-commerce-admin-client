@@ -1,21 +1,24 @@
-import * as React from "react"
-import { ReactElement } from "react"
-import { BrowserRouter as Router, Link } from "react-router-dom"
-import SideBar from "../../components/SideBar"
-import UpperBar from "../../components/UpperBar"
-import { Home } from "../Home"
+import * as React from "react";
+import { ReactElement } from "react";
+import Loading from "../../components/loading/Loading";
+import SideBar from "../../components/SideBar";
+import UpperBar from "../../components/UpperBar";
+import useCheckUser from "../../util/hook/useCheck";
 
 export const DashboardLayout = ({ children }): ReactElement => {
+  const { isPending } = useCheckUser();
   return (
-    <Router>
-      <div>
-        <SideBar />
-        <UpperBar />
-        <div></div> {/* Upperbar */}
-        <nav></nav> {/* Sidebar */}
-        <Home />
-      </div>
-      {children}
-    </Router>
-  )
-}
+    <>
+      {isPending && <Loading />}
+      {!isPending && (
+        <>
+          <SideBar />
+          <div className="container">
+            <UpperBar />
+            <div className="content">{children}</div>
+          </div>
+        </>
+      )}
+    </>
+  );
+};

@@ -1,22 +1,33 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
-import { Home } from "./pages/Home";
-import { Products } from "./pages/Products";
-import { DashboardLayout } from "./pages/layout/DashboardLayout";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { store } from "./store/store";
+import { Provider } from "react-redux";
+import { DashboardLayout } from "./views/layout/DashboardLayout";
+import Home from "./views/Home";
+import Products from "./views/Products";
+import Login from "./views/Login";
+import AddProduct from "./views/AddProduct";
+import MediaLibrary from "./views/MediaLibrary";
+import { ChakraProvider } from "@chakra-ui/react";
 
 export const App = () => {
   return (
     <>
-      <DashboardLayout>
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="/products">
-            <Products />
-          </Route>
-        </Switch>
-      </DashboardLayout>
+      <ChakraProvider>
+        <Provider store={store}>
+          <Router>
+            <Switch>
+              <Route path="/login" component={Login} />
+              <DashboardLayout>
+                <Route exact path="/" component={Home} />
+                <Route exact path="/products" component={Products} />
+                <Route path="/products/add" component={AddProduct} />
+                <Route path="/medias" component={MediaLibrary} />
+              </DashboardLayout>
+            </Switch>
+          </Router>
+        </Provider>
+      </ChakraProvider>
     </>
   );
 };
