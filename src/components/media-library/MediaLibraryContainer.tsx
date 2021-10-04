@@ -1,6 +1,6 @@
+import * as React from "react"
 import { FC, useEffect, useRef, useState } from "react"
 import Pagination from "../pagination/Pagination"
-import * as React from "react"
 import { PaginationModel } from "../../models/pagination/pagination.model"
 import { PictureModel } from "../../models/files/picture.model"
 import { useHistory } from "react-router"
@@ -8,8 +8,6 @@ import { http } from "../../util/http"
 import { domain } from "../../util/environnement"
 import { sendRequest } from "../../util/helpers/refresh"
 import "./MediaLibraryContainer.scss"
-import { isPending } from "@reduxjs/toolkit"
-import Loading from "../loading/Loading"
 import Skeleton from "./skeleton/Skeleton"
 
 interface MediaLibraryContainerPropsInterface {
@@ -72,6 +70,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
 
   const sendData = () => {
     libraryToParent(filesSelected)
+    setFilesSelected([])
   }
 
   useEffect(() => {
@@ -83,7 +82,6 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   }, [page, imagePending])
 
   useEffect(() => {
-    console.log(pictures)
   }, [filesSelected])
 
   return (

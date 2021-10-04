@@ -52,10 +52,11 @@ const AddProduct: FC<IAddProductProps> = () => {
   const [libraryData, setLibraryData] = useState<PictureModel[]>([])
 
   const libraryToParent = (data: PictureModel[]) => {
-    setLibraryData(data)
+    setLibraryData([...libraryData, ...data])
     const pics: string[] = []
     data.forEach((pic) => pics.push(pic.id))
     setPicturesId([...picturesId, ...pics])
+    console.log(picturesId)
   }
 
   const removeImage = (id) => {
