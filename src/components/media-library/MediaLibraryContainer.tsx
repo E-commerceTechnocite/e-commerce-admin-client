@@ -81,8 +81,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
     fetchImages().then()
   }, [page, imagePending])
 
-  useEffect(() => {
-  }, [filesSelected])
+  useEffect(() => {}, [filesSelected])
 
   return (
     <>
@@ -119,20 +118,22 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
             )}
             <ul>
               {pictures &&
-                pictures.data.map((pic) => (
-                  <li key={pic.id}>
-                    <picture>
-                      <img
-                        src={`${domain}` + pic.uri}
-                        alt={pic.caption}
-                        id={pic.id}
-                        onClick={() =>
-                          setFilesSelected([...filesSelected, pic])
-                        }
-                      />
-                    </picture>
-                  </li>
-                ))}
+                pictures.data.map((pic) => {
+                  return (
+                    <li key={pic.id}>
+                      <picture>
+                        <img
+                          src={`${domain}` + pic.uri}
+                          alt={pic.caption}
+                          id={pic.id}
+                          onClick={() => {
+                            setFilesSelected([...filesSelected, pic])
+                          }}
+                        />
+                      </picture>
+                    </li>
+                  )
+                })}
             </ul>
             {pictures && (
               <Pagination meta={pictures.meta} pageSetter={setPage} />
