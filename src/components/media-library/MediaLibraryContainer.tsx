@@ -9,6 +9,8 @@ import { domain } from "../../util/environnement"
 import { sendRequest } from "../../util/helpers/refresh"
 import "./MediaLibraryContainer.scss"
 import { isPending } from "@reduxjs/toolkit"
+import Loading from "../loading/Loading"
+import Skeleton from "./skeleton/Skeleton"
 
 interface MediaLibraryContainerPropsInterface {
   numberOfImages?: number
@@ -111,26 +113,34 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
             </button>
           </div>
         </div>
-        {pictures && upperPagination && (
-          <Pagination meta={pictures.meta} pageSetter={setPage} />
+        {imagePending && <Skeleton nbFrames={numberOfImages} />}
+        {!imagePending && (
+          <>
+            {pictures && upperPagination && (
+              <Pagination meta={pictures.meta} pageSetter={setPage} />
+            )}
+            <ul>
+              {pictures &&
+                pictures.data.map((pic) => (
+                  <li key={pic.id}>
+                    <picture>
+                      <img
+                        src={`${domain}` + pic.uri}
+                        alt={pic.caption}
+                        id={pic.id}
+                        onClick={() =>
+                          setFilesSelected([...filesSelected, pic])
+                        }
+                      />
+                    </picture>
+                  </li>
+                ))}
+            </ul>
+            {pictures && (
+              <Pagination meta={pictures.meta} pageSetter={setPage} />
+            )}
+          </>
         )}
-        <ul>
-          {pictures &&
-            !imagePending &&
-            pictures.data.map((pic) => (
-              <li key={pic.id}>
-                <picture>
-                  <img
-                    src={`${domain}` + pic.uri}
-                    alt={pic.caption}
-                    id={pic.id}
-                    onClick={() => setFilesSelected([...filesSelected, pic])}
-                  />
-                </picture>
-              </li>
-            ))}
-        </ul>
-        {pictures && <Pagination meta={pictures.meta} pageSetter={setPage} />}
       </div>
     </>
   )
