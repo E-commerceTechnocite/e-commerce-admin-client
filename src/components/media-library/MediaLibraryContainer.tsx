@@ -9,7 +9,6 @@ import { domain } from "../../util/environnement"
 import { sendRequest } from "../../util/helpers/refresh"
 import "./MediaLibraryContainer.scss"
 import Skeleton from "./skeleton/Skeleton"
-import _ from "lodash"
 
 interface MediaLibraryContainerPropsInterface {
   numberOfImages?: number
@@ -30,6 +29,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   const inputEl = useRef<HTMLInputElement>()
   const history = useHistory()
 
+  // Preparing post request for upload of new files in media library
   const request = () => {
     const formData = new FormData()
     files.forEach((file) => {
@@ -42,6 +42,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
     })
   }
 
+  // Calling Post request for file upload media library and verifiy user
   const sendFiles = async () => {
     setImagePending(true)
     let { error } = await sendRequest(request)
@@ -51,6 +52,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
     setImagePending(false)
   }
 
+  // Preparing get request for media library files based on pages
   const imagesRequest = () =>
     http.get<PaginationModel<PictureModel>>(
       `${domain}/v1/file?mimetype=image&page=${page}&limit=${numberOfImages}`,
@@ -61,6 +63,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
       }
     )
 
+  // Calling get request for media library files
   const fetchImages = async () => {
     const { data, error } = await sendRequest(imagesRequest)
     if (error) {
@@ -69,21 +72,37 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
     setPictures(data)
   }
 
+  // pass to parent selected files
   const sendData = () => {
-    console.log(filesSelected)
     libraryToParent(filesSelected)
     setFilesSelected([])
   }
 
+  // Verify if file is unique and push it
+  const pushFile = (pic) => {
+    if (filesSelected.length) {
+      filesSelected.forEach(() => {
+        if (
+          filesSelected.find((currentFile) => currentFile.id === pic.id) ===
+          undefined
+        ) {
+          setFilesSelected([...filesSelected, pic])
+        }
+      })
+    } else {
+      setFilesSelected([...filesSelected, pic])
+    }
+  }
+
+  // Upload files when new ones uploaded
   useEffect(() => {
     if (files.length) sendFiles().then()
   }, [files])
 
+  // Fetch files on component load
   useEffect(() => {
     fetchImages().then()
   }, [page, imagePending])
-
-  useEffect(() => {}, [filesSelected])
 
   return (
     <>
@@ -107,7 +126,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                 onChange={(e) => setFiles([].slice.call(e.target.files))}
               />
             </label>
-            <button className="action" type="button" onClick={sendData}>
+            <button type="button" className="action" onClick={sendData}>
               Select
             </button>
           </div>
@@ -129,10 +148,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                           alt={pic.caption}
                           id={pic.id}
                           onClick={() => {
-                            _.debounce(() => {
-                              console.log('sending')
-                              setFilesSelected([...filesSelected, pic])
-                            }, 300)
+                            pushFile(pic)
                           }}
                         />
                       </picture>

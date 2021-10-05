@@ -118,7 +118,7 @@ const AddProduct: FC<IAddProductProps> = () => {
     console.log(formData.picturesId, thumbnailId)
 
     // console.log(picturesId)
-    // console.log(isValid)
+    console.log(isValid)
     // if (isValid) submitProduct().then
   }
 
@@ -127,7 +127,6 @@ const AddProduct: FC<IAddProductProps> = () => {
     const pics: string[] = []
     data.forEach((pic) => {
       if (libraryData.find((file) => file.id === pic.id) === undefined) {
-        console.log("not present")
         pics.push(pic.id)
         setLibraryData([...libraryData, pic])
       }
@@ -161,7 +160,6 @@ const AddProduct: FC<IAddProductProps> = () => {
     if (error) {
       history.push("/login")
     }
-    console.log(data)
     setTaxRuleGroupId(data.data[0].id)
     setTaxOptions([...data.data])
   }
@@ -179,7 +177,6 @@ const AddProduct: FC<IAddProductProps> = () => {
     if (error) {
       history.push("/login")
     }
-    console.log(data.data)
     setCategoryId(data.data[0].id)
     setCategoryOptions([...data.data])
   }
