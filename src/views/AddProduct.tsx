@@ -11,6 +11,7 @@ import { http } from "../util/http"
 import { useHistory } from "react-router"
 import { sendRequest } from "../util/helpers/refresh"
 import { PaginationMetadataModel } from "../models/pagination/pagination-metadata.model"
+import { productSchema } from "../util/validation/productValidation"
 
 export interface IAddProductProps {}
 
@@ -79,49 +80,60 @@ const AddProduct: FC<IAddProductProps> = () => {
   const [taxOptions, setTaxOptions] = useState<GroupData[]>([])
   const [categoryOptions, setCategoryOptions] = useState<GroupData[]>([])
   const history = useHistory()
-
+  const formData = {
+    title,
+    reference,
+    description,
+    price,
+    quantity,
+    categoryId,
+    taxRuleGroupId,
+    picturesId,
+    thumbnailId,
+  }
 
   ////////////////////////////////////////////////////////
   const requestSubmit = () => {
-    if (picturesId.length) SetThumbnailId(picturesId[0])
-    const content = {
-      title,
-      reference,
-      description,
-      price,
-      quantity,
-      categoryId,
-      taxRuleGroupId,
-      picturesId,
-      thumbnailId
-    }
-
-    return http.post(`${domain}/v1/product`, content, {
+    return http.post(`${domain}/v1/product`, formData, {
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
     })
   }
   const submitProduct = async () => {
-    let { data, error } = await sendRequest(requestSubmit)
+    let { error } = await sendRequest(requestSubmit)
     if (error) {
+      console.log(error.message)
       history.push("/login")
     }
+    history.push("/products")
   }
   ////////////////////////////////////////////
-  const formSubmit = (e) => {
+  const formSubmit = async (e) => {
     e.preventDefault()
-    submitProduct
-    console.log(title, reference, description, price, quantity, categoryId, taxRuleGroupId, picturesId, thumbnailId)
+    const isValid = await productSchema
+      .isValid(formData)
+      .catch((err) => console.error(err.description))
+    console.log(formData.picturesId, thumbnailId)
 
+    // console.log(picturesId)
+    // console.log(isValid)
+    // if (isValid) submitProduct().then
   }
 
   // Pass data image select from MediaLibrary component to here
   const libraryToParent = (data: PictureModel[]) => {
-    setLibraryData([...libraryData, ...data])
     const pics: string[] = []
-    data.forEach((pic) => pics.push(pic.id))
+    data.forEach((pic) => {
+      if (libraryData.find((file) => file.id === pic.id) === undefined) {
+        console.log("not present")
+        pics.push(pic.id)
+        setLibraryData([...libraryData, pic])
+      }
+    })
     setPicturesId([...picturesId, ...pics])
+    if (pics.length) SetThumbnailId(pics[0].toString())
   }
 
   // Remove image from slider
@@ -133,6 +145,7 @@ const AddProduct: FC<IAddProductProps> = () => {
     }
     setLibraryData(libraryArray)
     setPicturesId(picturesArray)
+    if (!picturesId.length) SetThumbnailId("")
   }
 
   // Get request for tax rule group form select
@@ -149,6 +162,7 @@ const AddProduct: FC<IAddProductProps> = () => {
       history.push("/login")
     }
     console.log(data)
+    setTaxRuleGroupId(data.data[0].id)
     setTaxOptions([...data.data])
   }
 
@@ -165,14 +179,15 @@ const AddProduct: FC<IAddProductProps> = () => {
     if (error) {
       history.push("/login")
     }
-    console.log(data)
+    console.log(data.data)
+    setCategoryId(data.data[0].id)
     setCategoryOptions([...data.data])
   }
 
   // Call  the requests before render
   useEffect(() => {
-    getTaxRuleGroup().then()
     getCategoryGroup().then()
+    getTaxRuleGroup().then()
   }, [])
 
   // Modules for Quill editor

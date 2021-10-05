@@ -9,6 +9,7 @@ import { domain } from "../../util/environnement"
 import { sendRequest } from "../../util/helpers/refresh"
 import "./MediaLibraryContainer.scss"
 import Skeleton from "./skeleton/Skeleton"
+import _ from "lodash"
 
 interface MediaLibraryContainerPropsInterface {
   numberOfImages?: number
@@ -69,6 +70,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   }
 
   const sendData = () => {
+    console.log(filesSelected)
     libraryToParent(filesSelected)
     setFilesSelected([])
   }
@@ -105,7 +107,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                 onChange={(e) => setFiles([].slice.call(e.target.files))}
               />
             </label>
-            <button className="action" onClick={sendData}>
+            <button className="action" type="button" onClick={sendData}>
               Select
             </button>
           </div>
@@ -127,7 +129,10 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                           alt={pic.caption}
                           id={pic.id}
                           onClick={() => {
-                            setFilesSelected([...filesSelected, pic])
+                            _.debounce(() => {
+                              console.log('sending')
+                              setFilesSelected([...filesSelected, pic])
+                            }, 300)
                           }}
                         />
                       </picture>
