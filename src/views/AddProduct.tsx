@@ -15,6 +15,7 @@ import { productSchema } from "../util/validation/productValidation"
 import { Formik, Form, Field, ErrorMessage } from "formik"
 import TextInput from "../components/inputs/TextInput"
 import Select from "../components/inputs/Select"
+import NumberInput from "../components/inputs/NumberInput"
 
 export interface IAddProductProps {}
 
@@ -273,7 +274,7 @@ const AddProduct: FC<IAddProductProps> = () => {
                     </div>
                     <div className="price">
                       <Select name={"tax"} label={"Tax"} options={taxOptions} />
-                      <TextInput name={"price"} label={"Price"} />
+                      <NumberInput name={"price"} label={"Price"}/>
                     </div>
                   </div>
                   <div className="pictures">

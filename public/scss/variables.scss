@@ -15,9 +15,10 @@ $delete-button-event: #e95151;
 $skeleton: #f8f8f8;
 
 // Fonts
-$font-regular: Roboto-Regular;
-$font-medium: Roboto-Medium;
-$font-bold: Roboto-Bold;
-$primary-font: $font-regular, -apple-system, BlinkMacSystemFont, "Segoe UI",
-  "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-  "Helvetica Neue", sans-serif;
+$basic-font: -apple-system, BlinkMacSystemFont, "Segoe UI",
+"Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+"Helvetica Neue", sans-serif;
+$font-regular: Roboto-Regular, $basic-font;
+$font-medium: Roboto-Medium, $basic-font;
+$font-bold: Roboto-Bold, $basic-font;
+$primary-font: $font-regular, $basic-font;
