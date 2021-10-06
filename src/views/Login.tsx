@@ -29,7 +29,6 @@ const Login: React.FunctionComponent = () => {
   const onSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
     setIsPending(true);
-    console.log({ email, password, checkbox });
     const body = { email, password };
     const options = {
       headers: { "Content-Type": "application/json" },
