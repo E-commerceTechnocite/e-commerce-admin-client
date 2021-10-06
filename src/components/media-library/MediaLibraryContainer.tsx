@@ -13,7 +13,7 @@ import Skeleton from "./skeleton/Skeleton"
 interface MediaLibraryContainerPropsInterface {
   numberOfImages?: number
   upperPagination?: boolean
-  libraryToParent: (data) => void
+  libraryToParent?: (data) => void
 }
 
 const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({

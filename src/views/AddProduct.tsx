@@ -13,6 +13,8 @@ import { sendRequest } from "../util/helpers/refresh"
 import { PaginationMetadataModel } from "../models/pagination/pagination-metadata.model"
 import { productSchema } from "../util/validation/productValidation"
 import { Formik, Form, Field, ErrorMessage } from "formik"
+import TextInput from "../components/inputs/TextInput"
+import Select from "../components/inputs/Select"
 
 export interface IAddProductProps {}
 
@@ -245,115 +247,76 @@ const AddProduct: FC<IAddProductProps> = () => {
   return (
     <>
       <div className="product-form">
-      <form onSubmit={formSubmit}>
-          <div className="top">
-            <div className="inputs">
-              <div className="product">
-                <div className="form-control">
-                  <label htmlFor="title">Title</label>
-                  <input
-                    type="text"
-                    name="title"
-                    id="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                </div>
-                <div className="form-control">
-                  <label htmlFor="reference">Reference</label>
-                  <input
-                    type="text"
-                    name="reference"
-                    id="reference"
-                    value={reference}
-                    onChange={(e) => setReference(e.target.value)}
-                  />
-                </div>
-
-                <div className="form-control">
-                  <label htmlFor="category">Category</label>
-                  <select
-                    name="category"
-                    id="category"
-                    onChange={(e) => setCategoryId(e.target.value)}
-                  >
-                    {categoryOptions.map((option, index) => (
-                      <option key={index} value={option.id}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className="price">
-                <div className="form-control">
-                  <label htmlFor="tax">Tax</label>
-                  <select
-                    name="tax"
-                    id="tax"
-                    onChange={(e) => setTaxRuleGroupId(e.target.value)}
-                  >
-                    {taxOptions.map((option, index) => (
-                      <option key={index} value={option.id}>
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="form-control">
-                  <label htmlFor="price">Price</label>
-                  <input
-                    type="number"
-                    name="price"
-                    id="price"
-                    min="0"
-                    value={price}
-                    onChange={(e) => setPrice(parseInt(e.target.value))}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="pictures">
-              <MediaLibraryContainer
-                numberOfImages={27}
-                upperPagination={false}
-                libraryToParent={libraryToParent}
-              />
-              {!!libraryData.length && (
-                <Slider className="slider" {...settings}>
-                  {libraryData.map((image) => (
-                    <div className="slide" key={image.id}>
-                      <div
-                        className="top-border"
-                        onClick={() => removeImage(image.id)}
-                      >
-                        <i className="fas fa-window-close"></i>
-                      </div>
-                      <img src={domain + image.uri} />
+        <Formik
+          initialValues={{
+            title: "",
+            reference: "",
+            price: 0,
+          }}
+          validationSchema={productSchema}
+          onSubmit={(data) => console.log(data)}
+        >
+          {({ handleSubmit, handleChange, values, errors, touched }) => {
+            console.log(errors)
+            return (
+              <form onSubmit={formSubmit}>
+                <div className="top">
+                  <div className="inputs">
+                    <div className="product">
+                      <TextInput name={"title"} label={"Title"} />
+                      <TextInput name={"reference"} label={"Reference"} />
+                      <Select
+                        name={"category"}
+                        label={"Category"}
+                        options={categoryOptions}
+                      />
                     </div>
-                  ))}
-                </Slider>
-              )}
-            </div>
-          </div>
-          <div className="description">
-            <ReactQuill
-              theme="snow"
-              modules={modules}
-              formats={formats}
-              value={description}
-              onChange={setDescription}
-            />
-          </div>
-          <div className="buttons">
-            <button className="action" type="submit">
-              Add Product
-            </button>
-          </div>
-        </form>
-
-
+                    <div className="price">
+                      <Select name={"tax"} label={"Tax"} options={taxOptions} />
+                      <TextInput name={"price"} label={"Price"} />
+                    </div>
+                  </div>
+                  <div className="pictures">
+                    <MediaLibraryContainer
+                      numberOfImages={27}
+                      upperPagination={false}
+                      libraryToParent={libraryToParent}
+                    />
+                    {!!libraryData.length && (
+                      <Slider className="slider" {...settings}>
+                        {libraryData.map((image) => (
+                          <div className="slide" key={image.id}>
+                            <div
+                              className="top-border"
+                              onClick={() => removeImage(image.id)}
+                            >
+                              <i className="fas fa-window-close"></i>
+                            </div>
+                            <img src={domain + image.uri} />
+                          </div>
+                        ))}
+                      </Slider>
+                    )}
+                  </div>
+                </div>
+                <div className="description">
+                  <ReactQuill
+                    theme="snow"
+                    modules={modules}
+                    formats={formats}
+                    value={description}
+                    onChange={setDescription}
+                  />
+                </div>
+                <div className="buttons">
+                  <button className="action" type="submit">
+                    Add Product
+                  </button>
+                </div>
+              </form>
+            )
+          }}
+        </Formik>
 
         {/* <form onSubmit={formSubmit}>
           <div className="top">
@@ -471,7 +434,10 @@ export default AddProduct
 function capitalize(name: string): string {
   throw new Error("Function not implemented.")
 }
-  function useFormik(arg0: { initialValues: { email: string; password: string }; validationSchema: any; onSubmit: (values: any) => void }) {
-    throw new Error("Function not implemented.")
-  }
-
+function useFormik(arg0: {
+  initialValues: { email: string; password: string }
+  validationSchema: any
+  onSubmit: (values: any) => void
+}) {
+  throw new Error("Function not implemented.")
+}

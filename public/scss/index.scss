@@ -84,7 +84,7 @@ button {
     box-shadow: $primary-elts-shadow;
     border-radius: 5px;
     width: 345px;
-    min-height: 421px;
+    min-height: 410px;
     padding: 65px 60px;
     display: flex;
     flex-direction: column;
@@ -108,14 +108,15 @@ button {
         border: none;
         height: 100%;
         width: 100%;
+        font-size: 15px;
       }
       input::placeholder {
         color: $primary-color-font;
-        font-size: 18px;
+        font-size: 15px;
       }
       i {
         font-size: 18px;
-        width: 30px;
+        width: 50px;
         text-align: center;
       }
     }
@@ -126,7 +127,7 @@ button {
       align-self: flex-start;
       display: flex;
       align-items: center;
-      font-size: 18px;
+      font-size: 15px;
       position: relative;
       margin-bottom: 46px;
       input {
@@ -141,7 +142,7 @@ button {
         width: 13px;
         height: 14px;
         background: #eee;
-        top: 3px;
+        top: 2px;
         left: 0px;
         border-radius: 2px;
       }
