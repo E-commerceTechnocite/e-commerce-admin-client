@@ -8,16 +8,14 @@ interface IHomeProps {}
 
 const Home: React.FunctionComponent<IHomeProps> = (props) => {
   return (
-    <>
       <div className="home">
         <DailyInformations/>
         <GraphicInformation/>
         <div className="productButtonContainer">
             <h4>Last products added</h4>
-            <div className="action">PRODUCT+</div>
+            <button className="action">PRODUCT+</button>
         </div>
       </div>
-    </>
   )
 }
 export default Home

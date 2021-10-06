@@ -7,6 +7,8 @@ import Home from "./views/Home"
 import Products from "./views/Products"
 import Login from "./views/Login"
 import Users from "./views/Users"
+import Roles from "./views/Roles"
+import AddRoles from "./views/AddRoles"
 
 export const App = () => {
   return (
@@ -19,6 +21,8 @@ export const App = () => {
               <Route exact path="/" component={Home} />
               <Route path="/products" component={Products} />
               <Route path="/users" component={Users} />
+              <Route path="/roles" component={Roles} exact/>
+              <Route path="/roles/addroles" component={AddRoles} />
             </DashboardLayout>
           </Switch>
         </Router>

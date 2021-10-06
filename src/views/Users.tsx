@@ -3,17 +3,15 @@ import UsersTable from '../components/UsersTable'
 
 const Users: React.FunctionComponent = () => {
     return (
-      <>
-        <div className="users">
-          <div className="productButtonContainer">
-            <div className="action">USER+</div> 
-          </div>
-          <br/>
-          <div>Liste des utilisateurs</div>
-          <br/>
-          <UsersTable />
+      <div className="users">
+        <div className="productButtonContainer">
+          <button className="action">USER+</button> 
         </div>
-      </>
+        <br/>
+        <h3>Users list</h3>
+        <br/>
+        <UsersTable />
+      </div>
     )
   }
   export default Users;
