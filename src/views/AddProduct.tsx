@@ -252,13 +252,15 @@ const AddProduct: FC<IAddProductProps> = () => {
           initialValues={{
             title: "",
             reference: "",
+            quantity: 0,
             price: 0,
+            pictureId: picturesId
           }}
           validationSchema={productSchema}
-          onSubmit={(data) => console.log(data)}
+          onSubmit={(data) => console.log()}
         >
           {({ handleSubmit, handleChange, values, errors, touched }) => {
-            console.log(errors)
+            // console.log(values)
             return (
               <form onSubmit={formSubmit}>
                 <div className="top">
@@ -274,7 +276,8 @@ const AddProduct: FC<IAddProductProps> = () => {
                     </div>
                     <div className="price">
                       <Select name={"tax"} label={"Tax"} options={taxOptions} />
-                      <NumberInput name={"price"} label={"Price"}/>
+                      <NumberInput name={"quantity"} label={"Quantity"} />
+                      <NumberInput name={"price"} label={"Price"} />
                     </div>
                   </div>
                   <div className="pictures">
