@@ -8,12 +8,10 @@ import Products from "./views/Products";
 import Login from "./views/Login";
 import AddProduct from "./views/AddProduct";
 import MediaLibrary from "./views/MediaLibrary";
-import { ChakraProvider } from "@chakra-ui/react";
 
 export const App = () => {
   return (
     <>
-      <ChakraProvider>
         <Provider store={store}>
           <Router>
             <Switch>
@@ -27,7 +25,6 @@ export const App = () => {
             </Switch>
           </Router>
         </Provider>
-      </ChakraProvider>
     </>
   );
 };

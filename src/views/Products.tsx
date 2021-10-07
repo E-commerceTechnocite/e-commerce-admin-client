@@ -37,6 +37,7 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
     setProducts(data.data)
     setMeta(data.meta)
   }
+  
   useEffect(() => {
     getProducts().then()
   }, [page])
