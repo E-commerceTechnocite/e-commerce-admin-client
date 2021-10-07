@@ -13,11 +13,7 @@ import { PaginationMetadataModel } from "../models/pagination/pagination-metadat
 import { productSchema } from "../util/validation/productValidation"
 import {
   Formik,
-  Form,
-  Field,
-  ErrorMessage,
-  FormikProvider,
-  useFormik,
+  Form
 } from "formik"
 import TextInput from "../components/inputs/TextInput"
 import Select from "../components/inputs/Select"
@@ -234,17 +230,10 @@ const AddProduct: FC<IAddProductProps> = () => {
             // form.setTouched({...form.touched,[field.name]: true });
           }}
         >
-          {({
-            setFieldValue,
-            values,
-            errors,
-            touched,
-            
-          }) => {
+          {({ setFieldValue, values, errors, touched, handleBlur }) => {
             console.log(errors.description, touched.description)
             return (
               <Form onSubmit={formSubmit}>
-                
                 <div className="top">
                   <div className="inputs">
                     <div className="product">
@@ -291,11 +280,14 @@ const AddProduct: FC<IAddProductProps> = () => {
                     className="inputText"
                     editor={ClassicEditor}
                     data={values.description}
+                    onBlur={handleBlur.name}
                     onChange={(e, editor) =>
                       setFieldValue("description", editor.getData())
                     }
                   />
-                {errors.description && touched.description &&<p className="error">{errors.description}</p>}
+                  {errors.description && touched.description && (
+                    <p className="error">{errors.description}</p>
+                  )}
                 </div>
                 <div className="buttons">
                   <button className="action" type="submit">
