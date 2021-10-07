@@ -1,5 +1,6 @@
 @import '../../../public/scss/variables.scss';
-.form-control {
+.form-control,
+.description {
     position: relative;
     .error {
         font-size: 13px;

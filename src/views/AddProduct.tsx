@@ -1,5 +1,4 @@
 import * as React from "react"
-import ReactQuill from "react-quill"
 import "react-quill/dist/quill.snow.css"
 import { FC, HTMLInputTypeAttribute, useEffect, useState } from "react"
 import "./AddProduct.scss"
@@ -12,10 +11,19 @@ import { useHistory } from "react-router"
 import { sendRequest } from "../util/helpers/refresh"
 import { PaginationMetadataModel } from "../models/pagination/pagination-metadata.model"
 import { productSchema } from "../util/validation/productValidation"
-import { Formik, Form, Field, ErrorMessage } from "formik"
+import {
+  Formik,
+  Form,
+  Field,
+  ErrorMessage,
+  FormikProvider,
+  useFormik,
+} from "formik"
 import TextInput from "../components/inputs/TextInput"
 import Select from "../components/inputs/Select"
 import NumberInput from "../components/inputs/NumberInput"
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic"
+import { CKEditor } from "@ckeditor/ckeditor5-react"
 
 export interface IAddProductProps {}
 
@@ -199,44 +207,9 @@ const AddProduct: FC<IAddProductProps> = () => {
     getTaxRuleGroup().then()
   }, [])
 
-  // Modules for Quill editor
-  const modules = {
-    toolbar: {
-      container: [
-        ["bold", "italic", "underline", "strike", "blockquote"],
-        [{ size: ["small", false, "large", "huge"] }, { color: [] }],
-        [
-          { list: "ordered" },
-          { list: "bullet" },
-          { indent: "-1" },
-          { indent: "+1" },
-          { align: [] },
-        ],
-        ["link", "image", "video"],
-        ["clean"],
-      ],
-    },
-    clipboard: { matchVisual: false },
-  }
+  // CKEditor
 
-  const formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "blockquote",
-    "size",
-    "color",
-    "list",
-    "bullet",
-    "indent",
-    "link",
-    "image",
-    "video",
-    "align",
-  ]
-
+  // Slider settings
   var settings = {
     dots: true,
     infinite: false,
@@ -254,15 +227,24 @@ const AddProduct: FC<IAddProductProps> = () => {
             reference: "",
             quantity: 0,
             price: 0,
-            pictureId: picturesId
+            description: "",
           }}
           validationSchema={productSchema}
-          onSubmit={(data) => console.log()}
+          onSubmit={(data) => {
+            // form.setTouched({...form.touched,[field.name]: true });
+          }}
         >
-          {({ handleSubmit, handleChange, values, errors, touched }) => {
-            // console.log(values)
+          {({
+            setFieldValue,
+            values,
+            errors,
+            touched,
+            
+          }) => {
+            console.log(errors.description, touched.description)
             return (
-              <form onSubmit={formSubmit}>
+              <Form onSubmit={formSubmit}>
+                
                 <div className="top">
                   <div className="inputs">
                     <div className="product">
@@ -304,144 +286,28 @@ const AddProduct: FC<IAddProductProps> = () => {
                   </div>
                 </div>
                 <div className="description">
-                  <ReactQuill
-                    theme="snow"
-                    modules={modules}
-                    formats={formats}
-                    value={description}
-                    onChange={setDescription}
+                  <CKEditor
+                    id="inputText"
+                    className="inputText"
+                    editor={ClassicEditor}
+                    data={values.description}
+                    onChange={(e, editor) =>
+                      setFieldValue("description", editor.getData())
+                    }
                   />
+                {errors.description && touched.description &&<p className="error">{errors.description}</p>}
                 </div>
                 <div className="buttons">
                   <button className="action" type="submit">
                     Add Product
                   </button>
                 </div>
-              </form>
+              </Form>
             )
           }}
         </Formik>
-
-        {/* <form onSubmit={formSubmit}>
-          <div className="top">
-            <div className="inputs">
-              <div className="product">
-                <div className="form-control">
-                  <label htmlFor="title">Title</label>
-                  <input
-                    type="text"
-                    name="title"
-                    id="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                </div>
-                <div className="form-control">
-                  <label htmlFor="reference">Reference</label>
-                  <input
-                    type="text"
-                    name="reference"
-                    id="reference"
-                    value={reference}
-                    onChange={(e) => setReference(e.target.value)}
-                  />
-                </div>
-
-                <div className="form-control">
-                  <label htmlFor="category">Category</label>
-                  <select
-                    name="category"
-                    id="category"
-                    onChange={(e) => setCategoryId(e.target.value)}
-                  >
-                    {categoryOptions.map((option, index) => (
-                      <option key={index} value={option.id}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className="price">
-                <div className="form-control">
-                  <label htmlFor="tax">Tax</label>
-                  <select
-                    name="tax"
-                    id="tax"
-                    onChange={(e) => setTaxRuleGroupId(e.target.value)}
-                  >
-                    {taxOptions.map((option, index) => (
-                      <option key={index} value={option.id}>
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="form-control">
-                  <label htmlFor="price">Price</label>
-                  <input
-                    type="number"
-                    name="price"
-                    id="price"
-                    min="0"
-                    value={price}
-                    onChange={(e) => setPrice(parseInt(e.target.value))}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="pictures">
-              <MediaLibraryContainer
-                numberOfImages={27}
-                upperPagination={false}
-                libraryToParent={libraryToParent}
-              />
-              {!!libraryData.length && (
-                <Slider className="slider" {...settings}>
-                  {libraryData.map((image) => (
-                    <div className="slide" key={image.id}>
-                      <div
-                        className="top-border"
-                        onClick={() => removeImage(image.id)}
-                      >
-                        <i className="fas fa-window-close"></i>
-                      </div>
-                      <img src={domain + image.uri} />
-                    </div>
-                  ))}
-                </Slider>
-              )}
-            </div>
-          </div>
-          <div className="description">
-            <ReactQuill
-              theme="snow"
-              modules={modules}
-              formats={formats}
-              value={description}
-              onChange={setDescription}
-            />
-          </div>
-          <div className="buttons">
-            <button className="action" type="submit">
-              Add Product
-            </button>
-          </div>
-        </form> */}
       </div>
     </>
   )
 }
-
 export default AddProduct
-function capitalize(name: string): string {
-  throw new Error("Function not implemented.")
-}
-function useFormik(arg0: {
-  initialValues: { email: string; password: string }
-  validationSchema: any
-  onSubmit: (values: any) => void
-}) {
-  throw new Error("Function not implemented.")
-}
