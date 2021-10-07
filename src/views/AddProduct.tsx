@@ -1,5 +1,4 @@
 import * as React from "react"
-import "react-quill/dist/quill.snow.css"
 import { FC, HTMLInputTypeAttribute, useEffect, useState } from "react"
 import "./AddProduct.scss"
 import MediaLibraryContainer from "../components/media-library/MediaLibraryContainer"
@@ -11,10 +10,7 @@ import { useHistory } from "react-router"
 import { sendRequest } from "../util/helpers/refresh"
 import { PaginationMetadataModel } from "../models/pagination/pagination-metadata.model"
 import { productSchema } from "../util/validation/productValidation"
-import {
-  Formik,
-  Form
-} from "formik"
+import { Formik, Form, ErrorMessage } from "formik"
 import TextInput from "../components/inputs/TextInput"
 import Select from "../components/inputs/Select"
 import NumberInput from "../components/inputs/NumberInput"
@@ -230,8 +226,8 @@ const AddProduct: FC<IAddProductProps> = () => {
             // form.setTouched({...form.touched,[field.name]: true });
           }}
         >
-          {({ setFieldValue, values, errors, touched, handleBlur }) => {
-            console.log(errors.description, touched.description)
+          {({ setFieldValue, setTouched, values, errors, touched, handleBlur, handleChange }) => {
+            console.log(touched)
             return (
               <Form onSubmit={formSubmit}>
                 <div className="top">
@@ -277,17 +273,19 @@ const AddProduct: FC<IAddProductProps> = () => {
                 <div className="description">
                   <CKEditor
                     id="inputText"
+                    name={"description"}
                     className="inputText"
                     editor={ClassicEditor}
                     data={values.description}
-                    onBlur={handleBlur.name}
-                    onChange={(e, editor) =>
-                      setFieldValue("description", editor.getData())
-                    }
+                    onChange={(e, editor) =>{
+                      // handleChange
+                      touched.description
+                      setFieldValue("description", editor.getData(), true)
+                    }}
                   />
-                  {errors.description && touched.description && (
-                    <p className="error">{errors.description}</p>
-                  )}
+                  <p className="error">
+                    <ErrorMessage name="description" />
+                  </p>
                 </div>
                 <div className="buttons">
                   <button className="action" type="submit">
