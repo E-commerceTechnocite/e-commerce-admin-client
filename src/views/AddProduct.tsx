@@ -1,5 +1,4 @@
 import * as React from "react"
-import "react-quill/dist/quill.snow.css"
 import { FC, HTMLInputTypeAttribute, useEffect, useState } from "react"
 import "./AddProduct.scss"
 import MediaLibraryContainer from "../components/media-library/MediaLibraryContainer"
