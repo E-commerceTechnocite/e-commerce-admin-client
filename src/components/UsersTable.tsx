@@ -46,7 +46,7 @@ const UsersTable: React.FunctionComponent = () => {
                                         return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                                     })
                                 }
-                                <td><button className="action" >EDIT</button></td>
+                                <td><button className="action">EDIT</button></td>
                             </tr>
                         )
                     })

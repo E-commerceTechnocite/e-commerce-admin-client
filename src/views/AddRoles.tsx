@@ -1,44 +1,32 @@
 import * as React from 'react';
+import { useHistory, withRouter } from "react-router"
+import { useEffect, useState } from "react"
+import { http } from "../util/http"
+import { domain } from "../util/environnement"
+import Loading from "../components/Loading"
 
 const AddRoles: React.FunctionComponent = () => {
-    const permissions = [
-        "r:product",
-        "c:product",
-        "u:product",
-        "d:product",
-        "r:product-category",
-        "c:product-category",
-        "u:product-category",
-        "d:product-category",
-        "r:country",
-        "c:country",
-        "u:country",
-        "d:country",
-        "r:tax",
-        "c:tax",
-        "u:tax",
-        "d:tax",
-        "r:tax_rule",
-        "c:tax_rule",
-        "u:tax_rule",
-        "d:tax_rule",
-        "r:tax_rule_group",
-        "c:tax_rule_group",
-        "u:tax_rule_group",
-        "d:tax_rule_group",
-        "r:user",
-        "c:user",
-        "u:user",
-        "d:user",
-        "r:file",
-        "c:file",
-        "u:file",
-        "d:file",
-        "r:role",
-        "c:role",
-        "u:role",
-        "d:role"
-    ]
+    const history = useHistory()
+    const [role, setRole] = useState("")
+    const [permissions, setPermissions] = useState([])
+    const [isPending, setIsPending] = useState(true)
+
+    useEffect(() => {
+        const token = sessionStorage.getItem("token")
+        const options = {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+        http
+          .get<[]>(`${domain}/v1/role/permissions`, options)
+          .then(({ data,error }) => {
+            setIsPending(true)
+            if (!error) {
+                setPermissions(data)
+                setIsPending(false)
+            }
+          })
+    }, [])
+
     const perms = {};
     permissions.forEach(item => {
         const [operation, entity] = item.split(':');
@@ -67,36 +55,57 @@ const AddRoles: React.FunctionComponent = () => {
         });
     });
 
-  return <form>
-    <div>
-        <label>Role's name</label>
-        <br/>
-        <input type="text" id="name" name="name" required></input>
-        <div className="AddWrap">
-        {
-            Object.entries(perms).map(([title, arr]) => {
-                return (<>
-                <h3>{title}</h3>
-                <div className="attrs">
-                    {  
-                       Object.values(arr).map((perm) => {
-                           return ( <div className="checkBox">
-                                <input type="checkbox" id={perm.value} name={perm.value}></input>
-                                <label>{perm.name}</label>
-                           </div>)
-                       }) 
-                    }
-                </div>
-                  </>
-                )
-            })
+    const onSubmit = (e: React.FormEvent): void => {
+        e.preventDefault()
+        setIsPending(true)
+        //console.log({ email, password, checkbox })
+        //document.getElementById('attrs')
+        const body = { role }
+        const options = {
+          headers: { "Content-Type": "application/json" },
         }
-        </div> 
+        http
+          .post<{ access_token: string; refresh_token: string }>(
+            `${domain}/v1/role`,
+            body,
+            options
+          )
+      }
+
+    return <>
+    {isPending && <Loading />}
+    {!isPending && (
+    <form onSubmit={onSubmit}>
         <div>
-            <button type="submit" className="action">Soumettre</button>
+            <label>Role's name</label>
+            <br/>
+            <input type="text" id="name" name="name" required></input>
+            <div className="AddWrap">
+            {
+                Object.entries(perms).map(([title, arr]) => {
+                    return (<>
+                    <h3>{title}</h3>
+                    <div className="attrs" id="attrs">
+                        {  
+                        Object.values(arr).map((perm) => {
+                            return ( <div className="checkBox">
+                                    <input type="checkbox" id={perm.value} name={perm.value}></input>
+                                    <label>{perm.name}</label>
+                            </div>)
+                        }) 
+                        }
+                    </div>
+                    </>
+                    )
+                })
+            }
+            </div> 
+            <div>
+                <button type="submit" className="action">Soumettre</button>
+            </div>
         </div>
-    </div>
-  </form>
-};
+    </form>)}
+    </>
+    };
 
 export default AddRoles;

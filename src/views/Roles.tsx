@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { useHistory, withRouter } from "react-router"
+import { useEffect, useState } from "react"
+import { http } from "../util/http"
+import { domain } from "../util/environnement"
 import AddRoles from './AddRoles';
-import Role from '../components/Role';
 
 const Roles: React.FunctionComponent = () => {
     const history = useHistory()
-
     const onClick = (e: React.MouseEvent): void => {
         history.push("/roles/addroles")
     }
-
     return (
     <div className="roles">
         <div className="productButtonContainer">
