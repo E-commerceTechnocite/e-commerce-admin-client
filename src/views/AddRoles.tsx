@@ -7,11 +7,10 @@ import Loading from "../components/loading/Loading"
 
 const AddRoles: React.FunctionComponent = () => {
     const history = useHistory()
-    //const [role, setRole] = useState([])
+    const [role, setRole] = useState<string[]>([])
     const [permissions, setPermissions] = useState([])
     const [isPending, setIsPending] = useState(true)
     const [myInputValue, setMyInputValue] = useState("")
-    const selectedPermissionsArray = []
     const perms = {};
 
     useEffect(() => {
@@ -21,7 +20,7 @@ const AddRoles: React.FunctionComponent = () => {
         }
         http
           .get<[]>(`${domain}/v1/role/permissions`, options)
-          .then(({ data,error }) => {
+          .then(({ data, error }) => {
             setIsPending(true)
             if (!error) {
                 setPermissions(data)
@@ -57,23 +56,15 @@ const AddRoles: React.FunctionComponent = () => {
         });
     });
 
-    const checkboxChange = (event: boolean, value) => {
-        const myIndex = selectedPermissionsArray.indexOf(value)
-        if(event) {
-            if(myIndex === -1) {
-                selectedPermissionsArray.push(value)
-            }    
-        } else {
-            if (myIndex !== -1) {
-                selectedPermissionsArray.splice(myIndex, 1)
-            }
-        }
+    const checkboxChange = (e: boolean, value: string) => {
+        if(e) setRole([...role, value])
+        else setRole(role.filter((item) => item !== value))
     }
 
     const onSubmit = (e: React.FormEvent): void => {
         e.preventDefault()
         setIsPending(true)
-        const body = JSON.stringify({ name: myInputValue, permissions: selectedPermissionsArray })
+        const body = JSON.stringify({ name: myInputValue, permissions: role })
         const token = sessionStorage.getItem("token")
         const options = {
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -105,7 +96,7 @@ const AddRoles: React.FunctionComponent = () => {
                                         Object.values(arr).map((perm, index) => {
                                             return ( <div className="checkBox" key={index}>
                                                 <label>
-                                                    <input type="checkbox" id={perm.value} name={perm.value} onChange={(event) => checkboxChange(event.target.checked, perm.value)}></input>
+                                                    <input type="checkbox" id={perm.value} name={perm.value} onChange={(e) => checkboxChange(e.target.checked, perm.value)}></input>
                                                     {perm.name}
                                                 </label>
                                             </div>)
