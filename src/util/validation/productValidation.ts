@@ -16,9 +16,10 @@ export const productSchema = yup.object().shape({
     .required("Quantity missing"),
   categoryId: yup.string().required(),
   taxRuleGroupId: yup.string().required(),
+  picturesId: yup.array().of(yup.string()).required(),
+  thumbnailId: yup.string().required("Thumbnail missing"),
 })
 
 export const imagesSchema = yup.object().shape({
-  picturesId: yup.array().of(yup.string()).required(),
-  thumbnailId: yup.string().required("Thumbnail missing"),
+  
 })

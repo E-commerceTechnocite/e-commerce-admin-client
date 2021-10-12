@@ -1,5 +1,5 @@
 import * as React from "react"
-import { FC, HTMLInputTypeAttribute, useEffect, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import "./AddProduct.scss"
 import MediaLibraryContainer from "../components/media-library/MediaLibraryContainer"
 import Slider from "react-slick"
@@ -17,27 +17,6 @@ import NumberInput from "../components/inputs/NumberInput"
 import DrafTextEditor from "../components/inputs/DraftTextEditor"
 
 export interface IAddProductProps {}
-
-interface IFormInputProps {
-  id: string
-  title: string
-  name?: string
-}
-
-interface IFormControlProps extends IFormInputProps {
-  type: HTMLInputTypeAttribute
-  currentValue: string | number
-  formToParent: (data: any) => any
-}
-
-interface Option {
-  name: string
-  value: string
-}
-
-interface ISelectProps extends IFormInputProps {
-  options: Option[]
-}
 
 interface GroupData {
   id: string
@@ -58,23 +37,7 @@ interface CategoryOptions {
   data: GroupData[]
 }
 
-interface ProductPost {
-  title: string
-  reference: string
-  description: string
-  price: number
-  categoryId: string
-  taxRuleGroupId: string
-  picturesId: string[]
-  thumbnailId: string
-}
-
 const AddProduct: FC<IAddProductProps> = () => {
-  const [title, setTitle] = useState<string>("")
-  const [reference, setReference] = useState<string>("")
-  const [description, setDescription] = useState<string>("")
-  const [price, setPrice] = useState<number>(1)
-  const [quantity, setQuantity] = useState<number>(1)
   const [categoryId, setCategoryId] = useState<string>("")
   const [taxRuleGroupId, setTaxRuleGroupId] = useState<string>("")
   const [picturesId, setPicturesId] = useState<string[]>([])
@@ -83,57 +46,27 @@ const AddProduct: FC<IAddProductProps> = () => {
   const [taxOptions, setTaxOptions] = useState<GroupData[]>([])
   const [categoryOptions, setCategoryOptions] = useState<GroupData[]>([])
   const history = useHistory()
-  const formData = {
-    title,
-    reference,
-    description,
-    price,
-    quantity,
-    categoryId,
-    taxRuleGroupId,
-    picturesId,
-    thumbnailId,
-  }
 
-  ////////////////////////////////////////////////////////
-  const requestSubmit = () => {
-    return http.post(`${domain}/v1/product`, formData, {
+  // Send request data from form submit
+  const requestSubmit = (data) => {
+    return http.post(`${domain}/v1/product`, data, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
     })
   }
-  const submitProduct = async () => {
-    let { error } = await sendRequest(requestSubmit)
+  const submitProduct = async (data) => {
+    let { error } = await sendRequest(requestSubmit, data)
     if (error) {
       console.log(error.message)
       history.push("/login")
     }
+    console.log("success")
     history.push("/products")
   }
-  ////////////////////////////////////////////
-  const formSubmit = async (e) => {
-    e.preventDefault()
-    /* try {
-      const isValid: ProductPost = await productSchema
-        .validate(formData, { abortEarly: false })
-      console.log(isValid)
-    } catch(err) {
-      console.error(err)
-    } */
 
-    productSchema
-      .validate(formData, { abortEarly: false })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err))
-    // console.log(picturesId, thumbnailId)
-    // console.log(picturesId)
-    // console.log(isValid)
-    // if (isValid) submitProduct().then
-  }
-
-  // Pass data image select from MediaLibrary component to here
+  // Pass dataof images selected from MediaLibrary component to here
   const libraryToParent = (data: PictureModel[]) => {
     const pics: string[] = []
     data.forEach((pic) => {
@@ -211,30 +144,31 @@ const AddProduct: FC<IAddProductProps> = () => {
     <>
       <div className="product-form">
         <Formik
+          enableReinitialize={true}
           initialValues={{
             title: "",
             reference: "",
             quantity: 0,
             price: 0,
             description: "aaa",
+            categoryId: categoryId,
+            taxRuleGroupId: taxRuleGroupId,
+            picturesId: picturesId,
+            thumbnailId: thumbnailId,
           }}
           validationSchema={productSchema}
           onSubmit={(data) => {
-            console.log(data)
-            // form.setTouched({...form.touched,[field.name]: true });
+            submitProduct(data)
           }}
         >
           {({
             setFieldValue,
             setFieldTouched,
+            handleSubmit,
             values,
             errors,
-            touched,
-            handleBlur,
-            handleChange,
-            handleSubmit,
           }) => {
-            console.log(values.description, touched)
+            console.log(errors)
             return (
               <form onSubmit={handleSubmit}>
                 <div className="top">
@@ -243,13 +177,17 @@ const AddProduct: FC<IAddProductProps> = () => {
                       <TextInput name={"title"} label={"Title"} />
                       <TextInput name={"reference"} label={"Reference"} />
                       <Select
-                        name={"category"}
+                        name={"categoryId"}
                         label={"Category"}
                         options={categoryOptions}
                       />
                     </div>
                     <div className="price">
-                      <Select name={"tax"} label={"Tax"} options={taxOptions} />
+                      <Select
+                        name={"taxRuleGroupId"}
+                        label={"Tax"}
+                        options={taxOptions}
+                      />
                       <NumberInput name={"quantity"} label={"Quantity"} />
                       <NumberInput name={"price"} label={"Price"} />
                     </div>
@@ -274,6 +212,9 @@ const AddProduct: FC<IAddProductProps> = () => {
                           </div>
                         ))}
                       </Slider>
+                    )}
+                    {errors.thumbnailId && (
+                      <div className="error">Select a file</div>
                     )}
                   </div>
                 </div>
