@@ -1,23 +1,23 @@
 import * as yup from "yup"
 
 export const productSchema = yup.object().shape({
-  title: yup.string().required("Title missing").typeError("lolololo"),
-  reference: yup.string().required("Reference missing"),
+  title: yup.string().required("Required"),
+  reference: yup.string().required("Required"),
   description: yup.string().min(17, 'Description must be at least 10 characters'),
   price: yup
     .number()
     .positive()
     .min(1, "Must be a positive number")
-    .required("Price missing"),
+    .required("Required"),
   quantity: yup
     .number()
     .positive()
     .min(1, "Must be a positive number")
-    .required("Quantity missing"),
+    .required("Required"),
   categoryId: yup.string().required(),
   taxRuleGroupId: yup.string().required(),
   picturesId: yup.array().of(yup.string()).required(),
-  thumbnailId: yup.string().required("Thumbnail missing"),
+  thumbnailId: yup.string().required("Thumbnail required"),
 })
 
 export const imagesSchema = yup.object().shape({
