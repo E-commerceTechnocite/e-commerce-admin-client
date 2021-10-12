@@ -4,18 +4,24 @@ import { EditorState, convertToRaw, ContentState } from "draft-js"
 import { Editor } from "react-draft-wysiwyg"
 import draftToHtml from "draftjs-to-html"
 import htmlToDraft from "html-to-draftjs"
+import { ErrorMessage, useField } from "formik"
 
 interface IDrafTextEditorProps {
   setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void
   setFieldTouched: (field: string, isTouched?: boolean, shouldValidate?: boolean) => void
-  value: string
+  value: string,
+  field: {
+    name: string
+    value: string
+  }
+  meta: any
 }
-const DrafTextEditor: React.FunctionComponent<IDrafTextEditorProps> = ({
+const DrafTextEditor: React.FunctionComponent<IDrafTextEditorProps> = ( {
   setFieldValue,
   setFieldTouched,
   value,
 }) => {
-  
+  const [field, meta] = useField("description")
   const prepareDraft = (value) => {
     const draft = htmlToDraft(value)
     const contentState = ContentState.createFromBlockArray(draft.contentBlocks)
@@ -31,6 +37,7 @@ const DrafTextEditor: React.FunctionComponent<IDrafTextEditorProps> = ({
     setFieldValue("description", forFormik)
     setFieldTouched("description", true)
     setEditorState(editorState)
+    console.log(meta)
   }
 
   const toolbar = {
@@ -51,6 +58,10 @@ const DrafTextEditor: React.FunctionComponent<IDrafTextEditorProps> = ({
         toolbar={toolbar}
         onEditorStateChange={onEditorStateChange}
       />
+      {/* {meta.touched && meta.error &&<p>{meta.error}</p>} */}
+      <p className="error">
+        <ErrorMessage name={field.name} />
+      </p>
     </div>
   )
 }

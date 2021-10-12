@@ -25,6 +25,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   const [page, setPage] = useState(1)
   const [files, setFiles] = useState<File[]>([])
   const [filesSelected, setFilesSelected] = useState<PictureModel[]>([])
+  const [tempeFilesSelected, setTempeFilesSelected] = useState<PictureModel[]>([])
   const [imagePending, setImagePending] = useState(false)
   const inputEl = useRef<HTMLInputElement>()
   const history = useHistory()
@@ -74,24 +75,28 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
 
   // pass to parent selected files
   const sendData = () => {
-    libraryToParent(filesSelected)
+    filesSelected.map(file => libraryToParent(file))
     setFilesSelected([])
+
   }
 
   // Verify if file is unique and push it
   const pushFile = (pic) => {
+    // let setempeFilesSelected
     if (filesSelected.length) {
       filesSelected.forEach(() => {
         if (
           filesSelected.find((currentFile) => currentFile.id === pic.id) ===
           undefined
         ) {
-          setFilesSelected([...filesSelected, pic])
+          setFilesSelected(file => [...file, pic])
         }
       })
     } else {
-      setFilesSelected([...filesSelected, pic])
+      setFilesSelected(file => [...file, pic])
     }
+    console.log(filesSelected)
+
   }
 
   // Upload files when new ones uploaded

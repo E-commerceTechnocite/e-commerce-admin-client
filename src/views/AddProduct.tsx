@@ -59,24 +59,21 @@ const AddProduct: FC<IAddProductProps> = () => {
   const submitProduct = async (data) => {
     let { error } = await sendRequest(requestSubmit, data)
     if (error) {
-      console.log(error.message)
+      console.error(error.message)
       history.push("/login")
     }
-    console.log("success")
     history.push("/products")
   }
 
   // Pass dataof images selected from MediaLibrary component to here
-  const libraryToParent = (data: PictureModel[]) => {
-    const pics: string[] = []
-    data.forEach((pic) => {
-      if (libraryData.find((file) => file.id === pic.id) === undefined) {
-        pics.push(pic.id)
-        setLibraryData([...libraryData, pic])
-      }
-    })
-    setPicturesId([...picturesId, ...pics])
-    if (pics.length) SetThumbnailId(pics[0].toString())
+  const libraryToParent = (data: PictureModel) => {
+    console.log(data)
+    if (libraryData.find((file) => file.id === data.id) === undefined) {
+      setPicturesId((ids) => [...ids, data.id])
+      setLibraryData((ids) => [...ids, data])
+    }
+
+    if (picturesId.length < 1) SetThumbnailId(data.id)
   }
 
   // Remove image from slider
@@ -150,7 +147,7 @@ const AddProduct: FC<IAddProductProps> = () => {
             reference: "",
             quantity: 0,
             price: 0,
-            description: "aaa",
+            description: "",
             categoryId: categoryId,
             taxRuleGroupId: taxRuleGroupId,
             picturesId: picturesId,
@@ -167,8 +164,9 @@ const AddProduct: FC<IAddProductProps> = () => {
             handleSubmit,
             values,
             errors,
+            touched
           }) => {
-            console.log(errors)
+            console.log(touched, errors)
             return (
               <form onSubmit={handleSubmit}>
                 <div className="top">
@@ -226,9 +224,11 @@ const AddProduct: FC<IAddProductProps> = () => {
                     setFieldValue={setFieldValue}
                     setFieldTouched={setFieldTouched}
                   />
-                  <p className="error">
-                    <ErrorMessage name="description" />
-                  </p>
+                   {/* {touched.description && errors.description &&<p>{errors.description}</p>} */}
+                    {/* <p className="error">
+                      <ErrorMessage name="description" />
+                    </p> */}
+                  
                 </div>
                 <div className="buttons">
                   <button className="action" type="submit">
