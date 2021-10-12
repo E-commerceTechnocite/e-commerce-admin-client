@@ -9,12 +9,7 @@ import { ErrorMessage, useField } from "formik"
 interface IDrafTextEditorProps {
   setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void
   setFieldTouched: (field: string, isTouched?: boolean, shouldValidate?: boolean) => void
-  value: string,
-  field: {
-    name: string
-    value: string
-  }
-  meta: any
+  value: string
 }
 const DrafTextEditor: React.FunctionComponent<IDrafTextEditorProps> = ( {
   setFieldValue,
@@ -37,7 +32,6 @@ const DrafTextEditor: React.FunctionComponent<IDrafTextEditorProps> = ( {
     setFieldValue("description", forFormik)
     setFieldTouched("description", true)
     setEditorState(editorState)
-    console.log(meta)
   }
 
   const toolbar = {
@@ -58,7 +52,6 @@ const DrafTextEditor: React.FunctionComponent<IDrafTextEditorProps> = ( {
         toolbar={toolbar}
         onEditorStateChange={onEditorStateChange}
       />
-      {/* {meta.touched && meta.error &&<p>{meta.error}</p>} */}
       <p className="error">
         <ErrorMessage name={field.name} />
       </p>

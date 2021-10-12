@@ -10,7 +10,7 @@ import { useHistory } from "react-router"
 import { sendRequest } from "../util/helpers/refresh"
 import { PaginationMetadataModel } from "../models/pagination/pagination-metadata.model"
 import { productSchema } from "../util/validation/productValidation"
-import { Formik, ErrorMessage, Field } from "formik"
+import { Formik, Field } from "formik"
 import TextInput from "../components/inputs/TextInput"
 import Select from "../components/inputs/Select"
 import NumberInput from "../components/inputs/NumberInput"
@@ -164,9 +164,7 @@ const AddProduct: FC<IAddProductProps> = () => {
             handleSubmit,
             values,
             errors,
-            touched
           }) => {
-            console.log(touched, errors)
             return (
               <form onSubmit={handleSubmit}>
                 <div className="top">
@@ -224,11 +222,6 @@ const AddProduct: FC<IAddProductProps> = () => {
                     setFieldValue={setFieldValue}
                     setFieldTouched={setFieldTouched}
                   />
-                   {/* {touched.description && errors.description &&<p>{errors.description}</p>} */}
-                    {/* <p className="error">
-                      <ErrorMessage name="description" />
-                    </p> */}
-                  
                 </div>
                 <div className="buttons">
                   <button className="action" type="submit">
