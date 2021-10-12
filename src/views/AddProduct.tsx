@@ -10,12 +10,11 @@ import { useHistory } from "react-router"
 import { sendRequest } from "../util/helpers/refresh"
 import { PaginationMetadataModel } from "../models/pagination/pagination-metadata.model"
 import { productSchema } from "../util/validation/productValidation"
-import { Formik, Form, ErrorMessage } from "formik"
+import { Formik, ErrorMessage, Field } from "formik"
 import TextInput from "../components/inputs/TextInput"
 import Select from "../components/inputs/Select"
 import NumberInput from "../components/inputs/NumberInput"
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic"
-import { CKEditor } from "@ckeditor/ckeditor5-react"
+import DrafTextEditor from "../components/inputs/DraftTextEditor"
 
 export interface IAddProductProps {}
 
@@ -199,8 +198,6 @@ const AddProduct: FC<IAddProductProps> = () => {
     getTaxRuleGroup().then()
   }, [])
 
-  // CKEditor
-
   // Slider settings
   var settings = {
     dots: true,
@@ -219,17 +216,27 @@ const AddProduct: FC<IAddProductProps> = () => {
             reference: "",
             quantity: 0,
             price: 0,
-            description: "",
+            description: "aaa",
           }}
           validationSchema={productSchema}
           onSubmit={(data) => {
+            console.log(data)
             // form.setTouched({...form.touched,[field.name]: true });
           }}
         >
-          {({ setFieldValue, setTouched, values, errors, touched, handleBlur, handleChange }) => {
-            console.log(touched)
+          {({
+            setFieldValue,
+            setFieldTouched,
+            values,
+            errors,
+            touched,
+            handleBlur,
+            handleChange,
+            handleSubmit,
+          }) => {
+            console.log(values.description, touched)
             return (
-              <Form onSubmit={formSubmit}>
+              <form onSubmit={handleSubmit}>
                 <div className="top">
                   <div className="inputs">
                     <div className="product">
@@ -271,17 +278,12 @@ const AddProduct: FC<IAddProductProps> = () => {
                   </div>
                 </div>
                 <div className="description">
-                  <CKEditor
-                    id="inputText"
-                    name={"description"}
-                    className="inputText"
-                    editor={ClassicEditor}
-                    data={values.description}
-                    onChange={(e, editor) =>{
-                      // handleChange
-                      touched.description
-                      setFieldValue("description", editor.getData(), true)
-                    }}
+                  <Field
+                    value={values.description}
+                    name="description"
+                    component={DrafTextEditor}
+                    setFieldValue={setFieldValue}
+                    setFieldTouched={setFieldTouched}
                   />
                   <p className="error">
                     <ErrorMessage name="description" />
@@ -292,7 +294,7 @@ const AddProduct: FC<IAddProductProps> = () => {
                     Add Product
                   </button>
                 </div>
-              </Form>
+              </form>
             )
           }}
         </Formik>
