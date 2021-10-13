@@ -1,4 +1,4 @@
-import { useField } from "formik"
+import { ErrorMessage, useField } from "formik"
 import * as React from "react"
 import "./Validation.scss"
 
@@ -13,7 +13,9 @@ const TextInput: React.FunctionComponent<ITextInputProps> = (props) => {
     <div className="form-control">
       {props.label && <label htmlFor={props.name}>{props.label}</label>}
       <input {...field} {...props} />
-      {meta.error && meta.touched && <p className="error">{meta.error}</p>}
+      <p className="error">
+        <ErrorMessage name={props.name} />
+      </p>
     </div>
   )
 }

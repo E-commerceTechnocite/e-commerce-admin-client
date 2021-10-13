@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { store } from "./store/store";
@@ -16,7 +17,7 @@ export const App = () => {
   return (
     <>
         <Provider store={store}>
-          <Router>
+          <Router  basename="/admin">
             <Switch>
               <Route path="/login" component={Login} />
               <DashboardLayout>
@@ -32,5 +33,5 @@ export const App = () => {
           </Router>
         </Provider>
     </>
-  );
-};
+  )
+}

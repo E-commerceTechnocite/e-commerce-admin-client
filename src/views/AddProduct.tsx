@@ -1,84 +1,29 @@
 import * as React from "react"
-import { FC, HTMLInputTypeAttribute, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import "./AddProduct.scss"
 import MediaLibraryContainer from "../components/media-library/MediaLibraryContainer"
 import Slider from "react-slick"
 import { PictureModel } from "../models/files/picture.model"
+import {
+  GroupData,
+  TaxRuleGroup,
+  CategoryOptions,
+} from "../models/addProduct/add-product.model"
 import { domain } from "../util/environnement"
 import { http } from "../util/http"
 import { useHistory } from "react-router"
 import { sendRequest } from "../util/helpers/refresh"
-import { PaginationMetadataModel } from "../models/pagination/pagination-metadata.model"
-import { productSchema } from "../util/validation/productValidation"
 import {
-  Formik,
-  Form
-} from "formik"
+  productSchema,
+  imagesSchema,
+} from "../util/validation/productValidation"
+import { Formik, Field } from "formik"
 import TextInput from "../components/inputs/TextInput"
 import Select from "../components/inputs/Select"
 import NumberInput from "../components/inputs/NumberInput"
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic"
-import { CKEditor } from "@ckeditor/ckeditor5-react"
+import DrafTextEditor from "../components/inputs/DraftTextEditor"
 
-export interface IAddProductProps {}
-
-interface IFormInputProps {
-  id: string
-  title: string
-  name?: string
-}
-
-interface IFormControlProps extends IFormInputProps {
-  type: HTMLInputTypeAttribute
-  currentValue: string | number
-  formToParent: (data: any) => any
-}
-
-interface Option {
-  name: string
-  value: string
-}
-
-interface ISelectProps extends IFormInputProps {
-  options: Option[]
-}
-
-interface GroupData {
-  id: string
-  createdAt: string
-  updatedAt: string
-  deletedAt: string
-  name?: string
-  label?: string
-}
-
-interface TaxRuleGroup {
-  meta: PaginationMetadataModel
-  data: GroupData[]
-}
-
-interface CategoryOptions {
-  meta: PaginationMetadataModel
-  data: GroupData[]
-}
-
-interface ProductPost {
-  title: string
-  reference: string
-  description: string
-  price: number
-  categoryId: string
-  taxRuleGroupId: string
-  picturesId: string[]
-  thumbnailId: string
-}
-
-const AddProduct: FC<IAddProductProps> = () => {
-  const [title, setTitle] = useState<string>("")
-  const [reference, setReference] = useState<string>("")
-  const [description, setDescription] = useState<string>("")
-  const [price, setPrice] = useState<number>(1)
-  const [quantity, setQuantity] = useState<number>(1)
+const AddProduct = () => {
   const [categoryId, setCategoryId] = useState<string>("")
   const [taxRuleGroupId, setTaxRuleGroupId] = useState<string>("")
   const [picturesId, setPicturesId] = useState<string[]>([])
@@ -86,68 +31,48 @@ const AddProduct: FC<IAddProductProps> = () => {
   const [libraryData, setLibraryData] = useState<PictureModel[]>([])
   const [taxOptions, setTaxOptions] = useState<GroupData[]>([])
   const [categoryOptions, setCategoryOptions] = useState<GroupData[]>([])
+  const [fileError, setFileError] = useState(false)
   const history = useHistory()
-  const formData = {
-    title,
-    reference,
-    description,
-    price,
-    quantity,
-    categoryId,
-    taxRuleGroupId,
-    picturesId,
-    thumbnailId,
-  }
 
-  ////////////////////////////////////////////////////////
-  const requestSubmit = () => {
-    return http.post(`${domain}/v1/product`, formData, {
+  // Send request data from formik form submit
+  const requestSubmit = (data) => {
+    return http.post(`${domain}/v1/product`, data, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
     })
   }
-  const submitProduct = async () => {
-    let { error } = await sendRequest(requestSubmit)
-    if (error) {
-      console.log(error.message)
-      history.push("/login")
+  const submitProduct = async (data) => {
+    const file = {
+      picturesId,
+      thumbnailId,
     }
-    history.push("/products")
-  }
-  ////////////////////////////////////////////
-  const formSubmit = async (e) => {
-    e.preventDefault()
-    /* try {
-      const isValid: ProductPost = await productSchema
-        .validate(formData, { abortEarly: false })
-      console.log(isValid)
-    } catch(err) {
-      console.error(err)
-    } */
-
-    productSchema
-      .validate(formData, { abortEarly: false })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err))
-    // console.log(picturesId, thumbnailId)
-    // console.log(picturesId)
-    // console.log(isValid)
-    // if (isValid) submitProduct().then
-  }
-
-  // Pass data image select from MediaLibrary component to here
-  const libraryToParent = (data: PictureModel[]) => {
-    const pics: string[] = []
-    data.forEach((pic) => {
-      if (libraryData.find((file) => file.id === pic.id) === undefined) {
-        pics.push(pic.id)
-        setLibraryData([...libraryData, pic])
+    try {
+      const isValid = await imagesSchema.validate(file)
+      if (isValid) {
+        setFileError(false)
+        data = { ...data, ...file }
+        let { error } = await sendRequest(requestSubmit, data)
+        if (error) {
+          console.error(error.message)
+          history.push({ pathname: "/login", state: { success: true } })
+        }
+        history.push("/products")
       }
-    })
-    setPicturesId([...picturesId, ...pics])
-    if (pics.length) SetThumbnailId(pics[0].toString())
+    } catch {
+      console.log("select file")
+      setFileError(true)
+    }
+  }
+
+  // Pass dataof images selected from MediaLibrary component to here
+  const libraryToParent = (data: PictureModel) => {
+    if (libraryData.find((file) => file.id === data.id) === undefined) {
+      setPicturesId((ids) => [...ids, data.id])
+      setLibraryData((ids) => [...ids, data])
+    }
+    if (picturesId.length < 1) SetThumbnailId(data.id)
   }
 
   // Remove image from slider
@@ -190,6 +115,7 @@ const AddProduct: FC<IAddProductProps> = () => {
   const getCategoryGroup = async () => {
     let { data, error } = await sendRequest(requestCategory)
     if (error) {
+      const success = true
       history.push("/login")
     }
     setCategoryId(data.data[0].id)
@@ -201,8 +127,6 @@ const AddProduct: FC<IAddProductProps> = () => {
     getCategoryGroup().then()
     getTaxRuleGroup().then()
   }, [])
-
-  // CKEditor
 
   // Slider settings
   var settings = {
@@ -223,29 +147,34 @@ const AddProduct: FC<IAddProductProps> = () => {
             quantity: 0,
             price: 0,
             description: "",
+            categoryId: categoryId,
+            taxRuleGroupId: taxRuleGroupId,
           }}
           validationSchema={productSchema}
           onSubmit={(data) => {
-            // form.setTouched({...form.touched,[field.name]: true });
+            submitProduct(data)
           }}
         >
-          {({ setFieldValue, values, errors, touched, handleBlur }) => {
-            console.log(errors.description, touched.description)
+          {({ setFieldValue, setFieldTouched, handleSubmit, values }) => {
             return (
-              <Form onSubmit={formSubmit}>
+              <form onSubmit={handleSubmit}>
                 <div className="top">
                   <div className="inputs">
                     <div className="product">
                       <TextInput name={"title"} label={"Title"} />
                       <TextInput name={"reference"} label={"Reference"} />
                       <Select
-                        name={"category"}
+                        name={"categoryId"}
                         label={"Category"}
                         options={categoryOptions}
                       />
                     </div>
                     <div className="price">
-                      <Select name={"tax"} label={"Tax"} options={taxOptions} />
+                      <Select
+                        name={"taxRuleGroupId"}
+                        label={"Tax"}
+                        options={taxOptions}
+                      />
                       <NumberInput name={"quantity"} label={"Quantity"} />
                       <NumberInput name={"price"} label={"Price"} />
                     </div>
@@ -271,29 +200,24 @@ const AddProduct: FC<IAddProductProps> = () => {
                         ))}
                       </Slider>
                     )}
+                    {fileError && <div className="error">Select a file</div>}
                   </div>
                 </div>
                 <div className="description">
-                  <CKEditor
-                    id="inputText"
-                    className="inputText"
-                    editor={ClassicEditor}
-                    data={values.description}
-                    onBlur={handleBlur.name}
-                    onChange={(e, editor) =>
-                      setFieldValue("description", editor.getData())
-                    }
+                  <Field
+                    value={values.description}
+                    name="description"
+                    component={DrafTextEditor}
+                    setFieldValue={setFieldValue}
+                    setFieldTouched={setFieldTouched}
                   />
-                  {errors.description && touched.description && (
-                    <p className="error">{errors.description}</p>
-                  )}
                 </div>
                 <div className="buttons">
                   <button className="action" type="submit">
                     Add Product
                   </button>
                 </div>
-              </Form>
+              </form>
             )
           }}
         </Formik>
