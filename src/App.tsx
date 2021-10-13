@@ -13,7 +13,7 @@ export const App = () => {
   return (
     <>
         <Provider store={store}>
-          <Router>
+          <Router  basename="/admin">
             <Switch>
               <Route path="/login" component={Login} />
               <DashboardLayout>
