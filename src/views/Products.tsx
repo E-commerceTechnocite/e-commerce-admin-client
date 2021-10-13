@@ -26,7 +26,9 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
   const [page, setPage] = useState<number>(1)
   const [toast, setToast] = useState(false)
   const history = useHistory()
-  const request = () =>
+
+  // Request to get the page of the product list
+  const pageRequest = () =>
     http.get<PaginationModel<ProductModel>>(
       `${domain}/v1/product?page=${page}`,
       {
@@ -36,15 +38,34 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
         },
       }
     )
-
   const getProducts = async () => {
-    let { data, error } = await sendRequest(request)
+    let { data, error } = await sendRequest(pageRequest)
     if (error) {
       history.push("/login")
     }
     setProducts(data.data)
     setMeta(data.meta)
   }
+
+  const deleteRequest = (id) => {
+    console.log(id)
+    return http.delete(`${domain}/v1/product/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      },
+    })
+  }
+  const deleteProduct = async (id: string) => {
+    console.log(sessionStorage.getItem("token"))
+    let { error } = await sendRequest(deleteRequest, id)
+    if (error) {
+      console.log(error.message)
+      // history.push("/login")
+    }
+  }
+
+  // Check if product has been added and if so displays a toast
   useEffect(() => {
     if (props.location.state !== undefined) {
       setToast(true)
@@ -88,6 +109,7 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
               <span>Price</span>
             </div>
             {products.map((product) => {
+              console.log(product.id)
               var strippedHtml = htmlToText(product.description)
               return (
                 <div className="product" key={product.id}>
@@ -114,7 +136,10 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
                   <span>{product.category.label}</span>
                   <span>{product.price} €</span>
                   <button className="action">Edit</button>
-                  <button className="delete">
+                  <button
+                    className="delete"
+                    onClick={() => deleteProduct(product.id)}
+                  >
                     <i className="fas fa-trash"></i>
                   </button>
                 </div>
