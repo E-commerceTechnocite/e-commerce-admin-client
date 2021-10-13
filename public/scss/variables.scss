@@ -3,6 +3,7 @@ $primary-color: #eee;
 $primary-color-elts: #fff;
 $primary-color-font: #535353;
 $primary-elts-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+$primary-border-color: #d6d6d6;
 $secondary-color: #0a0a0a;
 $secondary-color-elts: #292929;
 $secondary-color-font: #fff;
@@ -11,11 +12,13 @@ $primary-button-event: #5a77e0;
 $secondary-button: #fff;
 $delete-button: #d74040;
 $delete-button-event: #e95151;
+$skeleton: #f8f8f8;
 
 // Fonts
-$font-regular: Roboto-Regular;
-$font-medium: Roboto-Medium;
-$font-bold: Roboto-Bold;
-$primary-font: $font-regular, -apple-system, BlinkMacSystemFont, "Segoe UI",
-  "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-  "Helvetica Neue", sans-serif;
+$basic-font: -apple-system, BlinkMacSystemFont, "Segoe UI",
+"Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+"Helvetica Neue", sans-serif;
+$font-regular: Roboto-Regular, $basic-font;
+$font-medium: Roboto-Medium, $basic-font;
+$font-bold: Roboto-Bold, $basic-font;
+$primary-font: $font-regular, $basic-font;

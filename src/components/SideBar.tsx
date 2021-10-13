@@ -69,6 +69,22 @@ const SideBar: React.FunctionComponent = () => {
                   <i className="fas fa-image"></i>
                 </span>
                 Media library
+                </Link>
+            </li>
+            <li className={`${isActive("/users") ? "sidebar-active" : ""}`}>
+              <Link to="/users">
+                <span>
+                  <i className="fas fa-users"></i>
+                </span>
+                Users
+              </Link>
+            </li>
+            <li className={`${isActive("/roles") ? "sidebar-active" : ""}`}>
+              <Link to="/roles">
+                <span>
+                  <i className="fas fa-user-tag"></i>
+                </span>
+                Roles
               </Link>
             </li>
           </ul>

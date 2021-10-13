@@ -1,11 +1,76 @@
+@import "../../../public/scss/variables.scss";
+
 .media-library-container-component {
+  background: $primary-color-elts;
+  min-height: 425px;
+  border-bottom: 1px solid $primary-border-color;
+  border-radius: 4px 4px 0 0;
+
+  > div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: $primary-color-elts;
+    padding: 5px 30px;
+    border-bottom: 1px solid $primary-border-color;
+    border-radius: 4px 4px 0 0;
+
+    div:nth-child(1) {
+      background: $primary-color-elts;
+      display: flex;
+      align-items: center;
+      border-radius: 10px;
+      border: 1px solid $primary-border-color;
+      padding: 10px;
+      i {
+        margin: 0 10px;
+      }
+      input {
+        padding: 1px 0;
+        border: none;
+        border-radius: 10px;
+      }
+    }
+    div:nth-child(2) {
+      label:nth-child(1) {
+        border-radius: 7px 0 0 7px;
+        border-right: 1px solid $primary-button-event;
+        cursor: pointer;
+      }
+      button:nth-child(2) {
+        border-radius: 0 7px 7px 0;
+      }
+    }
+  }
   ul {
     display: flex;
-    flex-wrap: wrap;
+    min-height: 300px;
     justify-content: center;
+    align-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 20px 10px 10px;
     li {
-      width: 150px;
-      padding: 10px;
+      margin: 3px 3px;
+      width: 72px;
+      overflow: hidden;
+      height: 72px;
+      background: #eee;
+      position: relative;
+      box-sizing: border-box;
+      border: 0px solid $primary-button-event;
+      picture {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        img {
+          max-width: 90px;
+        }
+      }
     }
+  }
+  .pagination {
+    margin: 0 0 18px 0;
   }
 }

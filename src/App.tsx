@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { store } from "./store/store";
@@ -8,14 +9,15 @@ import Products from "./views/Products";
 import Login from "./views/Login";
 import AddProduct from "./views/AddProduct";
 import MediaLibrary from "./views/MediaLibrary";
-import { ChakraProvider } from "@chakra-ui/react";
+import Users from "./views/Users"
+import Roles from "./views/Roles"
+import AddRoles from "./views/AddRoles"
 
 export const App = () => {
   return (
     <>
-      <ChakraProvider>
         <Provider store={store}>
-          <Router>
+          <Router  basename="/admin">
             <Switch>
               <Route path="/login" component={Login} />
               <DashboardLayout>
@@ -23,11 +25,13 @@ export const App = () => {
                 <Route exact path="/products" component={Products} />
                 <Route path="/products/add" component={AddProduct} />
                 <Route path="/medias" component={MediaLibrary} />
+                <Route path="/users" component={Users} />
+              <Route path="/roles" component={Roles} exact/>
+              <Route path="/roles/addroles" component={AddRoles} />
               </DashboardLayout>
             </Switch>
           </Router>
         </Provider>
-      </ChakraProvider>
     </>
-  );
-};
+  )
+}

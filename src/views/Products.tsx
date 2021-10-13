@@ -11,9 +11,11 @@ import { domain } from "../util/environnement"
 import { sendRequest } from "../util/helpers/refresh"
 import { http } from "../util/http"
 
-interface IProductsProps {}
+interface IProductsProps {
+  success?: boolean
+}
 
-const Products: React.FunctionComponent<IProductsProps> = (props) => {
+const Products: React.FunctionComponent<IProductsProps> = (props, state) => {
   const [products, setProducts] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [page, setPage] = useState<number>(1)
@@ -37,6 +39,10 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
     setProducts(data.data)
     setMeta(data.meta)
   }
+  useEffect(() => {
+    console.log(props, state)
+  }, [])
+
   useEffect(() => {
     getProducts().then()
   }, [page])

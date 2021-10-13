@@ -1,39 +1,38 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { useHistory } from "react-router";
-import Loading from "../components/loading/Loading";
-import { http } from "../util/http";
-import { domain } from "../util/environnement";
+import * as React from "react"
+import { useEffect, useState } from "react"
+import { useHistory } from "react-router"
+import Loading from "../components/loading/Loading"
+import { http } from "../util/http"
+import { domain } from "../util/environnement"
 
 const Login: React.FunctionComponent = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [checkbox] = useState(false);
-  const [isPending, setIsPending] = useState(true);
-  const history = useHistory();
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [checkbox] = useState(false)
+  const [isPending, setIsPending] = useState(true)
+  const history = useHistory()
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = sessionStorage.getItem("token")
     const options = {
       headers: { Authorization: `Bearer ${token}` },
-    };
+    }
     http
       .get(`${domain}/v1/product?limit=1&page=1`, options)
       .then(({ error }) => {
-        setIsPending(true);
-        if (!error) return history.push("/");
-        setIsPending(false);
-      });
-  }, []);
+        setIsPending(true)
+        if (!error) return history.push("/")
+        setIsPending(false)
+      })
+  }, [])
 
   const onSubmit = (e: React.FormEvent): void => {
-    e.preventDefault();
-    setIsPending(true);
-    console.log({ email, password, checkbox });
-    const body = { email, password };
+    e.preventDefault()
+    setIsPending(true)
+    const body = { email, password }
     const options = {
       headers: { "Content-Type": "application/json" },
-    };
+    }
     http
       .post<{ access_token: string; refresh_token: string }>(
         `${domain}/v1/o-auth/login`,
@@ -41,16 +40,16 @@ const Login: React.FunctionComponent = () => {
         options
       )
       .then(({ data, error }) => {
-        const { access_token, refresh_token } = data;
+        const { access_token, refresh_token } = data
         if (!error) {
-          sessionStorage.setItem("token", access_token);
-          sessionStorage.setItem("refresh", refresh_token);
-          history.push("/");
+          sessionStorage.setItem("token", access_token)
+          sessionStorage.setItem("refresh", refresh_token)
+          history.push("/")
         } else {
-          console.error(error.message);
+          console.error(error.message)
         }
-      });
-  };
+      })
+  }
 
   return (
     <>
@@ -58,48 +57,50 @@ const Login: React.FunctionComponent = () => {
       {!isPending && (
         <div className="login-admin">
           <div>
-            <h1>LOGO</h1>
-            <h2>Sign in to WNDR</h2>
+            <h2>SHOPTYK</h2>
           </div>
-          <div>
-            <form onSubmit={onSubmit}>
-              <div className="email">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  defaultValue={email}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setEmail(e.target.value)
-                  }
-                />
-              </div>
-              <div className="password">
-                <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  required
-                  defaultValue={password}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setPassword(e.target.value)
-                  }
-                />
-              </div>
-              <div className="checkbox">
-                <input type="checkbox" id="checkbox" name="checkbox" />
-                <label htmlFor="checkbox">Remember me</label>
-              </div>
-              <input type="submit" value="Sign in" className="action" />
-            </form>
-          </div>
+          <form onSubmit={onSubmit}>
+            <p>
+              <span>Login</span> your account
+            </p>
+            <div className="email">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Email"
+                required
+                defaultValue={email}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setEmail(e.target.value)
+                }
+              />
+              <i className="fas fa-envelope" />
+            </div>
+            <div className="password">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Password"
+                required
+                defaultValue={password}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setPassword(e.target.value)
+                }
+              />
+              <i className="fas fa-lock" />
+            </div>
+            <div className="checkbox">
+              <input type="checkbox" id="checkbox" name="checkbox" />
+              <label htmlFor="checkbox">Remember me</label>
+            </div>
+            <input type="submit" value="Login" className="action" />
+          </form>
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

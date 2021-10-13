@@ -25,18 +25,18 @@ const refresh = async (): Promise<HttpException | null> => {
 };
 
 export const sendRequest = async <T>(
-  req: () => Promise<HttpReturnValue<T>>
+  req: (data?: any) => Promise<HttpReturnValue<T>>, data?: any
 ): Promise<HttpReturnValue<T>> => {
   const token = window.sessionStorage.getItem("token");
   const decodedToken = JSON.parse(atob(token.split(".")[1]));
   const isExpired = Math.round(Date.now() / 1000) > decodedToken.exp;
   let res: HttpReturnValue<T>;
   if (!isExpired) {
-    res = await req();
+    res = await req(data);
   }
   if (isExpired || (res.error && res.error.statusCode === 401)) {
     await refresh();
-    res = await req();
+    res = await req(data);
   }
   return res;
 };
