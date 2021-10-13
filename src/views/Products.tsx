@@ -10,6 +10,7 @@ import { ProductModel } from "../models/product/product.model"
 import { domain } from "../util/environnement"
 import { sendRequest } from "../util/helpers/refresh"
 import { http } from "../util/http"
+import { htmlToText } from "html-to-text"
 
 interface IProductsProps {
   location?: {
@@ -59,15 +60,16 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
 
   return (
     <div className="products">
-      <div className="add-search">
-        <Link to="/products/add" className="action">
-          Product +
-        </Link>
+      <div className="top-container">
         <div className="search">
           <i className="fas fa-search"></i>
           <input type="text" placeholder="Search..." />
         </div>
+        <Link to="/products/add" className="action">
+          New Product
+        </Link>
         <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
+          {" "}
           <i className="fas fa-check" />
           Product Added
           <i className="fas fa-times" onClick={() => setToast(false)} />
@@ -78,37 +80,48 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
         <>
           <div className="product-list">
             <div className="legend">
-              <div>
-                <span>Title</span>
-                <span>Reference</span>
-                <span>Description</span>
-                <span>Category</span>
-                <span>Price</span>
-              </div>
+              <span>Image</span>
+              <span>Title</span>
+              <span>Reference</span>
+              <span>Description</span>
+              <span>Category</span>
+              <span>Price</span>
             </div>
-            {products.map((product) => (
-              <div className="product" key={product.id}>
-                <div className="info ">
+            {products.map((product) => {
+              var strippedHtml = htmlToText(product.description)
+              return (
+                <div className="product" key={product.id}>
+                  {product.thumbnail && product.thumbnail.uri && (
+                    <span>
+                      <img
+                        src={domain + product.thumbnail.uri}
+                        alt={product.thumbnail.title}
+                      />
+                    </span>
+                  )}
+                  {!product.thumbnail && (
+                    <span>
+                      <img />
+                    </span>
+                  )}
                   <span>{product.title}</span>
                   <span>{product.reference}</span>
                   <span>
-                    {product.description.length >= 100
-                      ? product.description.substr(0, 50) + "..."
-                      : product.description}
+                    {strippedHtml.length >= 100
+                      ? strippedHtml.substr(0, 50) + "..."
+                      : strippedHtml}
                   </span>
                   <span>{product.category.label}</span>
                   <span>{product.price} €</span>
-                </div>
-                <div className="actions">
                   <button className="action">Edit</button>
                   <button className="delete">
                     <i className="fas fa-trash"></i>
                   </button>
                 </div>
-              </div>
-            ))}
+              )
+            })}
+            <Pagination meta={meta} pageSetter={setPage} />
           </div>
-          <Pagination meta={meta} pageSetter={setPage} />
         </>
       )}
     </div>

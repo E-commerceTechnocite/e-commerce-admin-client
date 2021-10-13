@@ -33,12 +33,12 @@
     }
     div:nth-child(2) {
       label:nth-child(1) {
-        border-radius: 7px 0 0 7px;
+        border-radius: 4px 0 0 4px;
         border-right: 1px solid $primary-button-event;
         cursor: pointer;
       }
       button:nth-child(2) {
-        border-radius: 0 7px 7px 0;
+        border-radius: 0 4px 4px 0;
       }
     }
   }
