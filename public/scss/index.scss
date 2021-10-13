@@ -61,6 +61,11 @@ button {
 .delete:hover {
   background: $delete-button-event;
 }
+.hidden-fade {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s 1s, opacity 1s linear;
+}
 
 /* Login Admin */
 .login-admin {
@@ -132,9 +137,9 @@ button {
       margin-bottom: 46px;
       input {
         margin-right: 10px;
-      }
+      }/* 
       label {
-      }
+      } */
       label::before {
         content: "";
         position: absolute;
@@ -483,6 +488,25 @@ button {
 /* Products */
 .products {
   height: 100%;
+  .toast-success {
+    margin-left: 10px;
+    background: #ECFBE0;
+    color: #3A9838;
+    border: 1px solid #3A9838;
+    padding: 7px 17px;
+    border-radius: 4px;
+    // transition: 500ms;
+    i {
+      margin-right: 7px;
+      color: #3A9838;
+    }
+    i:nth-child(2) {
+      margin: 0 0 0 15px;
+      font-size: 13px;
+      color: #AEC09F;
+      cursor: pointer;
+    }
+  }
   .add-search {
     display: flex;
     align-items: center;

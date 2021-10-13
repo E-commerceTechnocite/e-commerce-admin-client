@@ -11,7 +11,7 @@ import {
 } from "../models/addProduct/add-product.model"
 import { domain } from "../util/environnement"
 import { http } from "../util/http"
-import { useHistory } from "react-router"
+import { useHistory, useLocation } from "react-router"
 import { sendRequest } from "../util/helpers/refresh"
 import {
   productSchema,
@@ -56,8 +56,16 @@ const AddProduct = () => {
         let { error } = await sendRequest(requestSubmit, data)
         if (error) {
           console.error(error.message)
-          history.push({ pathname: "/login", state: { success: true } })
+          history.push({
+            pathname: "/login",
+            search: "?success=true",
+            state: { success: true },
+          })
         }
+        history.push({
+          pathname: "/products",
+          state: { success: true },
+        })
         history.push("/products")
       }
     } catch {

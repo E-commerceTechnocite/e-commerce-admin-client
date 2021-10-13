@@ -12,13 +12,18 @@ import { sendRequest } from "../util/helpers/refresh"
 import { http } from "../util/http"
 
 interface IProductsProps {
-  success?: boolean
+  location?: {
+    state: {
+      success?: boolean
+    }
+  }
 }
 
-const Products: React.FunctionComponent<IProductsProps> = (props, state) => {
+const Products: React.FunctionComponent<IProductsProps> = (props) => {
   const [products, setProducts] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [page, setPage] = useState<number>(1)
+  const [toast, setToast] = useState(false)
   const history = useHistory()
   const request = () =>
     http.get<PaginationModel<ProductModel>>(
@@ -40,7 +45,12 @@ const Products: React.FunctionComponent<IProductsProps> = (props, state) => {
     setMeta(data.meta)
   }
   useEffect(() => {
-    console.log(props, state)
+    if (props.location.state !== undefined) {
+      setToast(true)
+      setTimeout(() => {
+        setToast(false)
+      }, 10000)
+    }
   }, [])
 
   useEffect(() => {
@@ -56,6 +66,11 @@ const Products: React.FunctionComponent<IProductsProps> = (props, state) => {
         <div className="search">
           <i className="fas fa-search"></i>
           <input type="text" placeholder="Search..." />
+        </div>
+        <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
+          <i className="fas fa-check" />
+          Product Added
+          <i className="fas fa-times" onClick={() => setToast(false)} />
         </div>
       </div>
       {!products && !meta && <Loading />}
