@@ -56,7 +56,7 @@ const AddProduct = () => {
         let { error } = await sendRequest(requestSubmit, data)
         if (error) {
           console.error(error.message)
-          history.push("/login")
+          history.push({ pathname: "/login", state: { success: true } })
         }
         history.push("/products")
       }
