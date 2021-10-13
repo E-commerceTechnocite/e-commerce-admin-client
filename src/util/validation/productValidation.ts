@@ -17,10 +17,11 @@ export const productSchema = yup.object().shape({
     .positive()
     .min(1, "Must be a positive number")
     .required("Required"),
-  categoryId: yup.string().required(),
-  taxRuleGroupId: yup.string().required(),
+  categoryId: yup.string().required("Required"),
+  taxRuleGroupId: yup.string().required("Required"),
+})
+
+export const imagesSchema = yup.object().shape({
   picturesId: yup.array().of(yup.string()).required(),
   thumbnailId: yup.string().required("Thumbnail required"),
 })
-
-export const imagesSchema = yup.object().shape({})

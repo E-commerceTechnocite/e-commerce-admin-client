@@ -23,6 +23,7 @@ const Select: React.FunctionComponent<ISelectProps> = (props) => {
     <div className="form-control">
       {props.label && <label htmlFor={props.name}>{props.label}</label>}
       <select {...field} {...props}>
+      <option value="" defaultValue="selected" disabled hidden>Select {props.label}</option>
         {props.options.map((option: Options, index: number) => (
           <option key={index} value={option.id}>
             {option.label}

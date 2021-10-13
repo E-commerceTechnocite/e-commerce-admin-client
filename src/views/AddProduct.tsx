@@ -1,43 +1,29 @@
 import * as React from "react"
-import { FC, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import "./AddProduct.scss"
 import MediaLibraryContainer from "../components/media-library/MediaLibraryContainer"
 import Slider from "react-slick"
 import { PictureModel } from "../models/files/picture.model"
+import {
+  GroupData,
+  TaxRuleGroup,
+  CategoryOptions,
+} from "../models/addProduct/add-product.model"
 import { domain } from "../util/environnement"
 import { http } from "../util/http"
 import { useHistory } from "react-router"
 import { sendRequest } from "../util/helpers/refresh"
-import { PaginationMetadataModel } from "../models/pagination/pagination-metadata.model"
-import { productSchema } from "../util/validation/productValidation"
+import {
+  productSchema,
+  imagesSchema,
+} from "../util/validation/productValidation"
 import { Formik, Field } from "formik"
 import TextInput from "../components/inputs/TextInput"
 import Select from "../components/inputs/Select"
 import NumberInput from "../components/inputs/NumberInput"
 import DrafTextEditor from "../components/inputs/DraftTextEditor"
 
-export interface IAddProductProps {}
-
-interface GroupData {
-  id: string
-  createdAt: string
-  updatedAt: string
-  deletedAt: string
-  name?: string
-  label?: string
-}
-
-interface TaxRuleGroup {
-  meta: PaginationMetadataModel
-  data: GroupData[]
-}
-
-interface CategoryOptions {
-  meta: PaginationMetadataModel
-  data: GroupData[]
-}
-
-const AddProduct: FC<IAddProductProps> = () => {
+const AddProduct = () => {
   const [categoryId, setCategoryId] = useState<string>("")
   const [taxRuleGroupId, setTaxRuleGroupId] = useState<string>("")
   const [picturesId, setPicturesId] = useState<string[]>([])
@@ -45,9 +31,10 @@ const AddProduct: FC<IAddProductProps> = () => {
   const [libraryData, setLibraryData] = useState<PictureModel[]>([])
   const [taxOptions, setTaxOptions] = useState<GroupData[]>([])
   const [categoryOptions, setCategoryOptions] = useState<GroupData[]>([])
+  const [fileError, setFileError] = useState(false)
   const history = useHistory()
 
-  // Send request data from form submit
+  // Send request data from formik form submit
   const requestSubmit = (data) => {
     return http.post(`${domain}/v1/product`, data, {
       headers: {
@@ -57,22 +44,34 @@ const AddProduct: FC<IAddProductProps> = () => {
     })
   }
   const submitProduct = async (data) => {
-    let { error } = await sendRequest(requestSubmit, data)
-    if (error) {
-      console.error(error.message)
-      history.push("/login")
+    const file = {
+      picturesId,
+      thumbnailId,
     }
-    history.push("/products")
+    try {
+      const isValid = await imagesSchema.validate(file)
+      if (isValid) {
+        setFileError(false)
+        data = { ...data, ...file }
+        let { error } = await sendRequest(requestSubmit, data)
+        if (error) {
+          console.error(error.message)
+          history.push("/login")
+        }
+        history.push("/products")
+      }
+    } catch {
+      console.log("select file")
+      setFileError(true)
+    }
   }
 
   // Pass dataof images selected from MediaLibrary component to here
   const libraryToParent = (data: PictureModel) => {
-    console.log(data)
     if (libraryData.find((file) => file.id === data.id) === undefined) {
       setPicturesId((ids) => [...ids, data.id])
       setLibraryData((ids) => [...ids, data])
     }
-
     if (picturesId.length < 1) SetThumbnailId(data.id)
   }
 
@@ -116,6 +115,7 @@ const AddProduct: FC<IAddProductProps> = () => {
   const getCategoryGroup = async () => {
     let { data, error } = await sendRequest(requestCategory)
     if (error) {
+      const success = true
       history.push("/login")
     }
     setCategoryId(data.data[0].id)
@@ -141,7 +141,6 @@ const AddProduct: FC<IAddProductProps> = () => {
     <>
       <div className="product-form">
         <Formik
-          enableReinitialize={true}
           initialValues={{
             title: "",
             reference: "",
@@ -150,21 +149,13 @@ const AddProduct: FC<IAddProductProps> = () => {
             description: "",
             categoryId: categoryId,
             taxRuleGroupId: taxRuleGroupId,
-            picturesId: picturesId,
-            thumbnailId: thumbnailId,
           }}
           validationSchema={productSchema}
           onSubmit={(data) => {
             submitProduct(data)
           }}
         >
-          {({
-            setFieldValue,
-            setFieldTouched,
-            handleSubmit,
-            values,
-            errors,
-          }) => {
+          {({ setFieldValue, setFieldTouched, handleSubmit, values }) => {
             return (
               <form onSubmit={handleSubmit}>
                 <div className="top">
@@ -209,9 +200,7 @@ const AddProduct: FC<IAddProductProps> = () => {
                         ))}
                       </Slider>
                     )}
-                    {errors.thumbnailId && (
-                      <div className="error">Select a file</div>
-                    )}
+                    {fileError && <div className="error">Select a file</div>}
                   </div>
                 </div>
                 <div className="description">
