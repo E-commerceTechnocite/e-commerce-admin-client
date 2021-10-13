@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { http } from "../util/http"
 import { domain } from "../util/environnement"
 import AddRoles from './AddRoles';
+import RolesTable from '../components/RolesTable';
 
 const Roles: React.FunctionComponent = () => {
     const history = useHistory()
@@ -18,6 +19,7 @@ const Roles: React.FunctionComponent = () => {
         <br/>
         <h3>Role list</h3>
         <br/>
+        <RolesTable />
     </div>
     )
   }

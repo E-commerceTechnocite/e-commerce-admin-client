@@ -3,14 +3,14 @@ import { useTable } from 'react-table'
 import { useEffect, useState } from "react"
 import { http } from "../util/http"
 import { domain } from "../util/environnement"
-import { USERSCOLUMNS } from '../usersColumns'
+import { ROLESCOLUMNS } from '../rolesColumns'
 import Loading from "../components/loading/Loading"
 import { PaginationModel } from '../models/pagination/pagination.model'
 
-const UsersTable: React.FunctionComponent = () => {
-    const [users, setUsers] = useState([])
-    const columns = useMemo(() => USERSCOLUMNS, [USERSCOLUMNS])
-    const data = useMemo(() => users, [users])
+const RolesTable: React.FunctionComponent = () => {
+    const [roles, setRoles] = useState([])
+    const columns = useMemo(() => ROLESCOLUMNS, [ROLESCOLUMNS])
+    const data = useMemo(() => roles, [roles])
     const [isPending, setIsPending] = useState(true)
 
     useEffect(() => {
@@ -19,11 +19,11 @@ const UsersTable: React.FunctionComponent = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
         http
-          .get<PaginationModel<any>>(`${domain}/v1/user`, options)
+          .get<PaginationModel<any>>(`${domain}/v1/role`, options)
           .then(({ data , error }) => {
             setIsPending(true)
             if (!error) {
-                setUsers(data.data)
+                setRoles(data.data)
                 setIsPending(false)
             }
           })
@@ -81,4 +81,4 @@ const UsersTable: React.FunctionComponent = () => {
     </>
 }
 
-export default UsersTable;
+export default RolesTable;

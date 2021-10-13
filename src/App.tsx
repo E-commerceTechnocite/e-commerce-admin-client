@@ -11,6 +11,7 @@ import MediaLibrary from "./views/MediaLibrary";
 import Users from "./views/Users"
 import Roles from "./views/Roles"
 import AddRoles from "./views/AddRoles"
+import AddUsers from "./views/AddUsers";
 
 export const App = () => {
   return (
@@ -24,9 +25,10 @@ export const App = () => {
                 <Route exact path="/products" component={Products} />
                 <Route path="/products/add" component={AddProduct} />
                 <Route path="/medias" component={MediaLibrary} />
-                <Route path="/users" component={Users} />
-              <Route path="/roles" component={Roles} exact/>
-              <Route path="/roles/addroles" component={AddRoles} />
+                <Route exact path="/users" component={Users} />
+                <Route path="/users/addusers" component={AddUsers} />
+                <Route exact path="/roles" component={Roles}/>
+                <Route path="/roles/addroles" component={AddRoles} />
               </DashboardLayout>
             </Switch>
           </Router>
