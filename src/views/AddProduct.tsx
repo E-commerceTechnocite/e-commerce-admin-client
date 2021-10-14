@@ -11,7 +11,7 @@ import {
 } from "../models/addProduct/add-product.model"
 import { domain } from "../util/environnement"
 import { http } from "../util/http"
-import { useHistory } from "react-router"
+import { useHistory, useLocation } from "react-router"
 import { sendRequest } from "../util/helpers/refresh"
 import {
   productSchema,
@@ -22,6 +22,7 @@ import TextInput from "../components/inputs/TextInput"
 import Select from "../components/inputs/Select"
 import NumberInput from "../components/inputs/NumberInput"
 import DrafTextEditor from "../components/inputs/DraftTextEditor"
+import Previous from "../components/previous/Previous"
 
 const AddProduct = () => {
   const [categoryId, setCategoryId] = useState<string>("")
@@ -35,7 +36,7 @@ const AddProduct = () => {
   const history = useHistory()
 
   // Send request data from formik form submit
-  const requestSubmit = (data) => {
+  const requestSubmit = (data: any) => {
     return http.post(`${domain}/v1/product`, data, {
       headers: {
         "Content-Type": "application/json",
@@ -56,8 +57,16 @@ const AddProduct = () => {
         let { error } = await sendRequest(requestSubmit, data)
         if (error) {
           console.error(error.message)
-          history.push({ pathname: "/login", state: { success: true } })
+          history.push({
+            pathname: "/login",
+            search: "?success=true",
+            state: { success: true },
+          })
         }
+        history.push({
+          pathname: "/products",
+          state: { success: true },
+        })
         history.push("/products")
       }
     } catch {
@@ -139,6 +148,7 @@ const AddProduct = () => {
 
   return (
     <>
+      <Previous />
       <div className="product-form">
         <Formik
           initialValues={{
