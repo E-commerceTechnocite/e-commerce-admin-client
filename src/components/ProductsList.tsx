@@ -86,10 +86,12 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
     <>
       <div className="products">
         <div className="top-container">
-          <div className="search">
-            <i className="fas fa-search"></i>
-            <input type="text" placeholder="Search..." />
-          </div>
+          {pagination && (
+            <div className="search">
+              <i className="fas fa-search"></i>
+              <input type="text" placeholder="Search..." />
+            </div>
+          )}
           <Link to="/products/add" className="action">
             New Product
           </Link>
