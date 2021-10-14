@@ -55,14 +55,15 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
       },
     })
   }
-  const deleteProduct = async (id: string) => {
-    console.log(sessionStorage.getItem("token"))
-    let { error } = await sendRequest(deleteRequest, id)
-    if (error) {
-      console.log(error.message)
-      history.push("/login")
+  const deleteProduct = async (id: string, title: string) => {
+    if (confirm(`Delete product: ${title}?`)) {
+      let { error } = await sendRequest(deleteRequest, id)
+      if (error) {
+        console.log(error.message)
+        history.push("/login")
+      }
+      setRefreshPage(!refreshPage)
     }
-    setRefreshPage(!refreshPage)
   }
 
   // Check if product has been added and if so displays a toast
@@ -109,7 +110,6 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
               <span>Price</span>
             </div>
             {products.map((product) => {
-              console.log(product.id)
               var strippedHtml = htmlToText(product.description)
               return (
                 <div className="product" key={product.id}>
@@ -135,10 +135,12 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
                   </span>
                   <span>{product.category.label}</span>
                   <span>{product.price} €</span>
-                  <button className="action">Edit</button>
+                  <Link to={`/products/edit/${product.id}`} className="action">
+                    Edit
+                  </Link>
                   <button
                     className="delete"
-                    onClick={() => deleteProduct(product.id)}
+                    onClick={() => deleteProduct(product.id, product.title)}
                   >
                     <i className="fas fa-trash"></i>
                   </button>

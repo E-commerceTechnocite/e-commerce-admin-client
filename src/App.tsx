@@ -7,6 +7,7 @@ import Home from "./views/Home"
 import Products from "./views/Products"
 import Login from "./views/Login"
 import AddProduct from "./views/AddProduct"
+import EditProduct from "./views/EditProduct"
 import MediaLibrary from "./views/MediaLibrary"
 import Users from "./views/Users"
 import Roles from "./views/Roles"
@@ -25,6 +26,7 @@ export const App = () => {
               <Route exact path="/" component={Home} />
               <Route exact path="/products" component={Products} />
               <Route path="/products/add" component={AddProduct} />
+              <Route path="/products/edit/:slug" component={EditProduct} />
               <Route path="/medias" component={MediaLibrary} />
               <Route path="/users" component={Users} />
               <Route path="/roles" component={Roles} exact />
