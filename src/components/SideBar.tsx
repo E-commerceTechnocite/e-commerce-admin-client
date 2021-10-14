@@ -2,7 +2,7 @@ import * as React from "react";
 import { useHistory, useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import { http } from "../util/http";
-import { domain } from "../util/environnement";
+import { config } from "../index"
 
 const SideBar: React.FunctionComponent = () => {
   const location = useLocation();
@@ -22,7 +22,7 @@ const SideBar: React.FunctionComponent = () => {
       },
     };
     http
-      .post(`${domain}/v1/o-auth/logout`, { refresh_token }, options)
+      .post(`${config.api}/v1/o-auth/logout`, { refresh_token }, options)
       .then(({ error }) => {
         if (error) return console.error(error.message);
         sessionStorage.removeItem("refresh");

@@ -5,7 +5,7 @@ import { PaginationModel } from "../../models/pagination/pagination.model"
 import { PictureModel } from "../../models/files/picture.model"
 import { useHistory } from "react-router"
 import { http } from "../../util/http"
-import { domain } from "../../util/environnement"
+import { config } from "../../index"
 import { sendRequest } from "../../util/helpers/refresh"
 import "./MediaLibraryContainer.scss"
 import Skeleton from "./skeleton/Skeleton"
@@ -36,7 +36,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
     files.forEach((file) => {
       formData.append("files", file)
     })
-    return http.post(`${domain}/v1/file/upload-bunch`, formData, {
+    return http.post(`${config.api}/v1/file/upload-bunch`, formData, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
@@ -56,7 +56,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   // Preparing get request for media library files based on pages
   const imagesRequest = () =>
     http.get<PaginationModel<PictureModel>>(
-      `${domain}/v1/file?mimetype=image&page=${page}&limit=${numberOfImages}`,
+      `${config.api}/v1/file?mimetype=image&page=${page}&limit=${numberOfImages}`,
       {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,
@@ -149,7 +149,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                     <li key={pic.id}>
                       <picture>
                         <img
-                          src={`${domain}` + pic.uri}
+                          src={`${config.api}` + pic.uri}
                           alt={pic.caption}
                           id={pic.id}
                           onClick={() => {

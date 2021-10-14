@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useHistory, withRouter } from "react-router"
 import { useEffect, useState } from "react"
 import { http } from "../util/http"
-import { domain } from "../util/environnement"
 import AddRoles from './AddRoles';
 
 const Roles: React.FunctionComponent = () => {

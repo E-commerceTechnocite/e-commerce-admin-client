@@ -10,7 +10,7 @@ import {
   TaxRuleGroup,
   CategoryOptions,
 } from "../models/addProduct/add-product.model"
-import { domain } from "../util/environnement"
+import {config } from "../index"
 import { http } from "../util/http"
 import { useHistory, useLocation } from "react-router"
 import { sendRequest } from "../util/helpers/refresh"
@@ -44,7 +44,7 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
 
   // Send request data from formik form submit
   const requestSubmit = (data: any) => {
-    return http.patch(`${domain}/v1/product/${params.slug}`, data, {
+    return http.patch(`${config.api}/v1/product/${params.slug}`, data, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
@@ -105,7 +105,7 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
 
   // Get request for tax rule group form select
   const requestTax = () => {
-    return http.get<TaxRuleGroup>(`${domain}/v1/tax-rule-group`, {
+    return http.get<TaxRuleGroup>(`${config.api}/v1/tax-rule-group`, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
@@ -122,7 +122,7 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
 
   // Get request for category form select
   const requestCategory = () => {
-    return http.get<CategoryOptions>(`${domain}/v1/product-category`, {
+    return http.get<CategoryOptions>(`${config.api}/v1/product-category`, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
@@ -145,7 +145,7 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
 
   // Get request for category form select
   const requestProduct = () => {
-    return http.get<ProductModel>(`${domain}/v1/product/${params.slug}`, {
+    return http.get<ProductModel>(`${config.api}/v1/product/${params.slug}`, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
@@ -237,7 +237,7 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
                                 >
                                   <i className="fas fa-window-close"></i>
                                 </div>
-                                <img src={domain + image.uri} />
+                                <img src={config.api + image.uri} />
                               </div>
                             ))}
                           </Slider>

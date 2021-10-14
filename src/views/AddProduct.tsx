@@ -9,7 +9,7 @@ import {
   TaxRuleGroup,
   CategoryOptions,
 } from "../models/addProduct/add-product.model"
-import { domain } from "../util/environnement"
+import { config } from "../index"
 import { http } from "../util/http"
 import { useHistory, useLocation } from "react-router"
 import { sendRequest } from "../util/helpers/refresh"
@@ -37,7 +37,7 @@ const AddProduct = () => {
 
   // Send request data from formik form submit
   const requestSubmit = (data: any) => {
-    return http.post(`${domain}/v1/product`, data, {
+    return http.post(`${config.api}/v1/product`, data, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
@@ -98,7 +98,7 @@ const AddProduct = () => {
 
   // Get request for tax rule group form select
   const requestTax = () => {
-    return http.get<TaxRuleGroup>(`${domain}/v1/tax-rule-group`, {
+    return http.get<TaxRuleGroup>(`${config.api}/v1/tax-rule-group`, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
@@ -115,7 +115,7 @@ const AddProduct = () => {
 
   // Get request for category form select
   const requestCategory = () => {
-    return http.get<CategoryOptions>(`${domain}/v1/product-category`, {
+    return http.get<CategoryOptions>(`${config.api}/v1/product-category`, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
@@ -205,7 +205,7 @@ const AddProduct = () => {
                             >
                               <i className="fas fa-window-close"></i>
                             </div>
-                            <img src={domain + image.uri} />
+                            <img src={config.api + image.uri} />
                           </div>
                         ))}
                       </Slider>
