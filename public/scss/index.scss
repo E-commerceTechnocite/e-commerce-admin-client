@@ -512,75 +512,71 @@ button {
     display: none;
   }
 }
-.daily-information .wrap {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #eee;
-}
-.daily-information .informationItem {
-  background-color: #ffffff;
-  color: #67748e;
-  border-radius: 4px;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-  font-size: 15px;
-  font-family: Roboto, Arial, Helvetica, sans-serif;
-  margin: 0px 15px 0px 15px;
-  padding: 15px;
-  height: 60px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  box-sizing: border-box;
-}
-.daily-information .item1 {
-  margin: 0px 15px 0px 0px;
-}
-.daily-information .item4 {
-  margin: 0px 0px 0px 15px;
-}
-.daily-information .informationContainer {
-  width: 100px;
-  margin-left: 15px;
-}
-.daily-information .fas {
-  margin-right: 15px;
-  font-size: 20px;
-  color: #535353;
+
+/* Daily Information */
+.daily-information {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-column-gap: 15px;
+
+  .informationItem {
+    background-color: #ffffff;
+    color: #67748e;
+    border-radius: 4px;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    font-size: 17px;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    padding: 15px;
+    height: 90px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+  }
+  .informationContainer {
+    min-width: 100px;
+    margin-left: 15px;
+    h4 {
+      margin-bottom: 5px;
+    }
+  }
+  .fas {
+    margin-right: 15px;
+    font-size: 20px;
+    color: #535353;
+  }
 }
 
-.graphic-information .wrap {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #eee;
-}
-.graphic-information .graphicItem {
-  background-color: #ffffff;
-  color: #67748e;
-  border-radius: 4px;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-  /*max-width: 700px;*/
-  height: 400px;
-  /*flex-grow: 1;*/
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  box-sizing: border-box;
-}
-.graphic-information .graph1 {
-  margin: 15px 15px 15px 0px;
-}
-.graphic-information .graph2 {
-  margin: 15px 0px 15px 15px;
-}
+.graphic-information {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap: 15px;
+  margin: 15px 0;
 
+  .graphicItem {
+    background-color: #ffffff;
+    color: #67748e;
+    border-radius: 4px;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    /*max-width: 700px;*/
+    height: 400px;
+    /*flex-grow: 1;*/
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+  }
+  .graph1 {
+    margin: 15px 15px 15px 0px;
+  }
+  .graph2 {
+    margin: 15px 0px 15px 15px;
+  }
+}
 .productButtonContainer {
   display: flex;
   flex-direction: row;
@@ -686,7 +682,7 @@ table th {
           // background: red;
           font-size: 13px;
           color: #b3b3b3;
-          content:'Reference'
+          content: "Reference";
         }
         span:nth-child(5) {
           grid-column-start: 3;
@@ -698,7 +694,7 @@ table th {
           // background: red;
           font-size: 13px;
           color: #b3b3b3;
-          content:'Category'
+          content: "Category";
         }
         span:nth-child(6) {
           grid-column-start: 4;
@@ -711,14 +707,14 @@ table th {
           // background: red;
           font-size: 13px;
           color: #b3b3b3;
-          content:'Price'
+          content: "Price";
         }
         span:nth-child(4) {
           // background: red;
           grid-row-start: 3;
           grid-column-start: 2;
           grid-column-end: 6;
-          align-self: flex-end;          
+          align-self: flex-end;
         }
         span:nth-child(4)::before {
           position: absolute;
@@ -726,7 +722,7 @@ table th {
           // background: red;
           font-size: 13px;
           color: #b3b3b3;
-          content:'Description'
+          content: "Description";
         }
         a {
           grid-row-start: 1;
