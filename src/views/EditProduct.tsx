@@ -76,8 +76,10 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
         })
         history.push("/products")
       }
-    } catch {
+    } catch (error) {
       console.log("select file")
+      console.log(error.message)
+      console.log(thumbnailId)
       setFileError(true)
     }
   }
@@ -156,8 +158,12 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
     if (error) {
       history.push("/login")
     }
-    console.log(data)
     setProduct(data)
+    data.pictures.map((file) => {
+      console.log(file.id)
+      setPicturesId((picture) => [...picture, file.id])
+    })
+    SetThumbnailId(data.pictures[0].id)
     setLibraryData((file) => [...file, ...data.pictures])
   }
 
