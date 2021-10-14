@@ -12,6 +12,11 @@ import Users from "./views/Users"
 import Roles from "./views/Roles"
 import AddRoles from "./views/AddRoles"
 import AddUsers from "./views/AddUsers";
+import Taxes from "./views/Taxes";
+import Categories from "./views/Categories";
+import Customers from "./views/Customers";
+import Orders from "./views/Orders";
+import Stock from "./views/Stock";
 
 export const App = () => {
   return (
@@ -29,6 +34,11 @@ export const App = () => {
                 <Route path="/users/addusers" component={AddUsers} />
                 <Route exact path="/roles" component={Roles}/>
                 <Route path="/roles/addroles" component={AddRoles} />
+                <Route exact path="/taxes" component={Taxes}/>
+                <Route exact path="/categories" component={Categories}/>
+                <Route exact path="/customers" component={Customers}/>
+                <Route exact path="/orders" component={Orders}/>
+                <Route exact path="/stock" component={Stock}/>
               </DashboardLayout>
             </Switch>
           </Router>

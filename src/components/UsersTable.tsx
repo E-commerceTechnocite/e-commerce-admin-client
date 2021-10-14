@@ -42,6 +42,10 @@ const UsersTable: React.FunctionComponent = () => {
         prepareRow,
     } = tableInstance 
 
+    const onClick = (e: React.MouseEvent): void => {
+        
+    }
+
     return <>
         {isPending && <Loading />}
         {!isPending && (<>
@@ -70,7 +74,12 @@ const UsersTable: React.FunctionComponent = () => {
                                             return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                                         })
                                     }
-                                    <td><button className="action">EDIT</button></td>
+                                    <td>
+                                        <div className="actions">
+                                            <button className="action">Edit</button>
+                                            <button className="delete" onClick={(e) => onClick(e)}><i className="fas fa-trash"></i></button>
+                                        </div>
+                                    </td>
                                 </tr>
                             )
                         })

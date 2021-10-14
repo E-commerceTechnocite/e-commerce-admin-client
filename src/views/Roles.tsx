@@ -12,15 +12,15 @@ const Roles: React.FunctionComponent = () => {
         history.push("/roles/addroles")
     }
     return (
-    <div className="roles">
-        <div className="productButtonContainer">
-            <button className="action" onClick={onClick}>ROLE+</button> 
+        <div className="roles">
+            <div className="productButtonContainer">
+                <button className="action" onClick={onClick}>ROLE+</button> 
+            </div>
+            <br/>
+            <h3>Role list</h3>
+            <br/>
+            <RolesTable />
         </div>
-        <br/>
-        <h3>Role list</h3>
-        <br/>
-        <RolesTable />
-    </div>
     )
   }
   export default Roles;

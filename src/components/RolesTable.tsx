@@ -70,7 +70,12 @@ const RolesTable: React.FunctionComponent = () => {
                                             return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                                         })
                                     }
-                                    <td><button className="action">EDIT</button></td>
+                                    <td>
+                                        <div className="actions">
+                                            <button className="action">Edit</button>
+                                            <button className="delete"><i className="fas fa-trash"></i></button>
+                                        </div>
+                                    </td>
                                 </tr>
                             )
                         })

@@ -258,7 +258,7 @@ button {
 } */
 
 /* Dashboard Layout - Sidebar */
-.sidebar {
+.sidebar{ 
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -275,7 +275,9 @@ button {
   .logo h1 {
     font-size: 20px;
     color: white;
+    text-align:center;
   }
+
   .search-bar {
     background: #292929;
     border-radius: 10px;
@@ -704,3 +706,4 @@ table th {
 .attrs {
 
 }
+
