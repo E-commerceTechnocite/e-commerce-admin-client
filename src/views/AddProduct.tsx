@@ -22,6 +22,7 @@ import TextInput from "../components/inputs/TextInput"
 import Select from "../components/inputs/Select"
 import NumberInput from "../components/inputs/NumberInput"
 import DrafTextEditor from "../components/inputs/DraftTextEditor"
+import Previous from "../components/previous/Previous"
 
 const AddProduct = () => {
   const [categoryId, setCategoryId] = useState<string>("")
@@ -147,6 +148,7 @@ const AddProduct = () => {
 
   return (
     <>
+      <Previous />
       <div className="product-form">
         <Formik
           initialValues={{

@@ -25,6 +25,7 @@ import NumberInput from "../components/inputs/NumberInput"
 import DrafTextEditor from "../components/inputs/DraftTextEditor"
 import { ProductModel } from "../models/product/product.model"
 import Loading from "../components/loading/Loading"
+import Previous from "../components/previous/Previous"
 
 interface IEditProductProps {}
 
@@ -178,89 +179,94 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
     <>
       {!product && <Loading />}
       {product && (
-        <div className="product-form">
-          <Formik
-            initialValues={{
-              title: product.title,
-              reference: product.reference,
-              quantity: product.quantity,
-              price: product.price,
-              description: product.description,
-              categoryId: product.category.id,
-              taxRuleGroupId: product.taxRuleGroup.id,
-            }}
-            validationSchema={productSchema}
-            onSubmit={(data) => {
-              submitProduct(data)
-            }}
-          >
-            {({ setFieldValue, setFieldTouched, handleSubmit, values }) => {
-              return (
-                <form onSubmit={handleSubmit}>
-                  <div className="top">
-                    <div className="inputs">
-                      <div className="product">
-                        <TextInput name={"title"} label={"Title"} />
-                        <TextInput name={"reference"} label={"Reference"} />
-                        <Select
-                          name={"categoryId"}
-                          label={"Category"}
-                          options={categoryOptions}
-                        />
+        <>
+          <Previous />
+          <div className="product-form">
+            <Formik
+              initialValues={{
+                title: product.title,
+                reference: product.reference,
+                quantity: product.quantity,
+                price: product.price,
+                description: product.description,
+                categoryId: product.category.id,
+                taxRuleGroupId: product.taxRuleGroup.id,
+              }}
+              validationSchema={productSchema}
+              onSubmit={(data) => {
+                submitProduct(data)
+              }}
+            >
+              {({ setFieldValue, setFieldTouched, handleSubmit, values }) => {
+                return (
+                  <form onSubmit={handleSubmit}>
+                    <div className="top">
+                      <div className="inputs">
+                        <div className="product">
+                          <TextInput name={"title"} label={"Title"} />
+                          <TextInput name={"reference"} label={"Reference"} />
+                          <Select
+                            name={"categoryId"}
+                            label={"Category"}
+                            options={categoryOptions}
+                          />
+                        </div>
+                        <div className="price">
+                          <Select
+                            name={"taxRuleGroupId"}
+                            label={"Tax"}
+                            options={taxOptions}
+                          />
+                          <NumberInput name={"quantity"} label={"Quantity"} />
+                          <NumberInput name={"price"} label={"Price"} />
+                        </div>
                       </div>
-                      <div className="price">
-                        <Select
-                          name={"taxRuleGroupId"}
-                          label={"Tax"}
-                          options={taxOptions}
+                      <div className="pictures">
+                        <MediaLibraryContainer
+                          numberOfImages={27}
+                          upperPagination={false}
+                          libraryToParent={libraryToParent}
                         />
-                        <NumberInput name={"quantity"} label={"Quantity"} />
-                        <NumberInput name={"price"} label={"Price"} />
-                      </div>
-                    </div>
-                    <div className="pictures">
-                      <MediaLibraryContainer
-                        numberOfImages={27}
-                        upperPagination={false}
-                        libraryToParent={libraryToParent}
-                      />
-                      {!!libraryData.length && (
-                        <Slider className="slider" {...settings}>
-                          {libraryData.map((image) => (
-                            <div className="slide" key={image.id}>
-                              <div
-                                className="top-border"
-                                onClick={() => removeImage(image.id)}
-                              >
-                                <i className="fas fa-window-close"></i>
+                        {!!libraryData.length && (
+                          <Slider className="slider" {...settings}>
+                            {libraryData.map((image) => (
+                              <div className="slide" key={image.id}>
+                                <div
+                                  className="top-border"
+                                  onClick={() => removeImage(image.id)}
+                                >
+                                  <i className="fas fa-window-close"></i>
+                                </div>
+                                <img src={domain + image.uri} />
                               </div>
-                              <img src={domain + image.uri} />
-                            </div>
-                          ))}
-                        </Slider>
-                      )}
-                      {fileError && <div className="error">Select a file</div>}
+                            ))}
+                          </Slider>
+                        )}
+                        {fileError && (
+                          <div className="error">Select a file</div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="description">
-                    <Field
-                      value={values.description}
-                      name="description"
-                      component={DrafTextEditor}
-                      setFieldValue={setFieldValue}
-                      setFieldTouched={setFieldTouched}
-                    />
-                  </div>
-                  <div className="buttons">
-                    <button className="action" type="submit">
-                      Add Product
-                    </button>
-                  </div>
-                </form>
-              )
-            }}
-          </Formik>
-        </div>
+                    <div className="description">
+                      <Field
+                        value={values.description}
+                        name="description"
+                        component={DrafTextEditor}
+                        setFieldValue={setFieldValue}
+                        setFieldTouched={setFieldTouched}
+                      />
+                    </div>
+                    <div className="buttons">
+                      <button className="action" type="submit">
+                        Add Product
+                      </button>
+                    </div>
+                  </form>
+                )
+              }}
+            </Formik>
+          </div>
+        </>
       )}
     </>
   )

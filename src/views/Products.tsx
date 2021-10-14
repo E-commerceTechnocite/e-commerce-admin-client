@@ -80,77 +80,82 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
   }, [page, refreshPage])
 
   return (
-    <div className="products">
-      <div className="top-container">
-        <div className="search">
-          <i className="fas fa-search"></i>
-          <input type="text" placeholder="Search..." />
-        </div>
-        <Link to="/products/add" className="action">
-          New Product
-        </Link>
-        <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
-          {" "}
-          <i className="fas fa-check" />
-          Product Added
-          <i className="fas fa-times" onClick={() => setToast(false)} />
-        </div>
-      </div>
-      {!products && !meta && <Loading />}
-      {products && meta && (
-        <>
-          <div className="product-list">
-            <div className="legend">
-              <span>Image</span>
-              <span>Title</span>
-              <span>Reference</span>
-              <span>Description</span>
-              <span>Category</span>
-              <span>Price</span>
-            </div>
-            {products.map((product) => {
-              var strippedHtml = htmlToText(product.description)
-              return (
-                <div className="product" key={product.id}>
-                  {product.thumbnail && product.thumbnail.uri && (
-                    <span>
-                      <img
-                        src={domain + product.thumbnail.uri}
-                        alt={product.thumbnail.title}
-                      />
-                    </span>
-                  )}
-                  {!product.thumbnail && (
-                    <span>
-                      <img />
-                    </span>
-                  )}
-                  <span>{product.title}</span>
-                  <span>{product.reference}</span>
-                  <span>
-                    {strippedHtml.length >= 100
-                      ? strippedHtml.substr(0, 50) + "..."
-                      : strippedHtml}
-                  </span>
-                  <span>{product.category.label}</span>
-                  <span>{product.price} €</span>
-                  <Link to={`/products/edit/${product.id}`} className="action">
-                    Edit
-                  </Link>
-                  <button
-                    className="delete"
-                    onClick={() => deleteProduct(product.id, product.title)}
-                  >
-                    <i className="fas fa-trash"></i>
-                  </button>
-                </div>
-              )
-            })}
-            <Pagination meta={meta} pageSetter={setPage} />
+    <>
+      <div className="products">
+        <div className="top-container">
+          <div className="search">
+            <i className="fas fa-search"></i>
+            <input type="text" placeholder="Search..." />
           </div>
-        </>
-      )}
-    </div>
+          <Link to="/products/add" className="action">
+            New Product
+          </Link>
+          <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
+            {" "}
+            <i className="fas fa-check" />
+            Product Added
+            <i className="fas fa-times" onClick={() => setToast(false)} />
+          </div>
+        </div>
+        {!products && !meta && <Loading />}
+        {products && meta && (
+          <>
+            <div className="product-list">
+              <div className="legend">
+                <span>Image</span>
+                <span>Title</span>
+                <span>Reference</span>
+                <span>Description</span>
+                <span>Category</span>
+                <span>Price</span>
+              </div>
+              {products.map((product) => {
+                var strippedHtml = htmlToText(product.description)
+                return (
+                  <div className="product" key={product.id}>
+                    {product.thumbnail && product.thumbnail.uri && (
+                      <span>
+                        <img
+                          src={domain + product.thumbnail.uri}
+                          alt={product.thumbnail.title}
+                        />
+                      </span>
+                    )}
+                    {!product.thumbnail && (
+                      <span>
+                        <img />
+                      </span>
+                    )}
+                    <span>{product.title}</span>
+                    <span>{product.reference}</span>
+                    <span>
+                      {strippedHtml.length >= 100
+                        ? strippedHtml.substr(0, 50) + "..."
+                        : strippedHtml}
+                    </span>
+                    <span>{product.category.label}</span>
+                    <span>{product.price} €</span>
+                    <Link
+                      to={`/products/edit/${product.id}`}
+                      className="action"
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      className="delete"
+                      onClick={() => deleteProduct(product.id, product.title)}
+                    >
+                      <i className="fas fa-trash"></i>
+                    </button>
+                  </div>
+                )
+              })}
+              <Pagination meta={meta} pageSetter={setPage} />
+            </div>
+          </>
+        )}
+      </div>
+    </>
   )
 }
 
