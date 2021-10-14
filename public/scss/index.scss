@@ -317,10 +317,13 @@ button {
 
   /* UpperBar */
   .upper-bar {
+    background: $primary-color-elts;
+    box-shadow: $primary-elts-shadow;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 40px 40px;
+    padding: 4px 40px;
+    margin-bottom: 36px;
   }
   .user-info {
     display: flex;
