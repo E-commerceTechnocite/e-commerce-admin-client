@@ -8,6 +8,7 @@ export interface ProductModel extends EntityInterface {
   reference?: string;
   description?: string;
   price?: number;
+  quantity?: number;
   category?: ProductCategoryModel;
   taxRuleGroup?: TaxRuleGroupModel;
   pictures?: PictureModel[];

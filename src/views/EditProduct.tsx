@@ -1,4 +1,5 @@
 import * as React from "react"
+import { useParams } from "react-router"
 import { useEffect, useState } from "react"
 import "./AddProduct.scss"
 import MediaLibraryContainer from "../components/media-library/MediaLibraryContainer"
@@ -22,8 +23,12 @@ import TextInput from "../components/inputs/TextInput"
 import Select from "../components/inputs/Select"
 import NumberInput from "../components/inputs/NumberInput"
 import DrafTextEditor from "../components/inputs/DraftTextEditor"
+import { ProductModel } from "../models/product/product.model"
+import Loading from "../components/loading/Loading"
 
-const AddProduct = () => {
+interface IEditProductProps {}
+
+const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
   const [categoryId, setCategoryId] = useState<string>("")
   const [taxRuleGroupId, setTaxRuleGroupId] = useState<string>("")
   const [picturesId, setPicturesId] = useState<string[]>([])
@@ -33,10 +38,12 @@ const AddProduct = () => {
   const [categoryOptions, setCategoryOptions] = useState<GroupData[]>([])
   const [fileError, setFileError] = useState(false)
   const history = useHistory()
+  const params: { slug: string } = useParams()
+  const [product, setProduct] = useState<ProductModel>()
 
   // Send request data from formik form submit
   const requestSubmit = (data: any) => {
-    return http.post(`${domain}/v1/product`, data, {
+    return http.patch(`${domain}/v1/product/${params.slug}`, data, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
@@ -123,7 +130,6 @@ const AddProduct = () => {
   const getCategoryGroup = async () => {
     let { data, error } = await sendRequest(requestCategory)
     if (error) {
-      const success = true
       history.push("/login")
     }
     setCategoryId(data.data[0].id)
@@ -136,6 +142,29 @@ const AddProduct = () => {
     getTaxRuleGroup().then()
   }, [])
 
+  // Get request for category form select
+  const requestProduct = () => {
+    return http.get<ProductModel>(`${domain}/v1/product/${params.slug}`, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      },
+    })
+  }
+  const getProduct = async () => {
+    let { data, error } = await sendRequest(requestProduct)
+    if (error) {
+      history.push("/login")
+    }
+    console.log(data)
+    setProduct(data)
+    setLibraryData((file) => [...file, ...data.pictures])
+  }
+
+  // Get product information
+  useEffect(() => {
+    getProduct().then()
+  }, [params.slug])
+
   // Slider settings
   var settings = {
     dots: true,
@@ -147,90 +176,94 @@ const AddProduct = () => {
 
   return (
     <>
-      <div className="product-form">
-        <Formik
-          initialValues={{
-            title: "",
-            reference: "",
-            quantity: 0,
-            price: 0,
-            description: "",
-            categoryId: categoryId,
-            taxRuleGroupId: taxRuleGroupId,
-          }}
-          validationSchema={productSchema}
-          onSubmit={(data) => {
-            submitProduct(data)
-          }}
-        >
-          {({ setFieldValue, setFieldTouched, handleSubmit, values }) => {
-            return (
-              <form onSubmit={handleSubmit}>
-                <div className="top">
-                  <div className="inputs">
-                    <div className="product">
-                      <TextInput name={"title"} label={"Title"} />
-                      <TextInput name={"reference"} label={"Reference"} />
-                      <Select
-                        name={"categoryId"}
-                        label={"Category"}
-                        options={categoryOptions}
-                      />
+      {!product && <Loading />}
+      {product && (
+        <div className="product-form">
+          <Formik
+            initialValues={{
+              title: product.title,
+              reference: product.reference,
+              quantity: product.quantity,
+              price: product.price,
+              description: product.description,
+              categoryId: product.category.id,
+              taxRuleGroupId: product.taxRuleGroup.id,
+            }}
+            validationSchema={productSchema}
+            onSubmit={(data) => {
+              submitProduct(data)
+            }}
+          >
+            {({ setFieldValue, setFieldTouched, handleSubmit, values }) => {
+              return (
+                <form onSubmit={handleSubmit}>
+                  <div className="top">
+                    <div className="inputs">
+                      <div className="product">
+                        <TextInput name={"title"} label={"Title"} />
+                        <TextInput name={"reference"} label={"Reference"} />
+                        <Select
+                          name={"categoryId"}
+                          label={"Category"}
+                          options={categoryOptions}
+                        />
+                      </div>
+                      <div className="price">
+                        <Select
+                          name={"taxRuleGroupId"}
+                          label={"Tax"}
+                          options={taxOptions}
+                        />
+                        <NumberInput name={"quantity"} label={"Quantity"} />
+                        <NumberInput name={"price"} label={"Price"} />
+                      </div>
                     </div>
-                    <div className="price">
-                      <Select
-                        name={"taxRuleGroupId"}
-                        label={"Tax"}
-                        options={taxOptions}
+                    <div className="pictures">
+                      <MediaLibraryContainer
+                        numberOfImages={27}
+                        upperPagination={false}
+                        libraryToParent={libraryToParent}
                       />
-                      <NumberInput name={"quantity"} label={"Quantity"} />
-                      <NumberInput name={"price"} label={"Price"} />
-                    </div>
-                  </div>
-                  <div className="pictures">
-                    <MediaLibraryContainer
-                      numberOfImages={27}
-                      upperPagination={false}
-                      libraryToParent={libraryToParent}
-                    />
-                    {!!libraryData.length && (
-                      <Slider className="slider" {...settings}>
-                        {libraryData.map((image) => (
-                          <div className="slide" key={image.id}>
-                            <div
-                              className="top-border"
-                              onClick={() => removeImage(image.id)}
-                            >
-                              <i className="fas fa-window-close"></i>
+                      {!!libraryData.length && (
+                        <Slider className="slider" {...settings}>
+                          {libraryData.map((image) => (
+                            <div className="slide" key={image.id}>
+                              <div
+                                className="top-border"
+                                onClick={() => removeImage(image.id)}
+                              >
+                                <i className="fas fa-window-close"></i>
+                              </div>
+                              <img src={domain + image.uri} />
                             </div>
-                            <img src={domain + image.uri} />
-                          </div>
-                        ))}
-                      </Slider>
-                    )}
-                    {fileError && <div className="error">Select a file</div>}
+                          ))}
+                        </Slider>
+                      )}
+                      {fileError && <div className="error">Select a file</div>}
+                    </div>
                   </div>
-                </div>
-                <div className="description">
-                  <Field
-                    value={values.description}
-                    name="description"
-                    component={DrafTextEditor}
-                    setFieldValue={setFieldValue}
-                    setFieldTouched={setFieldTouched}
-                  />
-                </div>
-                <div className="buttons">
-                  <button className="action" type="submit">
-                    Add Product
-                  </button>
-                </div>
-              </form>
-            )
-          }}
-        </Formik>
-      </div>
+                  <div className="description">
+                    <Field
+                      value={values.description}
+                      name="description"
+                      component={DrafTextEditor}
+                      setFieldValue={setFieldValue}
+                      setFieldTouched={setFieldTouched}
+                    />
+                  </div>
+                  <div className="buttons">
+                    <button className="action" type="submit">
+                      Add Product
+                    </button>
+                  </div>
+                </form>
+              )
+            }}
+          </Formik>
+        </div>
+      )}
     </>
   )
 }
-export default AddProduct
+
+export default EditProduct

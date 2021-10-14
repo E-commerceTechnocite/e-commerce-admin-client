@@ -10,17 +10,25 @@ import { ProductModel } from "../models/product/product.model"
 import { domain } from "../util/environnement"
 import { sendRequest } from "../util/helpers/refresh"
 import { http } from "../util/http"
+import { htmlToText } from "html-to-text"
 
 interface IProductsProps {
-  success?: boolean
+  location?: {
+    state: {
+      success?: boolean
+    }
+  }
 }
 
-const Products: React.FunctionComponent<IProductsProps> = (props, state) => {
+const Products: React.FunctionComponent<IProductsProps> = (props) => {
   const [products, setProducts] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [page, setPage] = useState<number>(1)
+  const [toast, setToast] = useState(false)
+  const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
-  const request = () =>
+  // Request to get the page of the product list
+  const pageRequest = () =>
     http.get<PaginationModel<ProductModel>>(
       `${domain}/v1/product?page=${page}`,
       {
@@ -30,32 +38,62 @@ const Products: React.FunctionComponent<IProductsProps> = (props, state) => {
         },
       }
     )
-
   const getProducts = async () => {
-    let { data, error } = await sendRequest(request)
+    let { data, error } = await sendRequest(pageRequest)
     if (error) {
       history.push("/login")
     }
     setProducts(data.data)
     setMeta(data.meta)
   }
+
+  const deleteRequest = (id: string) => {
+    return http.delete(`${domain}/v1/product/${id}`, null, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      },
+    })
+  }
+  const deleteProduct = async (id: string, title: string) => {
+    if (confirm(`Delete product: ${title}?`)) {
+      let { error } = await sendRequest(deleteRequest, id)
+      if (error) {
+        console.log(error.message)
+        history.push("/login")
+      }
+      setRefreshPage(!refreshPage)
+    }
+  }
+
+  // Check if product has been added and if so displays a toast
   useEffect(() => {
-    console.log(props, state)
+    if (props.location.state !== undefined) {
+      setToast(true)
+      setTimeout(() => {
+        setToast(false)
+      }, 10000)
+    }
   }, [])
 
   useEffect(() => {
     getProducts().then()
-  }, [page])
+  }, [page, refreshPage])
 
   return (
     <div className="products">
-      <div className="add-search">
-        <Link to="/products/add" className="action">
-          Product +
-        </Link>
+      <div className="top-container">
         <div className="search">
           <i className="fas fa-search"></i>
           <input type="text" placeholder="Search..." />
+        </div>
+        <Link to="/products/add" className="action">
+          New Product
+        </Link>
+        <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
+          {" "}
+          <i className="fas fa-check" />
+          Product Added
+          <i className="fas fa-times" onClick={() => setToast(false)} />
         </div>
       </div>
       {!products && !meta && <Loading />}
@@ -63,37 +101,53 @@ const Products: React.FunctionComponent<IProductsProps> = (props, state) => {
         <>
           <div className="product-list">
             <div className="legend">
-              <div>
-                <span>Title</span>
-                <span>Reference</span>
-                <span>Description</span>
-                <span>Category</span>
-                <span>Price</span>
-              </div>
+              <span>Image</span>
+              <span>Title</span>
+              <span>Reference</span>
+              <span>Description</span>
+              <span>Category</span>
+              <span>Price</span>
             </div>
-            {products.map((product) => (
-              <div className="product" key={product.id}>
-                <div className="info ">
+            {products.map((product) => {
+              var strippedHtml = htmlToText(product.description)
+              return (
+                <div className="product" key={product.id}>
+                  {product.thumbnail && product.thumbnail.uri && (
+                    <span>
+                      <img
+                        src={domain + product.thumbnail.uri}
+                        alt={product.thumbnail.title}
+                      />
+                    </span>
+                  )}
+                  {!product.thumbnail && (
+                    <span>
+                      <img />
+                    </span>
+                  )}
                   <span>{product.title}</span>
                   <span>{product.reference}</span>
                   <span>
-                    {product.description.length >= 100
-                      ? product.description.substr(0, 50) + "..."
-                      : product.description}
+                    {strippedHtml.length >= 100
+                      ? strippedHtml.substr(0, 50) + "..."
+                      : strippedHtml}
                   </span>
                   <span>{product.category.label}</span>
                   <span>{product.price} €</span>
-                </div>
-                <div className="actions">
-                  <button className="action">Edit</button>
-                  <button className="delete">
+                  <Link to={`/products/edit/${product.id}`} className="action">
+                    Edit
+                  </Link>
+                  <button
+                    className="delete"
+                    onClick={() => deleteProduct(product.id, product.title)}
+                  >
                     <i className="fas fa-trash"></i>
                   </button>
                 </div>
-              </div>
-            ))}
+              )
+            })}
+            <Pagination meta={meta} pageSetter={setPage} />
           </div>
-          <Pagination meta={meta} pageSetter={setPage} />
         </>
       )}
     </div>
