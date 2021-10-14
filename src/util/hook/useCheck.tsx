@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 import { useHistory, useLocation } from "react-router-dom"
-// import { domain } from "../environnement"
 import { config } from "../../index"
 import refresh from "../helpers/refresh"
 import { http } from "../http"

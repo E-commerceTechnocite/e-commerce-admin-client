@@ -12,6 +12,7 @@ const Login: React.FunctionComponent = () => {
   const [isPending, setIsPending] = useState(true)
   const history = useHistory()
 
+  // Check if the user is already logged
   useEffect(() => {
     const token = sessionStorage.getItem("token")
     const options = {
@@ -26,6 +27,7 @@ const Login: React.FunctionComponent = () => {
       })
   }, [])
 
+  // Log the user if the credentials exists 
   const onSubmit = (e: React.FormEvent): void => {
     e.preventDefault()
     setIsPending(true)
@@ -46,7 +48,7 @@ const Login: React.FunctionComponent = () => {
           sessionStorage.setItem("refresh", refresh_token)
           history.push("/")
         } else {
-          console.error(error.message)
+          setIsPending(false)
         }
       })
   }
