@@ -27,7 +27,6 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
   const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
-
   // Request to get the page of the product list
   const pageRequest = () =>
     http.get<PaginationModel<ProductModel>>(
