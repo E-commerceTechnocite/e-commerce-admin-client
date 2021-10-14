@@ -7,7 +7,7 @@ import Pagination from "../components/pagination/Pagination"
 import { PaginationMetadataModel } from "../models/pagination/pagination-metadata.model"
 import { PaginationModel } from "../models/pagination/pagination.model"
 import { ProductModel } from "../models/product/product.model"
-import { domain } from "../util/environnement"
+import { config } from "../index"
 import { sendRequest } from "../util/helpers/refresh"
 import { http } from "../util/http"
 import { htmlToText } from "html-to-text"
@@ -32,7 +32,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   // Request to get the page of the product list
   const pageRequest = () =>
     http.get<PaginationModel<ProductModel>>(
-      `${domain}/v1/product?page=${page}${number ? "&limit=" + number : ""}`,
+      `${config.api}/v1/product?page=${page}${number ? "&limit=" + number : ""}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -50,7 +50,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   }
 
   const deleteRequest = (id: string) => {
-    return http.delete(`${domain}/v1/product/${id}`, null, {
+    return http.delete(`${config.api}/v1/product/${id}`, null, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
@@ -121,7 +121,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                     {product.thumbnail && product.thumbnail.uri && (
                       <span>
                         <img
-                          src={domain + product.thumbnail.uri}
+                          src={config.api + product.thumbnail.uri}
                           alt={product.thumbnail.title}
                         />
                       </span>

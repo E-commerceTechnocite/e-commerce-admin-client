@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useHistory, useLocation } from "react-router-dom"
-import { domain } from "../environnement"
+// import { domain } from "../environnement"
+import { config } from "../../index"
 import refresh from "../helpers/refresh"
 import { http } from "../http"
 
@@ -17,7 +18,7 @@ const useCheckUser = () => {
       signal: controller.signal,
     }
     http
-      .get(`${domain}/v1/product?limit=1&page=1`, options)
+      .get(`${config.api}/v1/product?limit=1&page=1`, options)
       .then(({ error }) => {
         if (error) {
           console.log("hello update")
@@ -28,7 +29,7 @@ const useCheckUser = () => {
           }
           http
             .post<{ access_token: string; refresh_token: string }>(
-              `${domain}/v1/o-auth/refresh`,
+              `${config.api}/v1/o-auth/refresh`,
               { refresh_token },
               options
             )

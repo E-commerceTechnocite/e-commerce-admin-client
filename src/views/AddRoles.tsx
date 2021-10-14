@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useHistory, withRouter } from "react-router"
 import { useEffect, useState } from "react"
 import { http } from "../util/http"
-import { domain } from "../util/environnement"
+import { config } from "../index"
 import Loading from "../components/loading/Loading"
 
 const AddRoles: React.FunctionComponent = () => {
@@ -17,7 +17,7 @@ const AddRoles: React.FunctionComponent = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
         http
-          .get<[]>(`${domain}/v1/role/permissions`, options)
+          .get<[]>(`${config.api}/v1/role/permissions`, options)
           .then(({ data,error }) => {
             setIsPending(true)
             if (!error) {
@@ -66,7 +66,7 @@ const AddRoles: React.FunctionComponent = () => {
         }
         http
           .post<{ access_token: string; refresh_token: string }>(
-            `${domain}/v1/role`,
+            `${config.api}/v1/role`,
             body,
             options
           )

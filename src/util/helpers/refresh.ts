@@ -1,4 +1,4 @@
-import { domain } from "../environnement";
+import { config } from "../../index"
 import { http, HttpException, HttpReturnValue } from "../http";
 
 const refresh = async (): Promise<HttpException | null> => {
@@ -10,7 +10,7 @@ const refresh = async (): Promise<HttpException | null> => {
   const { data, error } = await http.post<{
     access_token: string;
     refresh_token: string;
-  }>(`${domain}/v1/o-auth/refresh`, { refresh_token }, options);
+  }>(`${config.api}/v1/o-auth/refresh`, { refresh_token }, options);
 
   if (error) {
     const keysToRemove = ["token", "refresh"];
