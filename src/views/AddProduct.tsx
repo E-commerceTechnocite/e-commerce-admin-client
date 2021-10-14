@@ -35,7 +35,7 @@ const AddProduct = () => {
   const history = useHistory()
 
   // Send request data from formik form submit
-  const requestSubmit = (data) => {
+  const requestSubmit = (data: any) => {
     return http.post(`${domain}/v1/product`, data, {
       headers: {
         "Content-Type": "application/json",

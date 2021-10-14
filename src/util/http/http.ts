@@ -17,6 +17,7 @@ const sendRequest = async <T>(
     override.body = JSON.stringify(override.body);
   }
   const opts = { ...options, ...override }
+  console.log(opts)
   const res = await fetch(url, opts)
 
   let exception: HttpException = null;

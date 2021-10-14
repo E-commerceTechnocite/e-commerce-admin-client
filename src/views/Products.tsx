@@ -25,6 +25,7 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [page, setPage] = useState<number>(1)
   const [toast, setToast] = useState(false)
+  const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
 
   // Request to get the page of the product list
@@ -47,11 +48,9 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
     setMeta(data.meta)
   }
 
-  const deleteRequest = (id) => {
-    console.log(id)
-    return http.delete(`${domain}/v1/product/${id}`, {
+  const deleteRequest = (id: string) => {
+    return http.delete(`${domain}/v1/product/${id}`, null, {
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
     })
@@ -61,8 +60,9 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
     let { error } = await sendRequest(deleteRequest, id)
     if (error) {
       console.log(error.message)
-      // history.push("/login")
+      history.push("/login")
     }
+    setRefreshPage(!refreshPage)
   }
 
   // Check if product has been added and if so displays a toast
@@ -77,7 +77,7 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
 
   useEffect(() => {
     getProducts().then()
-  }, [page])
+  }, [page, refreshPage])
 
   return (
     <div className="products">
