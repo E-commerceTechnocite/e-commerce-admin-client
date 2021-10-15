@@ -139,11 +139,13 @@ const AddProduct = () => {
 
   // Slider settings
   var settings = {
-    dots: true,
+    dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 5,
-    slidesToScroll: 5,
+    slidesToShow: 4,
+    slidesToScroll: 4,
+    vertical: true,
+    verticalSwiping: true,
   }
 
   return (
@@ -189,16 +191,15 @@ const AddProduct = () => {
                       <NumberInput name={"price"} label={"Price"} />
                     </div>
                   </div>
-                  <div className="pictures">
-                    <MediaLibraryContainer
-                      numberOfImages={27}
-                      upperPagination={false}
-                      libraryToParent={libraryToParent}
-                    />
+                  <div className="current-images">
+                    <picture>
+                      <div className="placeholder">Select an image to set the thumbnail</div>
+                      {/* <img src={thumbnailId} alt="" /> */}
+                    </picture>
                     {!!libraryData.length && (
                       <Slider className="slider" {...settings}>
                         {libraryData.map((image) => (
-                          <div className="slide" key={image.id}>
+                          <picture className="slide" key={image.id}>
                             <div
                               className="top-border"
                               onClick={() => removeImage(image.id)}
@@ -206,12 +207,20 @@ const AddProduct = () => {
                               <i className="fas fa-window-close"></i>
                             </div>
                             <img src={config.api + image.uri} />
-                          </div>
+                          </picture>
                         ))}
                       </Slider>
                     )}
-                    {fileError && <div className="error">Select a file</div>}
                   </div>
+                </div>
+                <div className="pictures">
+                  <MediaLibraryContainer
+                    numberOfImages={38}
+                    upperPagination={false}
+                    mini={true}
+                    libraryToParent={libraryToParent}
+                  />
+                  {fileError && <div className="error">Select a file</div>}
                 </div>
                 <div className="description">
                   <Field

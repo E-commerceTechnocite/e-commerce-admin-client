@@ -10,7 +10,7 @@ import {
   TaxRuleGroup,
   CategoryOptions,
 } from "../models/addProduct/add-product.model"
-import {config } from "../index"
+import { config } from "../index"
 import { http } from "../util/http"
 import { useHistory, useLocation } from "react-router"
 import { sendRequest } from "../util/helpers/refresh"
@@ -177,8 +177,10 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
     dots: true,
     infinite: false,
     speed: 500,
-    slidesToShow: 5,
-    slidesToScroll: 5,
+    slidesToShow: 4,
+    slidesToScroll: 4,
+    vertical: true,
+    verticalSwiping: true,
   }
 
   return (
@@ -227,32 +229,43 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
                           <NumberInput name={"price"} label={"Price"} />
                         </div>
                       </div>
+
+                        <div className="current-images">
+                          <picture>
+                            <div className="placeholder">
+                              Select an image to set the thumbnail
+                            </div>
+                            {/* <img src={thumbnailId} alt="" /> */}
+                          </picture>
+                          {!!libraryData.length && (
+                            <Slider className="slider" {...settings}>
+                              {libraryData.map((image) => (
+                                <picture className="slide" key={image.id}>
+                                  <div
+                                    className="top-border"
+                                    onClick={() => removeImage(image.id)}
+                                  >
+                                    <i className="fas fa-window-close"></i>
+                                  </div>
+                                  <img src={config.api + image.uri} />
+                                </picture>
+                              ))}
+                            </Slider>
+                          )}
+                        </div>
+
+                        </div>
                       <div className="pictures">
                         <MediaLibraryContainer
-                          numberOfImages={27}
+                          numberOfImages={38}
                           upperPagination={false}
+                          mini={true}
                           libraryToParent={libraryToParent}
                         />
-                        {!!libraryData.length && (
-                          <Slider className="slider" {...settings}>
-                            {libraryData.map((image) => (
-                              <div className="slide" key={image.id}>
-                                <div
-                                  className="top-border"
-                                  onClick={() => removeImage(image.id)}
-                                >
-                                  <i className="fas fa-window-close"></i>
-                                </div>
-                                <img src={config.api + image.uri} />
-                              </div>
-                            ))}
-                          </Slider>
-                        )}
                         {fileError && (
                           <div className="error">Select a file</div>
                         )}
                       </div>
-                    </div>
                     <div className="description">
                       <Field
                         value={values.description}
