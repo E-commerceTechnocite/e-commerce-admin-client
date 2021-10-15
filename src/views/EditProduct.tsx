@@ -12,7 +12,7 @@ import {
 } from "../models/addProduct/add-product.model"
 import { config } from "../index"
 import { http } from "../util/http"
-import { useHistory, useLocation } from "react-router"
+import { useHistory } from "react-router"
 import { sendRequest } from "../util/helpers/refresh"
 import {
   productSchema,
@@ -33,7 +33,7 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
   const [categoryId, setCategoryId] = useState<string>("")
   const [taxRuleGroupId, setTaxRuleGroupId] = useState<string>("")
   const [picturesId, setPicturesId] = useState<string[]>([])
-  const [thumbnailId, SetThumbnailId] = useState<string>("")
+  const [thumbnail, SetThumbnail] = useState<PictureModel>()
   const [libraryData, setLibraryData] = useState<PictureModel[]>([])
   const [taxOptions, setTaxOptions] = useState<GroupData[]>([])
   const [categoryOptions, setCategoryOptions] = useState<GroupData[]>([])
@@ -41,6 +41,11 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
   const history = useHistory()
   const params: { slug: string } = useParams()
   const [product, setProduct] = useState<ProductModel>()
+
+   // Check if image in slide is the thumb
+   const isThumb = (thumbId, currentImage) => {
+    if (thumbId === currentImage) return true
+  }
 
   // Send request data from formik form submit
   const requestSubmit = (data: any) => {
@@ -54,7 +59,7 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
   const submitProduct = async (data) => {
     const file = {
       picturesId,
-      thumbnailId,
+      thumbnailId: thumbnail.id,
     }
     try {
       const isValid = await imagesSchema.validate(file)
@@ -77,9 +82,6 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
         history.push("/products")
       }
     } catch (error) {
-      console.log("select file")
-      console.log(error.message)
-      console.log(thumbnailId)
       setFileError(true)
     }
   }
@@ -90,7 +92,7 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
       setPicturesId((ids) => [...ids, data.id])
       setLibraryData((ids) => [...ids, data])
     }
-    if (picturesId.length < 1) SetThumbnailId(data.id)
+    if (picturesId.length < 1) SetThumbnail(data)
   }
 
   // Remove image from slider
@@ -102,7 +104,11 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
     }
     setLibraryData(libraryArray)
     setPicturesId(picturesArray)
-    if (!picturesId.length) SetThumbnailId("")
+    if (!picturesId.length) {
+      SetThumbnail(null)
+    } else {
+      SetThumbnail(libraryArray[0])
+    }
   }
 
   // Get request for tax rule group form select
@@ -163,8 +169,8 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
       console.log(file.id)
       setPicturesId((picture) => [...picture, file.id])
     })
-    SetThumbnailId(data.pictures[0].id)
     setLibraryData((file) => [...file, ...data.pictures])
+    SetThumbnail(data.thumbnail)
   }
 
   // Get product information
@@ -232,15 +238,32 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
 
                         <div className="current-images">
                           <picture>
-                            <div className="placeholder">
-                              Select an image to set the thumbnail
-                            </div>
-                            {/* <img src={thumbnailId} alt="" /> */}
+                          {!thumbnail && (
+                        <div className="placeholder">
+                          Select an image to set the thumbnail
+                        </div>
+                      )}
+                      {thumbnail && (
+                        <div className="placeholder">
+                          <img
+                            src={`${config.api + thumbnail.uri}`}
+                            alt={thumbnail.title}
+                          />
+                        </div>
+                      )}
                           </picture>
-                          {!!libraryData.length && (
+                          {!!libraryData.length && thumbnail && (
                             <Slider className="slider" {...settings}>
                               {libraryData.map((image) => (
-                                <picture className="slide" key={image.id}>
+                                 <picture
+                                 className={`slide ${
+                                   isThumb(thumbnail.id, image.id)
+                                     ? "is-thumb"
+                                     : ""
+                                 }`}
+                                 key={image.id}
+                                 onClick={() => SetThumbnail(image)}
+                               >
                                   <div
                                     className="top-border"
                                     onClick={() => removeImage(image.id)}

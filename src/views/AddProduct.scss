@@ -33,14 +33,8 @@
   }
 
   > .top {
-    // background: red;
-    // display: grid;
-    // grid-template-columns: 600px 1fr;
-    // grid-column-gap: 30px;
-    // background: red;
     display: flex;
     justify-content: flex-start;
-    // background: red;
 
     .inputs {
       min-width: 450px;
@@ -48,59 +42,66 @@
       width: 100%;
       border-radius: 4px;
       background: $primary-color-elts;
-      // box-shadow: $primary-elts-shadow;
     }
 
     .current-images {
       display: flex;
-      // background: green;
       max-height: 500px;
       margin-left: 30px;
       padding: 10px 30px 30px 30px;
       background: $primary-color-elts;
       border: 1px solid $primary-border-color;
       border-radius: 4px;
-
       margin-top: 20px;
       .placeholder {
+        border: 1px solid $primary-border-color;
+        background: #eee;
+        overflow: hidden;
         width: 350px;
         height: 350px;
         display: flex;
         justify-content: center;
         align-items: center;
-        // background: #ddd;
-      border: 1px solid $primary-border-color;
-      background:#eee;
-
+        position: relative;
+        img {
+          width: 100%;
+        }
+        
+      }
+      .placeholder::before {
+        content: "THUMBNAIL";
+        font-size: 50px;
+        color: white;
+        opacity: 0.4;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
       }
     }
 
     .slider {
       position: relative;
-      .slick-arrow {
+      .is-thumb {
+        box-sizing: border-box;
+        border: 5px solid $primary-button;
       }
       .slick-prev::before {
         position: absolute;
-        // background: blue;
         color: black;
         bottom: 10px;
         right: -165px;
-        transform: rotate(90deg)
+        transform: rotate(90deg);
       }
       .slick-next::before {
         position: absolute;
-        // background: red;
         color: black;
-
         top: 10px;
         right: 5px;
-        transform: rotate(90deg)
+        transform: rotate(90deg);
       }
-      // border-bottom: 1px solid $primary-border-color;
-      // background: blue;
       width: 140px;
       height: 100%;
-      // width: 100%;
       .slick-slide {
         display: flex;
         justify-content: center;
@@ -130,9 +131,7 @@
           max-width: 200px !important;
         }
       }
-      
     }
-    
   }
   .pictures {
     margin-top: 30px;
@@ -141,7 +140,6 @@
   .description {
     background: $primary-color-elts;
     border-bottom: 1px solid $primary-border-color;
-    // box-shadow: $primary-elts-shadow;
 
     .ql-toolbar.ql-snow {
       padding: 18px;
@@ -162,7 +160,7 @@
     margin-top: 15px;
     display: flex;
     button {
-    width: 100%;
+      width: 100%;
     }
   }
 }
