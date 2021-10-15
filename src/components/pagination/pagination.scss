@@ -12,9 +12,12 @@
     background: $primary-color-elts;
     border-radius: 4px;
     font-family: $font-bold;
+    font-weight: 500;
     transition: 0.2s;
     i {
-      font-size: 12px;
+      font-size: 13px;
+    font-weight: 700;
+
     }
   }
   button:hover,

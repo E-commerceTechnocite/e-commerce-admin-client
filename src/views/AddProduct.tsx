@@ -11,7 +11,7 @@ import {
 } from "../models/addProduct/add-product.model"
 import { config } from "../index"
 import { http } from "../util/http"
-import { useHistory, useLocation } from "react-router"
+import { useHistory } from "react-router"
 import { sendRequest } from "../util/helpers/refresh"
 import {
   productSchema,
@@ -28,12 +28,17 @@ const AddProduct = () => {
   const [categoryId, setCategoryId] = useState<string>("")
   const [taxRuleGroupId, setTaxRuleGroupId] = useState<string>("")
   const [picturesId, setPicturesId] = useState<string[]>([])
-  const [thumbnailId, SetThumbnailId] = useState<string>("")
+  const [thumbnail, SetThumbnail] = useState<PictureModel>()
   const [libraryData, setLibraryData] = useState<PictureModel[]>([])
   const [taxOptions, setTaxOptions] = useState<GroupData[]>([])
   const [categoryOptions, setCategoryOptions] = useState<GroupData[]>([])
   const [fileError, setFileError] = useState(false)
   const history = useHistory()
+
+  // Check if image in slide is the thumb
+  const isThumb = (thumbId, currentImage) => {
+    if (thumbId === currentImage) return true
+  }
 
   // Send request data from formik form submit
   const requestSubmit = (data: any) => {
@@ -47,7 +52,7 @@ const AddProduct = () => {
   const submitProduct = async (data) => {
     const file = {
       picturesId,
-      thumbnailId,
+      thumbnailId: thumbnail.id,
     }
     try {
       const isValid = await imagesSchema.validate(file)
@@ -81,7 +86,7 @@ const AddProduct = () => {
       setPicturesId((ids) => [...ids, data.id])
       setLibraryData((ids) => [...ids, data])
     }
-    if (picturesId.length < 1) SetThumbnailId(data.id)
+    if (picturesId.length < 1) SetThumbnail(data)
   }
 
   // Remove image from slider
@@ -93,7 +98,11 @@ const AddProduct = () => {
     }
     setLibraryData(libraryArray)
     setPicturesId(picturesArray)
-    if (!picturesId.length) SetThumbnailId("")
+    if (!picturesId.length) {
+      SetThumbnail(null)
+    } else {
+      SetThumbnail(libraryArray[0])
+    }
   }
 
   // Get request for tax rule group form select
@@ -139,11 +148,13 @@ const AddProduct = () => {
 
   // Slider settings
   var settings = {
-    dots: true,
+    dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 5,
-    slidesToScroll: 5,
+    slidesToShow: 4,
+    slidesToScroll: 4,
+    vertical: true,
+    verticalSwiping: true,
   }
 
   return (
@@ -189,29 +200,56 @@ const AddProduct = () => {
                       <NumberInput name={"price"} label={"Price"} />
                     </div>
                   </div>
-                  <div className="pictures">
-                    <MediaLibraryContainer
-                      numberOfImages={27}
-                      upperPagination={false}
-                      libraryToParent={libraryToParent}
-                    />
+                  <div className="current-images">
+                    <picture>
+                      {!thumbnail && (
+                        <div className="placeholder">
+                          Select an image to set the thumbnail
+                        </div>
+                      )}
+                      {thumbnail && (
+                        <div className="placeholder">
+                          <img
+                            src={`${config.api + thumbnail.uri}`}
+                            alt={thumbnail.title}
+                          />
+                        </div>
+                      )}
+                    </picture>
                     {!!libraryData.length && (
                       <Slider className="slider" {...settings}>
                         {libraryData.map((image) => (
-                          <div className="slide" key={image.id}>
-                            <div
-                              className="top-border"
-                              onClick={() => removeImage(image.id)}
+                            <picture
+                              className={`slide ${
+                                isThumb(thumbnail.id, image.id)
+                                  ? "is-thumb"
+                                  : ""
+                              }`}
+                              key={image.id}
+                              onClick={() => SetThumbnail(image)}
                             >
-                              <i className="fas fa-window-close"></i>
-                            </div>
-                            <img src={config.api + image.uri} />
-                          </div>
-                        ))}
+                              <div
+                                className="top-border"
+                                onClick={() => removeImage(image.id)}
+                              >
+                                <i className="fas fa-window-close"></i>
+                              </div>
+                              <img src={config.api + image.uri} />
+                            </picture>
+                          )
+                        )}
                       </Slider>
                     )}
-                    {fileError && <div className="error">Select a file</div>}
                   </div>
+                </div>
+                <div className="pictures">
+                  <MediaLibraryContainer
+                    numberOfImages={38}
+                    upperPagination={false}
+                    mini={true}
+                    libraryToParent={libraryToParent}
+                  />
+                  {fileError && <div className="error">Select a file</div>}
                 </div>
                 <div className="description">
                   <Field

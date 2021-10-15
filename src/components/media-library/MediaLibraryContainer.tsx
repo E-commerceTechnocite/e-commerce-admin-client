@@ -13,12 +13,14 @@ import Skeleton from "./skeleton/Skeleton"
 interface MediaLibraryContainerPropsInterface {
   numberOfImages?: number
   upperPagination?: boolean
+  mini?: boolean
   libraryToParent?: (data) => void
 }
 
 const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
-  numberOfImages = 100,
+  numberOfImages = 120,
   upperPagination = true,
+  mini = false,
   libraryToParent,
 }) => {
   const [pictures, setPictures] = useState<PaginationModel<PictureModel>>(null)
@@ -112,13 +114,13 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   return (
     <>
       <div className="media-library-container-component">
-        <div>
-          <div>
+        <div className="top">
+          <div className="search">
             <i className="fas fa-search" />
             <input type="text" placeholder="Search..." />
           </div>
           <div className="button-group">
-            <label htmlFor="myFile" className="action">
+            <label htmlFor="myFile" className="action" style={!mini ? {borderRadius: "4px"} : {}}>
               Add
               <input
                 type="file"
@@ -131,9 +133,12 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                 onChange={(e) => setFiles([].slice.call(e.target.files))}
               />
             </label>
-            <button type="button" className="action" onClick={sendData}>
+            {mini && (
+              <button type="button" className="action" onClick={sendData}>
               Select
             </button>
+            )}
+            
           </div>
         </div>
         {imagePending && <Skeleton nbFrames={numberOfImages} />}
