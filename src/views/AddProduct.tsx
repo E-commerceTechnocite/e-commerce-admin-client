@@ -28,7 +28,7 @@ const AddProduct = () => {
   const [categoryId, setCategoryId] = useState<string>("")
   const [taxRuleGroupId, setTaxRuleGroupId] = useState<string>("")
   const [picturesId, setPicturesId] = useState<string[]>([])
-  const [thumbnail, SetThumbnail] = useState<PictureModel>()
+  const [thumbnail, setThumbnail] = useState<PictureModel | null>(null)
   const [libraryData, setLibraryData] = useState<PictureModel[]>([])
   const [taxOptions, setTaxOptions] = useState<GroupData[]>([])
   const [categoryOptions, setCategoryOptions] = useState<GroupData[]>([])
@@ -63,9 +63,7 @@ const AddProduct = () => {
         if (error) {
           console.error(error.message)
           history.push({
-            pathname: "/login",
-            search: "?success=true",
-            state: { success: true },
+            pathname: "/login"
           })
         }
         history.push({
@@ -86,7 +84,7 @@ const AddProduct = () => {
       setPicturesId((ids) => [...ids, data.id])
       setLibraryData((ids) => [...ids, data])
     }
-    if (picturesId.length < 1) SetThumbnail(data)
+    if (picturesId.length < 1) setThumbnail(data)
   }
 
   // Remove image from slider
@@ -98,11 +96,6 @@ const AddProduct = () => {
     }
     setLibraryData(libraryArray)
     setPicturesId(picturesArray)
-    if (!picturesId.length) {
-      SetThumbnail(null)
-    } else {
-      SetThumbnail(libraryArray[0])
-    }
   }
 
   // Get request for tax rule group form select
@@ -133,7 +126,6 @@ const AddProduct = () => {
   const getCategoryGroup = async () => {
     let { data, error } = await sendRequest(requestCategory)
     if (error) {
-      const success = true
       history.push("/login")
     }
     setCategoryId(data.data[0].id)
@@ -145,6 +137,10 @@ const AddProduct = () => {
     getCategoryGroup().then()
     getTaxRuleGroup().then()
   }, [])
+
+  useEffect(() => {
+    console.log(thumbnail)
+  }, [thumbnail])
 
   // Slider settings
   var settings = {
@@ -203,12 +199,12 @@ const AddProduct = () => {
                   <div className="current-images">
                     <picture>
                       {!thumbnail && (
-                        <div className="placeholder">
+                        <div className="placeholder" onClick={() => console.log(thumbnail)}>
                           Select an image to set the thumbnail
                         </div>
                       )}
                       {thumbnail && (
-                        <div className="placeholder">
+                        <div className="placeholder" onClick={() => console.log(thumbnail)}>
                           <img
                             src={`${config.api + thumbnail.uri}`}
                             alt={thumbnail.title}
@@ -226,7 +222,7 @@ const AddProduct = () => {
                                   : ""
                               }`}
                               key={image.id}
-                              onClick={() => SetThumbnail(image)}
+                              onClick={() => setThumbnail(image)}
                             >
                               <div
                                 className="top-border"

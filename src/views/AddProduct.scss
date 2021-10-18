@@ -47,6 +47,8 @@
     .current-images {
       display: flex;
       max-height: 500px;
+      max-width: 485px;
+      min-width: 450px;
       margin-left: 30px;
       padding: 10px 30px 30px 30px;
       background: $primary-color-elts;
@@ -163,4 +165,13 @@
       width: 100%;
     }
   }
+}
+
+@media screen and (max-width: 1430px) {
+  .product-form form {
+    > .top {
+      flex-direction: column;
+    }
+  }
+
 }
