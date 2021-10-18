@@ -12,6 +12,7 @@ import MediaLibrary from "./views/MediaLibrary";
 import Users from "./views/Users";
 import Roles from "./views/Roles";
 import AddRoles from "./views/AddRoles";
+import  NotFound from "./views/NotFound"
 import ScrollToTop from "./components/ScrollToTop";
 import { config } from "./index";
 import AddUsers from "./views/AddUsers";
@@ -29,22 +30,24 @@ export const App = () => {
           <ScrollToTop />
           <Switch>
             <Route path="/login" component={Login} />
+
             <DashboardLayout>
               <Route exact path="/" component={Home} />
               <Route exact path="/products" component={Products} />
-              <Route path="/products/add" component={AddProduct} />
+              <Route exact path="/products/add" component={AddProduct} />
               <Route path="/products/edit/:slug" component={EditProduct} />
-              <Route path="/medias" component={MediaLibrary} />
+              <Route exact path="/medias" component={MediaLibrary} />
               <Route exact path="/users" component={Users} />
-              <Route path="/users/addusers" component={AddUsers} />
+              <Route exact path="/users/addusers" component={AddUsers} />
               <Route exact path="/roles" component={Roles} />
-              <Route path="/roles/addroles" component={AddRoles} />
+              <Route exact path="/roles/addroles" component={AddRoles} />
               <Route exact path="/taxes" component={Taxes}/>
               <Route exact path="/categories" component={Categories}/>
               <Route exact path="/customers" component={Customers}/>
               <Route exact path="/orders" component={Orders}/>
               <Route exact path="/stock" component={Stock}/>
             </DashboardLayout>
+            {/* <Route path="*" component={NotFound} /> */}
           </Switch>
         </Router>
       </Provider>

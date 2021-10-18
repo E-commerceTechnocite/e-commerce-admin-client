@@ -13,19 +13,20 @@ import Skeleton from "./skeleton/Skeleton"
 interface MediaLibraryContainerPropsInterface {
   numberOfImages?: number
   upperPagination?: boolean
+  mini?: boolean
   libraryToParent?: (data) => void
 }
 
 const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
-  numberOfImages = 100,
+  numberOfImages = 120,
   upperPagination = true,
+  mini = false,
   libraryToParent,
 }) => {
   const [pictures, setPictures] = useState<PaginationModel<PictureModel>>(null)
   const [page, setPage] = useState(1)
   const [files, setFiles] = useState<File[]>([])
   const [filesSelected, setFilesSelected] = useState<PictureModel[]>([])
-  const [tempeFilesSelected, setTempeFilesSelected] = useState<PictureModel[]>([])
   const [imagePending, setImagePending] = useState(false)
   const inputEl = useRef<HTMLInputElement>()
   const history = useHistory()
@@ -75,28 +76,41 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
 
   // pass to parent selected files
   const sendData = () => {
-    filesSelected.map(file => libraryToParent(file))
+    filesSelected.map((file) => libraryToParent(file))
     setFilesSelected([])
-
   }
 
   // Verify if file is unique and push it
   const pushFile = (pic) => {
-    // let setempeFilesSelected
+    const currentFileInArray = filesSelected.find(
+      (currentFile) => currentFile.id === pic.id
+    )
     if (filesSelected.length) {
       filesSelected.forEach(() => {
-        if (
-          filesSelected.find((currentFile) => currentFile.id === pic.id) ===
-          undefined
-        ) {
-          setFilesSelected(file => [...file, pic])
+        if (currentFileInArray === undefined) {
+          setFilesSelected([...filesSelected, pic])
+        } else if (currentFileInArray) {
+          let indexFile = filesSelected.findIndex(
+            (currentFile) => currentFile.id === pic.id
+          )
+          setFilesSelected((prevState) => prevState.splice(indexFile, 1))
         }
       })
     } else {
-      setFilesSelected(file => [...file, pic])
+      setFilesSelected((file) => [...file, pic])
     }
     console.log(filesSelected)
+  }
 
+  // Return true is image is selected in the library
+  const isSelected = (id: string) => {
+    if (filesSelected.find((currentFile) => currentFile.id === id)) {
+      return true
+    } else if (
+      filesSelected.find((currentFile) => currentFile.id !== id) === undefined
+    ) {
+      return false
+    }
   }
 
   // Upload files when new ones uploaded
@@ -112,13 +126,17 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   return (
     <>
       <div className="media-library-container-component">
-        <div>
-          <div>
+        <div className="top">
+          <div className="search">
             <i className="fas fa-search" />
             <input type="text" placeholder="Search..." />
           </div>
           <div className="button-group">
-            <label htmlFor="myFile" className="action">
+            <label
+              htmlFor="myFile"
+              className="action"
+              style={!mini ? { borderRadius: "4px" } : {}}
+            >
               Add
               <input
                 type="file"
@@ -131,9 +149,11 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                 onChange={(e) => setFiles([].slice.call(e.target.files))}
               />
             </label>
-            <button type="button" className="action" onClick={sendData}>
-              Select
-            </button>
+            {mini && (
+              <button type="button" className="action" onClick={sendData}>
+                Select
+              </button>
+            )}
           </div>
         </div>
         {imagePending && <Skeleton nbFrames={numberOfImages} />}
@@ -146,7 +166,10 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
               {pictures &&
                 pictures.data.map((pic) => {
                   return (
-                    <li key={pic.id}>
+                    <li
+                      key={pic.id}
+                      className={`${isSelected(pic.id) ? "selected" : ""}`}
+                    >
                       <picture>
                         <img
                           src={`${config.api}` + pic.uri}
