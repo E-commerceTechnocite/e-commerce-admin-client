@@ -81,26 +81,30 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   }
 
   // Verify if file is unique and push it
-  const pushFile = (pic) => {
+  const pushFile = (pic: PictureModel) => {
     const currentFileInArray = filesSelected.find(
       (currentFile) => currentFile.id === pic.id
     )
     if (filesSelected.length) {
-      filesSelected.forEach(() => {
-        if (currentFileInArray === undefined) {
-          setFilesSelected([...filesSelected, pic])
-        } else if (currentFileInArray) {
-          let indexFile = filesSelected.findIndex(
-            (currentFile) => currentFile.id === pic.id
-          )
-          setFilesSelected((prevState) => prevState.splice(indexFile, 1))
-        }
-      })
+      if (currentFileInArray === undefined) {
+        setFilesSelected([...filesSelected, pic])
+      } else if (currentFileInArray) {
+        const indexFile = filesSelected.findIndex(
+          (currentFile) => currentFile.id === pic.id
+        )
+        const newFilesSelected = [...filesSelected]
+        newFilesSelected.splice(indexFile, 1);
+        setFilesSelected(newFilesSelected)
+      }
     } else {
       setFilesSelected((file) => [...file, pic])
     }
-    console.log(filesSelected)
+    // console.log(filesSelected)
   }
+
+  useEffect(() => {
+    console.log(filesSelected)
+  }, [filesSelected])
 
   // Return true is image is selected in the library
   const isSelected = (id: string) => {

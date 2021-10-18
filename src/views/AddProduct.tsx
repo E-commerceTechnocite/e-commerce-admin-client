@@ -36,12 +36,12 @@ const AddProduct = () => {
   const history = useHistory()
 
   // Check if image in slide is the thumb
-  const isThumb = (thumbId, currentImage) => {
+  const isThumb = (thumbId: string, currentImage: string) => {
     if (thumbId === currentImage) return true
   }
 
   // Send request data from formik form submit
-  const requestSubmit = (data: any) => {
+  const requestSubmit = (data: {}) => {
     return http.post(`${config.api}/v1/product`, data, {
       headers: {
         "Content-Type": "application/json",
@@ -49,7 +49,7 @@ const AddProduct = () => {
       },
     })
   }
-  const submitProduct = async (data) => {
+  const submitProduct = async (data: {}) => {
     const file = {
       picturesId,
       thumbnailId: thumbnail.id,
@@ -73,7 +73,6 @@ const AddProduct = () => {
         history.push("/products")
       }
     } catch {
-      console.log("select file")
       setFileError(true)
     }
   }
@@ -88,7 +87,7 @@ const AddProduct = () => {
   }
 
   // Remove image from slider
-  const removeImage = (id) => {
+  const removeImage = (id: string) => {
     const libraryArray = libraryData.filter((item) => item.id !== id)
     const picturesArray = picturesId
     for (let i = 0; i < picturesArray.length; i++) {
@@ -96,6 +95,7 @@ const AddProduct = () => {
     }
     setLibraryData(libraryArray)
     setPicturesId(picturesArray)
+    // setThumbnail(null)
   }
 
   // Get request for tax rule group form select
@@ -137,10 +137,6 @@ const AddProduct = () => {
     getCategoryGroup().then()
     getTaxRuleGroup().then()
   }, [])
-
-  useEffect(() => {
-    console.log(thumbnail)
-  }, [thumbnail])
 
   // Slider settings
   var settings = {

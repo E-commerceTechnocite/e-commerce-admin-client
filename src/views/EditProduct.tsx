@@ -43,12 +43,12 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
   const [product, setProduct] = useState<ProductModel>()
 
    // Check if image in slide is the thumb
-   const isThumb = (thumbId, currentImage) => {
+   const isThumb = (thumbId: string, currentImage: string) => {
     if (thumbId === currentImage) return true
   }
 
   // Send request data from formik form submit
-  const requestSubmit = (data: any) => {
+  const requestSubmit = (data: {}) => {
     return http.patch(`${config.api}/v1/product/${params.slug}`, data, {
       headers: {
         "Content-Type": "application/json",
@@ -56,7 +56,7 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
       },
     })
   }
-  const submitProduct = async (data) => {
+  const submitProduct = async (data: {}) => {
     const file = {
       picturesId,
       thumbnailId: thumbnail.id,
@@ -70,9 +70,7 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
         if (error) {
           console.error(error.message)
           history.push({
-            pathname: "/login",
-            search: "?success=true",
-            state: { success: true },
+            pathname: "/login"
           })
         }
         history.push({
@@ -81,7 +79,7 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
         })
         history.push("/products")
       }
-    } catch (error) {
+    } catch {
       setFileError(true)
     }
   }
@@ -96,7 +94,7 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
   }
 
   // Remove image from slider
-  const removeImage = (id) => {
+  const removeImage = (id: string) => {
     const libraryArray = libraryData.filter((item) => item.id !== id)
     const picturesArray = picturesId
     for (let i = 0; i < picturesArray.length; i++) {
@@ -104,11 +102,7 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
     }
     setLibraryData(libraryArray)
     setPicturesId(picturesArray)
-    if (!picturesId.length) {
-      SetThumbnail(null)
-    } else {
-      SetThumbnail(libraryArray[0])
-    }
+    // setThumbnail(null)
   }
 
   // Get request for tax rule group form select
@@ -235,7 +229,6 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
                           <NumberInput name={"price"} label={"Price"} />
                         </div>
                       </div>
-
                         <div className="current-images">
                           <picture>
                           {!thumbnail && (
