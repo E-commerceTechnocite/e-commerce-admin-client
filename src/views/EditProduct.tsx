@@ -42,8 +42,8 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
   const params: { slug: string } = useParams()
   const [product, setProduct] = useState<ProductModel>()
 
-   // Check if image in slide is the thumb
-   const isThumb = (thumbId: string, currentImage: string) => {
+  // Check if image in slide is the thumb
+  const isThumb = (thumbId: string, currentImage: string) => {
     if (thumbId === currentImage) return true
   }
 
@@ -57,11 +57,11 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
     })
   }
   const submitProduct = async (data: {}) => {
-    const file = {
-      picturesId,
-      thumbnailId: thumbnail.id,
-    }
     try {
+      const file = {
+        picturesId,
+        thumbnailId: thumbnail.id,
+      }
       const isValid = await imagesSchema.validate(file)
       if (isValid) {
         setFileError(false)
@@ -70,7 +70,7 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
         if (error) {
           console.error(error.message)
           history.push({
-            pathname: "/login"
+            pathname: "/login",
           })
         }
         history.push({
@@ -229,59 +229,58 @@ const EditProduct: React.FunctionComponent<IEditProductProps> = () => {
                           <NumberInput name={"price"} label={"Price"} />
                         </div>
                       </div>
-                        <div className="current-images">
-                          <picture>
+                      <div className="current-images">
+                        <picture>
                           {!thumbnail && (
-                        <div className="placeholder">
-                          Select an image to set the thumbnail
-                        </div>
-                      )}
-                      {thumbnail && (
-                        <div className="placeholder">
-                          <img
-                            src={`${config.api + thumbnail.uri}`}
-                            alt={thumbnail.title}
-                          />
-                        </div>
-                      )}
-                          </picture>
-                          {!!libraryData.length && thumbnail && (
-                            <Slider className="slider" {...settings}>
-                              {libraryData.map((image) => (
-                                 <picture
-                                 className={`slide ${
-                                   isThumb(thumbnail.id, image.id)
-                                     ? "is-thumb"
-                                     : ""
-                                 }`}
-                                 key={image.id}
-                                 onClick={() => SetThumbnail(image)}
-                               >
-                                  <div
-                                    className="top-border"
-                                    onClick={() => removeImage(image.id)}
-                                  >
-                                    <i className="fas fa-window-close"></i>
-                                  </div>
-                                  <img src={config.api + image.uri} />
-                                </picture>
-                              ))}
-                            </Slider>
+                            <div className="placeholder">
+                              Select an image to set the thumbnail
+                            </div>
                           )}
-                        </div>
-
-                        </div>
-                      <div className="pictures">
-                        <MediaLibraryContainer
-                          numberOfImages={38}
-                          upperPagination={false}
-                          mini={true}
-                          libraryToParent={libraryToParent}
-                        />
-                        {fileError && (
+                          {thumbnail && (
+                            <div className="placeholder">
+                              <img
+                                src={`${config.api + thumbnail.uri}`}
+                                alt={thumbnail.title}
+                              />
+                            </div>
+                          )}
+                          {fileError && (
                           <div className="error">Select a file</div>
                         )}
+                        </picture>
+                        {!!libraryData.length && thumbnail && (
+                          <Slider className="slider" {...settings}>
+                            {libraryData.map((image) => (
+                              <picture
+                                className={`slide ${
+                                  isThumb(thumbnail.id, image.id)
+                                    ? "is-thumb"
+                                    : ""
+                                }`}
+                                key={image.id}
+                                onClick={() => SetThumbnail(image)}
+                              >
+                                <div
+                                  className="top-border"
+                                  onClick={() => removeImage(image.id)}
+                                >
+                                  <i className="fas fa-window-close"></i>
+                                </div>
+                                <img src={config.api + image.uri} />
+                              </picture>
+                            ))}
+                          </Slider>
+                        )}
                       </div>
+                    </div>
+                    <div className="pictures">
+                      <MediaLibraryContainer
+                        numberOfImages={38}
+                        upperPagination={false}
+                        mini={true}
+                        libraryToParent={libraryToParent}
+                      />
+                    </div>
                     <div className="description">
                       <Field
                         value={values.description}

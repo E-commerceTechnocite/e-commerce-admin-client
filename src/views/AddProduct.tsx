@@ -28,7 +28,7 @@ const AddProduct = () => {
   const [categoryId, setCategoryId] = useState<string>("")
   const [taxRuleGroupId, setTaxRuleGroupId] = useState<string>("")
   const [picturesId, setPicturesId] = useState<string[]>([])
-  const [thumbnail, setThumbnail] = useState<PictureModel | null>(null)
+  const [thumbnail, setThumbnail] = useState<PictureModel>(null)
   const [libraryData, setLibraryData] = useState<PictureModel[]>([])
   const [taxOptions, setTaxOptions] = useState<GroupData[]>([])
   const [categoryOptions, setCategoryOptions] = useState<GroupData[]>([])
@@ -49,12 +49,12 @@ const AddProduct = () => {
       },
     })
   }
-  const submitProduct = async (data: {}) => {
-    const file = {
-      picturesId,
-      thumbnailId: thumbnail.id,
-    }
+  const submitProduct = async (data: any) => {
     try {
+      const file = {
+        picturesId,
+        thumbnailId: thumbnail.id,
+      }
       const isValid = await imagesSchema.validate(file)
       if (isValid) {
         setFileError(false)
@@ -62,6 +62,7 @@ const AddProduct = () => {
         let { error } = await sendRequest(requestSubmit, data)
         if (error) {
           console.error(error.message)
+          console.error('wawa')
           history.push({
             pathname: "/login"
           })
@@ -207,6 +208,7 @@ const AddProduct = () => {
                           />
                         </div>
                       )}
+                    {fileError && <div className="error">Select a file</div>}
                     </picture>
                     {!!libraryData.length && (
                       <Slider className="slider" {...settings}>
@@ -241,7 +243,6 @@ const AddProduct = () => {
                     mini={true}
                     libraryToParent={libraryToParent}
                   />
-                  {fileError && <div className="error">Select a file</div>}
                 </div>
                 <div className="description">
                   <Field
