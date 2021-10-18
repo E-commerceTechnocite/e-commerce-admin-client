@@ -1,17 +1,31 @@
 import * as React from 'react';
-import UsersTable from '../components/UsersTable'
+import { useEffect, useState } from "react"
+import UsersList from '../components/UsersList'
 
-const Users: React.FunctionComponent = () => {
-    return (
-      <div className="users">
-        <div className="productButtonContainer">
-          <button className="action">USER+</button> 
-        </div>
-        <br/>
-        <h3>Users list</h3>
-        <br/>
-        <UsersTable />
-      </div>
+interface IUsersProps {
+  location?: {
+    state: {
+      success?: boolean
+    }
+  }
+}
+
+const Users: React.FunctionComponent<IUsersProps> = (props) => {
+  const [success, setSuccess] = useState<boolean|undefined>()
+  useEffect(() => {
+    if (props.location.state !== undefined) {
+      console.log(props.location.state)
+      setSuccess(props.location.state.success)
+    } else {
+      console.log(undefined)
+    }
+    
+  }, [])  
+  
+  return (
+      <>
+        <UsersList number={10} pagination={true} success={success}/>
+      </>
     )
   }
   export default Users;
