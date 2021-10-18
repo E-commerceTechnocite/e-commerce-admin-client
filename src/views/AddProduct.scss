@@ -7,112 +7,141 @@
 }
 
 .product-form form {
+  background: $primary-color-elts;
   display: flex;
   flex-direction: column;
   margin-bottom: 50px;
+  box-shadow: $primary-elts-shadow;
 
   .form-control {
     display: flex;
     flex-direction: column;
-    margin: 30px 20px 20px 20px;
+    margin: 25px 20px;
 
     label {
-      margin-bottom: 18px;
+      margin-bottom: 3px;
     }
 
     input,
     select {
       border: #d6d6d6 solid 1px;
+      color: $primary-color-font;
       border-radius: 4px;
       height: 35px;
       padding: 0 10px;
     }
   }
 
-  .top {
-    width: 100%;
+  > .top {
     display: flex;
-    justify-content: space-between;
-    .pictures {
-      box-shadow: $primary-elts-shadow;
-      background: $primary-color-elts;
+    justify-content: flex-start;
+
+    .inputs {
+      min-width: 450px;
+      max-width: 600px;
+      width: 100%;
       border-radius: 4px;
+      background: $primary-color-elts;
+    }
 
-      .slick-next::before,
+    .current-images {
+      display: flex;
+      max-height: 500px;
+      max-width: 485px;
+      min-width: 450px;
+      margin-left: 30px;
+      padding: 10px 30px 30px 30px;
+      background: $primary-color-elts;
+      border: 1px solid $primary-border-color;
+      border-radius: 4px;
+      margin-top: 20px;
+      .placeholder {
+        border: 1px solid $primary-border-color;
+        background: #eee;
+        overflow: hidden;
+        width: 350px;
+        height: 350px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        img {
+          width: 100%;
+        }
+        
+      }
+      .placeholder::before {
+        content: "THUMBNAIL";
+        font-size: 50px;
+        color: white;
+        opacity: 0.4;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+
+    .slider {
+      position: relative;
+      .is-thumb {
+        box-sizing: border-box;
+        border: 5px solid $primary-button;
+      }
       .slick-prev::before {
-        opacity: 1;
-        border-radius: 50%;
-        top: 3px;
-        font-size: 25px;
-        color: $primary-button;
+        position: absolute;
+        color: black;
+        bottom: 10px;
+        right: -165px;
+        transform: rotate(90deg);
       }
-      .slick-prev.slick-disabled:before,
-      .slick-next.slick-disabled:before {
-        opacity: 0;
+      .slick-next::before {
+        position: absolute;
+        color: black;
+        top: 10px;
+        right: 5px;
+        transform: rotate(90deg);
       }
+      width: 140px;
+      height: 100%;
+      .slick-slide {
+        display: flex;
+        justify-content: center;
+      }
+      .slide {
+        width: 120px !important;
+        overflow: hidden !important;
+        height: 120px;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center;
+        background: #eee;
+        position: relative;
 
-      .slick-next {
-        right: -1px !important;
-      }
-      .slick-prev {
-        z-index: 1;
-        left: -6px !important;
-      }
-      .slider {
-        border-bottom: 1px solid $primary-border-color;
-        .slide {
-          width: 120px !important;
-          overflow: hidden !important;
-          height: 120px;
-          display: flex !important;
-          justify-content: center !important;
-          align-items: center;
-          background: #eee;
-          position: relative;
-
-          .top-border {
-            position: absolute;
-            top: 0;
-            right: 0;
-            cursor: pointer;
-            i {
-              font-size: 20px;
-              color: $delete-button;
-            }
+        .top-border {
+          position: absolute;
+          top: 0;
+          right: 0;
+          cursor: pointer;
+          i {
+            font-size: 20px;
+            color: $delete-button;
           }
+        }
 
-          img {
-            max-width: 200px !important;
-          }
+        img {
+          max-width: 200px !important;
         }
       }
     }
-
-    .inputs > div:not(:last-child) {
-      margin: 25px 0 75px;
-    }
-
-    .inputs > div:last-child {
-      margin: 50px 0 25px;
-    }
-
-    > div {
-      width: 49%;
-      min-height: 500px;
-    }
-
-    > .inputs {
-      background: $primary-color-elts;
-      box-shadow: $primary-elts-shadow;
-
-      border-radius: 4px;
-    }
+  }
+  .pictures {
+    margin-top: 30px;
   }
 
   .description {
-    margin-top: 30px;
     background: $primary-color-elts;
-    box-shadow: $primary-elts-shadow;
+    border-bottom: 1px solid $primary-border-color;
 
     .ql-toolbar.ql-snow {
       padding: 18px;
@@ -130,20 +159,19 @@
   }
 
   .buttons {
-    margin-top: 20px;
+    margin-top: 15px;
     display: flex;
-
     button {
-      height: 33px;
-      border-radius: 7px;
-      padding: 10px 25px;
-      margin-right: 10px;
-      border: none;
-      font-size: 1rem;
-      font-style: normal;
-      display: flex;
-      align-items: center;
-      text-align: center;
+      width: 100%;
     }
   }
+}
+
+@media screen and (max-width: 1430px) {
+  .product-form form {
+    > .top {
+      flex-direction: column;
+    }
+  }
+
 }

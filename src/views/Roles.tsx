@@ -1,24 +1,31 @@
 import * as React from 'react';
-import { useHistory, withRouter } from "react-router"
 import { useEffect, useState } from "react"
-import { http } from "../util/http"
-import { domain } from "../util/environnement"
-import AddRoles from './AddRoles';
+import RolesList from '../components/RolesList'
 
-const Roles: React.FunctionComponent = () => {
-    const history = useHistory()
-    const onClick = (e: React.MouseEvent): void => {
-        history.push("/roles/addroles")
+interface IRolesProps {
+  location?: {
+    state: {
+      success?: boolean
     }
-    return (
-    <div className="roles">
-        <div className="productButtonContainer">
-            <button className="action" onClick={onClick}>ROLE+</button> 
-        </div>
-        <br/>
-        <h3>Role list</h3>
-        <br/>
-    </div>
+  }
+}
+
+const Roles: React.FunctionComponent<IRolesProps> = (props) => {
+  const [success, setSuccess] = useState<boolean|undefined>()
+  useEffect(() => {
+    if (props.location.state !== undefined) {
+      console.log(props.location.state)
+      setSuccess(props.location.state.success)
+    } else {
+      console.log(undefined)
+    }
+    
+  }, [])  
+  
+  return (
+      <>
+        <RolesList number={10} pagination={true} success={success}/>
+      </>
     )
   }
   export default Roles;
