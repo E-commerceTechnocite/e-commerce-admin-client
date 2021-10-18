@@ -35,7 +35,7 @@ const SideBar: React.FunctionComponent = () => {
     <div className="sidebar">
       <div className="logo">
         <Link to="/">
-          <h1 className="elLogo">SHOPTYK</h1>
+          <h1>SHOPTYK</h1>
         </Link>
       </div>
       <div className="search-bar">
