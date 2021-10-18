@@ -35,7 +35,7 @@ const SideBar: React.FunctionComponent = () => {
     <div className="sidebar">
       <div className="logo">
         <Link to="/">
-          <h1>LOGO</h1>
+          <h1>SHOPTYK</h1>
         </Link>
       </div>
       <div className="search-bar">
@@ -85,6 +85,46 @@ const SideBar: React.FunctionComponent = () => {
                   <i className="fas fa-user-tag"></i>
                 </span>
                 Roles
+              </Link>
+            </li>
+            <li className={`${isActive("/taxes") ? "sidebar-active" : ""}`}>
+              <Link to="/taxes">
+                <span>
+                  <i className="fas fa-donate"></i>
+                </span>
+                Taxes
+              </Link>
+            </li>
+            <li className={`${isActive("/categories") ? "sidebar-active" : ""}`}>
+              <Link to="/categories">
+                <span>
+                  <i className="fas fa-list"></i>
+                </span>
+                Categories
+              </Link>
+            </li>
+            <li className={`${isActive("/customers") ? "sidebar-active" : ""}`}>
+              <Link to="/customers">
+                <span>
+                  <i className="fas fa-user-circle"></i>
+                </span>
+                Customers
+              </Link>
+            </li>
+            <li className={`${isActive("/orders") ? "sidebar-active" : ""}`}>
+              <Link to="/orders">
+                <span>
+                  <i className="fas fa-cart-arrow-down"></i>
+                </span>
+                Orders
+              </Link>
+            </li>
+            <li className={`${isActive("/stock") ? "sidebar-active" : ""}`}>
+              <Link to="/stock">
+                <span>
+                  <i className="fas fa-dolly"></i>
+                </span>
+                Stock
               </Link>
             </li>
           </ul>

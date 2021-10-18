@@ -15,6 +15,12 @@ import AddRoles from "./views/AddRoles";
 import  NotFound from "./views/NotFound"
 import ScrollToTop from "./components/ScrollToTop";
 import { config } from "./index";
+import AddUsers from "./views/AddUsers";
+import Taxes from "./views/Taxes";
+import Categories from "./views/Categories";
+import Customers from "./views/Customers";
+import Orders from "./views/Orders";
+import Stock from "./views/Stock";
 
 export const App = () => {
   return (
@@ -29,12 +35,17 @@ export const App = () => {
               <Route exact path="/" component={Home} />
               <Route exact path="/products" component={Products} />
               <Route exact path="/products/add" component={AddProduct} />
-
               <Route path="/products/edit/:slug" component={EditProduct} />
               <Route exact path="/medias" component={MediaLibrary} />
               <Route exact path="/users" component={Users} />
+              <Route exact path="/users/addusers" component={AddUsers} />
               <Route exact path="/roles" component={Roles} />
               <Route exact path="/roles/addroles" component={AddRoles} />
+              <Route exact path="/taxes" component={Taxes}/>
+              <Route exact path="/categories" component={Categories}/>
+              <Route exact path="/customers" component={Customers}/>
+              <Route exact path="/orders" component={Orders}/>
+              <Route exact path="/stock" component={Stock}/>
             </DashboardLayout>
             {/* <Route path="*" component={NotFound} /> */}
           </Switch>
