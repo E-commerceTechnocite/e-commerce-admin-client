@@ -36,12 +36,12 @@ const AddProduct = () => {
   const history = useHistory();
 
   // Check if image in slide is the thumb
-  const isThumb = (thumbId, currentImage) => {
+  const isThumb = (thumbId: string, currentImage: string) => {
     if (thumbId === currentImage) return true;
   };
 
   // Send request data from formik form submit
-  const requestSubmit = (data: any) => {
+  const requestSubmit = (data: {}) => {
     return http.post(`${config.api}/v1/product`, data, {
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +73,6 @@ const AddProduct = () => {
         history.push("/products");
       }
     } catch {
-      console.log("select file");
       setFileError(true);
     }
   };
@@ -134,9 +133,7 @@ const AddProduct = () => {
     getTaxRuleGroup().then();
   }, []);
 
-  useEffect(() => {
-    // console.log(thumbnail);
-  }, [thumbnail]);
+  useEffect(() => {}, [thumbnail]);
 
   // Slider settings
   var settings = {
@@ -219,23 +216,16 @@ const AddProduct = () => {
                         {libraryData.map((image) => (
                           <picture
                             className={`slide ${
-                              isThumb(thumbnail?.id, image.id) ? "is-thumb" : ""
+                              isThumb(thumbnail.id, image.id) ? "is-thumb" : ""
                             }`}
                             key={image.id}
-                            onClick={(e) => {
-                              console.log("setting thumbnail");
-                              setThumbnail(image);
-                            }}
+                            onClick={() => setThumbnail(image)}
                           >
                             <div
                               className="top-border"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                console.log("removing thumbnail");
-                                removeImage(image.id);
-                              }}
+                              onClick={() => removeImage(image.id)}
                             >
-                              <i className="fas fa-window-close" />
+                              <i className="fas fa-window-close"></i>
                             </div>
                             <img src={config.api + image.uri} />
                           </picture>
@@ -275,4 +265,4 @@ const AddProduct = () => {
     </>
   );
 };
-export default AddProduct;
+export default AddProduct
