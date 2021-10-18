@@ -9,29 +9,29 @@ import { PaginationModel } from "../models/pagination/pagination.model"
 import { config } from "../index"
 import { sendRequest } from "../util/helpers/refresh"
 import { http } from "../util/http"
-import { RoleModel } from "../models/role/role.model"
+import { CategoryModel } from "../models/category/category.model"
 
-interface IRolesListProps {
+interface ICategoriesListProps {
   number?: number
   pagination?: boolean
   success?: boolean | undefined
 }
 
-const UserTable: React.FunctionComponent<IRolesListProps> = ({
+const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   number,
   pagination,
   success,
 }) => {
-  const [roles, setRoles] = useState<RoleModel[]>()
+  const [categories, setCategories] = useState<CategoryModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [page, setPage] = useState<number>(1)
   const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
-  // Request to get the page of the role list
+  // Request to get the page of the category list
   const pageRequest = () =>
-    http.get<PaginationModel<RoleModel>>(
-      `${config.api}/v1/role?page=${page}${number ? "&limit=" + number : ""}`,
+    http.get<PaginationModel<CategoryModel>>(
+      `${config.api}/v1/product-category?page=${page}${number ? "&limit=" + number : ""}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -44,19 +44,19 @@ const UserTable: React.FunctionComponent<IRolesListProps> = ({
     if (error) {
       history.push("/login")
     }
-    setRoles(data.data)
+    setCategories(data.data)
     setMeta(data.meta)
   }
 
   const deleteRequest = (id: string) => {
-    return http.delete(`${config.api}/v1/role/${id}`, null, {
+    return http.delete(`${config.api}/v1/product-category/${id}`, null, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
     })
   }
-  const deleteRoles = async (id: string, role: string) => {
-    if (confirm(`Delete role: ${role}?`)) {
+  const deleteCategories = async (id: string, category: string) => {
+    if (confirm(`Delete category: ${category}?`)) {
       let { error } = await sendRequest(deleteRequest, id)
       if (error) {
         console.log(error.message)
@@ -66,7 +66,7 @@ const UserTable: React.FunctionComponent<IRolesListProps> = ({
     }
   }
 
-  // Check if role has been added and if so displays a toast
+  // Check if category has been added and if so displays a toast
   useEffect(() => {
     console.log(success)
     if (success === true) {
@@ -91,37 +91,37 @@ const UserTable: React.FunctionComponent<IRolesListProps> = ({
               <input type="text" placeholder="Search..." />
             </div>
           )}
-          <Link to="/roles/addroles" className="action">
-            New Role
+          <Link to="/categories/addcategories" className="action">
+            New Category
           </Link>
           <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
             {" "}
             <i className="fas fa-check" />
-            Role Added
+            Category Added
             <i className="fas fa-times" onClick={() => setToast(false)} />
           </div>
         </div>
-        {!roles && !meta && <Loading />}
-        {roles && meta && (
+        {!categories && !meta && <Loading />}
+        {categories && meta && (
           <>
             <div className="role-list">
               <div className="legend">
-                <span>Role</span>
+                <span>Category</span>
                 <span>Action</span>
               </div>
-              {roles.map((role) => {
+              {categories.map((category) => {
                 return (
-                  <div className="role" key={role.id}>
-                    <span>{role.name}</span>
+                  <div className="role" key={category.id}>
+                    <span>{category.label}</span>
                     <Link
-                      to={`/roles/edit/${role.id}`}
+                      to={`/categories/edit/${category.id}`}
                       className="action"
                     >
                       Edit
                     </Link>
                     <button
                       className="delete"
-                      onClick={() => deleteRoles(role.id, role.name)}
+                      onClick={() => deleteCategories(category.id, category.label)}
                     >
                       <i className="fas fa-trash"></i>
                     </button>
@@ -137,4 +137,4 @@ const UserTable: React.FunctionComponent<IRolesListProps> = ({
   )
 }
 
-export default UserTable;
+export default CategoriesList;

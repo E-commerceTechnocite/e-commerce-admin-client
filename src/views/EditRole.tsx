@@ -1,16 +1,18 @@
 import * as React from 'react';
 import { useHistory, withRouter } from "react-router"
 import { useEffect, useState } from "react"
+import { useParams } from "react-router"
 import { http } from "../util/http"
 import { config } from "../index"
 import Loading from "../components/loading/Loading"
 
-const AddRoles: React.FunctionComponent = () => {
+const EditRole: React.FunctionComponent = () => {
     const history = useHistory()
-    const [rolePermissions, setRolePermissions] = useState<string[]>([])
+    const [role, setRole] = useState<string[]>([])
     const [permissions, setPermissions] = useState([])
     const [isPending, setIsPending] = useState(true)
     const [myInputValue, setMyInputValue] = useState("")
+    const params: { slug: string } = useParams()
     const perms = {};
 
     useEffect(() => {
@@ -57,21 +59,19 @@ const AddRoles: React.FunctionComponent = () => {
     });
 
     const checkboxChange = (e: boolean, value: string) => {
-        if(e) setRolePermissions([...rolePermissions, value])
-        else setRolePermissions(rolePermissions.filter((item) => item !== value))
+        if(e) setRole([...role, value])
+        else setRole(role.filter((item) => item !== value))
     }
 
     const onSubmit = (e: React.FormEvent): void => {
         e.preventDefault()
         setIsPending(true)
-        const body = JSON.stringify({ name: myInputValue, permissions: rolePermissions })
+        const body = JSON.stringify({ name: myInputValue, permissions: role })
         const token = sessionStorage.getItem("token")
         const options = {
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         }
-        http
-          .post<{ access_token: string; refresh_token: string }>(
-            `${config.api}/v1/role`,
+        http.patch(`${config.api}/v1/role/${params.slug}`,
             body,
             options
           )
@@ -117,4 +117,4 @@ const AddRoles: React.FunctionComponent = () => {
     </>
 };
 
-export default AddRoles;
+export default EditRole;

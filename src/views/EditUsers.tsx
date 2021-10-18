@@ -1,18 +1,20 @@
 import * as React from 'react';
 import { useHistory, withRouter } from "react-router"
+import { useParams } from "react-router"
 import { useEffect, useState } from "react"
 import { http } from "../util/http"
 import { config } from "../index"
 import Loading from "../components/loading/Loading"
 import { PaginationModel } from '../models/pagination/pagination.model'
 
-const AddUsers: React.FunctionComponent = () => {
+const EditUsers: React.FunctionComponent = () => {
     const history = useHistory()
     const [roles, setRoles] = useState([])
     const [isPending, setIsPending] = useState(true)
     const [username, setUsername] = useState("")
     const [email, setEmail] = useState("")
     const [roleId, setRoleId] = useState("")
+    const params: { slug: string } = useParams()
 
     useEffect(() => {
         const token = sessionStorage.getItem("token")
@@ -39,9 +41,7 @@ const AddUsers: React.FunctionComponent = () => {
         const options = {
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         }
-        http
-          .post<{ access_token: string; refresh_token: string }>(
-            `${config.api}/v1/user`,
+        http.patch(`${config.api}/v1/user/${params.slug}`,
             body,
             options
           )
@@ -53,7 +53,7 @@ const AddUsers: React.FunctionComponent = () => {
         {!isPending && (
             <div className="login-admin">
                 <form onSubmit={onSubmit}>
-                    <p>Add new user</p>
+                    <p>Edit user</p>
                     <div>
                         <input type="text" id="name" name="name" placeholder="Username..." required onChange={e => setUsername(e.target.value)}></input>
                         <i className="fas fa-user"></i>
@@ -82,4 +82,4 @@ const AddUsers: React.FunctionComponent = () => {
     </>
 };
 
-export default AddUsers;
+export default EditUsers;

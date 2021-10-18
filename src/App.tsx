@@ -21,6 +21,10 @@ import Categories from "./views/Categories";
 import Customers from "./views/Customers";
 import Orders from "./views/Orders";
 import Stock from "./views/Stock";
+import EditUsers from "./views/EditUsers";
+import EditRole from "./views/EditRole";
+import AddCategories from "./views/AddCategories";
+import EditCategories from "./views/EditCategories";
 
 export const App = () => {
   return (
@@ -35,14 +39,18 @@ export const App = () => {
               <Route exact path="/" component={Home} />
               <Route exact path="/products" component={Products} />
               <Route exact path="/products/add" component={AddProduct} />
-              <Route path="/products/edit/:slug" component={EditProduct} />
+              <Route exact path="/products/edit/:slug" component={EditProduct} />
               <Route exact path="/medias" component={MediaLibrary} />
               <Route exact path="/users" component={Users} />
               <Route exact path="/users/addusers" component={AddUsers} />
+              <Route exact path="/users/edit/:slug" component={EditUsers} />
               <Route exact path="/roles" component={Roles} />
               <Route exact path="/roles/addroles" component={AddRoles} />
+              <Route exact path="/roles/edit/:slug" component={EditRole} />
               <Route exact path="/taxes" component={Taxes}/>
               <Route exact path="/categories" component={Categories}/>
+              <Route exact path="/categories/addcategories" component={AddCategories}/>
+              <Route exact path="/categories/edit/:slug" component={EditCategories}/>
               <Route exact path="/customers" component={Customers}/>
               <Route exact path="/orders" component={Orders}/>
               <Route exact path="/stock" component={Stock}/>
