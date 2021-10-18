@@ -712,6 +712,13 @@ button {
   }
 }
 
+/* Taxes */ 
+.taxes {
+  background: $primary-color-elts;
+  box-shadow: $primary-elts-shadow;
+  border-radius: 4px;
+}
+
 /* Daily Information */
 .daily-information {
   display: grid;

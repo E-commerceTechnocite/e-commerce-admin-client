@@ -77,7 +77,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
       }, 10000)
     }
   }, [success])
-
+ 
   useEffect(() => {
     getProducts().then()
   }, [page, refreshPage])
