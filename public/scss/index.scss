@@ -84,6 +84,14 @@ button {
     cursor: pointer;
   }
 }
+.global-error {
+  margin-top: 5px;
+  border-radius: 4px;
+  background: rgb(255, 241, 241);
+  color: $delete-button;
+  padding: 10px;
+  border: 1px solid $delete-button;
+}
 
 /* Login Admin */
 .login-admin {

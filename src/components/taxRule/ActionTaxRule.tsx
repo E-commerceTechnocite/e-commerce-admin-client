@@ -32,6 +32,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   const [taxRuleGroup, setTaxRuleGroup] = useState<TaxRuleGroupModel[]>()
   const [tax, setTax] = useState<TaxModel[]>()
   const [country, setCountry] = useState<CountryModel[]>()
+  const [submitError, setSubmitError] = useState<string>(null)
   const history = useHistory()
   const params: { slug: string } = useParams()
   const [initialValues, setInitialValues] = useState<InitialValues>()
@@ -48,13 +49,23 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
     }
     return http.post(`${config.api}/tax-rule`, data, {
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
     })
   }
   const submitTaxRulePost = async (data: TaxRuleModel) => {
+    setSubmitError(null)
+
     let { error } = await sendRequest(taxRulePostRequest, data)
     if (error) {
+      if (error.statusCode === 400) {
+        console.log()
+        setSubmitError(
+          "This tax rule already exists, change tax group or country."
+        )
+        return
+      }
       history.push("/login")
     }
     history.push({
@@ -144,7 +155,6 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
 
   useEffect(() => {
     if (params.slug) {
-      console.log(params.slug)
       SubmitCurrentTax().then()
     } else {
       setInitialValues({
@@ -169,12 +179,18 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
             initialValues={initialValues}
             validationSchema={taxRuleSchema}
             onSubmit={(data) => {
-              delete data.taxRuleGroupId
-              delete data.countryId
+              // console.log(data)
+
+              if (params.slug) {
+                delete data.taxRuleGroupId
+                delete data.countryId
+              }
+              // console.log(data)
               submitTaxRulePost(data)
             }}
           >
-            {({ handleSubmit }) => {
+            {({ handleSubmit, values }) => {
+              // console.log(values)
               return (
                 <>
                   <form onSubmit={handleSubmit}>
@@ -196,6 +212,9 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
                     <TextInput name={"zipCode"} label={"Zip Code"} />
                     <TextAreaInput name={"description"} label={"Description"} />
                     <button className="action">submit</button>
+                    {submitError && (
+                      <div className="global-error">{submitError}</div>
+                    )}
                   </form>
                 </>
               )
