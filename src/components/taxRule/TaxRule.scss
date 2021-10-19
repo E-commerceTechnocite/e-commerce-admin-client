@@ -66,3 +66,84 @@
       padding-bottom: 20px;
   }
 }
+
+@media screen and (max-width: 1240px) {
+  .tax-rule {
+    .legend {
+      display: none!important;
+    }
+    .content {
+      .item {
+        grid-template-rows: 1fr 1fr;
+        align-items: center;
+        span {
+          position: relative;
+        }
+        span::before {
+          position: absolute;
+          content: "Tax Group";
+          font-size: 12px;
+          top: -13px;
+          color: #b3b3b3;
+        }
+        span:first-child {
+          grid-column-start: 1;
+          grid-column-end: 3;
+        }
+        span:first-child::before {
+          position: absolute;
+          content: "Group";
+          font-size: 12px;
+          top: -13px;
+        }
+        span:nth-child(2) {
+          grid-column-start: 4;
+          grid-column-end: 6;
+          grid-row-start: 1;
+        }
+        span:nth-child(2)::before {
+          position: absolute;
+          content: "Rate";
+          font-size: 12px;
+          top: -13px;
+        }
+        span:nth-child(3) {
+          grid-column-start: 6!important;
+          grid-column-end: 8!important;
+          grid-row-start: 1;
+          grid-row-end: 1;
+        }
+        span:nth-child(3)::before {
+          position: absolute;
+          content: "Country";
+          font-size: 12px;
+          top: -13px;
+        }
+        span:nth-child(4) {
+          grid-column-start: 1!important;
+          grid-column-end: 4;
+          grid-row-start: 2;
+          align-self: flex-end;
+        }
+        span:nth-child(4)::before {
+          position: absolute;
+          content: "Zip code";
+          font-size: 12px;
+          top: -13px;
+        }
+        span:nth-child(5) {
+          grid-column-start: 4!important;
+          grid-column-end: 8;
+          grid-row-start: 2;
+          align-self: flex-end;
+        }
+        span:nth-child(5)::before {
+          position: absolute;
+          content: "Description";
+          font-size: 12px;
+          top: -13px;
+        }
+      }
+    }
+  }
+}
