@@ -12,12 +12,15 @@ import { PaginationMetadataModel } from "../../models/pagination/pagination-meta
 import Pagination from "../pagination/Pagination"
 import { Link } from "react-router-dom"
 
-interface ITaxRuleProps {}
+interface ITaxRuleProps {
+  success?: boolean | undefined
+}
 
-const TaxRule: React.FunctionComponent<ITaxRuleProps> = () => {
+const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({ success }) => {
   const [taxRule, setTaxRule] = useState<TaxRuleModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [page, setPage] = useState<number>(1)
+  const [toast, setToast] = useState<boolean>(false)
   const [refreshPage, setRefreshPage] = useState<boolean>(false)
   const history = useHistory()
 
@@ -41,7 +44,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = () => {
     setMeta(data.meta)
   }
 
-// Delete request for tax rule
+  // Delete request for tax rule
   const deleteTaxRequest = (id: string) => {
     return http.delete(`${config.api}/tax-rule/${id}`, null, {
       headers: {
@@ -50,18 +53,27 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = () => {
     })
   }
   const deleteTax = async (id: string) => {
-  let { error } = await sendRequest(deleteTaxRequest, id)
-  if (error) {
-    console.log(error.message)
-    history.push("/login")
+    let { error } = await sendRequest(deleteTaxRequest, id)
+    if (error) {
+      history.push("/login")
+    }
+    setRefreshPage(!refreshPage)
   }
-  setRefreshPage(!refreshPage)
-}
 
   // Call the requests before render
   useEffect(() => {
     SubmitTaxRule().then()
   }, [page, refreshPage])
+
+  // Check if tax rule has been added
+  useEffect(() => {
+    if (success === true) {
+      setToast(true)
+      setTimeout(() => {
+        setToast(false)
+      }, 10000)
+    }
+  }, [success])
 
   return (
     <div className="tax-rule">
@@ -70,9 +82,15 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = () => {
           <i className="fas fa-search"></i>
           <input type="text" placeholder="Search..." />
         </div>
-        <Link to="/" className="action">
+        <Link to="/taxes/add-tax-rule" className="action">
           New Tax
         </Link>
+        <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
+          {" "}
+          <i className="fas fa-check" />
+          Tax Rule Added
+          <i className="fas fa-times" onClick={() => setToast(false)} />
+        </div>
       </div>
       {!taxRule && !meta && <Loading />}
       {taxRule && meta && (
@@ -86,32 +104,25 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = () => {
               <span>Description</span>
             </div>
             <div className="content">
-              {taxRule.map((tax) => {
-              console.log(tax.id)
-              return (
-                <>
-                  <div className="item" key={tax.id}>
-                    <span>{tax.taxRuleGroup.name}</span>
-                    <span>{tax.tax.rate}%</span>
-                    <span>{tax.country.name}</span>
-                    <span>{tax.zipCode}</span>
-                    <span>
-                      {tax.description.length >= 100
-                        ? tax.description.substr(0, 50) + "..."
-                        : tax.description}
-                    </span>
-                    <Link to={`/`} className="action edit">
-                      Edit
-                    </Link>
-                    <button
-                      className="delete"
-                      onClick={() => deleteTax(tax.id)}
-                    >
-                      <i className="fas fa-trash"></i>
-                    </button>
-                  </div>
-                </>
-              )})}
+              {taxRule.map((tax, index) => (
+                <div className="item" key={index}>
+                  <span>{tax.taxRuleGroup.name}</span>
+                  <span>{tax.tax.rate}%</span>
+                  <span>{tax.country.name}</span>
+                  <span>{tax.zipCode}</span>
+                  <span>
+                    {tax.description.length >= 100
+                      ? tax.description.substr(0, 50) + "..."
+                      : tax.description}
+                  </span>
+                  <Link to={`/`} className="action edit">
+                    Edit
+                  </Link>
+                  <button className="delete" onClick={() => deleteTax(tax.id)}>
+                    <i className="fas fa-trash"></i>
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
           <Pagination meta={meta} pageSetter={setPage} />

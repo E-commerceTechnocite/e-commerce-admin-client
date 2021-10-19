@@ -15,6 +15,7 @@ interface Options {
   deletedAt: string
   label?: string
   name?: string
+  rate?: string
 }
 
 const Select: React.FunctionComponent<ISelectProps> = (props) => {
@@ -28,6 +29,7 @@ const Select: React.FunctionComponent<ISelectProps> = (props) => {
           <option key={index} value={option.id}>
             {option.label}
             {option.name}
+            {option.rate && `${option.rate}%`}
           </option>
         ))}
       </select>

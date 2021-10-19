@@ -16,7 +16,8 @@ import  NotFound from "./views/NotFound"
 import ScrollToTop from "./components/ScrollToTop";
 import { config } from "./index";
 import AddUsers from "./views/AddUsers";
-import Taxes from "./views/Taxes";
+import Taxes from "./views/taxes/Taxes";
+import AddTaxeRule from "./views/taxes/AddTaxRule";
 import Categories from "./views/Categories";
 import Customers from "./views/Customers";
 import Orders from "./views/Orders";
@@ -30,7 +31,6 @@ export const App = () => {
           <ScrollToTop />
           <Switch>
             <Route path="/login" component={Login} />
-
             <DashboardLayout>
               <Route exact path="/" component={Home} />
               <Route exact path="/products" component={Products} />
@@ -42,6 +42,7 @@ export const App = () => {
               <Route exact path="/roles" component={Roles} />
               <Route exact path="/roles/addroles" component={AddRoles} />
               <Route exact path="/taxes" component={Taxes}/>
+              <Route exact path="/taxes/add-tax-rule" component={AddTaxeRule}/>
               <Route exact path="/categories" component={Categories}/>
               <Route exact path="/customers" component={Customers}/>
               <Route exact path="/orders" component={Orders}/>
