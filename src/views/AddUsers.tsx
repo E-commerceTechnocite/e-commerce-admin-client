@@ -51,18 +51,19 @@ const AddUsers: React.FunctionComponent = () => {
     return <>
         {isPending && <Loading />}
         {!isPending && (
-            <div className="login-admin">
+            <div className="add-user">
                 <form onSubmit={onSubmit}>
-                    <p>Add new user</p>
+                    <h2>New user</h2>
                     <div>
-                        <input type="text" id="name" name="name" placeholder="Username..." required onChange={e => setUsername(e.target.value)}></input>
-                        <i className="fas fa-user"></i>
-                    </div>
-                    <div className="email">
-                        <input type="email" id="email" name="email" placeholder="Email..." required onChange={e => setEmail(e.target.value)}/>
-                        <i className="fas fa-envelope" />
+                        <label>Username</label>
+                        <input type="text" id="name" name="name" required onChange={e => setUsername(e.target.value)}></input>
                     </div>
                     <div>
+                        <label>E-mail</label>
+                        <input type="email" id="email" name="email" required onChange={e => setEmail(e.target.value)}/>
+                    </div>
+                    <div>
+                        <label>Role</label>
                         <select name="selected_role" id="selected_role" onChange={e => setRoleId(e.target.value)}>
                         {
                             roles.map((item) => {
@@ -74,7 +75,7 @@ const AddUsers: React.FunctionComponent = () => {
                         </select>
                     </div>
                     <div>
-                        <button type="submit" className="action">Submit</button>
+                        <button type="submit" className="action">Create</button>
                     </div>   
                 </form>
             </div>
