@@ -43,6 +43,7 @@ export const App = () => {
               <Route exact path="/roles/addroles" component={AddRoles} />
               <Route exact path="/taxes" component={Taxes}/>
               <Route exact path="/taxes/add-tax-rule" component={AddTaxeRule}/>
+              <Route exact path="/taxes/edit-tax-rule/:slug" component={AddTaxeRule}/>
               <Route exact path="/categories" component={Categories}/>
               <Route exact path="/customers" component={Customers}/>
               <Route exact path="/orders" component={Orders}/>

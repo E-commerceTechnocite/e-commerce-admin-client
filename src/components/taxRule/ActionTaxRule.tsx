@@ -2,7 +2,7 @@ import * as React from "react"
 import Previous from "../previous/Previous"
 import { Formik, Field } from "formik"
 import { useEffect, useState } from "react"
-import { useHistory } from "react-router"
+import { useHistory, useParams } from "react-router"
 import { config } from "../../index"
 import { http } from "../../util/http"
 import { sendRequest } from "../../util/helpers/refresh"
@@ -19,23 +19,38 @@ import { TaxRuleModel } from "../../models/product/tax-rule.model"
 
 interface IActionTaxRuleProps {}
 
-const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = (props) => {
+interface InitialValues {
+  taxRuleGroupId?: string
+  countryId: string
+  taxId: string
+  zipCode: string
+  behavior: number
+  description: string
+}
+
+const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   const [taxRuleGroup, setTaxRuleGroup] = useState<TaxRuleGroupModel[]>()
   const [tax, setTax] = useState<TaxModel[]>()
   const [country, setCountry] = useState<CountryModel[]>()
   const history = useHistory()
+  const params: { slug: string } = useParams()
+  const [initialValues, setInitialValues] = useState<InitialValues>()
 
   // Post request for tax rule
   const taxRulePostRequest = (data: TaxRuleModel) => {
-    return http.post(
-      `${config.api}/tax-rule`, data,
-      {
+    if (params.slug) {
+      return http.patch(`${config.api}/tax-rule/${params.slug}`, data, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
-      }
-    )
+      })
+    }
+    return http.post(`${config.api}/tax-rule`, data, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      },
+    })
   }
   const submitTaxRulePost = async (data: TaxRuleModel) => {
     let { error } = await sendRequest(taxRulePostRequest, data)
@@ -104,6 +119,45 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = (props) => {
     SubmitTax().then()
     SubmittaxRuleGroup().then()
   }, [])
+
+  const currentTaxRequest = () => {
+    return http.get<TaxRuleModel>(`${config.api}/tax-rule/${params.slug}`, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      },
+    })
+  }
+  const SubmitCurrentTax = async () => {
+    let { data, error } = await sendRequest(currentTaxRequest)
+    if (error) {
+      history.push("/login")
+    }
+    setInitialValues({
+      taxRuleGroupId: data.taxRuleGroup.id,
+      countryId: data.country.id,
+      taxId: data.tax.id,
+      zipCode: data.zipCode,
+      behavior: 0,
+      description: data.description,
+    })
+  }
+
+  useEffect(() => {
+    if (params.slug) {
+      console.log(params.slug)
+      SubmitCurrentTax().then()
+    } else {
+      setInitialValues({
+        taxRuleGroupId: "",
+        countryId: "",
+        taxId: "",
+        zipCode: "",
+        behavior: 0,
+        description: "",
+      })
+    }
+  }, [params.slug])
+
   return (
     <>
       <Previous />
@@ -111,16 +165,12 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = (props) => {
       {country && tax && taxRuleGroup && (
         <div className="action-tax-rule">
           <Formik
-            initialValues={{
-              taxRuleGroupId: "",
-              countryId: "",
-              taxId: "",
-              zipCode: "",
-              behavior: 0,
-              description: "",
-            }}
+            enableReinitialize
+            initialValues={initialValues}
             validationSchema={taxRuleSchema}
             onSubmit={(data) => {
+              delete data.taxRuleGroupId
+              delete data.countryId
               submitTaxRulePost(data)
             }}
           >
@@ -128,17 +178,21 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = (props) => {
               return (
                 <>
                   <form onSubmit={handleSubmit}>
-                    <Select
-                      name={"countryId"}
-                      label={"Country"}
-                      options={country}
-                    />
+                    {!params.slug && (
+                      <Select
+                        name={"countryId"}
+                        label={"Country"}
+                        options={country}
+                      />
+                    )}
                     <Select name={"taxId"} label={"Tax"} options={tax} />
-                    <Select
-                      name={"taxRuleGroupId"}
-                      label={"Tax Group"}
-                      options={taxRuleGroup}
-                    />
+                    {!params.slug && (
+                      <Select
+                        name={"taxRuleGroupId"}
+                        label={"Tax Group"}
+                        options={taxRuleGroup}
+                      />
+                    )}
                     <TextInput name={"zipCode"} label={"Zip Code"} />
                     <TextAreaInput name={"description"} label={"Description"} />
                     <button className="action">submit</button>

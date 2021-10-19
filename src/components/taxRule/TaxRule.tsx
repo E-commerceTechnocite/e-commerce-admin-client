@@ -14,9 +14,10 @@ import { Link } from "react-router-dom"
 
 interface ITaxRuleProps {
   success?: boolean | undefined
+  id?: string
 }
 
-const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({ success }) => {
+const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({ success, id }) => {
   const [taxRule, setTaxRule] = useState<TaxRuleModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [page, setPage] = useState<number>(1)
@@ -115,7 +116,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({ success }) => {
                       ? tax.description.substr(0, 50) + "..."
                       : tax.description}
                   </span>
-                  <Link to={`/`} className="action edit">
+                  <Link to={`/taxes/edit-tax-rule/${tax.id}`} className="action edit">
                     Edit
                   </Link>
                   <button className="delete" onClick={() => deleteTax(tax.id)}>
