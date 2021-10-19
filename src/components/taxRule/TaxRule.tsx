@@ -18,6 +18,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = () => {
   const [taxRule, setTaxRule] = useState<TaxRuleModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [page, setPage] = useState<number>(1)
+  const [refreshPage, setRefreshPage] = useState<boolean>(false)
   const history = useHistory()
 
   // Get request for taxRules
@@ -42,7 +43,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = () => {
 
 // Delete request for tax rule
   const deleteTaxRequest = (id: string) => {
-    return http.delete(`${config.api}/v1/tax-rule/${id}`, null, {
+    return http.delete(`${config.api}/tax-rule/${id}`, null, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
@@ -52,14 +53,15 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = () => {
   let { error } = await sendRequest(deleteTaxRequest, id)
   if (error) {
     console.log(error.message)
-    // history.push("/login")
+    history.push("/login")
   }
+  setRefreshPage(!refreshPage)
 }
 
   // Call the requests before render
   useEffect(() => {
     SubmitTaxRule().then()
-  }, [page])
+  }, [page, refreshPage])
 
   return (
     <div className="tax-rule">
@@ -84,7 +86,9 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = () => {
               <span>Description</span>
             </div>
             <div className="content">
-              {taxRule.map((tax) => (
+              {taxRule.map((tax) => {
+              console.log(tax.id)
+              return (
                 <>
                   <div className="item" key={tax.id}>
                     <span>{tax.taxRuleGroup.name}</span>
@@ -107,7 +111,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = () => {
                     </button>
                   </div>
                 </>
-              ))}
+              )})}
             </div>
           </div>
           <Pagination meta={meta} pageSetter={setPage} />
