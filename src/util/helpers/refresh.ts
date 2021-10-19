@@ -1,5 +1,6 @@
-import { config } from "../../index"
+import { config } from "../../index";
 import { http, HttpException, HttpReturnValue } from "../http";
+import { auth } from "./auth";
 
 const refresh = async (): Promise<HttpException | null> => {
   console.log("hello update");
@@ -19,13 +20,14 @@ const refresh = async (): Promise<HttpException | null> => {
   }
 
   const { access_token, refresh_token: refresh } = data;
-  sessionStorage.setItem("token", access_token);
-  sessionStorage.setItem("refresh", refresh);
+  auth.access = access_token;
+  auth.refresh = refresh;
   return error;
 };
 
 export const sendRequest = async <T>(
-  req: (data?: any) => Promise<HttpReturnValue<T>>, data?: any
+  req: (data?: any) => Promise<HttpReturnValue<T>>,
+  data?: any
 ): Promise<HttpReturnValue<T>> => {
   const token = window.sessionStorage.getItem("token");
   const decodedToken = JSON.parse(atob(token.split(".")[1]));
