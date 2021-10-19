@@ -53,12 +53,19 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({ success, id }) => {
       },
     })
   }
-  const deleteTax = async (id: string) => {
-    let { error } = await sendRequest(deleteTaxRequest, id)
-    if (error) {
-      history.push("/login")
+  const deleteTax = async (
+    id: string,
+    name: number,
+    rate: number,
+    country: string
+  ) => {
+    if (confirm(`Delete tax rule: ${name} - ${country} - ${rate}% ?`)) {
+      let { error } = await sendRequest(deleteTaxRequest, id)
+      if (error) {
+        history.push("/login")
+      }
+      setRefreshPage(!refreshPage)
     }
-    setRefreshPage(!refreshPage)
   }
 
   // Call the requests before render
@@ -116,10 +123,23 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({ success, id }) => {
                       ? tax.description.substr(0, 50) + "..."
                       : tax.description}
                   </span>
-                  <Link to={`/taxes/edit-tax-rule/${tax.id}`} className="action edit">
+                  <Link
+                    to={`/taxes/edit-tax-rule/${tax.id}`}
+                    className="action edit"
+                  >
                     Edit
                   </Link>
-                  <button className="delete" onClick={() => deleteTax(tax.id)}>
+                  <button
+                    className="delete"
+                    onClick={() =>
+                      deleteTax(
+                        tax.id,
+                        tax.taxRuleGroup.name,
+                        tax.tax.rate,
+                        tax.country.name
+                      )
+                    }
+                  >
                     <i className="fas fa-trash"></i>
                   </button>
                 </div>
