@@ -53,28 +53,30 @@ const AddUsers: React.FunctionComponent = () => {
         {!isPending && (
             <div className="add-user">
                 <form onSubmit={onSubmit}>
-                    <h2>New user</h2>
-                    <div>
-                        <label>Username</label>
-                        <input type="text" id="name" name="name" required onChange={e => setUsername(e.target.value)}></input>
+                    <div className="add-user-title"><label>New user</label></div>
+                    <div className="add-user-infos">
+                        <div className="add-user-username">
+                            <label>Username</label>
+                            <input type="text" id="name" name="name" required onChange={e => setUsername(e.target.value)}></input>
+                        </div>
+                        <div className="add-user-email">
+                            <label>E-mail</label>
+                            <input type="email" id="email" name="email" required onChange={e => setEmail(e.target.value)}/>
+                        </div>
+                        <div className="add-user-role">
+                            <label>Role</label>
+                            <select name="selected_role" id="selected_role" onChange={e => setRoleId(e.target.value)}>
+                            {
+                                roles.map((item) => {
+                                    return (
+                                        <option value={item.id} key={item.id}>{item.name}</option>
+                                    )
+                                })
+                            }
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label>E-mail</label>
-                        <input type="email" id="email" name="email" required onChange={e => setEmail(e.target.value)}/>
-                    </div>
-                    <div>
-                        <label>Role</label>
-                        <select name="selected_role" id="selected_role" onChange={e => setRoleId(e.target.value)}>
-                        {
-                            roles.map((item) => {
-                                return (
-                                    <option value={item.id} key={item.id}>{item.name}</option>
-                                )
-                            })
-                        }
-                        </select>
-                    </div>
-                    <div>
+                    <div className="add-user-button">
                         <button type="submit" className="action">Create</button>
                     </div>   
                 </form>

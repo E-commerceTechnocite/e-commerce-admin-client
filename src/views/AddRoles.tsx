@@ -28,30 +28,35 @@ const AddRoles: React.FunctionComponent = () => {
             }
           })
     }, [])
+
+    const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      }
    
     permissions.forEach(item => {
         const [operation, entity] = item.split(':');
         let name = null
-        if (!perms[entity]) perms[entity] = []
+        const capitalizeEntity = capitalizeFirstLetter(entity)
+        if (!perms[capitalizeEntity]) perms[capitalizeEntity] = []
         switch(operation) {
             case 'r':
-                name = "read"
+                name = "Read"
                 break
             case 'c':
-                name = "create"
+                name = "Create"
                 break
             case 'u':
-                name = "update"
+                name = "Update"
                 break
             case 'd':
-                name = "delete"
+                name = "Delete"
                 break
             default:
                 break
         }
-        perms[entity].push({
+        perms[capitalizeEntity].push({
             value: item,
-            title: entity,
+            title: capitalizeEntity,
             name: name
         });
     });
@@ -81,38 +86,52 @@ const AddRoles: React.FunctionComponent = () => {
     return <>
         {isPending && <Loading />}
         {!isPending && (
+            //<div className="add-role">
             <form onSubmit={onSubmit}>
-                <div>
-                    <label>Role's name</label>
-                    <br/>
-                    <input type="text" id="name" name="name" placeholder="Enter the name here..." required onChange={e => setMyInputValue(e.target.value)}></input>
-                    <div className="AddWrap">
-                    {
-                        Object.entries(perms).map(([title, arr], index) => {
-                            return (<div key={index}>
-                                <h3>{title}</h3>
-                                <div className="attrs" id="attrs">
-                                    {  
-                                        Object.values(arr).map((perm, index) => {
-                                            return ( <div className="checkBox" key={index}>
-                                                <label>
-                                                    <input type="checkbox" id={perm.value} name={perm.value} onChange={(e) => checkboxChange(e.target.checked, perm.value)}></input>
-                                                    {perm.name}
-                                                </label>
-                                            </div>)
-                                        }) 
-                                    }
-                                </div>
+                <div className="perms-form">
+                    <div className="role-name">
+                        <div className="role-name-title">
+                            <h3>Role name</h3>
+                        </div>
+                        <div className="role-name-entry">
+                            <div className="role-name-entry-text">
+                                <input type="text" id="name" name="name" placeholder="Type here..." required onChange={e => setMyInputValue(e.target.value)}/>
                             </div>
-                            )
-                        })
-                    }
+                        </div>
+                    </div>
+                    <div className="role-permissions">
+                        <div className="role-permissions-title">
+                            <h3>Role permissions</h3>
+                        </div>
+                        <div className="permissions-list">
+                        {
+                            Object.entries(perms).map(([title, arr], index) => {
+                                return (<div className="permissions-choices" key={index}>
+                                    <div className="permissions-choices-title"><h4>{title}</h4></div>
+                                    <div className="attrs" id="attrs">
+                                        {  
+                                            Object.values(arr).map((perm, index) => {
+                                                return ( <div className="checkBox" key={index}>
+                                                    <label>
+                                                        <input type="checkbox" id={perm.value} name={perm.value} onChange={(e) => checkboxChange(e.target.checked, perm.value)}></input>
+                                                        {perm.name}
+                                                    </label>
+                                                </div>)
+                                            }) 
+                                        }
+                                    </div>
+                                </div>
+                                )
+                            })
+                        }
+                        </div>
                     </div> 
-                    <div>
+                    <div className="perms-button">
                         <button type="submit" className="action">Submit</button>
                     </div>
                 </div>
             </form>
+            //</div>
         )}
     </>
 };
