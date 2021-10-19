@@ -31,12 +31,17 @@ const AddCategories: React.FunctionComponent = () => {
     return <>
         <form onSubmit={onSubmit}>
             <div>
-                <label>Category's name</label>
-                <br/>
-                <input type="text" id="name" name="name" placeholder="Enter category here..." required onChange={e => setMyInputValue(e.target.value)}></input>
-                <div>
-                    <button type="submit" className="action">Submit</button>
+              <div className="category-name">
+                <div className="category-name-title">
+                  <label>Category's name</label>
                 </div>
+                <div className="category-name-entry">
+                  <input type="text" id="name" name="name" placeholder="Enter category here..." required onChange={e => setMyInputValue(e.target.value)}></input>
+                </div>
+              </div>
+              <div>
+                  <button type="submit" className="action">Submit</button>
+              </div>
             </div>
         </form>
     </>

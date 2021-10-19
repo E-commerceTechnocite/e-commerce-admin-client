@@ -94,9 +94,7 @@ const AddRoles: React.FunctionComponent = () => {
                             <h3>Role name</h3>
                         </div>
                         <div className="role-name-entry">
-                            <div className="role-name-entry-text">
-                                <input type="text" id="name" name="name" placeholder="Type here..." required onChange={e => setMyInputValue(e.target.value)}/>
-                            </div>
+                            <input type="text" id="name" name="name" placeholder="Type here..." required onChange={e => setMyInputValue(e.target.value)}/>
                         </div>
                     </div>
                     <div className="role-permissions">
