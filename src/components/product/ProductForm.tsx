@@ -26,13 +26,13 @@ import Loading from "../loading/Loading";
 interface FormValuesInterface {
   title: string;
   reference: string;
-  quantity: number;
+  quantity: number | string;
   stock?: {
     physical: number;
     pending: number;
     incoming: number;
   };
-  price: number;
+  price: number | string;
   description: string;
   categoryId: string;
   taxRuleGroupId: string;
@@ -64,8 +64,8 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
   let [initialValues, setInitialValues] = useState<FormValuesInterface>({
     title: "",
     reference: "",
-    quantity: 0,
-    price: 0,
+    quantity: "",
+    price: "",
     description: "",
     categoryId: "",
     taxRuleGroupId: "",
