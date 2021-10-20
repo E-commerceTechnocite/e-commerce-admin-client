@@ -40,14 +40,14 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   // Post request for tax rule
   const taxRulePostRequest = (data: TaxRuleModel) => {
     if (params.slug) {
-      return http.patch(`${config.api}/tax-rule/${params.slug}`, data, {
+      return http.patch(`${config.api}/v1/tax-rule/${params.slug}`, data, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
       })
     }
-    return http.post(`${config.api}/tax-rule`, data, {
+    return http.post(`${config.api}/v1/tax-rule`, data, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
@@ -132,7 +132,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   }, [])
 
   const currentTaxRequest = () => {
-    return http.get<TaxRuleModel>(`${config.api}/tax-rule/${params.slug}`, {
+    return http.get<TaxRuleModel>(`${config.api}/v1/tax-rule/${params.slug}`, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
@@ -189,8 +189,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
               submitTaxRulePost(data)
             }}
           >
-            {({ handleSubmit, values }) => {
-              // console.log(values)
+            {({ handleSubmit }) => {
               return (
                 <>
                   <form onSubmit={handleSubmit}>

@@ -28,7 +28,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({ success, id }) => {
   // Get request for taxRules
   const TaxRuleRequest = () => {
     return http.get<PaginationModel<TaxRuleModel>>(
-      `${config.api}/tax-rule?page=${page}&limit=5`,
+      `${config.api}/v1/tax-rule?page=${page}&limit=5`,
       {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,
@@ -47,7 +47,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({ success, id }) => {
 
   // Delete request for tax rule
   const deleteTaxRequest = (id: string) => {
-    return http.delete(`${config.api}/tax-rule/${id}`, null, {
+    return http.delete(`${config.api}/v1/tax-rule/${id}`, null, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
