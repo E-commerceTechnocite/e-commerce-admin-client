@@ -179,13 +179,10 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
             initialValues={initialValues}
             validationSchema={taxRuleSchema}
             onSubmit={(data) => {
-              // console.log(data)
-
               if (params.slug) {
                 delete data.taxRuleGroupId
                 delete data.countryId
               }
-              // console.log(data)
               submitTaxRulePost(data)
             }}
           >

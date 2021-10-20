@@ -17,11 +17,12 @@ import ScrollToTop from "./components/ScrollToTop";
 import { config } from "./index";
 import AddUsers from "./views/AddUsers";
 import Taxes from "./views/taxes/Taxes";
-import AddTaxeRule from "./views/taxes/AddTaxRule";
+import AddTaxRule from "./views/taxes/AddTaxRule";
 import Categories from "./views/Categories";
 import Customers from "./views/Customers";
 import Orders from "./views/Orders";
 import Stock from "./views/Stock";
+import AddTaxGroup from "./views/taxes/AddTaxGroup";
 
 export const App = () => {
   return (
@@ -42,8 +43,10 @@ export const App = () => {
               <Route exact path="/roles" component={Roles} />
               <Route exact path="/roles/addroles" component={AddRoles} />
               <Route exact path="/taxes" component={Taxes}/>
-              <Route exact path="/taxes/add-tax-rule" component={AddTaxeRule}/>
-              <Route exact path="/taxes/edit-tax-rule/:slug" component={AddTaxeRule}/>
+              <Route exact path="/taxes/add-tax-rule" component={AddTaxRule}/>
+              <Route exact path="/taxes/edit-tax-rule/:slug" component={AddTaxRule}/>
+              <Route exact path="/taxes/add-tax-group" component={AddTaxGroup}/>
+              <Route exact path="/taxes/edit-tax-group/:slug" component={AddTaxGroup}/>
               <Route exact path="/categories" component={Categories}/>
               <Route exact path="/customers" component={Customers}/>
               <Route exact path="/orders" component={Orders}/>

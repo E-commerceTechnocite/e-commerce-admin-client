@@ -14,10 +14,9 @@ import { Link } from "react-router-dom"
 
 interface ITaxRuleProps {
   success?: boolean | undefined
-  id?: string
 }
 
-const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({ success, id }) => {
+const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({ success }) => {
   const [taxRule, setTaxRule] = useState<TaxRuleModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [page, setPage] = useState<number>(1)

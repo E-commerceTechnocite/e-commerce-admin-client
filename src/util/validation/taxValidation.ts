@@ -16,3 +16,8 @@ export const taxRuleSchema = yup.object().shape({
     .max(10, "Must contain between 2 and 10 characters.")
     .required("Must contain between 2 and 10 characters."),
 })
+
+
+export const taxGroupSchema = yup.object().shape({
+  name: yup.string().required("Required.")
+})

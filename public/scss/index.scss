@@ -45,6 +45,18 @@ button {
 .action:hover {
   background: $primary-button-event;
 }
+.second-action {
+  background: $primary-button-event;
+  border-radius: 4px;
+  border: none;
+  color: $secondary-color-font;
+  padding: 8px 27px;
+  transition: 0.2s;
+  font-size: 15px;
+}
+.second-action:hover {
+  background: $primary-button;
+}
 
 .delete {
   background: $delete-button;
@@ -730,7 +742,18 @@ button {
   background: $primary-color-elts;
   box-shadow: $primary-elts-shadow;
   border-radius: 4px;
-  
+  .tabs {
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      .action:hover{
+        background: $primary-button;
+      }
+      button {
+        border-radius: 0;
+      }
+    }
+  }
 }
 
 /* Daily Information */
