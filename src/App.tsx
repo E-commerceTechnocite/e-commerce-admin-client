@@ -12,7 +12,7 @@ import MediaLibrary from "./views/MediaLibrary";
 import Users from "./views/Users";
 import Roles from "./views/Roles";
 import AddRoles from "./views/AddRoles";
-import  NotFound from "./views/NotFound"
+import NotFound from "./views/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 import { config } from "./index";
 import AddUsers from "./views/AddUsers";
@@ -21,6 +21,28 @@ import Categories from "./views/Categories";
 import Customers from "./views/Customers";
 import Orders from "./views/Orders";
 import Stock from "./views/Stock";
+import {
+  GuardedRoute,
+  GuardFunction,
+  GuardProvider,
+} from "react-router-guards";
+import { sendRequest } from "./util/helpers/refresh";
+import { http } from "./util/http";
+import { auth } from "./util/helpers/auth";
+
+const loginCheck = () =>
+  http.post(`${config.api}/v1/o-auth/check`, null, {
+    headers: { ...auth.headers },
+  });
+
+const loginGuard: GuardFunction = async (to, from, next) => {
+  const { error } = await sendRequest(loginCheck);
+  if (error) {
+    next.redirect("/login");
+  } else {
+    next();
+  }
+};
 
 export const App = () => {
   return (
@@ -30,24 +52,46 @@ export const App = () => {
           <ScrollToTop />
           <Switch>
             <Route path="/login" component={Login} />
-
-            <DashboardLayout>
-              <Route exact path="/" component={Home} />
-              <Route exact path="/products" component={Products} />
-              <Route exact path="/products/add" component={AddProduct} />
-              <Route path="/products/edit/:slug" component={EditProduct} />
-              <Route exact path="/medias" component={MediaLibrary} />
-              <Route exact path="/users" component={Users} />
-              <Route exact path="/users/addusers" component={AddUsers} />
-              <Route exact path="/roles" component={Roles} />
-              <Route exact path="/roles/addroles" component={AddRoles} />
-              <Route exact path="/taxes" component={Taxes}/>
-              <Route exact path="/categories" component={Categories}/>
-              <Route exact path="/customers" component={Customers}/>
-              <Route exact path="/orders" component={Orders}/>
-              <Route exact path="/stock" component={Stock}/>
-            </DashboardLayout>
-            {/* <Route path="*" component={NotFound} /> */}
+            <GuardProvider guards={[loginGuard]}>
+              <DashboardLayout>
+                <Switch>
+                  <GuardedRoute exact path="/" component={Home} />
+                  <GuardedRoute exact path="/products" component={Products} />
+                  <GuardedRoute
+                    exact
+                    path="/products/add"
+                    component={AddProduct}
+                  />
+                  <GuardedRoute
+                    path="/products/edit/:slug"
+                    component={EditProduct}
+                  />
+                  <GuardedRoute exact path="/medias" component={MediaLibrary} />
+                  <GuardedRoute exact path="/users" component={Users} />
+                  <GuardedRoute
+                    exact
+                    path="/users/addusers"
+                    component={AddUsers}
+                  />
+                  <GuardedRoute exact path="/roles" component={Roles} />
+                  <GuardedRoute
+                    exact
+                    path="/roles/addroles"
+                    component={AddRoles}
+                  />
+                  <GuardedRoute exact path="/taxes" component={Taxes} />
+                  <GuardedRoute
+                    exact
+                    path="/categories"
+                    component={Categories}
+                  />
+                  <GuardedRoute exact path="/customers" component={Customers} />
+                  <GuardedRoute exact path="/orders" component={Orders} />
+                  <GuardedRoute exact path="/stock" component={Stock} />
+                  <GuardedRoute path="*" component={NotFound} />
+                </Switch>
+              </DashboardLayout>
+            </GuardProvider>
           </Switch>
         </Router>
       </Provider>

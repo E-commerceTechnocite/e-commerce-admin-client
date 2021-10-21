@@ -1,21 +1,23 @@
-import * as React from "react"
-import { useEffect, useState } from "react"
-import { useHistory } from "react-router"
-import { Link } from "react-router-dom"
-import Loading from "../components//loading/Loading"
-import Pagination from "../components/pagination/Pagination"
-import { PaginationMetadataModel } from "../models/pagination/pagination-metadata.model"
-import { PaginationModel } from "../models/pagination/pagination.model"
-import { ProductModel } from "../models/product/product.model"
-import { config } from "../index"
-import { sendRequest } from "../util/helpers/refresh"
-import { http } from "../util/http"
-import { htmlToText } from "html-to-text"
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
+import Loading from "../components//loading/Loading";
+import Pagination from "../components/pagination/Pagination";
+import { PaginationMetadataModel } from "../models/pagination/pagination-metadata.model";
+import { PaginationModel } from "../models/pagination/pagination.model";
+import { ProductModel } from "../models/product/product.model";
+import { config } from "../index";
+import { sendRequest } from "../util/helpers/refresh";
+import { http } from "../util/http";
+import { htmlToText } from "html-to-text";
+import { auth } from "../util/helpers/auth";
+import Granted from "./Granted";
 
 interface IProductsListProps {
-  number?: number
-  pagination?: boolean
-  success?: boolean | undefined
+  number?: number;
+  pagination?: boolean;
+  success?: boolean | undefined;
 }
 
 const ProductsList: React.FunctionComponent<IProductsListProps> = ({
@@ -23,64 +25,64 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   pagination,
   success,
 }) => {
-  const [products, setProducts] = useState<ProductModel[]>()
-  const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [page, setPage] = useState<number>(1)
-  const [toast, setToast] = useState(false)
-  const [refreshPage, setRefreshPage] = useState(false)
-  const history = useHistory()
+  const [products, setProducts] = useState<ProductModel[]>();
+  const [meta, setMeta] = useState<PaginationMetadataModel>();
+  const [page, setPage] = useState<number>(1);
+  const [toast, setToast] = useState(false);
+  const [refreshPage, setRefreshPage] = useState(false);
+  const history = useHistory();
   // Request to get the page of the product list
   const pageRequest = () =>
     http.get<PaginationModel<ProductModel>>(
-      `${config.api}/v1/product?page=${page}${number ? "&limit=" + number : ""}`,
+      `${config.api}/v1/product?page=${page}${
+        number ? "&limit=" + number : ""
+      }`,
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          ...auth.headers,
         },
       }
-    )
+    );
   const getProducts = async () => {
-    let { data, error } = await sendRequest(pageRequest)
+    let { data, error } = await sendRequest(pageRequest);
     if (error) {
-      history.push("/login")
+      history.push("/login");
     }
-    setProducts(data.data)
-    setMeta(data.meta)
-  }
+    setProducts(data.data);
+    setMeta(data.meta);
+  };
 
   const deleteRequest = (id: string) => {
     return http.delete(`${config.api}/v1/product/${id}`, null, {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-      },
-    })
-  }
+      headers: { ...auth.headers },
+    });
+  };
   const deleteProduct = async (id: string, title: string) => {
     if (confirm(`Delete product: ${title}?`)) {
-      let { error } = await sendRequest(deleteRequest, id)
+      let { error } = await sendRequest(deleteRequest, id);
       if (error) {
-        console.log(error.message)
-        history.push("/login")
+        console.log(error.message);
+        history.push("/login");
       }
-      setRefreshPage(!refreshPage)
+      setRefreshPage(!refreshPage);
     }
-  }
+  };
 
   // Check if product has been added and if so displays a toast
   useEffect(() => {
-    console.log(success)
+    console.log(success);
     if (success === true) {
-      setToast(true)
+      setToast(true);
       setTimeout(() => {
-        setToast(false)
-      }, 10000)
+        setToast(false);
+      }, 10000);
     }
-  }, [success])
+  }, [success]);
 
   useEffect(() => {
-    getProducts().then()
-  }, [page, refreshPage])
+    getProducts().then();
+  }, [page, refreshPage]);
 
   return (
     <>
@@ -88,13 +90,15 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
         <div className="top-container">
           {pagination && (
             <div className="search">
-              <i className="fas fa-search"></i>
+              <i className="fas fa-search" />
               <input type="text" placeholder="Search..." />
             </div>
           )}
-          <Link to="/products/add" className="action">
-            New Product
-          </Link>
+          <Granted permissions={["c:product"]}>
+            <Link to="/products/add" className="action">
+              New Product
+            </Link>
+          </Granted>
           <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
             {" "}
             <i className="fas fa-check" />
@@ -115,7 +119,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                 <span>Price</span>
               </div>
               {products.map((product) => {
-                var strippedHtml = htmlToText(product.description)
+                var strippedHtml = htmlToText(product.description);
                 return (
                   <div className="product" key={product.id}>
                     {product.thumbnail && product.thumbnail.uri && (
@@ -128,7 +132,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                     )}
                     {!product.thumbnail && (
                       <span>
-                        <img />
+                        <img alt="placeholder" />
                       </span>
                     )}
                     <span>{product.title}</span>
@@ -140,20 +144,24 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                     </span>
                     <span>{product.category.label}</span>
                     <span>{product.price} €</span>
-                    <Link
-                      to={`/products/edit/${product.id}`}
-                      className="action"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      className="delete"
-                      onClick={() => deleteProduct(product.id, product.title)}
-                    >
-                      <i className="fas fa-trash"></i>
-                    </button>
+                    <Granted permissions={["u:product"]}>
+                      <Link
+                        to={`/products/edit/${product.id}`}
+                        className="action"
+                      >
+                        Edit
+                      </Link>
+                    </Granted>
+                    <Granted permissions={["d:product"]}>
+                      <button
+                        className="delete"
+                        onClick={() => deleteProduct(product.id, product.title)}
+                      >
+                        <i className="fas fa-trash" />
+                      </button>
+                    </Granted>
                   </div>
-                )
+                );
               })}
               {pagination && <Pagination meta={meta} pageSetter={setPage} />}
             </div>
@@ -161,7 +169,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
         )}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default ProductsList
+export default ProductsList;
