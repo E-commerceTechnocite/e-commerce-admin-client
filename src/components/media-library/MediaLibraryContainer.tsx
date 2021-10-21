@@ -10,6 +10,7 @@ import { sendRequest } from "../../util/helpers/refresh";
 import "./MediaLibraryContainer.scss";
 import Skeleton from "./skeleton/Skeleton";
 import { auth } from "../../util/helpers/auth";
+import Granted from "../Granted";
 
 interface MediaLibraryContainerPropsInterface {
   numberOfImages?: number;
@@ -133,23 +134,25 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
             <input type="text" placeholder="Search..." />
           </div>
           <div className="button-group">
-            <label
-              htmlFor="myFile"
-              className="action"
-              style={!mini ? { borderRadius: "4px" } : {}}
-            >
-              Add
-              <input
-                type="file"
-                id="myFile"
-                name="filename"
-                style={{ display: "none" }}
-                multiple
-                ref={inputEl}
-                onClick={(e) => (e.currentTarget.value = null)}
-                onChange={(e) => setFiles([].slice.call(e.target.files))}
-              />
-            </label>
+            <Granted permissions={["c:file"]}>
+              <label
+                htmlFor="myFile"
+                className="action"
+                style={!mini ? { borderRadius: "4px" } : {}}
+              >
+                Add
+                <input
+                  type="file"
+                  id="myFile"
+                  name="filename"
+                  style={{ display: "none" }}
+                  multiple
+                  ref={inputEl}
+                  onClick={(e) => (e.currentTarget.value = null)}
+                  onChange={(e) => setFiles([].slice.call(e.target.files))}
+                />
+              </label>
+            </Granted>
             {mini && (
               <button type="button" className="action" onClick={sendData}>
                 Select

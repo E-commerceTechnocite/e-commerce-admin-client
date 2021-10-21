@@ -11,6 +11,7 @@ import { sendRequest } from "../util/helpers/refresh";
 import { http } from "../util/http";
 import { RoleModel } from "../models/role/role.model";
 import { auth } from "../util/helpers/auth";
+import Granted from "./Granted";
 
 interface IRolesListProps {
   number?: number;
@@ -88,13 +89,15 @@ const UserTable: React.FunctionComponent<IRolesListProps> = ({
         <div className="top-container">
           {pagination && (
             <div className="search">
-              <i className="fas fa-search"></i>
+              <i className="fas fa-search" />
               <input type="text" placeholder="Search..." />
             </div>
           )}
-          <Link to="/roles/addroles" className="action">
-            New Role
-          </Link>
+          <Granted permissions={["c:role"]}>
+            <Link to="/roles/addroles" className="action">
+              New Role
+            </Link>
+          </Granted>
           <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
             {" "}
             <i className="fas fa-check" />
@@ -114,15 +117,19 @@ const UserTable: React.FunctionComponent<IRolesListProps> = ({
                 return (
                   <div className="role" key={role.id}>
                     <span>{role.name}</span>
-                    <Link to={`/roles/edit/${role.id}`} className="action">
-                      Edit
-                    </Link>
-                    <button
-                      className="delete"
-                      onClick={() => deleteRoles(role.id, role.name)}
-                    >
-                      <i className="fas fa-trash"></i>
-                    </button>
+                    <Granted permissions={["u:role"]}>
+                      <Link to={`/roles/edit/${role.id}`} className="action">
+                        Edit
+                      </Link>
+                    </Granted>
+                    <Granted permissions={["d:role"]}>
+                      <button
+                        className="delete"
+                        onClick={() => deleteRoles(role.id, role.name)}
+                      >
+                        <i className="fas fa-trash" />
+                      </button>
+                    </Granted>
                   </div>
                 );
               })}

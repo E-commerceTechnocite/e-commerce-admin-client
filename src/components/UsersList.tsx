@@ -11,6 +11,7 @@ import { sendRequest } from "../util/helpers/refresh";
 import { http } from "../util/http";
 import { UserModel } from "../models/user/user.model";
 import { auth } from "../util/helpers/auth";
+import Granted from "./Granted";
 
 interface IUsersListProps {
   number?: number;
@@ -86,13 +87,15 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
         <div className="top-container">
           {pagination && (
             <div className="search">
-              <i className="fas fa-search"></i>
+              <i className="fas fa-search" />
               <input type="text" placeholder="Search..." />
             </div>
           )}
-          <Link to="/users/addusers" className="action">
-            New User
-          </Link>
+          <Granted permissions={["c:user"]}>
+            <Link to="/users/addusers" className="action">
+              New User
+            </Link>
+          </Granted>
           <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
             {" "}
             <i className="fas fa-check" />
@@ -116,15 +119,19 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                     <span>{user.username}</span>
                     <span>{user.email}</span>
                     <span>{user.role.name}</span>
-                    <Link to={`/users/edit/${user.id}`} className="action">
-                      Edit
-                    </Link>
-                    <button
-                      className="delete"
-                      onClick={() => deleteUsers(user.id, user.username)}
-                    >
-                      <i className="fas fa-trash"></i>
-                    </button>
+                    <Granted permissions={["u:user"]}>
+                      <Link to={`/users/edit/${user.id}`} className="action">
+                        Edit
+                      </Link>
+                    </Granted>
+                    <Granted permissions={["d:user"]}>
+                      <button
+                        className="delete"
+                        onClick={() => deleteUsers(user.id, user.username)}
+                      >
+                        <i className="fas fa-trash" />
+                      </button>
+                    </Granted>
                   </div>
                 );
               })}

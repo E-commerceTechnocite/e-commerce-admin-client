@@ -12,6 +12,7 @@ import { sendRequest } from "../util/helpers/refresh";
 import { http } from "../util/http";
 import { htmlToText } from "html-to-text";
 import { auth } from "../util/helpers/auth";
+import Granted from "./Granted";
 
 interface IProductsListProps {
   number?: number;
@@ -89,13 +90,15 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
         <div className="top-container">
           {pagination && (
             <div className="search">
-              <i className="fas fa-search"></i>
+              <i className="fas fa-search" />
               <input type="text" placeholder="Search..." />
             </div>
           )}
-          <Link to="/products/add" className="action">
-            New Product
-          </Link>
+          <Granted permissions={["c:product"]}>
+            <Link to="/products/add" className="action">
+              New Product
+            </Link>
+          </Granted>
           <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
             {" "}
             <i className="fas fa-check" />
@@ -129,7 +132,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                     )}
                     {!product.thumbnail && (
                       <span>
-                        <img />
+                        <img alt="placeholder" />
                       </span>
                     )}
                     <span>{product.title}</span>
@@ -141,18 +144,22 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                     </span>
                     <span>{product.category.label}</span>
                     <span>{product.price} €</span>
-                    <Link
-                      to={`/products/edit/${product.id}`}
-                      className="action"
-                    >
-                      Edit
-                    </Link>
-                    <button
-                      className="delete"
-                      onClick={() => deleteProduct(product.id, product.title)}
-                    >
-                      <i className="fas fa-trash"></i>
-                    </button>
+                    <Granted permissions={["u:product"]}>
+                      <Link
+                        to={`/products/edit/${product.id}`}
+                        className="action"
+                      >
+                        Edit
+                      </Link>
+                    </Granted>
+                    <Granted permissions={["d:product"]}>
+                      <button
+                        className="delete"
+                        onClick={() => deleteProduct(product.id, product.title)}
+                      >
+                        <i className="fas fa-trash" />
+                      </button>
+                    </Granted>
                   </div>
                 );
               })}

@@ -5,13 +5,7 @@ interface GrantedPropsInterface {
   permissions: Permission[];
 }
 
-const Granted: FC<GrantedPropsInterface> = ({ children, permissions }) => {
-  const actualPermissions = auth.permissions;
-  return (
-    permissions.every((permission) =>
-      actualPermissions.includes(permission)
-    ) && <>{children}</>
-  );
-};
+const Granted: FC<GrantedPropsInterface> = ({ children, permissions }) =>
+  auth.hasEachPermissions(permissions) && <>{children}</>;
 
 export default Granted;
