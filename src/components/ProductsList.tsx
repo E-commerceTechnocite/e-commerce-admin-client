@@ -12,6 +12,7 @@ import { sendRequest } from "../util/helpers/refresh";
 import { http } from "../util/http";
 import { htmlToText } from "html-to-text";
 import { motion } from "framer-motion";
+import Granted from "./Granted";
 
 interface IProductsListProps {
   number?: number;
@@ -39,7 +40,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          ...auth.headers,
         },
       }
     );
@@ -54,9 +55,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
   const deleteRequest = (id: string) => {
     return http.delete(`${config.api}/v1/product/${id}`, null, {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-      },
+      headers: { ...auth.headers },
     });
   };
   const deleteProduct = async (id: string, title: string) => {
@@ -95,9 +94,11 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
               <input type="text" placeholder="Search..." />
             </div>
           )}
-          <Link to="/products/add" className="action">
-            New Product
-          </Link>
+          <Granted permissions={["c:product"]}>
+            <Link to="/products/add" className="action">
+              New Product
+            </Link>
+          </Granted>
           <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
             {" "}
             <i className="fas fa-check" />
@@ -164,21 +165,27 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                       <span>{product.category.label}</span>
                       <span>{product.price} €</span>
 
-                      <Link
-                        to={`/products/edit/${product.id}`}
-                        className="action"
-                      >
-                        Edit
-                      </Link>
-                      <motion.button
-                        whileHover={{
-                          scale: 1.1,
-                        }}
-                        className="delete"
-                        onClick={() => deleteProduct(product.id, product.title)}
-                      >
-                        <i className="fas fa-trash" />
-                      </motion.button>
+                      <Granted permissions={["u:product"]}>
+                        <Link
+                          to={`/products/edit/${product.id}`}
+                          className="action"
+                        >
+                          Edit
+                        </Link>
+                      </Granted>
+                      <Granted permissions={["d:product"]}>
+                        <motion.button
+                          whileHover={{
+                            scale: 1.1,
+                          }}
+                          className="delete"
+                          onClick={() =>
+                            deleteProduct(product.id, product.title)
+                          }
+                        >
+                          <i className="fas fa-trash" />
+                        </motion.button>
+                      </Granted>
                     </motion.div>
                   );
                 })}

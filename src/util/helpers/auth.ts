@@ -1,5 +1,22 @@
-const ACCESS_TOKEN_KEY = "token";
-const REFRESH_TOKEN_KEY = "refresh";
+export const ACCESS_TOKEN_KEY = "token";
+export const REFRESH_TOKEN_KEY = "refresh";
+export const PERMISSIONS_KEY = "permissions";
+
+type entity =
+  | "role"
+  | "product"
+  | "product-category"
+  | "country"
+  | "tax"
+  | "tax-rule"
+  | "tax-rule-group"
+  | "user"
+  | "file";
+export type Permission =
+  | `r:${entity}`
+  | `c:${entity}`
+  | `u:${entity}`
+  | `d:${entity}`;
 
 export const auth = {
   /**
@@ -48,5 +65,36 @@ export const auth = {
 
   get headers(): { authorization: string } {
     return { authorization: `Bearer ${this.access}` };
+  },
+
+  get permissions(): Permission[] {
+    return JSON.parse(window.sessionStorage.getItem(PERMISSIONS_KEY));
+  },
+
+  set permissions(permissions: Permission[] | string) {
+    if (Array.isArray(permissions)) {
+      permissions = JSON.stringify(permissions);
+    }
+    window.sessionStorage.setItem(PERMISSIONS_KEY, permissions);
+  },
+
+  hasEachPermissions(permissions: Permission[]): boolean {
+    const actualPermissions = this.permissions;
+    return permissions.every((permission) =>
+      actualPermissions.includes(permission)
+    );
+  },
+
+  hasOneOfPermissions(permissions: Permission[]): boolean {
+    const actualPermissions = this.permissions;
+    return permissions.some((permission) =>
+      actualPermissions.includes(permission)
+    );
+  },
+
+  clearSession() {
+    window.sessionStorage.removeItem(REFRESH_TOKEN_KEY);
+    window.sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+    window.sessionStorage.removeItem(PERMISSIONS_KEY);
   },
 };
