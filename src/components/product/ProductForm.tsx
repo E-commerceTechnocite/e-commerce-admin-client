@@ -132,7 +132,6 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
           pathname: "/products",
           state: { success: true },
         });
-        history.push("/products");
       }
     } catch {
       setFileError(true);
