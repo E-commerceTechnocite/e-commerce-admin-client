@@ -50,7 +50,7 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
   }
   history.push({
    pathname: "/taxes",
-   state: { successRate: true },
+   state: { successCountry: true },
   });
  };
 

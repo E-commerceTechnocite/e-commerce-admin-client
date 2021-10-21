@@ -11,12 +11,15 @@ import { PaginationModel } from "../../models/pagination/pagination.model";
 import Pagination from "../pagination/Pagination";
 import { Link } from "react-router-dom";
 
-interface ITaxRateProps {}
+interface ITaxRateProps {
+ successRate?: boolean | undefined;
+}
 
-const TaxRate: React.FunctionComponent<ITaxRateProps> = (props) => {
+const TaxRate: React.FunctionComponent<ITaxRateProps> = ({ successRate }) => {
  const [page, setPage] = useState<number>(1);
  const [rate, setRate] = useState<TaxModel[]>();
  const [meta, setMeta] = useState<PaginationMetadataModel>();
+ const [toast, setToast] = useState<boolean>(false);
  const history = useHistory();
 
  /**
@@ -49,6 +52,16 @@ const TaxRate: React.FunctionComponent<ITaxRateProps> = (props) => {
   SubmitTaxRateGroup().then();
  }, [page]);
 
+ // Check if a tax rate has been added and sends a confirmation toast
+ useEffect(() => {
+  if (successRate === true) {
+   setToast(true);
+   setTimeout(() => {
+    setToast(false);
+   }, 10000);
+  }
+ }, [successRate]);
+
  return (
   <>
    <div className="tax-rate">
@@ -60,12 +73,12 @@ const TaxRate: React.FunctionComponent<ITaxRateProps> = (props) => {
      <Link to="/taxes/add-tax-rate" className="action">
       New rate
      </Link>
-     {/* <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
-                        {" "}
-                        <i className="fas fa-check" />
-                        Tax Rate Added
-                        <i className="fas fa-times" onClick={() => setToast(false)} />
-                    </div> */}
+     <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
+      {" "}
+      <i className="fas fa-check" />
+      Tax Rate Added
+      <i className="fas fa-times" onClick={() => setToast(false)} />
+     </div>
     </div>
     {rate && meta && (
      <>

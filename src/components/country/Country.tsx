@@ -10,12 +10,17 @@ import { sendRequest } from "../../util/helpers/refresh";
 import Pagination from "../pagination/Pagination";
 import "./Country.scss";
 
-interface ICountryProps {}
+interface ICountryProps {
+ successCountry?: boolean | undefined;
+}
 
-const Country: React.FunctionComponent<ICountryProps> = (props) => {
+const Country: React.FunctionComponent<ICountryProps> = ({
+ successCountry,
+}) => {
  const [page, setPage] = useState<number>(1);
  const [country, setCountry] = useState<CountryModel[]>();
  const [meta, setMeta] = useState<PaginationMetadataModel>();
+ const [toast, setToast] = useState<boolean>(false);
  const history = useHistory();
 
  /**
@@ -48,6 +53,16 @@ const Country: React.FunctionComponent<ICountryProps> = (props) => {
   submitCountry().then();
  }, [page]);
 
+ // Check if a country has been added and sends a confirmation toast
+ useEffect(() => {
+  if (successCountry === true) {
+   setToast(true);
+   setTimeout(() => {
+    setToast(false);
+   }, 10000);
+  }
+ }, [successCountry]);
+
  return (
   <>
    <div className="country">
@@ -59,12 +74,12 @@ const Country: React.FunctionComponent<ICountryProps> = (props) => {
      <Link to="/taxes/add-country" className="action">
       New country
      </Link>
-     {/* <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
-                           {" "}
-                           <i className="fas fa-check" />
-                           Country Added
-                           <i className="fas fa-times" onClick={() => setToast(false)} />
-                       </div> */}
+     <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
+      {" "}
+      <i className="fas fa-check" />
+      Country Added
+      <i className="fas fa-times" onClick={() => setToast(false)} />
+     </div>
     </div>
     {country && meta && (
      <>

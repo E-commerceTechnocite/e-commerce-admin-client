@@ -10,6 +10,8 @@ interface ITaxesProps {
     state: {
       success?: boolean
       successGroup?: boolean
+      successRate?: boolean
+      successCountry?: boolean
     }
   }
 }
@@ -17,6 +19,8 @@ interface ITaxesProps {
 const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
   const [success, setSuccess] = useState<boolean | undefined>()
   const [successGroup, setSuccessGroup] = useState<boolean | undefined>()
+  const [successRate, setSuccessRate] = useState<boolean | undefined>()
+  const [successCountry, setSuccessCountry] = useState<boolean | undefined>()
   const [group, setGroup] = useState<boolean>(true)
   const [rate, setRate] = useState<boolean>(false)
   const [country, setCountry] = useState<boolean>(false)
@@ -45,6 +49,16 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
       console.log(props.location.state)
       if (props.location.state.success) setSuccess(props.location.state.success)
       if (props.location.state.successGroup) setSuccessGroup(props.location.state.successGroup)
+      if (props.location.state.successRate) {
+        setGroup(false)
+        setRate(true)
+        setSuccessRate(props.location.state.successRate)
+      }
+      if (props.location.state.successCountry) {
+        setGroup(false)
+        setCountry(true)
+        setSuccessCountry(props.location.state.successCountry)
+      }
     } else {
       console.log(undefined)
     }
@@ -84,12 +98,12 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
           )}
           {rate && (
             <>
-              <TaxRate />
+              <TaxRate successRate={successRate}/>
             </>
           )}
           {country && (
             <>
-              <Country />
+              <Country successCountry={successCountry}/>
             </>
           )}
         </div>
