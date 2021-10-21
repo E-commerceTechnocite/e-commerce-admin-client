@@ -10,6 +10,7 @@ import Previous from "../previous/Previous";
 import "./ActionTaxRate.scss";
 import { taxRateSchema } from "../../util/validation/taxValidation";
 import NumberInput from "../inputs/NumberInput";
+import Granted from "../Granted";
 
 interface IActionTaxRateProps {}
 
@@ -79,7 +80,7 @@ const ActionTaxRate: React.FunctionComponent<IActionTaxRateProps> = () => {
 
  useEffect(() => {
   if (params.slug) {
-    submitCurrentTaxRate().then();
+   submitCurrentTaxRate().then();
   }
  }, []);
  useEffect(() => {
@@ -105,7 +106,16 @@ const ActionTaxRate: React.FunctionComponent<IActionTaxRateProps> = () => {
        <>
         <form onSubmit={handleSubmit}>
          <NumberInput name={"rate"} label={"Rate"} />
-         <button className="action">submit</button>
+         {!params.slug && (
+          <Granted permissions={["c:tax"]}>
+           <button className="action">submit</button>
+          </Granted>
+         )}
+         {params.slug && (
+          <Granted permissions={["u:tax"]}>
+           <button className="action">submit</button>
+          </Granted>
+         )}
          {/* {submitError && (
                   <div className="global-error">{submitError}</div>
                 )} */}

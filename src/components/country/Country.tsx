@@ -9,6 +9,7 @@ import { config } from "../../index";
 import { sendRequest } from "../../util/helpers/refresh";
 import Pagination from "../pagination/Pagination";
 import "./Country.scss";
+import Granted from "../Granted";
 
 interface ICountryProps {
  successCountry?: boolean | undefined;
@@ -71,9 +72,11 @@ const Country: React.FunctionComponent<ICountryProps> = ({
       <i className="fas fa-search"></i>
       <input type="text" placeholder="Search..." />
      </div>
-     <Link to="/taxes/add-country" className="action">
-      New country
-     </Link>
+     <Granted permissions={["c:country"]}>
+      <Link to="/taxes/add-country" className="action">
+       New country
+      </Link>
+     </Granted>
      <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
       {" "}
       <i className="fas fa-check" />
@@ -93,18 +96,22 @@ const Country: React.FunctionComponent<ICountryProps> = ({
          <div className="item" key={index}>
           <span>{country.name}</span>
           <span>{country.code}</span>
-          <Link
-           to={`/taxes/edit-country/${country.id}`}
-           className="action edit"
-          >
-           Edit
-          </Link>
-          <button
-           className="delete"
-           // onClick={() => deleteGroup(country.id, country.name)}
-          >
-           <i className="fas fa-trash"></i>
-          </button>
+          <Granted permissions={["u:country"]}>
+           <Link
+            to={`/taxes/edit-country/${country.id}`}
+            className="action edit"
+           >
+            Edit
+           </Link>
+          </Granted>
+          <Granted permissions={["d:country"]}>
+           <button
+            className="delete"
+            onClick={() => alert('Feature not implemented yet.')}
+           >
+            <i className="fas fa-trash"></i>
+           </button>{" "}
+          </Granted>
          </div>
         ))}
        </div>

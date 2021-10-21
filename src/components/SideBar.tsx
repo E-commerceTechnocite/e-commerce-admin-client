@@ -87,7 +87,7 @@ const SideBar: React.FunctionComponent = () => {
                 Roles
               </NavLink>
             </Granted>
-            <Granted permissions={["r:tax", "r:tax-rule", "r:tax-rule-group"]}>
+            <Granted permissions={["r:tax", "r:tax-rule", "r:tax-rule-group", "r:country"]}>
               <NavLink uri="/taxes" icon="fas fa-donate">
                 Taxes
               </NavLink>

@@ -9,6 +9,7 @@ import Previous from "../previous/Previous";
 import { Formik } from "formik";
 import TextInput from "../inputs/TextInput";
 import { countrySchema } from "../../util/validation/taxValidation";
+import Granted from "../Granted";
 
 interface IActionCountryProps {}
 
@@ -108,7 +109,16 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
         <form onSubmit={handleSubmit}>
          <TextInput name={"name"} label={"Name"} />
          <TextInput name={"code"} label={"Code"} />
-         <button className="action">submit</button>
+         {!params.slug && (
+          <Granted permissions={["c:country"]}>
+           <button className="action">submit</button>
+          </Granted>
+         )}
+         {params.slug && (
+          <Granted permissions={["u:country"]}>
+           <button className="action">submit</button>
+          </Granted>
+         )}
          {/* {submitError && (
                  <div className="global-error">{submitError}</div>
                )} */}

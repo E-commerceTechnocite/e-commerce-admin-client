@@ -11,6 +11,7 @@ import Previous from "../previous/Previous";
 import "./ActionTaxGroup.scss";
 import { config } from "../../index";
 import { PaginationModel } from "../../models/pagination/pagination.model";
+import Granted from "../Granted";
 
 interface IActionTaxGroupProps {}
 
@@ -109,7 +110,17 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
        <>
         <form onSubmit={handleSubmit}>
          <TextInput name={"name"} label={"Name"} />
-         <button className="action">submit</button>
+         {!params.slug && (
+           <Granted permissions={["c:tax-rule-group"]}>
+           <button className="action">submit</button>
+           </Granted>
+         )}
+         {params.slug && (
+           <Granted permissions={["u:tax-rule-group"]}>
+           <button className="action">submit</button>
+           </Granted>
+         )}
+         
          {/* {submitError && (
                   <div className="global-error">{submitError}</div>
                 )} */}

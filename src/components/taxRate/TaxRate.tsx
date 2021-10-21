@@ -10,6 +10,7 @@ import { PaginationMetadataModel } from "../../models/pagination/pagination-meta
 import { PaginationModel } from "../../models/pagination/pagination.model";
 import Pagination from "../pagination/Pagination";
 import { Link } from "react-router-dom";
+import Granted from "../Granted";
 
 interface ITaxRateProps {
  successRate?: boolean | undefined;
@@ -70,9 +71,11 @@ const TaxRate: React.FunctionComponent<ITaxRateProps> = ({ successRate }) => {
       <i className="fas fa-search"></i>
       <input type="text" placeholder="Search..." />
      </div>
-     <Link to="/taxes/add-tax-rate" className="action">
-      New rate
-     </Link>
+     <Granted permissions={["c:tax"]}>
+      <Link to="/taxes/add-tax-rate" className="action">
+       New rate
+      </Link>
+     </Granted>
      <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
       {" "}
       <i className="fas fa-check" />
@@ -90,15 +93,19 @@ const TaxRate: React.FunctionComponent<ITaxRateProps> = ({ successRate }) => {
         {rate.map((rate, index) => (
          <div className="item" key={index}>
           <span>{rate.rate}%</span>
-          <Link to={`/taxes/edit-tax-rate/${rate.id}`} className="action edit">
-           Edit
-          </Link>
-          <button
-           className="delete"
-           // onClick={() => deleteGroup(rate.id, rate.name)}
-          >
-           <i className="fas fa-trash"></i>
-          </button>
+          <Granted permissions={["u:tax"]}>
+           <Link to={`/taxes/edit-tax-rate/${rate.id}`} className="action edit">
+            Edit
+           </Link>
+          </Granted>
+          <Granted permissions={["d:tax"]}>
+           <button
+            className="delete"
+            onClick={() => alert('Feature not implemented yet.')}
+           >
+            <i className="fas fa-trash"></i>
+           </button>
+          </Granted>
          </div>
         ))}
        </div>
