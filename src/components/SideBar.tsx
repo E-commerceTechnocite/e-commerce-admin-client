@@ -8,6 +8,8 @@ import {
   PERMISSIONS_KEY,
   REFRESH_TOKEN_KEY,
 } from "../util/helpers/auth";
+import Granted from "./Granted";
+import { FC } from "react";
 
 const SideBar: React.FunctionComponent = () => {
   const location = useLocation();
@@ -37,6 +39,22 @@ const SideBar: React.FunctionComponent = () => {
       });
   };
 
+  const NavLink: FC<{ uri: string; icon: string; exact?: boolean }> = ({
+    children,
+    uri,
+    icon,
+    exact = false,
+  }) => (
+    <li className={`${isActive(uri, exact) ? "sidebar-active" : ""}`}>
+      <Link to={uri}>
+        <span>
+          <i className={icon} />
+        </span>
+        {children}
+      </Link>
+    </li>
+  );
+
   return (
     <div className="sidebar">
       <div className="logo">
@@ -46,95 +64,61 @@ const SideBar: React.FunctionComponent = () => {
       </div>
       <div className="search-bar">
         <div>
-          <i className="fas fa-search"></i>
+          <i className="fas fa-search" />
           <input type="text" placeholder="Search..." />
         </div>
       </div>
       <nav>
         <div>
           <ul>
-            <li className={`${isActive("/", true) ? "sidebar-active" : ""}`}>
-              <Link to="/">
-                <span>
-                  <i className="fas fa-tachometer-alt "></i>
-                </span>
-                Dashboard
-              </Link>
-            </li>
-            <li className={`${isActive("/products") ? "sidebar-active" : ""}`}>
-              <Link to="/products">
-                <span>
-                  <i className="fas fa-folder-open"></i>
-                </span>
+            <NavLink uri="/" icon="fas fa-tachometer-alt" exact>
+              Dashboard
+            </NavLink>
+            <Granted permissions={["r:product"]}>
+              <NavLink uri="/products" icon="fas fa-folder-open">
                 Products
-              </Link>
-            </li>
-            <li className={`${isActive("/medias") ? "sidebar-active" : ""}`}>
-              <Link to="/medias">
-                <span>
-                  <i className="fas fa-image"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted permissions={["r:file"]}>
+              <NavLink uri="/medias" icon="fas fa-image">
                 Media library
-              </Link>
-            </li>
-            <li className={`${isActive("/users") ? "sidebar-active" : ""}`}>
-              <Link to="/users">
-                <span>
-                  <i className="fas fa-users"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted permissions={["r:user"]}>
+              <NavLink uri="/users" icon="fas fa-users">
                 Users
-              </Link>
-            </li>
-            <li className={`${isActive("/roles") ? "sidebar-active" : ""}`}>
-              <Link to="/roles">
-                <span>
-                  <i className="fas fa-user-tag"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted permissions={["r:role"]}>
+              <NavLink uri="/roles" icon="fas fa-user-tag">
                 Roles
-              </Link>
-            </li>
-            <li className={`${isActive("/taxes") ? "sidebar-active" : ""}`}>
-              <Link to="/taxes">
-                <span>
-                  <i className="fas fa-donate"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted permissions={["r:tax", "r:tax-rule", "r:tax-rule-group"]}>
+              <NavLink uri="/taxes" icon="fas fa-donate">
                 Taxes
-              </Link>
-            </li>
-            <li
-              className={`${isActive("/categories") ? "sidebar-active" : ""}`}
-            >
-              <Link to="/categories">
-                <span>
-                  <i className="fas fa-list"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted permissions={["r:product-category"]}>
+              <NavLink uri="/categories" icon="fas fa-list">
                 Categories
-              </Link>
-            </li>
-            <li className={`${isActive("/customers") ? "sidebar-active" : ""}`}>
-              <Link to="/customers">
-                <span>
-                  <i className="fas fa-user-circle"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted permissions={[]}>
+              <NavLink uri="/customers" icon="fas fa-user-circle">
                 Customers
-              </Link>
-            </li>
-            <li className={`${isActive("/orders") ? "sidebar-active" : ""}`}>
-              <Link to="/orders">
-                <span>
-                  <i className="fas fa-cart-arrow-down"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted permissions={[]}>
+              <NavLink uri="/orders" icon="fas fa-cart-arrow-down">
                 Orders
-              </Link>
-            </li>
-            <li className={`${isActive("/stock") ? "sidebar-active" : ""}`}>
-              <Link to="/stock">
-                <span>
-                  <i className="fas fa-dolly"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted permissions={[]}>
+              <NavLink uri="/stock" icon="fas fa-dolly">
                 Stock
-              </Link>
-            </li>
+              </NavLink>
+            </Granted>
           </ul>
         </div>
         <div>
@@ -142,7 +126,7 @@ const SideBar: React.FunctionComponent = () => {
             <li className="">
               <a href="">
                 <span>
-                  <i className="fas fa-id-badge"></i>
+                  <i className="fas fa-id-badge" />
                 </span>
                 Profile
               </a>
@@ -150,7 +134,7 @@ const SideBar: React.FunctionComponent = () => {
             <li>
               <a href="#" onClick={logout}>
                 <span>
-                  <i className="fas fa-sign-out-alt"></i>
+                  <i className="fas fa-sign-out-alt" />
                 </span>
                 Sign out
               </a>
