@@ -25,6 +25,10 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
 
+  /**
+   * Returns the get request for tax rule group
+   * @returns request
+   */
   const TaxRuleGroupRequest = () => {
     return http.get<PaginationModel<TaxRuleGroupModel>>(
       `${config.api}/v1/tax-rule-group?page=${page}&limit=5`,
@@ -35,6 +39,9 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
       }
     )
   }
+  /**
+   * Sends the get request for tax rule group and sets the state values from response
+   */
   const SubmitTaxRuleGroup = async () => {
     let { data, error } = await sendRequest(TaxRuleGroupRequest)
     if (error) {
@@ -44,16 +51,26 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
     setMeta(data.meta)
   }
 
-  const deleteTaxRequest = (id: string) => {
+  /**
+   * Returns the delete request for the tax group select
+   * @param id 
+   * @returns request
+   */
+  const deleteGroupRequest = (id: string) => {
     return http.delete(`${config.api}/v1/tax-rule-group/${id}`, null, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
     })
   }
+  /**
+   * Sends the delete request for tax rule group
+   * @param id 
+   * @param name 
+   */
   const deleteGroup = async (id: string, name: string) => {
     if (confirm(`Delete tax rule: ${name}?`)) {
-      let { error } = await sendRequest(deleteTaxRequest, id)
+      let { error } = await sendRequest(deleteGroupRequest, id)
       if (error) {
         history.push("/login")
       }
@@ -65,6 +82,7 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
     SubmitTaxRuleGroup().then()
   }, [page, refreshPage])
 
+  // Check if a tax group has been added and sends a confirmation toast 
   useEffect(() => {
     if (successGroup === true) {
       setToast(true)
@@ -99,8 +117,8 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
                 <span>Name</span>
               </div>
               <div className="content">
-                {group.map((group) => (
-                  <div className="item">
+                {group.map((group, index) => (
+                  <div className="item" key={index}>
                     <span>{group.name}</span>
                     <Link
                       to={`/taxes/edit-tax-group/${group.id}`}
