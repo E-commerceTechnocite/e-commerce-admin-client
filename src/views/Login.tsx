@@ -4,7 +4,7 @@ import { useHistory } from "react-router";
 import Loading from "../components/loading/Loading";
 import { http } from "../util/http";
 import { config } from "../index";
-import { auth } from "../util/helpers/auth";
+import { auth, Permission } from "../util/helpers/auth";
 import { sendRequest } from "../util/helpers/refresh";
 
 const Login: React.FunctionComponent = () => {
@@ -15,7 +15,7 @@ const Login: React.FunctionComponent = () => {
   const history = useHistory();
 
   const fetchPermissions = () =>
-    http.get<string[]>(`${config.api}/v1/o-auth/permissions`, {
+    http.get<Permission[]>(`${config.api}/v1/o-auth/permissions`, {
       headers: { ...auth.headers },
     });
 
