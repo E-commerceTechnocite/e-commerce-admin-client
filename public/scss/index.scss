@@ -742,6 +742,7 @@ button {
   background: $primary-color-elts;
   box-shadow: $primary-elts-shadow;
   border-radius: 4px;
+  margin-bottom: 20px;
   .tabs {
     .buttons {
       display: grid;
@@ -753,6 +754,9 @@ button {
         border-radius: 0;
       }
     }
+  }
+  .lists {
+    height: 600px;
   }
 }
 

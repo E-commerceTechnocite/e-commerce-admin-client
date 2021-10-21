@@ -60,7 +60,7 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
   * Returns get request for tax group
   * @returns
   */
- const CurrentTaxRuleGroupRequest = () => {
+ const currentTaxRuleGroupRequest = () => {
   return http.get<TaxRuleGroupModel>(
    `${config.api}/v1/tax-rule-group/${params.slug}`,
    {
@@ -73,8 +73,8 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
  /**
   * Submits get request for tax group
   */
- const SubmitCurrentTaxRuleGroup = async () => {
-  let { data, error } = await sendRequest(CurrentTaxRuleGroupRequest);
+ const submitCurrentTaxRuleGroup = async () => {
+  let { data, error } = await sendRequest(currentTaxRuleGroupRequest);
   if (error) {
    history.push("/login");
   }
@@ -83,7 +83,7 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
 
  useEffect(() => {
   if (params.slug) {
-   SubmitCurrentTaxRuleGroup().then();
+    submitCurrentTaxRuleGroup().then();
   }
  }, []);
  useEffect(() => {

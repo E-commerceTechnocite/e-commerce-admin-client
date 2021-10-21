@@ -1,8 +1,9 @@
 import * as React from "react"
 import { useEffect, useState } from "react"
 import { useHistory } from "react-router"
+import Country from "../../components/country/Country"
 import TaxGroup from "../../components/taxGroup/TaxGroup"
-import TaxRate from "../../components/taxRate/taxRate"
+import TaxRate from "../../components/taxRate/TaxRate"
 import TaxRule from "../../components/taxRule/TaxRule"
 interface ITaxesProps {
   location?: {
@@ -88,7 +89,7 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
           )}
           {country && (
             <>
-              <div>Country</div>
+              <Country />
             </>
           )}
         </div>

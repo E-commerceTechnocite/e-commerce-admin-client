@@ -2,7 +2,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { http } from "../../util/http";
 import { config } from "../../index";
-import "./taxRate.scss";
+import "./TaxRate.scss";
 import { sendRequest } from "../../util/helpers/refresh";
 import { useHistory } from "react-router";
 import { TaxModel } from "../../models/product/tax.model";

@@ -59,7 +59,7 @@ const ActionTaxRate: React.FunctionComponent<IActionTaxRateProps> = () => {
   * Returns get request for tax rate
   * @returns
   */
- const CurrentTaxRateRequest = () => {
+ const currentTaxRateRequest = () => {
   return http.get<TaxModel>(`${config.api}/v1/tax/${params.slug}`, {
    headers: {
     Authorization: `Bearer ${sessionStorage.getItem("token")}`,
@@ -69,8 +69,8 @@ const ActionTaxRate: React.FunctionComponent<IActionTaxRateProps> = () => {
  /**
   * Submits get request for tax rate
   */
- const SubmitCurrentTaxRate = async () => {
-  let { data, error } = await sendRequest(CurrentTaxRateRequest);
+ const submitCurrentTaxRate = async () => {
+  let { data, error } = await sendRequest(currentTaxRateRequest);
   if (error) {
    history.push("/login");
   }
@@ -79,7 +79,7 @@ const ActionTaxRate: React.FunctionComponent<IActionTaxRateProps> = () => {
 
  useEffect(() => {
   if (params.slug) {
-   SubmitCurrentTaxRate().then();
+    submitCurrentTaxRate().then();
   }
  }, []);
  useEffect(() => {

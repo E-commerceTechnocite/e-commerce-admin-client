@@ -99,7 +99,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   /**
    * Submits get request for tax group
    */ 
-  const SubmittaxRuleGroup = async () => {
+  const submitTaxRuleGroup = async () => {
     let { data, error } = await sendRequest(taxRuleGroupRequest)
     if (error) {
       history.push("/login")
@@ -121,7 +121,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   /**
    * Submits get request for tax rate
    */ 
-  const SubmitTax = async () => {
+  const submitTax = async () => {
     let { data, error } = await sendRequest(taxRequest)
     if (error) {
       history.push("/login")
@@ -143,7 +143,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   /**
    * Submits get request for country
    */ 
-  const SubmitCountry = async () => {
+  const submitCountry = async () => {
     let { data, error } = await sendRequest(countryRequest)
     if (error) {
       history.push("/login")
@@ -152,9 +152,9 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   }
 
   useEffect(() => {
-    SubmitCountry().then()
-    SubmitTax().then()
-    SubmittaxRuleGroup().then()
+    submitCountry().then()
+    submitTax().then()
+    submitTaxRuleGroup().then()
   }, [])
 
   const currentTaxRequest = () => {
