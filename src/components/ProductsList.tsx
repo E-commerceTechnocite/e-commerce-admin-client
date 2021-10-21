@@ -13,6 +13,7 @@ import { http } from "../util/http";
 import { htmlToText } from "html-to-text";
 import { motion } from "framer-motion";
 import Granted from "./Granted";
+import { auth } from "../util/helpers/auth";
 
 interface IProductsListProps {
   number?: number;
