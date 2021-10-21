@@ -25,6 +25,7 @@ import EditUsers from "./views/EditUsers";
 import EditRole from "./views/EditRole";
 import AddCategories from "./views/AddCategories";
 import EditCategories from "./views/EditCategories";
+import ActionUser from "./views/ActionUser";
 
 export const App = () => {
   return (
@@ -42,7 +43,7 @@ export const App = () => {
               <Route exact path="/products/edit/:slug" component={EditProduct} />
               <Route exact path="/medias" component={MediaLibrary} />
               <Route exact path="/users" component={Users} />
-              <Route exact path="/users/addusers" component={AddUsers} />
+              <Route exact path="/users/addusers" component={ActionUser} />
               <Route exact path="/users/edit/:slug" component={EditUsers} />
               <Route exact path="/roles" component={Roles} />
               <Route exact path="/roles/addroles" component={AddRoles} />

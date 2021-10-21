@@ -3,6 +3,8 @@ import { useHistory, useParams } from "react-router"
 import { useEffect, useState } from "react"
 import { http } from "../util/http"
 import { config } from "../index"
+import Select from "../components/inputs/Select"
+import TextInput from "../components/inputs/TextInput"
 import Loading from "../components/loading/Loading"
 import { PaginationModel } from '../models/pagination/pagination.model'
 import { sendRequest } from "../util/helpers/refresh"
@@ -21,7 +23,7 @@ interface InitialValues {
 const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
     const history = useHistory()
     const [roles, setRoles] = useState([])
-    const [isPending, setIsPending] = useState(true)
+    //const [isPending, setIsPending] = useState(true)
     const [username, setUsername] = useState("")
     const [email, setEmail] = useState("")
     const [roleId, setRoleId] = useState("")
@@ -47,16 +49,16 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
     }
 
     const submitUserPost = async (data: UserModel) => {
-    setSubmitError(null)
+      setSubmitError(null)
 
-    let { error } = await sendRequest(userPostRequest, data)
-    if (error) {
-        history.push("/login")
-    }
-    history.push({
-        pathname: "/users",
-        state: { success: true },
-    })
+      let { error } = await sendRequest(userPostRequest, data)
+      if (error) {
+          history.push("/login")
+      }
+      history.push({
+          pathname: "/users",
+          state: { success: true },
+      })
     }
 
     const roleRequest = () => {
@@ -81,7 +83,7 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
         SubmitRole().then()
     }, [])
 
-    const currentTaxRequest = () => {
+    /*const currentTaxRequest = () => {
         return http.get<TaxRuleModel>(`${config.api}/v1/tax-rule/${params.slug}`, {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("token")}`,
@@ -102,11 +104,15 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
           behavior: 0,
           description: data.description,
         })
-      }
+      }*/
+
+    useEffect(() => {
+      SubmitRole().then()
+    }, [])
 
     useEffect(() => {
         if (params.slug) {
-          SubmitCurrentTax().then()
+          //SubmitCurrentTax().then()
         } else {
           setInitialValues({
             email: "",
@@ -133,7 +139,7 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
           })
     }, [])*/
 
-    const onSubmit = (e: React.FormEvent): void => {
+    /*const onSubmit = (e: React.FormEvent): void => {
         e.preventDefault()
         setIsPending(true)
         const body = JSON.stringify({ email: email, username: username, roleId: roleId })
@@ -148,7 +154,7 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
             options
           )
           history.push("/users")
-      }
+      }*/
 
     return <>
         
@@ -176,31 +182,18 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
                     <div className="add-user-title">
                         <label>New user</label>
                     </div>
-                    <div className="add-user-infos">
-                        <div className="add-user-username">
-                            <label>Username</label>
-                            <input type="text" id="name" name="name" required onChange={e => setUsername(e.target.value)}></input>
-                        </div>
-                        <div className="add-user-email">
-                            <label>E-mail</label>
-                            <input type="email" id="email" name="email" required onChange={e => setEmail(e.target.value)}/>
-                        </div>
-                        <div className="add-user-role">
-                            <label>Role</label>
-                            <select name="selected_role" id="selected_role" onChange={e => setRoleId(e.target.value)}>
-                            {
-                                roles.map((item) => {
-                                    return (
-                                        <option value={item.id} key={item.id}>{item.name}</option>
-                                    )
-                                })
-                            }
-                            </select>
-                        </div>
-                    </div>
-                    <div className="add-user-button">
+                            <TextInput name={"username"} label={"Username"}/>
+                        
+                        
+                            <TextInput name={"email"} label={"E-mail"}/>
+
+                            <Select name={"roleId"} label={"Role"} options={roles}/>
+
                         <button type="submit" className="action">Create</button>
-                    </div>   
+
+                    {submitError && (
+                      <div className="global-error">{submitError}</div>
+                    )}   
                 </form>
                 </> )
                 }}
