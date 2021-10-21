@@ -5,6 +5,7 @@ import Loading from "../components/loading/Loading";
 import { http } from "../util/http";
 import { config } from "../index";
 import { auth } from "../util/helpers/auth";
+import { sendRequest } from "../util/helpers/refresh";
 
 const Login: React.FunctionComponent = () => {
   const [email, setEmail] = useState("");
@@ -13,18 +14,31 @@ const Login: React.FunctionComponent = () => {
   const [isPending, setIsPending] = useState(true);
   const history = useHistory();
 
+  const fetchPermissions = () =>
+    http.get<string[]>(`${config.api}/v1/o-auth/permissions`, {
+      headers: { ...auth.headers },
+    });
+
+  const setPermissions = ({ data, error }) => {
+    if (!error) {
+      auth.permissions = data;
+      return history.push("/");
+    }
+    setIsPending(false);
+  };
+
   // Check if the user is already logged
   useEffect(() => {
-    const options = {
-      headers: { ...auth.headers },
-    };
-    http
-      .post(`${config.api}/v1/o-auth/check`, null, options)
-      .then(({ error }) => {
-        setIsPending(true);
-        if (!error) return history.push("/");
-        setIsPending(false);
-      });
+    setIsPending(true);
+    if (auth.refresh) {
+      sendRequest(fetchPermissions)
+        .then(setPermissions)
+        .then(() => setIsPending(false));
+    } else {
+      fetchPermissions()
+        .then(setPermissions)
+        .then(() => setIsPending(false));
+    }
   }, []);
 
   // Log the user if the credentials exists
@@ -46,7 +60,13 @@ const Login: React.FunctionComponent = () => {
         if (!error) {
           auth.access = access_token;
           auth.refresh = refresh_token;
-          history.push("/");
+          sendRequest(fetchPermissions)
+            .then(({ data, error }) => {
+              auth.permissions = data;
+            })
+            .then(() => {
+              history.push("/");
+            });
         } else {
           setIsPending(false);
         }

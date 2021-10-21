@@ -1,5 +1,6 @@
-const ACCESS_TOKEN_KEY = "token";
-const REFRESH_TOKEN_KEY = "refresh";
+export const ACCESS_TOKEN_KEY = "token";
+export const REFRESH_TOKEN_KEY = "refresh";
+export const PERMISSIONS_KEY = "permissions";
 
 export const auth = {
   /**
@@ -49,4 +50,17 @@ export const auth = {
   get headers(): { authorization: string } {
     return { authorization: `Bearer ${this.access}` };
   },
+
+  get permissions(): string[] {
+    return JSON.parse(window.sessionStorage.getItem(PERMISSIONS_KEY));
+  },
+
+  set permissions(permissions: string[] | string) {
+    if (Array.isArray(permissions)) {
+      permissions = JSON.stringify(permissions);
+    }
+    window.sessionStorage.setItem(PERMISSIONS_KEY, permissions);
+  },
+
+  logout() {},
 };

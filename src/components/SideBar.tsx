@@ -2,7 +2,12 @@ import * as React from "react";
 import { useHistory, useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import { http } from "../util/http";
-import { config } from "../index"
+import { config } from "../index";
+import {
+  ACCESS_TOKEN_KEY,
+  PERMISSIONS_KEY,
+  REFRESH_TOKEN_KEY,
+} from "../util/helpers/auth";
 
 const SideBar: React.FunctionComponent = () => {
   const location = useLocation();
@@ -13,8 +18,8 @@ const SideBar: React.FunctionComponent = () => {
       : location.pathname.startsWith(uri);
   };
   const logout = () => {
-    const refresh_token = sessionStorage.getItem("refresh");
-    const token = sessionStorage.getItem("token");
+    const refresh_token = sessionStorage.getItem(REFRESH_TOKEN_KEY);
+    const token = sessionStorage.getItem(ACCESS_TOKEN_KEY);
     const options = {
       headers: {
         "Content-Type": "application/json",
@@ -25,8 +30,9 @@ const SideBar: React.FunctionComponent = () => {
       .post(`${config.api}/v1/o-auth/logout`, { refresh_token }, options)
       .then(({ error }) => {
         if (error) return console.error(error.message);
-        sessionStorage.removeItem("refresh");
-        sessionStorage.removeItem("token");
+        sessionStorage.removeItem(REFRESH_TOKEN_KEY);
+        sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+        sessionStorage.removeItem(PERMISSIONS_KEY);
         history.push("/login");
       });
   };
@@ -69,7 +75,7 @@ const SideBar: React.FunctionComponent = () => {
                   <i className="fas fa-image"></i>
                 </span>
                 Media library
-                </Link>
+              </Link>
             </li>
             <li className={`${isActive("/users") ? "sidebar-active" : ""}`}>
               <Link to="/users">
@@ -95,7 +101,9 @@ const SideBar: React.FunctionComponent = () => {
                 Taxes
               </Link>
             </li>
-            <li className={`${isActive("/categories") ? "sidebar-active" : ""}`}>
+            <li
+              className={`${isActive("/categories") ? "sidebar-active" : ""}`}
+            >
               <Link to="/categories">
                 <span>
                   <i className="fas fa-list"></i>
