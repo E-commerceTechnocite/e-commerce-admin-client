@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { config } from "../../index";
-import refresh from "../helpers/refresh";
 import { http } from "../http";
 import { ACCESS_TOKEN_KEY, auth, REFRESH_TOKEN_KEY } from "../helpers/auth";
 
@@ -19,7 +18,7 @@ const useCheckUser = () => {
       .post(`${config.api}/v1/o-auth/check`, null, options)
       .then(({ error }) => {
         if (error) {
-          const refresh_token = sessionStorage.getItem("refresh");
+          const refresh_token = auth.refresh;
           const options = {
             headers: { "Content-Type": "application/json" },
           };
@@ -36,8 +35,8 @@ const useCheckUser = () => {
                 return history.push("/login");
               }
               const { access_token, refresh_token } = data;
-              sessionStorage.setItem(ACCESS_TOKEN_KEY, access_token);
-              sessionStorage.setItem(REFRESH_TOKEN_KEY, refresh_token);
+              auth.access = access_token;
+              auth.refresh = refresh_token;
             });
           setIsPending(false);
         }

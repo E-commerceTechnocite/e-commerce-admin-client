@@ -3,11 +3,7 @@ import { useHistory, useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import { http } from "../util/http";
 import { config } from "../index";
-import {
-  ACCESS_TOKEN_KEY,
-  PERMISSIONS_KEY,
-  REFRESH_TOKEN_KEY,
-} from "../util/helpers/auth";
+import { auth } from "../util/helpers/auth";
 import Granted from "./Granted";
 import { FC } from "react";
 
@@ -20,21 +16,18 @@ const SideBar: React.FunctionComponent = () => {
       : location.pathname.startsWith(uri);
   };
   const logout = () => {
-    const refresh_token = sessionStorage.getItem(REFRESH_TOKEN_KEY);
-    const token = sessionStorage.getItem(ACCESS_TOKEN_KEY);
+    const refresh_token = auth.refresh;
     const options = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        ...auth.headers,
       },
     };
     http
       .post(`${config.api}/v1/o-auth/logout`, { refresh_token }, options)
       .then(({ error }) => {
         if (error) return console.error(error.message);
-        sessionStorage.removeItem(REFRESH_TOKEN_KEY);
-        sessionStorage.removeItem(ACCESS_TOKEN_KEY);
-        sessionStorage.removeItem(PERMISSIONS_KEY);
+        auth.clearSession();
         history.push("/login");
       });
   };

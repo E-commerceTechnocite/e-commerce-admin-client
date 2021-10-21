@@ -22,6 +22,8 @@ import { PictureModel } from "../../models/files/picture.model";
 import { useHistory, useParams } from "react-router";
 import { ProductModel } from "../../models/product/product.model";
 import Loading from "../loading/Loading";
+import { auth } from "../../util/helpers/auth";
+import { TaxRuleGroupModel } from "../../models/product/tax-rule-group.model";
 
 interface FormValuesInterface {
   title: string;
@@ -52,7 +54,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
     ProductCategoryModel[]
   >([]);
   const [taxRuleGroupId, setTaxRuleGroupId] = useState<string>("");
-  const [taxOptions, setTaxOptions] = useState<TaxRuleGroup[]>([]);
+  const [taxOptions, setTaxOptions] = useState<TaxRuleGroupModel[]>([]);
   const [thumbnail, setThumbnail] = useState<PictureModel | null>(null);
   const [picturesId, setPicturesId] = useState<string[]>([]);
   const [fileError, setFileError] = useState<boolean>(false);
@@ -81,7 +83,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
     const requestOptions = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        ...auth.headers,
       },
     };
     return data.id
@@ -125,12 +127,10 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
 
   // Get request for tax rule group form select
   const requestTax = () => {
-    return http.get<PaginationModel<TaxRuleGroup>>(
+    return http.get<PaginationModel<TaxRuleGroupModel>>(
       `${config.api}/v1/tax-rule-group`,
       {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-        },
+        headers: { ...auth.headers },
       }
     );
   };
@@ -149,9 +149,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
     return http.get<PaginationModel<ProductCategoryModel>>(
       `${config.api}/v1/product-category`,
       {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-        },
+        headers: { ...auth.headers },
       }
     );
   };
@@ -165,7 +163,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
     setCategoryOptions([...data.data]);
   };
 
-  // Pass dataof images selected from MediaLibrary component to here
+  // Pass data of images selected from MediaLibrary component to here
   const libraryToParent = (data: PictureModel) => {
     if (libraryData.find((file) => file.id === data.id) === undefined) {
       setPicturesId((ids) => [...ids, data.id]);
@@ -184,9 +182,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
   // Get request for category form select
   const requestProduct = () => {
     return http.get<ProductModel>(`${config.api}/v1/product/${params.slug}`, {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-      },
+      headers: { ...auth.headers },
     });
   };
   const getProduct = async () => {

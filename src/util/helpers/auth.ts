@@ -78,5 +78,9 @@ export const auth = {
     window.sessionStorage.setItem(PERMISSIONS_KEY, permissions);
   },
 
-  logout() {},
+  clearSession() {
+    window.sessionStorage.removeItem(REFRESH_TOKEN_KEY);
+    window.sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+    window.sessionStorage.removeItem(PERMISSIONS_KEY);
+  },
 };
