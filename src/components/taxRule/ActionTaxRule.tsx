@@ -38,7 +38,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   const [initialValues, setInitialValues] = useState<InitialValues>()
 
   /**
-  * Returns post request for new tax rule
+  * Returns post or patch request for new tax rule
   * @param data
   * @returns request
   */

@@ -1,7 +1,7 @@
 import { Formik } from "formik";
 import * as React from "react";
-import { useState } from "react";
-import { useHistory } from "react-router";
+import { useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router";
 import { TaxModel } from "../../models/product/tax.model";
 import { sendRequest } from "../../util/helpers/refresh";
 import { http } from "../../util/http";
@@ -13,16 +13,26 @@ import NumberInput from "../inputs/NumberInput";
 
 interface IActionTaxRateProps {}
 
-const ActionTaxRate: React.FunctionComponent<IActionTaxRateProps> = (props) => {
+const ActionTaxRate: React.FunctionComponent<IActionTaxRateProps> = () => {
  const [initialValues, seInitialValues] = useState({ rate: null });
+ const [taxRate, setTaxRate] = useState<TaxModel>();
+ const params: { slug: string } = useParams();
  const history = useHistory();
 
  /**
-  * Returns post request for new tax rate
+  * Returns post or patch request for new tax rate
   * @param data
   * @returns request
   */
  const taxRatePostRequest = (data: TaxModel) => {
+  if (params.slug) {
+   return http.patch(`${config.api}/v1/tax/${params.slug}`, data, {
+    headers: {
+     "Content-Type": "application/json",
+     Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+    },
+   });
+  }
   return http.post(`${config.api}/v1/tax`, data, {
    headers: {
     "Content-Type": "application/json",
@@ -44,6 +54,39 @@ const ActionTaxRate: React.FunctionComponent<IActionTaxRateProps> = (props) => {
    state: { successRate: true },
   });
  };
+
+ /**
+  * Returns get request for tax rate
+  * @returns
+  */
+ const CurrentTaxRateRequest = () => {
+  return http.get<TaxModel>(`${config.api}/v1/tax/${params.slug}`, {
+   headers: {
+    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+   },
+  });
+ };
+ /**
+  * Submits get request for tax rate
+  */
+ const SubmitCurrentTaxRate = async () => {
+  let { data, error } = await sendRequest(CurrentTaxRateRequest);
+  if (error) {
+   history.push("/login");
+  }
+  setTaxRate(data);
+ };
+
+ useEffect(() => {
+  if (params.slug) {
+   SubmitCurrentTaxRate().then();
+  }
+ }, []);
+ useEffect(() => {
+  if (params.slug) {
+   if (taxRate) seInitialValues({ rate: taxRate.rate });
+  }
+ }, [taxRate]);
 
  return (
   <>

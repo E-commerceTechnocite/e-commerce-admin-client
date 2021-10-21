@@ -21,7 +21,7 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
  const history = useHistory();
 
  /**
-  * Returns post request for new tax group
+  * Returns post or patch request for new tax group
   * @param data
   * @returns request
   */
