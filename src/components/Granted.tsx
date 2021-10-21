@@ -1,8 +1,8 @@
 import { FC } from "react";
-import { auth } from "../util/helpers/auth";
+import { auth, Permission } from "../util/helpers/auth";
 
 interface GrantedPropsInterface {
-  permissions: string[];
+  permissions: Permission[];
 }
 
 const Granted: FC<GrantedPropsInterface> = ({ children, permissions }) => {

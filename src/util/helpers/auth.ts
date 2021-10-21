@@ -2,6 +2,22 @@ export const ACCESS_TOKEN_KEY = "token";
 export const REFRESH_TOKEN_KEY = "refresh";
 export const PERMISSIONS_KEY = "permissions";
 
+type entity =
+  | "role"
+  | "product"
+  | "product-category"
+  | "country"
+  | "tax"
+  | "tax-rule"
+  | "tax-rule-group"
+  | "user"
+  | "file";
+export type Permission =
+  | `r:${entity}`
+  | `c:${entity}`
+  | `u:${entity}`
+  | `d:${entity}`;
+
 export const auth = {
   /**
    * Store a new access token in session storage
@@ -51,11 +67,11 @@ export const auth = {
     return { authorization: `Bearer ${this.access}` };
   },
 
-  get permissions(): string[] {
+  get permissions(): Permission[] {
     return JSON.parse(window.sessionStorage.getItem(PERMISSIONS_KEY));
   },
 
-  set permissions(permissions: string[] | string) {
+  set permissions(permissions: Permission[] | string) {
     if (Array.isArray(permissions)) {
       permissions = JSON.stringify(permissions);
     }
