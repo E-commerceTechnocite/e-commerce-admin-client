@@ -53,7 +53,9 @@ const AddUsers: React.FunctionComponent = () => {
         {!isPending && (
             <div className="add-user">
                 <form onSubmit={onSubmit}>
-                    <div className="add-user-title"><label>New user</label></div>
+                    <div className="add-user-title">
+                        <label>New user</label>
+                    </div>
                     <div className="add-user-infos">
                         <div className="add-user-username">
                             <label>Username</label>
