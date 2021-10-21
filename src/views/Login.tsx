@@ -15,12 +15,11 @@ const Login: React.FunctionComponent = () => {
 
   // Check if the user is already logged
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
     const options = {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { ...auth.headers },
     };
     http
-      .get(`${config.api}/v1/product?limit=1&page=1`, options)
+      .post(`${config.api}/v1/o-auth/check`, null, options)
       .then(({ error }) => {
         setIsPending(true);
         if (!error) return history.push("/");
