@@ -897,15 +897,18 @@ table th {
   background: $primary-button;
   border-radius: 4px;
   border: none;
+  color: $secondary-color-font;
+  padding: 8px 15px;
   transition: 0.2s;
+  font-size: 15px;
 }
 .arrowBackButton:hover {
   background: $primary-button-event;
 }
 .arrowBackButton .fas{
-  font-size: 18px;
-  margin: 6px 15px;
-  color:white;
+  color:$secondary-color-font;
+  font-size: 15px;
+  margin-right: 3px;
 }
 
 

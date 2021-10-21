@@ -68,8 +68,9 @@ const AddRoles: React.FunctionComponent = () => {
       }
    
     permissions.forEach(item => {
-        const [operation, entity] = item.split(':');
+        let [operation, entity] = item.split(':');
         let name = null
+        entity = entity.replace(/-/g, ' ') //replace dash between words with space
         const capitalizeEntity = capitalizeFirstLetter(entity)
         if (!perms[capitalizeEntity]) perms[capitalizeEntity] = []
         switch(operation) {
@@ -114,7 +115,10 @@ const AddRoles: React.FunctionComponent = () => {
             body,
             options
           )
-          history.push("/roles")
+          history.push({
+            pathname: "/roles",
+            state: { success: true },
+        })
       }
 
     return <>

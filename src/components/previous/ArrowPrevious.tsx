@@ -11,7 +11,7 @@ const ArrowPrevious: React.FunctionComponent<IPreviousProps> = () => {
       style={{ marginBottom: "15px" }}
       onClick={() => history.goBack()}
     >
-      <i className="fas fa-long-arrow-alt-left"></i>
+      <i className="fas fa-caret-left"></i> BACK
     </button>
   )
 }
