@@ -28,3 +28,7 @@ export const taxRateSchema = yup.object().shape({
   .max(100, "Must be between 0 and 100.")
   .required("Required."),
 });
+export const countrySchema = yup.object().shape({
+  name: yup.string().required("Required."),
+  code: yup.string().min(0, "Must be at least two characters.").required("Must be at least two characters."),
+ });

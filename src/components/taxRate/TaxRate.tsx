@@ -63,7 +63,7 @@ const TaxRate: React.FunctionComponent<ITaxRateProps> = (props) => {
      {/* <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
                         {" "}
                         <i className="fas fa-check" />
-                        Tax Group Added
+                        Tax Rate Added
                         <i className="fas fa-times" onClick={() => setToast(false)} />
                     </div> */}
     </div>

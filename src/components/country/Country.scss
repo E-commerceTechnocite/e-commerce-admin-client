@@ -31,7 +31,7 @@
         grid-template-columns: 7% 7% repeat(5, 1fr) 140px;
         grid-column-gap: 10px;
         align-items: center;
-        span:nth-child(3) {
+        span:nth-child(2) {
           grid-column-start: 3;
           grid-column-end: 5;
         }

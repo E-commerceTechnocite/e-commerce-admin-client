@@ -62,7 +62,7 @@ const Country: React.FunctionComponent<ICountryProps> = (props) => {
      {/* <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
                            {" "}
                            <i className="fas fa-check" />
-                           Tax Group Added
+                           Country Added
                            <i className="fas fa-times" onClick={() => setToast(false)} />
                        </div> */}
     </div>
@@ -71,11 +71,13 @@ const Country: React.FunctionComponent<ICountryProps> = (props) => {
       <div className="country-list">
        <div className="legend">
         <span>Country</span>
+        <span>Code</span>
        </div>
        <div className="content">
         {country.map((country, index) => (
          <div className="item" key={index}>
           <span>{country.name}</span>
+          <span>{country.code}</span>
           <Link
            to={`/taxes/edit-country/${country.id}`}
            className="action edit"

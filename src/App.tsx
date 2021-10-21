@@ -24,6 +24,7 @@ import Orders from "./views/Orders";
 import Stock from "./views/Stock";
 import AddTaxGroup from "./views/taxes/AddTaxGroup";
 import AddTaxRate from "./views/taxes/AddTaxRate";
+import AddCountry from "./views/taxes/AddCountry";
 
 export const App = () => {
   return (
@@ -50,6 +51,8 @@ export const App = () => {
               <Route exact path="/taxes/edit-tax-group/:slug" component={AddTaxGroup}/>
               <Route exact path="/taxes/add-tax-rate" component={AddTaxRate}/>
               <Route exact path="/taxes/edit-tax-rate/:slug" component={AddTaxRate}/>
+              <Route exact path="/taxes/add-country" component={AddCountry}/>
+              <Route exact path="/taxes/edit-country/:slug" component={AddCountry}/>
               <Route exact path="/categories" component={Categories}/>
               <Route exact path="/customers" component={Customers}/>
               <Route exact path="/orders" component={Orders}/>
