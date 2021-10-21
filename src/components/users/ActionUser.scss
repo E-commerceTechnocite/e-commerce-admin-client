@@ -9,6 +9,8 @@
   .form-control {
     display: flex;
     flex-direction: column;
+    margin-left: 15px;
+    margin-right: 15px;
     .error {
         bottom: 11px;
     }
@@ -18,8 +20,9 @@
     select,
     input,
     textarea {
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       height: 30px;
+      width: 300px;
       border: 1px solid $primary-border-color;
       border-radius: 4px;
     }
@@ -33,8 +36,8 @@
     
   }
   button {
-    margin-top: 30px;
-    width: 100%;
+    margin-top: 20px;
+    width: 100px;
     }
   // input {
 

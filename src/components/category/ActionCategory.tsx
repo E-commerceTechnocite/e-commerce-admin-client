@@ -19,70 +19,67 @@ interface InitialValues {
 
 const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
     const history = useHistory()
-    //const [myInputValue, setMyInputValue] = useState("")
     const [submitError, setSubmitError] = useState<string>(null)
     const params: { slug: string } = useParams()
     const [initialValues, setInitialValues] = useState<InitialValues>()
+    
+    const categoryPostRequest = (data: CategoryModel) => {
+        if (params.slug) {
+            return http.patch(`${config.api}/v1/product-category/${params.slug}`, data, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+                },
+            })
+        }
+        return http.post(`${config.api}/v1/product-category`, data, {
+            headers: {
+                "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+        })
+    }
 
-    useEffect(() => {
-       
-    }, [])
+    const submitUserPost = async (data: CategoryModel) => {
+        setSubmitError(null)
+
+        let { error } = await sendRequest(categoryPostRequest, data)
+        if (error) {
+            history.push("/login")
+      }
+      history.push({
+          pathname: "/categories",
+          state: { success: true },
+        })
+    }
+
+    const currentUserRequest = () => {
+        return http.get<CategoryModel>(`${config.api}/v1/product-category/${params.slug}`, {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+      })
+    }
+
+    const SubmitCurrentUser = async () => {
+        let { data, error } = await sendRequest(currentUserRequest)
+        if (error) {
+          history.push("/login")
+        }
+        setInitialValues({
+          label: data.label,
+      })
+    }
 
     useEffect(() => {
         if (params.slug) {
-          //SubmitCurrentTax().then()
+            SubmitCurrentUser().then()
         } else {
           setInitialValues({
             label: ""
           })
         }
       }, [params.slug])
-
-    const categoryPostRequest = (data: CategoryModel) => {
-        if (params.slug) {
-          return http.patch(`${config.api}/v1/product-category/${params.slug}`, data, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-            },
-          })
-        }
-        return http.post(`${config.api}/v1/product-category`, data, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-          },
-        })
-    }
-
-    const submitUserPost = async (data: CategoryModel) => {
-      setSubmitError(null)
-
-      let { error } = await sendRequest(categoryPostRequest, data)
-      if (error) {
-          history.push("/login")
-      }
-      history.push({
-          pathname: "/categories",
-          state: { success: true },
-      })
-    }
-
-    /*const onSubmit = (e: React.FormEvent): void => {
-        e.preventDefault()
-        const body = JSON.stringify({ label: myInputValue })
-        const token = sessionStorage.getItem("token")
-        const options = {
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        }
-        http
-          .post<{ access_token: string; refresh_token: string }>(
-            `${config.api}/v1/product-category`,
-            body,
-            options
-          )
-          history.push("/categories")
-      }*/
 
     return <>
         <ArrowPrevious />          
@@ -109,7 +106,7 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
                     <label>New Category</label>
                   </div>
                   <TextInput name={"label"} label={"Category"}/>
-                  <button type="submit" className="action">Create</button>
+                  <button type="submit" className="action">Submit</button>
                   {submitError && (
                     <div className="global-error">{submitError}</div>
                   )}   

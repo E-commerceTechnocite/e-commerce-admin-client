@@ -43,14 +43,14 @@ export const App = () => {
               <Route exact path="/medias" component={MediaLibrary} />
               <Route exact path="/users" component={Users} />
               <Route exact path="/users/addusers" component={ActionUser} />
-              <Route exact path="/users/edit/:slug" component={EditUsers} />
+              <Route exact path="/users/edit/:slug" component={ActionUser} />
               <Route exact path="/roles" component={Roles} />
               <Route exact path="/roles/addroles" component={AddRoles} />
               <Route exact path="/roles/edit/:slug" component={EditRole} />
               <Route exact path="/taxes" component={Taxes}/>
               <Route exact path="/categories" component={Categories}/>
               <Route exact path="/categories/addcategories" component={ActionCategory}/>
-              <Route exact path="/categories/edit/:slug" component={EditCategories}/>
+              <Route exact path="/categories/edit/:slug" component={ActionCategory}/>
               <Route exact path="/customers" component={Customers}/>
               <Route exact path="/orders" component={Orders}/>
               <Route exact path="/stock" component={Stock}/>

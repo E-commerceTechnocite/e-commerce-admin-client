@@ -574,8 +574,6 @@ button {
 .roles {
   background: $primary-color-elts;
   padding-bottom: 30px;
-  //width:500px;
-  //padding:150px;
   box-shadow: $primary-elts-shadow;
   .top-container {
     display: flex;
@@ -624,7 +622,7 @@ button {
       grid-template-columns: 117px 117px;
       grid-template-rows: 1;
       border-bottom: 1px solid $primary-border-color;
-      grid-column-gap: 150px;
+      grid-column-gap: 350px;
       align-items: center;
       justify-content: center;
       button {
@@ -646,21 +644,7 @@ button {
       justify-content: center;
       padding: 20px 30px;
       font-weight: bold;
-      /*span:nth-child(1) {
-        margin-left: 400px;
-      }
-      span:nth-child(2) {
-        margin-left: 400px;
-      }*/
     }
-    /*.role {
-      span:nth-child(1) {
-        margin-left: 400px;
-      }
-      span:nth-child(2) {
-        margin-left: 400px;
-      }
-    }*/
   }
 }
 
@@ -888,7 +872,7 @@ table th {
 .perms-button {
   padding:15px;
   button {
-    width: 100%;
+    width: 100px;
   }
 }
 

@@ -68,47 +68,41 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
     }
 
     const SubmitRole = async () => {
-        let { data, error } = await sendRequest(roleRequest)
-        if (error) {
-          history.push("/login")
-        }
-        setRoles(data.data)
-    }
-
-    /*useEffect(() => {
-        SubmitRole().then()
-    }, [roles])*/
-
-    /*const currentTaxRequest = () => {
-        return http.get<TaxRuleModel>(`${config.api}/v1/tax-rule/${params.slug}`, {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-          },
-        })
+      let { data, error } = await sendRequest(roleRequest)
+      if (error) {
+        history.push("/login")
       }
-
-    const SubmitCurrentTax = async () => {
-        let { data, error } = await sendRequest(currentTaxRequest)
-        if (error) {
-          history.push("/login")
-        }
-        setInitialValues({
-          email: data.taxRuleGroup.id,
-          countryId: data.country.id,
-          taxId: data.tax.id,
-          zipCode: data.zipCode,
-          behavior: 0,
-          description: data.description,
-        })
-      }*/
-
+      setRoles(data.data)
+    }
+    
     useEffect(() => {
       SubmitRole().then()
     }, [])
 
+    const currentUserRequest = () => {
+        return http.get<UserModel>(`${config.api}/v1/user/${params.slug}`, {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+      })
+    }
+
+    const SubmitCurrentUser = async () => {
+        let { data, error } = await sendRequest(currentUserRequest)
+        if (error) {
+          history.push("/login")
+        }
+        setInitialValues({
+          email: data.email,
+          username: data.username,
+          roleId: data.role.id,
+      })
+    }
+
+
     useEffect(() => {
         if (params.slug) {
-          //SubmitCurrentTax().then()
+          SubmitCurrentUser().then()
         } else {
           setInitialValues({
             email: "",
@@ -129,10 +123,10 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
                     onSubmit={(data) => {
                     // console.log(data)
 
-                    /*if (params.slug) {
-                        delete data.taxRuleGroupId
-                        delete data.countryId
-                    }*/
+                    if (params.slug) {
+                        //delete data.taxRuleGroupId
+                        //delete data.countryId
+                    }
                     // console.log(data)
                     submitUserPost(data)
                  }}
@@ -146,7 +140,7 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
                       <TextInput name={"username"} label={"Username"}/>                      
                       <TextInput name={"email"} label={"E-mail"}/>
                       <Select name={"roleId"} label={"Role"} options={roles}/>
-                      <button type="submit" className="action">Create</button>
+                      <button type="submit" className="action">Submit</button>
                       {submitError && (
                         <div className="global-error">{submitError}</div>
                       )}   

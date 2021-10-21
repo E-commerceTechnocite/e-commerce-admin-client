@@ -11,7 +11,6 @@ const AddRoles: React.FunctionComponent = () => {
     const history = useHistory()
     const [rolePermissions, setRolePermissions] = useState<string[]>([])
     const [permissions, setPermissions] = useState([])
-    //const [isPending, setIsPending] = useState(true)
     const [myInputValue, setMyInputValue] = useState("")
     const perms = {};
 
@@ -46,22 +45,6 @@ const AddRoles: React.FunctionComponent = () => {
         })
         }
     }, [params.slug])*/
-
-    /*useEffect(() => {
-        const token = sessionStorage.getItem("token")
-        const options = {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-        http
-          .get<[]>(`${config.api}/v1/role/permissions`, options)
-          .then(({ data, error }) => {
-            setIsPending(true)
-            if (!error) {
-                setPermissions(data)
-                setIsPending(false)
-            }
-          })
-    }, [])*/
 
     const capitalizeFirstLetter = (string) => {
         return string.charAt(0).toUpperCase() + string.slice(1);
@@ -103,7 +86,6 @@ const AddRoles: React.FunctionComponent = () => {
 
     const onSubmit = (e: React.FormEvent): void => {
         e.preventDefault()
-        //setIsPending(true)
         const body = JSON.stringify({ name: myInputValue, permissions: rolePermissions })
         const token = sessionStorage.getItem("token")
         const options = {
