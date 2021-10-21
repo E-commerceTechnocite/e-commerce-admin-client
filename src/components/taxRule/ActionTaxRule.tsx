@@ -87,8 +87,8 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
    * @returns 
    */ 
   const taxRuleGroupRequest = () => {
-    return http.get<PaginationModel<TaxRuleGroupModel>>(
-      `${config.api}/v1/tax-rule-group`,
+    return http.get<TaxRuleGroupModel[]>(
+      `${config.api}/v1/tax-rule-group/all`,
       {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,
@@ -104,7 +104,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
     if (error) {
       history.push("/login")
     }
-    setTaxRuleGroup(data.data)
+    setTaxRuleGroup(data)
   }
 
   /**
@@ -112,7 +112,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
    * @returns 
    */ 
   const taxRequest = () => {
-    return http.get<PaginationModel<TaxModel>>(`${config.api}/v1/tax`, {
+    return http.get<TaxModel[]>(`${config.api}/v1/tax/all`, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
@@ -126,7 +126,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
     if (error) {
       history.push("/login")
     }
-    setTax(data.data)
+    setTax(data)
   }
 
   /**
@@ -134,7 +134,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
    * @returns 
    */ 
   const countryRequest = () => {
-    return http.get<PaginationModel<CountryModel>>(`${config.api}/v1/country`, {
+    return http.get<CountryModel[]>(`${config.api}/v1/country/all`, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
@@ -148,7 +148,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
     if (error) {
       history.push("/login")
     }
-    setCountry(data.data)
+    setCountry(data)
   }
 
   useEffect(() => {

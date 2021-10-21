@@ -59,8 +59,6 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
         setCountry(true)
         setSuccessCountry(props.location.state.successCountry)
       }
-    } else {
-      console.log(undefined)
     }
   }, [])
   useEffect(() => {
