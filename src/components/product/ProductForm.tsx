@@ -72,13 +72,22 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
     categoryId: "",
     taxRuleGroupId: "",
   });
-
-  // Check if image in slide is the thumb
+  
+  /**
+   * Check if image in slide is the thumb
+   * @param thumbId 
+   * @param currentImage 
+   * @returns boolean
+   */
   const isThumb = (thumbId: string, currentImage: string) => {
     if (thumbId === currentImage) return true;
   };
 
-  // Send request data from formik form submit
+  /**
+   * Returns post or patch request for product
+   * @param data 
+   * @returns  post | patch -> request
+   */
   const productRequest = (data: { id: string; content: any }) => {
     const requestOptions = {
       headers: {
@@ -94,6 +103,11 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
         )
       : http.post(`${config.api}/v1/product`, data.content, requestOptions);
   };
+  /**
+   * Submits post or patch request for product
+   * Check if images and thumbnail are valid before submitting
+   * @param data 
+   */
   const submitProduct = async (data) => {
     const file = {
       picturesId,
@@ -125,7 +139,10 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
     }
   };
 
-  // Get request for tax rule group form select
+  /**
+   * Returns get request tax list for select input
+   * @returns request
+   */
   const requestTax = () => {
     return http.get<PaginationModel<TaxRuleGroupModel>>(
       `${config.api}/v1/tax-rule-group`,
@@ -134,6 +151,9 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
       }
     );
   };
+  /**
+   * Submits get request tax list for select input
+   */
   const getTaxRuleGroup = async () => {
     let { data, error } = await sendRequest(requestTax);
     if (error) {
@@ -144,7 +164,10 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
     setTaxOptions([...data.data]);
   };
 
-  // Get request for category form select
+  /**
+   * Returns get request category list for select input
+   * @returns request 
+   */
   const requestCategory = () => {
     return http.get<PaginationModel<ProductCategoryModel>>(
       `${config.api}/v1/product-category`,
@@ -153,6 +176,9 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
       }
     );
   };
+  /**
+   * Submits get request category list for select input
+   */
   const getCategoryGroup = async () => {
     let { data, error } = await sendRequest(requestCategory);
     if (error) {
@@ -163,7 +189,10 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
     setCategoryOptions([...data.data]);
   };
 
-  // Pass data of images selected from MediaLibrary component to here
+  /**
+   * Pass data of images selected from MediaLibrary component to this component
+   * @param data 
+   */
   const libraryToParent = (data: PictureModel) => {
     if (libraryData.find((file) => file.id === data.id) === undefined) {
       setPicturesId((ids) => [...ids, data.id]);
@@ -172,19 +201,28 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
     if (picturesId.length < 1) setThumbnail(data);
   };
 
-  // Remove image from slider
+  /**
+   * Remove image from slider
+   * @param id 
+   */
   const removeImage = (id) => {
     setLibraryData((lib) => lib.filter((item) => item.id !== id));
     setPicturesId((picIds) => picIds.filter((picId) => picId !== id));
     setThumbnail(null);
   };
 
-  // Get request for category form select
+  /**
+   * Returns get request for current product information
+   * @returns request
+   */
   const requestProduct = () => {
     return http.get<ProductModel>(`${config.api}/v1/product/${params.slug}`, {
       headers: { ...auth.headers },
     });
   };
+  /**
+   * Sends request and updates field values in form
+   */
   const getProduct = async () => {
     let { data, error } = await sendRequest(requestProduct);
     if (error) {
