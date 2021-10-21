@@ -11,6 +11,7 @@ import "./MediaLibraryContainer.scss";
 import Skeleton from "./skeleton/Skeleton";
 import { auth } from "../../util/helpers/auth";
 import Granted from "../Granted";
+import { motion } from "framer-motion";
 
 interface MediaLibraryContainerPropsInterface {
   numberOfImages?: number;
@@ -174,7 +175,12 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                       key={pic.id}
                       className={`${isSelected(pic.id) ? "selected" : ""}`}
                     >
-                      <picture>
+                      <motion.picture
+                        whileTap={{
+                          scale: 0.95,
+                          transition: { duration: 0.1 },
+                        }}
+                      >
                         <img
                           src={`${config.api}` + pic.uri}
                           alt={pic.caption}
@@ -183,7 +189,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                             pushFile(pic);
                           }}
                         />
-                      </picture>
+                      </motion.picture>
                     </li>
                   );
                 })}

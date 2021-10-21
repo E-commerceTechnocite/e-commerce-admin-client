@@ -13,7 +13,6 @@ import MediaLibraryContainer from "../media-library/MediaLibraryContainer";
 import DraftTestEditor from "../inputs/DraftTextEditor";
 import * as React from "react";
 import { http } from "../../util/http";
-import { TaxRuleGroup } from "../../models/addProduct/add-product.model";
 import { sendRequest } from "../../util/helpers/refresh";
 import { useState, FC, useEffect } from "react";
 import { PaginationModel } from "../../models/pagination/pagination.model";
@@ -24,6 +23,7 @@ import { ProductModel } from "../../models/product/product.model";
 import Loading from "../loading/Loading";
 import { auth } from "../../util/helpers/auth";
 import { TaxRuleGroupModel } from "../../models/product/tax-rule-group.model";
+import { motion } from "framer-motion";
 
 interface FormValuesInterface {
   title: string;
@@ -297,13 +297,17 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                         {!!libraryData.length && (
                           <Slider className="slider" {...settings}>
                             {libraryData.map((image) => (
-                              <picture
+                              <motion.picture
                                 className={`slide ${
                                   isThumb(thumbnail.id, image.id)
                                     ? "is-thumb"
                                     : ""
                                 }`}
                                 key={image.id}
+                                whileTap={{
+                                  scale: 0.98,
+                                  transition: { duration: 0.1 },
+                                }}
                                 onClick={() => setThumbnail(image)}
                               >
                                 <div
@@ -316,7 +320,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                                   src={config.api + image.uri}
                                   alt={image.caption}
                                 />
-                              </picture>
+                              </motion.picture>
                             ))}
                           </Slider>
                         )}

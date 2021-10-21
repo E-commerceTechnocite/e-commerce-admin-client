@@ -12,8 +12,8 @@ const container = {
 };
 
 const items = {
-  hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, y: 0, scale: 0.5 },
+  show: { opacity: 1, y: 0, scale: 1 },
 };
 
 const DailyInformations: React.FunctionComponent = () => {
