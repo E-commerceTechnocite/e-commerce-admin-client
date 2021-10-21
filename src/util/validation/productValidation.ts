@@ -9,11 +9,13 @@ export const productSchema = yup.object().shape({
     .min(17, "Description must be at least 10 characters."),
   price: yup
     .number()
+    .typeError('Number required.')
     .positive()
     .min(1, "Must be a positive number.")
     .required("Required."),
   quantity: yup
     .number()
+    .typeError('Number required.')
     .positive()
     .min(1, "Must be a positive number.")
     .required("Required."),

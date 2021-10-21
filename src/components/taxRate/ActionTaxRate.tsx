@@ -1,13 +1,79 @@
-import * as React from 'react';
-import './ActionTaxRate.scss'
+import { Formik } from "formik";
+import * as React from "react";
+import { useState } from "react";
+import { useHistory } from "react-router";
+import { TaxModel } from "../../models/product/tax.model";
+import { sendRequest } from "../../util/helpers/refresh";
+import { http } from "../../util/http";
+import { config } from "../../index";
+import Previous from "../previous/Previous";
+import "./ActionTaxRate.scss";
+import { taxRateSchema } from "../../util/validation/taxValidation";
+import NumberInput from "../inputs/NumberInput";
 
-interface IActionTaxRateProps {
-}
+interface IActionTaxRateProps {}
 
 const ActionTaxRate: React.FunctionComponent<IActionTaxRateProps> = (props) => {
-    return (
-        <div className="action-tax-rate"></div>
-    )
+ const [initialValues, seInitialValues] = useState({ rate: null });
+ const history = useHistory();
+
+ /**
+  * Returns post request for new tax rate
+  * @param data
+  * @returns request
+  */
+ const taxRatePostRequest = (data: TaxModel) => {
+  return http.post(`${config.api}/v1/tax`, data, {
+   headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+   },
+  });
+ };
+ /**
+  * Submits the post request for new tax rate
+  * @param data
+  */
+ const submitTaxRatePost = async (data: TaxModel) => {
+  let { error } = await sendRequest(taxRatePostRequest, data);
+  if (error) {
+   history.push("/login");
+  }
+  history.push({
+   pathname: "/taxes",
+   state: { successRate: true },
+  });
+ };
+
+ return (
+  <>
+   <Previous />
+   <div className="action-tax-rate">
+    <Formik
+     enableReinitialize
+     initialValues={initialValues}
+     validationSchema={taxRateSchema}
+     onSubmit={(data) => {
+      submitTaxRatePost(data);
+     }}
+    >
+     {({ handleSubmit }) => {
+      return (
+       <>
+        <form onSubmit={handleSubmit}>
+         <NumberInput name={"rate"} label={"Rate"} />
+         <button className="action">submit</button>
+         {/* {submitError && (
+                  <div className="global-error">{submitError}</div>
+                )} */}
+        </form>
+       </>
+      );
+     }}
+    </Formik>
+   </div>
+  </>
+ );
 };
 
 export default ActionTaxRate;

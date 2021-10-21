@@ -37,7 +37,11 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   const params: { slug: string } = useParams()
   const [initialValues, setInitialValues] = useState<InitialValues>()
 
-  // Post request for tax rule
+  /**
+  * Returns post request for new tax rule
+  * @param data
+  * @returns request
+  */
   const taxRulePostRequest = (data: TaxRuleModel) => {
     if (params.slug) {
       return http.patch(`${config.api}/v1/tax-rule/${params.slug}`, data, {
@@ -54,6 +58,10 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
       },
     })
   }
+  /**
+  * Submits the post request for new tax rue
+  * @param data
+  */
   const submitTaxRulePost = async (data: TaxRuleModel) => {
     setSubmitError(null)
 
@@ -74,7 +82,10 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
     })
   }
 
-  // Get request for tax rate
+  /**
+   * Returns get request for tax group
+   * @returns 
+   */ 
   const taxRuleGroupRequest = () => {
     return http.get<PaginationModel<TaxRuleGroupModel>>(
       `${config.api}/v1/tax-rule-group`,
@@ -85,6 +96,9 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
       }
     )
   }
+  /**
+   * Submits get request for tax group
+   */ 
   const SubmittaxRuleGroup = async () => {
     let { data, error } = await sendRequest(taxRuleGroupRequest)
     if (error) {
@@ -93,7 +107,10 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
     setTaxRuleGroup(data.data)
   }
 
-  // Get request for tax rate
+  /**
+   * Returns get request for tax rate
+   * @returns 
+   */ 
   const taxRequest = () => {
     return http.get<PaginationModel<TaxModel>>(`${config.api}/v1/tax`, {
       headers: {
@@ -101,6 +118,9 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
       },
     })
   }
+  /**
+   * Submits get request for tax rate
+   */ 
   const SubmitTax = async () => {
     let { data, error } = await sendRequest(taxRequest)
     if (error) {
@@ -109,7 +129,10 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
     setTax(data.data)
   }
 
-  // Get request for country
+  /**
+   * Returns get request for country
+   * @returns 
+   */ 
   const countryRequest = () => {
     return http.get<PaginationModel<CountryModel>>(`${config.api}/v1/country`, {
       headers: {
@@ -117,6 +140,9 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
       },
     })
   }
+  /**
+   * Submits get request for country
+   */ 
   const SubmitCountry = async () => {
     let { data, error } = await sendRequest(countryRequest)
     if (error) {

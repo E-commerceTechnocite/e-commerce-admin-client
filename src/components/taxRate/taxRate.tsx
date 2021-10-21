@@ -34,7 +34,7 @@ const TaxRate: React.FunctionComponent<ITaxRateProps> = (props) => {
   );
  };
  /**
-  * Sends the get request for tax rule rate and sets the state values from response
+  * Submits the get request for tax rule rate and sets the state values from response
   */
  const SubmitTaxRateGroup = async () => {
   let { data, error } = await sendRequest(TaxRuleRateRequest);
@@ -57,7 +57,7 @@ const TaxRate: React.FunctionComponent<ITaxRateProps> = (props) => {
       <i className="fas fa-search"></i>
       <input type="text" placeholder="Search..." />
      </div>
-     <Link to="/taxes/add-tax-group" className="action">
+     <Link to="/taxes/add-tax-rate" className="action">
       New rate
      </Link>
      {/* <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
