@@ -31,7 +31,11 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   const [toast, setToast] = useState(false);
   const [refreshPage, setRefreshPage] = useState(false);
   const history = useHistory();
-  // Request to get the page of the product list
+
+  /**
+   * Returns request to get the page of the product list
+   * @returns request
+   */
   const pageRequest = () =>
     http.get<PaginationModel<ProductModel>>(
       `${config.api}/v1/product?page=${page}${
@@ -44,6 +48,9 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
         },
       }
     );
+    /**
+     * Submits to get the page of the product list
+     */
   const getProducts = async () => {
     let { data, error } = await sendRequest(pageRequest);
     if (error) {
@@ -53,11 +60,21 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
     setMeta(data.meta);
   };
 
+  /**
+   * Returns delete request of selected product
+   * @param id 
+   * @returns request
+   */
   const deleteRequest = (id: string) => {
     return http.delete(`${config.api}/v1/product/${id}`, null, {
       headers: { ...auth.headers },
     });
   };
+  /**
+   * Submits delete request of selected product
+   * @param id 
+   * @param title 
+   */
   const deleteProduct = async (id: string, title: string) => {
     if (confirm(`Delete product: ${title}?`)) {
       let { error } = await sendRequest(deleteRequest, id);
