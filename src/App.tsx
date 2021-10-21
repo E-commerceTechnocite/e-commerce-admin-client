@@ -16,11 +16,15 @@ import NotFound from "./views/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 import { config } from "./index";
 import AddUsers from "./views/AddUsers";
-import Taxes from "./views/Taxes";
+import Taxes from "./views/taxes/Taxes";
+import AddTaxRule from "./views/taxes/AddTaxRule";
 import Categories from "./views/Categories";
 import Customers from "./views/Customers";
 import Orders from "./views/Orders";
 import Stock from "./views/Stock";
+import AddTaxGroup from "./views/taxes/AddTaxGroup";
+import AddTaxRate from "./views/taxes/AddTaxRate";
+import AddCountry from "./views/taxes/AddCountry";
 import {
   GuardedRoute,
   GuardFunction,
@@ -80,6 +84,14 @@ export const App = () => {
                     component={AddRoles}
                   />
                   <GuardedRoute exact path="/taxes" component={Taxes} />
+                  <Route exact path="/taxes/add-tax-rule" component={AddTaxRule}/>
+              <Route exact path="/taxes/edit-tax-rule/:slug" component={AddTaxRule}/>
+              <Route exact path="/taxes/add-tax-group" component={AddTaxGroup}/>
+              <Route exact path="/taxes/edit-tax-group/:slug" component={AddTaxGroup}/>
+              <Route exact path="/taxes/add-tax-rate" component={AddTaxRate}/>
+              <Route exact path="/taxes/edit-tax-rate/:slug" component={AddTaxRate}/>
+              <Route exact path="/taxes/add-country" component={AddCountry}/>
+              <Route exact path="/taxes/edit-country/:slug" component={AddCountry}/>
                   <GuardedRoute
                     exact
                     path="/categories"
