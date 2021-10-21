@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from "react"
-import UsersList from '../components/UsersList'
+import UsersList from '../components/users/UsersList'
 
 interface IUsersProps {
   location?: {

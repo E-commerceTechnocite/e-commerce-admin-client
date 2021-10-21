@@ -2,36 +2,36 @@ import * as React from "react"
 import { useEffect, useState } from "react"
 import { useHistory } from "react-router"
 import { Link } from "react-router-dom"
-import Loading from "./loading/Loading"
-import Pagination from "./pagination/Pagination"
-import { PaginationMetadataModel } from "../models/pagination/pagination-metadata.model"
-import { PaginationModel } from "../models/pagination/pagination.model"
-import { config } from "../index"
-import { sendRequest } from "../util/helpers/refresh"
-import { http } from "../util/http"
-import { RoleModel } from "../models/role/role.model"
+import Loading from "../loading/Loading"
+import Pagination from "../pagination/Pagination"
+import { PaginationMetadataModel } from "../../models/pagination/pagination-metadata.model"
+import { PaginationModel } from "../../models/pagination/pagination.model"
+import { config } from "../../index"
+import { sendRequest } from "../../util/helpers/refresh"
+import { http } from "../../util/http"
+import { UserModel } from "../../models/user/user.model"
 
-interface IRolesListProps {
+interface IUsersListProps {
   number?: number
   pagination?: boolean
   success?: boolean | undefined
 }
 
-const UserTable: React.FunctionComponent<IRolesListProps> = ({
+const UsersList: React.FunctionComponent<IUsersListProps> = ({
   number,
   pagination,
   success,
 }) => {
-  const [roles, setRoles] = useState<RoleModel[]>()
+  const [users, setUsers] = useState<UserModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [page, setPage] = useState<number>(1)
   const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
-  // Request to get the page of the role list
+  // Request to get the page of the users list
   const pageRequest = () =>
-    http.get<PaginationModel<RoleModel>>(
-      `${config.api}/v1/role?page=${page}${number ? "&limit=" + number : ""}`,
+    http.get<PaginationModel<UserModel>>(
+      `${config.api}/v1/user?page=${page}${number ? "&limit=" + number : ""}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -39,24 +39,24 @@ const UserTable: React.FunctionComponent<IRolesListProps> = ({
         },
       }
     )
-  const getRoles = async () => {
+  const getUsers = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
       history.push("/login")
     }
-    setRoles(data.data)
+    setUsers(data.data)
     setMeta(data.meta)
   }
 
   const deleteRequest = (id: string) => {
-    return http.delete(`${config.api}/v1/role/${id}`, null, {
+    return http.delete(`${config.api}/v1/user/${id}`, null, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("token")}`,
       },
     })
   }
-  const deleteRoles = async (id: string, role: string) => {
-    if (confirm(`Delete role: ${role}?`)) {
+  const deleteUsers = async (id: string, username: string) => {
+    if (confirm(`Delete user: ${username}?`)) {
       let { error } = await sendRequest(deleteRequest, id)
       if (error) {
         console.log(error.message)
@@ -66,7 +66,7 @@ const UserTable: React.FunctionComponent<IRolesListProps> = ({
     }
   }
 
-  // Check if role has been added and if so displays a toast
+  // Check if product has been added and if so displays a toast
   useEffect(() => {
     console.log(success)
     if (success === true) {
@@ -78,12 +78,12 @@ const UserTable: React.FunctionComponent<IRolesListProps> = ({
   }, [success])
 
   useEffect(() => {
-    getRoles().then()
+    getUsers().then()
   }, [page, refreshPage])
 
   return (
-    <div className="essai">
-      <div className="roles">
+    <>
+      <div className="users">
         <div className="top-container">
           {pagination && (
             <div className="search">
@@ -91,37 +91,41 @@ const UserTable: React.FunctionComponent<IRolesListProps> = ({
               <input type="text" placeholder="Search..." />
             </div>
           )}
-          <Link to="/roles/addroles" className="action">
-            New Role
+          <Link to="/users/addusers" className="action">
+            New User
           </Link>
           <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
             {" "}
             <i className="fas fa-check" />
-            Role Added
+            User Added
             <i className="fas fa-times" onClick={() => setToast(false)} />
           </div>
         </div>
-        {!roles && !meta && <Loading />}
-        {roles && meta && (
+        {!users && !meta && <Loading />}
+        {users && meta && (
           <>
-            <div className="role-list">
+            <div className="user-list">
               <div className="legend">
+                <span>Username</span>
+                <span>E-mail</span>
                 <span>Role</span>
                 <span>Action</span>
               </div>
-              {roles.map((role) => {
+              {users.map((user) => {
                 return (
-                  <div className="role" key={role.id}>
-                    <span>{role.name}</span>
+                  <div className="user" key={user.id}>
+                    <span>{user.username}</span>
+                    <span>{user.email}</span>
+                    <span>{user.role.name}</span>
                     <Link
-                      to={`/roles/edit/${role.id}`}
+                      to={`/users/edit/${user.id}`}
                       className="action"
                     >
                       Edit
                     </Link>
                     <button
                       className="delete"
-                      onClick={() => deleteRoles(role.id, role.name)}
+                      onClick={() => deleteUsers(user.id, user.username)}
                     >
                       <i className="fas fa-trash"></i>
                     </button>
@@ -133,8 +137,8 @@ const UserTable: React.FunctionComponent<IRolesListProps> = ({
           </>
         )}
       </div>
-    </div>
+    </>
   )
 }
 
-export default UserTable;
+export default UsersList

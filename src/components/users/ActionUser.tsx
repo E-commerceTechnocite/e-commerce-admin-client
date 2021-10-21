@@ -1,16 +1,18 @@
 import * as React from 'react';
 import { useHistory, useParams } from "react-router"
 import { useEffect, useState } from "react"
-import { http } from "../util/http"
-import { config } from "../index"
-import Select from "../components/inputs/Select"
-import TextInput from "../components/inputs/TextInput"
-import Loading from "../components/loading/Loading"
-import { PaginationModel } from '../models/pagination/pagination.model'
-import { sendRequest } from "../util/helpers/refresh"
+import { http } from "../../util/http"
+import { config } from "../../index"
+import Select from "../inputs/Select"
+import TextInput from "../inputs/TextInput"
+import { PaginationModel } from '../../models/pagination/pagination.model'
+import { sendRequest } from "../../util/helpers/refresh"
 import { Formik, Field } from "formik"
-import { UserModel } from '../models/user/user.model';
-import { userSchema } from "../util/validation/userValidation"
+import { UserModel } from '../../models/user/user.model';
+import { userSchema } from "../../util/validation/userValidation"
+import "./ActionUser.scss"
+import ArrowPrevious from '../previous/ArrowPrevious'
+
 
 interface IActionUserProps {}
 
@@ -23,10 +25,6 @@ interface InitialValues {
 const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
     const history = useHistory()
     const [roles, setRoles] = useState([])
-    //const [isPending, setIsPending] = useState(true)
-    const [username, setUsername] = useState("")
-    const [email, setEmail] = useState("")
-    const [roleId, setRoleId] = useState("")
     const [submitError, setSubmitError] = useState<string>(null)
     const params: { slug: string } = useParams()
     const [initialValues, setInitialValues] = useState<InitialValues>()
@@ -67,7 +65,7 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
             Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           },
         })
-      }
+    }
 
     const SubmitRole = async () => {
         let { data, error } = await sendRequest(roleRequest)
@@ -75,13 +73,11 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
           history.push("/login")
         }
         setRoles(data.data)
-        setRoleId(data.data[0].id)
-        //setIsPending(false)
-      }
+    }
 
-    useEffect(() => {
+    /*useEffect(() => {
         SubmitRole().then()
-    }, [])
+    }, [roles])*/
 
     /*const currentTaxRequest = () => {
         return http.get<TaxRuleModel>(`${config.api}/v1/tax-rule/${params.slug}`, {
@@ -122,44 +118,10 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
         }
       }, [params.slug])
 
-    /*useEffect(() => {
-        const token = sessionStorage.getItem("token")
-        const options = {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-        http
-          .get<PaginationModel<any>>(`${config.api}/v1/role`, options)
-          .then(({ data, error }) => {
-            setIsPending(true)
-            if (!error) {
-                setRoles(data.data)
-                setRoleId(data.data[0].id)
-                setIsPending(false)
-            }
-          })
-    }, [])*/
-
-    /*const onSubmit = (e: React.FormEvent): void => {
-        e.preventDefault()
-        setIsPending(true)
-        const body = JSON.stringify({ email: email, username: username, roleId: roleId })
-        const token = sessionStorage.getItem("token")
-        const options = {
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        }
-        http
-          .post<{ access_token: string; refresh_token: string }>(
-            `${config.api}/v1/user`,
-            body,
-            options
-          )
-          history.push("/users")
-      }*/
-
     return <>
-        
-        {roles && (
-            <div className="add-user">
+        <ArrowPrevious />
+        {roles && (          
+            <div className="add-user-t">
                 <Formik
                     enableReinitialize
                     initialValues={initialValues}
@@ -177,28 +139,22 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
                 >
                 {({ handleSubmit }) => {
                 return (
-                <>
-                <form onSubmit={handleSubmit}>
-                    <div className="add-user-title">
+                  <form onSubmit={handleSubmit}>
+                      <div className="add-user-title">
                         <label>New user</label>
-                    </div>
-                            <TextInput name={"username"} label={"Username"}/>
-                        
-                        
-                            <TextInput name={"email"} label={"E-mail"}/>
-
-                            <Select name={"roleId"} label={"Role"} options={roles}/>
-
-                        <button type="submit" className="action">Create</button>
-
-                    {submitError && (
-                      <div className="global-error">{submitError}</div>
-                    )}   
-                </form>
-                </> )
+                      </div>
+                      <TextInput name={"username"} label={"Username"}/>                      
+                      <TextInput name={"email"} label={"E-mail"}/>
+                      <Select name={"roleId"} label={"Role"} options={roles}/>
+                      <button type="submit" className="action">Create</button>
+                      {submitError && (
+                        <div className="global-error">{submitError}</div>
+                      )}   
+                  </form>
+                 )
                 }}
                 </Formik>
-            </div>
+            </div>         
         )}
     </>
 };

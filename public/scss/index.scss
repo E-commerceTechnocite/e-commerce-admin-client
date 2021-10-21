@@ -822,99 +822,18 @@ table th {
 }
 
 
-
-/* NEW USER */
-.add-user {
-  form {
-    background: $primary-color-elts;
-    box-shadow: $primary-elts-shadow;
-    border-radius: 5px;
-    padding: 15px 15px;
-    /*display: flex;
-    flex-direction: column;
-    align-items: center;*/
-    display:grid;
-    grid-template-rows: 1fr 1fr 1fr;
-    .add-user-title {
-      padding-bottom: 5px;
-      font-size: 23px;
-      border-bottom: 1px solid $primary-border-color;
-    }
-    .add-user-infos {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 10px;
-      border-bottom: 1px solid $primary-border-color;
-    }
-    .add-user-username {
-      width: 100%;
-      height: 37px;  
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      label {
-        font-size: 16px;
-        width:100px;
-      }
-      input {
-        height: 65%;
-        width: 297px;
-        font-size: 13px;
-        padding-left: 1px;
-        border-radius: 4px;
-        border: 1px solid $primary-border-color
-      }
-    }
-    .add-user-email {
-      width: 100%;
-      height: 37px;
-      margin-top: 10px;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      label {
-        font-size: 16px;
-        width:100px;
-      }
-      input {
-        height: 65%;
-        width: 297px;
-        padding-left: 1px;
-        font-size: 13px;
-        border-radius: 4px;
-        border: 1px solid $primary-border-color
-      }
-    }
-    .add-user-role {
-      width: 100%;
-      height: 37px;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      margin-top: 10px;
-      label {
-        font-size: 16px;
-        width:100px;
-      } 
-      select {
-        height: 75%;
-        width: 300px;
-        border-radius: 4px;
-        padding-left: 1px;
-        border:1px solid $primary-border-color;
-      }   
-    }
-    .add-user-button {
-      padding-top: 15px;
-    }
-  }
+/* NEW USER TITLE */
+.add-user-title {
+  padding-bottom: 5px;
+  font-size: 23px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid $primary-border-color;
 }
+
 
 /*NEW ROLE */
 .perms-form {
   background-color: $primary-color-elts;
-  //display:grid;
 }
 .role-name{
   border-bottom: 1px solid $primary-border-color;
@@ -946,14 +865,12 @@ table th {
     grid-column-gap: 75px;
     grid-row-gap: 25px;
     justify-items: stretch;
-    //padding:10px 0px 0px 15px;
     padding:15px;
   }
 
 }
 .permissions-choices{
   min-width: 150px;
-  //padding: 10px;
   box-shadow: $primary-elts-shadow;
   .permissions-choices-title {
     padding: 5px;
@@ -970,6 +887,25 @@ table th {
 }
 .perms-button {
   padding:15px;
+  button {
+    width: 100%;
+  }
+}
+
+/* ARROW BACKSPACE BUTTON */
+.arrowBackButton {
+  background: $primary-button;
+  border-radius: 4px;
+  border: none;
+  transition: 0.2s;
+}
+.arrowBackButton:hover {
+  background: $primary-button-event;
+}
+.arrowBackButton .fas{
+  font-size: 18px;
+  margin: 6px 15px;
+  color:white;
 }
 
 

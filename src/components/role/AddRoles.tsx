@@ -1,19 +1,53 @@
 import * as React from 'react';
 import { useHistory, withRouter } from "react-router"
 import { useEffect, useState } from "react"
-import { http } from "../util/http"
-import { config } from "../index"
-import Loading from "../components/loading/Loading"
+import { http } from "../../util/http"
+import { config } from "../../index"
+import { PaginationModel } from '../../models/pagination/pagination.model'
+import { sendRequest } from "../../util/helpers/refresh"
+import ArrowPrevious from '../previous/ArrowPrevious'
 
 const AddRoles: React.FunctionComponent = () => {
     const history = useHistory()
     const [rolePermissions, setRolePermissions] = useState<string[]>([])
     const [permissions, setPermissions] = useState([])
-    const [isPending, setIsPending] = useState(true)
+    //const [isPending, setIsPending] = useState(true)
     const [myInputValue, setMyInputValue] = useState("")
     const perms = {};
 
+    const categoryRequest = () => {
+        return http.get<PaginationModel<any>>(`${config.api}/v1/role/permissions`, {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        })
+    }
+
+    const SubmitCategory = async () => {
+        let { data, error } = await sendRequest(categoryRequest)
+        if (error) {
+          history.push("/login")
+        }
+        setPermissions(data)
+    }
+
     useEffect(() => {
+        SubmitCategory().then()
+      }, [])
+  
+    /*useEffect(() => {
+        if (params.slug) {
+        //SubmitCurrentTax().then()
+        } else {
+        setInitialValues({
+            email: "",
+            username: "",
+            roleId: "",
+        })
+        }
+    }, [params.slug])*/
+
+    /*useEffect(() => {
         const token = sessionStorage.getItem("token")
         const options = {
           headers: { Authorization: `Bearer ${token}` },
@@ -27,7 +61,7 @@ const AddRoles: React.FunctionComponent = () => {
                 setIsPending(false)
             }
           })
-    }, [])
+    }, [])*/
 
     const capitalizeFirstLetter = (string) => {
         return string.charAt(0).toUpperCase() + string.slice(1);
@@ -68,7 +102,7 @@ const AddRoles: React.FunctionComponent = () => {
 
     const onSubmit = (e: React.FormEvent): void => {
         e.preventDefault()
-        setIsPending(true)
+        //setIsPending(true)
         const body = JSON.stringify({ name: myInputValue, permissions: rolePermissions })
         const token = sessionStorage.getItem("token")
         const options = {
@@ -84,9 +118,10 @@ const AddRoles: React.FunctionComponent = () => {
       }
 
     return <>
-        {isPending && <Loading />}
-        {!isPending && (
-            //<div className="add-role">
+       
+
+       {permissions && ( <>
+            <ArrowPrevious/>
             <form onSubmit={onSubmit}>
                 <div className="perms-form">
                     <div className="role-name">
@@ -128,10 +163,9 @@ const AddRoles: React.FunctionComponent = () => {
                         <button type="submit" className="action">Submit</button>
                     </div>
                 </div>
-            </form>
-            //</div>
-        )}
-    </>
+            </form> </>)}
+            </>
+
 };
 
 export default AddRoles;
