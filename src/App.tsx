@@ -55,96 +55,102 @@ export const App = () => {
             <Route path="/login" component={Login} />
             <GuardProvider guards={[loginGuard]}>
               <DashboardLayout>
-                <GuardedRoute exact path="/" component={Home} />
-                <GuardedRoute exact path="/products" component={Products} />
-                <GuardedRoute
-                  exact
-                  path="/products/add"
-                  component={AddProduct}
-                />
-                <GuardedRoute
-                  path="/products/edit/:slug"
-                  component={EditProduct}
-                />
-                <GuardedRoute exact path="/medias" component={MediaLibrary} />
-                <GuardedRoute exact path="/users" component={Users} />
-                <GuardedRoute
-                  exact
-                  path="/users/addusers"
-                  component={ActionUser}
-                />
-                <GuardedRoute
-                  exact
-                  path="/users/edit/:slug"
-                  component={ActionUser}
-                />
-                <GuardedRoute exact path="/roles" component={Roles} />
-                <GuardedRoute
-                  exact
-                  path="/roles/addroles"
-                  component={ActionRole}
-                />
-                <GuardedRoute
-                  exact
-                  path="/roles/edit/:slug"
-                  component={ActionRole}
-                />
-                <GuardedRoute exact path="/taxes" component={Taxes} />
-                <GuardedRoute
-                  exact
-                  path="/taxes/add-tax-rule"
-                  component={AddTaxRule}
-                />
-                <GuardedRoute
-                  exact
-                  path="/taxes/edit-tax-rule/:slug"
-                  component={AddTaxRule}
-                />
-                <GuardedRoute
-                  exact
-                  path="/taxes/add-tax-group"
-                  component={AddTaxGroup}
-                />
-                <GuardedRoute
-                  exact
-                  path="/taxes/edit-tax-group/:slug"
-                  component={AddTaxGroup}
-                />
-                <GuardedRoute
-                  exact
-                  path="/taxes/add-tax-rate"
-                  component={AddTaxRate}
-                />
-                <GuardedRoute
-                  exact
-                  path="/taxes/edit-tax-rate/:slug"
-                  component={AddTaxRate}
-                />
-                <GuardedRoute
-                  exact
-                  path="/taxes/add-country"
-                  component={AddCountry}
-                />
-                <GuardedRoute
-                  exact
-                  path="/taxes/edit-country/:slug"
-                  component={AddCountry}
-                />
-                <GuardedRoute exact path="/categories" component={Categories} />
-                <GuardedRoute
-                  exact
-                  path="/categories/addcategories"
-                  component={ActionCategory}
-                />
-                <GuardedRoute
-                  exact
-                  path="/categories/edit/:slug"
-                  component={ActionCategory}
-                />
-                <GuardedRoute exact path="/customers" component={Customers} />
-                <GuardedRoute exact path="/orders" component={Orders} />
-                <GuardedRoute exact path="/stock" component={Stock} />
-                <GuardedRoute path="*" component={NotFound} />
+                <Switch>
+                  <GuardedRoute exact path="/" component={Home} />
+                  <GuardedRoute exact path="/products" component={Products} />
+                  <GuardedRoute
+                    exact
+                    path="/products/add"
+                    component={AddProduct}
+                  />
+                  <GuardedRoute
+                    path="/products/edit/:slug"
+                    component={EditProduct}
+                  />
+                  <GuardedRoute exact path="/medias" component={MediaLibrary} />
+                  <GuardedRoute exact path="/users" component={Users} />
+                  <GuardedRoute
+                    exact
+                    path="/users/addusers"
+                    component={ActionUser}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/users/edit/:slug"
+                    component={ActionUser}
+                  />
+                  <GuardedRoute exact path="/roles" component={Roles} />
+                  <GuardedRoute
+                    exact
+                    path="/roles/addroles"
+                    component={ActionRole}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/roles/edit/:slug"
+                    component={ActionRole}
+                  />
+                  <GuardedRoute exact path="/taxes" component={Taxes} />
+                  <GuardedRoute
+                    exact
+                    path="/taxes/add-tax-rule"
+                    component={AddTaxRule}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/taxes/edit-tax-rule/:slug"
+                    component={AddTaxRule}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/taxes/add-tax-group"
+                    component={AddTaxGroup}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/taxes/edit-tax-group/:slug"
+                    component={AddTaxGroup}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/taxes/add-tax-rate"
+                    component={AddTaxRate}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/taxes/edit-tax-rate/:slug"
+                    component={AddTaxRate}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/taxes/add-country"
+                    component={AddCountry}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/taxes/edit-country/:slug"
+                    component={AddCountry}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/categories"
+                    component={Categories}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/categories/addcategories"
+                    component={ActionCategory}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/categories/edit/:slug"
+                    component={ActionCategory}
+                  />
+                  <GuardedRoute exact path="/customers" component={Customers} />
+                  <GuardedRoute exact path="/orders" component={Orders} />
+                  <GuardedRoute exact path="/stock" component={Stock} />
+                  <GuardedRoute path="*" component={NotFound} />
+                </Switch>
               </DashboardLayout>
             </GuardProvider>
           </Switch>
