@@ -21,7 +21,7 @@ import AddTaxRule from "./views/taxes/AddTaxRule";
 import Categories from "./views/Categories";
 import Customers from "./views/Customers";
 import Orders from "./views/Orders";
-import Stock from "./views/Stock";
+import Stock from "./views/stock/Stock";
 import AddTaxGroup from "./views/taxes/AddTaxGroup";
 import AddTaxRate from "./views/taxes/AddTaxRate";
 import AddCountry from "./views/taxes/AddCountry";
@@ -33,6 +33,7 @@ import {
 import { sendRequest } from "./util/helpers/refresh";
 import { http } from "./util/http";
 import { auth } from "./util/helpers/auth";
+import EditStock from "./views/stock/EditStock";
 
 const loginCheck = () =>
  http.post(`${config.api}/v1/o-auth/check`, null, {
@@ -81,6 +82,7 @@ export const App = () => {
          <GuardedRoute exact path="/customers" component={Customers} />
          <GuardedRoute exact path="/orders" component={Orders} />
          <GuardedRoute exact path="/stock" component={Stock} />
+         <GuardedRoute exact path="/taxes/edit-stock/:slug" component={EditStock} />
          <GuardedRoute path="*" component={NotFound} />
         </Switch>
        </DashboardLayout>
