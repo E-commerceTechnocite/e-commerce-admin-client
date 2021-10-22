@@ -616,8 +616,6 @@ button {
 .roles {
   background: $primary-color-elts;
   padding-bottom: 30px;
-  //width:500px;
-  //padding:150px;
   box-shadow: $primary-elts-shadow;
   .top-container {
     display: flex;
@@ -666,7 +664,7 @@ button {
       grid-template-columns: 117px 117px;
       grid-template-rows: 1;
       border-bottom: 1px solid $primary-border-color;
-      grid-column-gap: 150px;
+      grid-column-gap: 350px;
       align-items: center;
       justify-content: center;
       button {
@@ -688,21 +686,7 @@ button {
       justify-content: center;
       padding: 20px 30px;
       font-weight: bold;
-      /*span:nth-child(1) {
-        margin-left: 400px;
-      }
-      span:nth-child(2) {
-        margin-left: 400px;
-      }*/
     }
-    /*.role {
-      span:nth-child(1) {
-        margin-left: 400px;
-      }
-      span:nth-child(2) {
-        margin-left: 400px;
-      }
-    }*/
   }
 }
 
@@ -886,11 +870,96 @@ table th {
   padding: 5px;
 }
 
-.AddWrap {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between
+
+/* NEW USER TITLE */
+.add-user-title {
+  padding-bottom: 5px;
+  font-size: 23px;
+  margin-bottom: 25px;
+  border-bottom: 1px solid $primary-border-color;
 }
+
+
+/*NEW ROLE */
+.perms-form {
+  background-color: $primary-color-elts;
+}
+.role-name{
+  border-bottom: 1px solid $primary-border-color;
+  padding: 15px;
+  .role-name-entry {
+      margin: 10px 0px 0px 15px;
+      width: 300px;
+      padding: 0 10px;
+      background: $primary-color-elts;
+      border-radius: 4px;
+      border: 1px solid $primary-border-color;
+      input {
+        width: 250px;
+        height: 35px;
+        font-size: 13px;
+        border: none;
+      }
+      i {
+        margin-right: 7px;
+      }
+  }
+}
+.role-permissions {
+  border-bottom: 1px solid $primary-border-color;
+  padding:15px;
+  .permissions-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-column-gap: 75px;
+    grid-row-gap: 25px;
+    justify-items: stretch;
+    padding:15px;
+  }
+
+}
+.permissions-choices{
+  min-width: 150px;
+  box-shadow: $primary-elts-shadow;
+  .permissions-choices-title {
+    padding: 5px;
+    border-bottom: 1px solid $primary-border-color;
+  }
+  .attrs {
+    label {
+      font-size: 15px;
+    }
+    input {
+      width: 25px;
+    }
+  }
+}
+.perms-button {
+  padding:15px;
+  button {
+    width: 100px;
+  }
+}
+
+/* ARROW BACKSPACE BUTTON */
+.arrowBackButton {
+  background: $primary-button;
+  border-radius: 4px;
+  border: none;
+  color: $secondary-color-font;
+  padding: 8px 15px;
+  transition: 0.2s;
+  font-size: 15px;
+}
+.arrowBackButton:hover {
+  background: $primary-button-event;
+}
+.arrowBackButton .fas{
+  color:$secondary-color-font;
+  font-size: 15px;
+  margin-right: 3px;
+}
+
 
 @media screen and (max-width: 1240px) {
   .products {
@@ -996,5 +1065,50 @@ table th {
         }
       }
     }
+  }
+}
+
+/* Add Product */
+.form-control,
+.description {
+  position: relative;
+  .error {
+    font-size: 13px;
+    position: absolute;
+    padding: 2px 10px;
+    bottom: -19px;
+    left: 0;
+    color: $delete-button;
+    background: rgb(255, 241, 241);
+  }
+}
+.description {
+  .toolbar {
+    display: flex;
+    border-bottom: 1px solid $primary-border-color;
+    > div {
+      margin: 10px;
+      padding: 10px;
+    }
+    > div:first-child {
+      margin-left: 20px;
+    }
+  }
+  .editor {
+    background-color: $primary-color-elts;
+    .notranslate.public-DraftEditor-content {
+      > div {
+        min-height: 300px;
+        padding: 10px;
+      }
+    }
+  }
+  .rdw-image-wrapper,
+  .rdw-embedded-wrapper,
+  .rdw-emoji-wrapper,
+  .rdw-remove-wrapper,
+  .rdw-history-dropdown,
+  .rdw-colorpicker-wrapper {
+    display: none;
   }
 }

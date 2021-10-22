@@ -1,6 +1,6 @@
 @import '../../../public/scss/variables.scss';
 
-.pagination {
+.pagination-component {
   display: flex;
   justify-content: center;
   margin-top: 30px;
@@ -36,5 +36,9 @@
   .current:hover {
     background: $primary-button-event;
     color: $secondary-color-font;
+  }
+
+  i {
+    color: $primary-button;
   }
 }

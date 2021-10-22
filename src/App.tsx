@@ -11,11 +11,9 @@ import EditProduct from './views/EditProduct'
 import MediaLibrary from './views/MediaLibrary'
 import Users from './views/Users'
 import Roles from './views/Roles'
-import AddRoles from './views/AddRoles'
 import NotFound from './views/NotFound'
 import ScrollToTop from './components/ScrollToTop'
 import { config } from './index'
-import AddUsers from './views/AddUsers'
 import Taxes from './views/taxes/Taxes'
 import AddTaxRule from './views/taxes/AddTaxRule'
 import Categories from './views/Categories'
@@ -30,6 +28,9 @@ import { GuardedRoute, GuardFunction, GuardProvider } from 'react-router-guards'
 import { sendRequest } from './util/helpers/refresh'
 import { http } from './util/http'
 import { auth } from './util/helpers/auth'
+import ActionUser from './components/users/ActionUser'
+import ActionCategory from './components/category/ActionCategory'
+import ActionRole from './components/role/ActionRole'
 
 const loginCheck = () =>
   http.post(`${config.api}/v1/o-auth/check`, null, {
@@ -72,13 +73,23 @@ export const App = () => {
                   <GuardedRoute
                     exact
                     path="/users/addusers"
-                    component={AddUsers}
+                    component={ActionUser}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/users/edit/:slug"
+                    component={ActionUser}
                   />
                   <GuardedRoute exact path="/roles" component={Roles} />
                   <GuardedRoute
                     exact
                     path="/roles/addroles"
-                    component={AddRoles}
+                    component={ActionRole}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/roles/edit/:slug"
+                    component={ActionRole}
                   />
                   <GuardedRoute exact path="/taxes" component={Taxes} />
                   <GuardedRoute
@@ -125,6 +136,16 @@ export const App = () => {
                     exact
                     path="/categories"
                     component={Categories}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/categories/addcategories"
+                    component={ActionCategory}
+                  />
+                  <GuardedRoute
+                    exact
+                    path="/categories/edit/:slug"
+                    component={ActionCategory}
                   />
                   <GuardedRoute exact path="/customers" component={Customers} />
                   <GuardedRoute exact path="/orders" component={Orders} />

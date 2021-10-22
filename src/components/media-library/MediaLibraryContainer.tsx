@@ -1,22 +1,23 @@
-import * as React from 'react'
-import { FC, useEffect, useRef, useState } from 'react'
-import Pagination from '../pagination/Pagination'
-import { PaginationModel } from '../../models/pagination/pagination.model'
-import { PictureModel } from '../../models/files/picture.model'
-import { useHistory } from 'react-router'
-import { http } from '../../util/http'
-import { config } from '../../index'
-import { sendRequest } from '../../util/helpers/refresh'
-import './MediaLibraryContainer.scss'
-import Skeleton from './skeleton/Skeleton'
-import { auth } from '../../util/helpers/auth'
-import Granted from '../Granted'
+import * as React from "react";
+import { FC, useEffect, useRef, useState } from "react";
+import Pagination from "../pagination/Pagination";
+import { PaginationModel } from "../../models/pagination/pagination.model";
+import { PictureModel } from "../../models/files/picture.model";
+import { useHistory } from "react-router";
+import { http } from "../../util/http";
+import { config } from "../../index";
+import { sendRequest } from "../../util/helpers/refresh";
+import "./MediaLibraryContainer.scss";
+import Skeleton from "./skeleton/Skeleton";
+import { auth } from "../../util/helpers/auth";
+import Granted from "../Granted";
+import { motion } from "framer-motion";
 
 interface MediaLibraryContainerPropsInterface {
-  numberOfImages?: number
-  upperPagination?: boolean
-  mini?: boolean
-  libraryToParent?: (data) => void
+  numberOfImages?: number;
+  upperPagination?: boolean;
+  mini?: boolean;
+  libraryToParent?: (data) => void;
 }
 
 const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
@@ -25,39 +26,39 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   mini = false,
   libraryToParent,
 }) => {
-  const [pictures, setPictures] = useState<PaginationModel<PictureModel>>(null)
-  const [page, setPage] = useState(1)
-  const [files, setFiles] = useState<File[]>([])
-  const [filesSelected, setFilesSelected] = useState<PictureModel[]>([])
-  const [imagePending, setImagePending] = useState(false)
-  const inputEl = useRef<HTMLInputElement>()
-  const history = useHistory()
+  const [pictures, setPictures] = useState<PaginationModel<PictureModel>>(null);
+  const [page, setPage] = useState(1);
+  const [files, setFiles] = useState<File[]>([]);
+  const [filesSelected, setFilesSelected] = useState<PictureModel[]>([]);
+  const [imagePending, setImagePending] = useState(false);
+  const inputEl = useRef<HTMLInputElement>();
+  const history = useHistory();
 
   /**
    * Returns post request of multiple files
    * @returns request
    */
   const request = () => {
-    const formData = new FormData()
+    const formData = new FormData();
     files.forEach((file) => {
-      formData.append('files', file)
-    })
+      formData.append("files", file);
+    });
     return http.post(`${config.api}/v1/file/upload-bunch`, formData, {
       headers: { ...auth.headers },
-    })
-  }
+    });
+  };
 
   /**
    * Submits post request of multiple files
    */
   const sendFiles = async () => {
-    setImagePending(true)
-    let { error } = await sendRequest(request)
+    setImagePending(true);
+    let { error } = await sendRequest(request);
     if (error) {
-      history.push('/login')
+      history.push("/login");
     }
-    setImagePending(false)
-  }
+    setImagePending(false);
+  };
 
   /**
    * Returns request files list with page number
@@ -69,81 +70,81 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
       {
         headers: { ...auth.headers },
       }
-    )
+    );
 
   /**
    * Submits request files list with page number
-   * @returns
+   * @returns 
    */
   const fetchImages = async () => {
-    const { data, error } = await sendRequest(imagesRequest)
+    const { data, error } = await sendRequest(imagesRequest);
     if (error) {
-      history.push('/login')
+      history.push("/login");
     }
-    setPictures(data)
-  }
+    setPictures(data);
+  };
 
   /**
    * Pass selected files to parent component
    */
   const sendData = () => {
-    filesSelected.map((file) => libraryToParent(file))
-    setFilesSelected([])
-  }
+    filesSelected.map((file) => libraryToParent(file));
+    setFilesSelected([]);
+  };
 
   // Verify if file is unique and push it
   /**
    * Push file in array. Verify if is currently in array or not
-   * @param pic
+   * @param pic 
    */
   const pushFile = (pic: PictureModel) => {
     const currentFileInArray = filesSelected.find(
       (currentFile) => currentFile.id === pic.id
-    )
+    );
     if (filesSelected.length) {
       if (currentFileInArray === undefined) {
-        setFilesSelected([...filesSelected, pic])
+        setFilesSelected([...filesSelected, pic]);
       } else if (currentFileInArray) {
         const indexFile = filesSelected.findIndex(
           (currentFile) => currentFile.id === pic.id
-        )
-        const newFilesSelected = [...filesSelected]
-        newFilesSelected.splice(indexFile, 1)
-        setFilesSelected(newFilesSelected)
+        );
+        const newFilesSelected = [...filesSelected];
+        newFilesSelected.splice(indexFile, 1);
+        setFilesSelected(newFilesSelected);
       }
     } else {
-      setFilesSelected((file) => [...file, pic])
+      setFilesSelected((file) => [...file, pic]);
     }
-  }
+  };
 
   useEffect(() => {
-    console.log(filesSelected)
-  }, [filesSelected])
+    console.log(filesSelected);
+  }, [filesSelected]);
 
   /**
    * Check if image is selected
-   * @param id
+   * @param id 
    * @returns boolean
    */
   const isSelected = (id: string) => {
     if (filesSelected.find((currentFile) => currentFile.id === id)) {
-      return true
+      return true;
     } else if (
       filesSelected.find((currentFile) => currentFile.id !== id) === undefined
     ) {
-      return false
+      return false;
     }
-  }
+  };
 
   // Upload files when new ones uploaded
   useEffect(() => {
-    if (files.length) sendFiles().then()
-  }, [files])
+    if (files.length) sendFiles().then();
+  }, [files]);
 
   // Fetch files on component load
   useEffect(() => {
-    fetchImages().then()
-  }, [page, imagePending])
+    fetchImages().then();
+  }, [page, imagePending]);
 
   return (
     <>
@@ -154,18 +155,18 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
             <input type="text" placeholder="Search..." />
           </div>
           <div className="button-group">
-            <Granted permissions={['c:file']}>
+            <Granted permissions={["c:file"]}>
               <label
                 htmlFor="myFile"
                 className="action"
-                style={!mini ? { borderRadius: '4px' } : {}}
+                style={!mini ? { borderRadius: "4px" } : {}}
               >
                 Add
                 <input
                   type="file"
                   id="myFile"
                   name="filename"
-                  style={{ display: 'none' }}
+                  style={{ display: "none" }}
                   multiple
                   ref={inputEl}
                   onClick={(e) => (e.currentTarget.value = null)}
@@ -192,20 +193,25 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                   return (
                     <li
                       key={pic.id}
-                      className={`${isSelected(pic.id) ? 'selected' : ''}`}
+                      className={`${isSelected(pic.id) ? "selected" : ""}`}
                     >
-                      <picture>
+                      <motion.picture
+                        whileTap={{
+                          scale: 0.95,
+                          transition: { duration: 0.1 },
+                        }}
+                      >
                         <img
                           src={`${config.api}` + pic.uri}
                           alt={pic.caption}
                           id={pic.id}
                           onClick={() => {
-                            pushFile(pic)
+                            pushFile(pic);
                           }}
                         />
-                      </picture>
+                      </motion.picture>
                     </li>
-                  )
+                  );
                 })}
             </ul>
             {pictures && (
@@ -215,7 +221,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
         )}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default MediaLibraryContainer
+export default MediaLibraryContainer;
