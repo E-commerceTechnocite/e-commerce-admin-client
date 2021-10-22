@@ -1,9 +1,11 @@
 @import "../../../../public/scss/variables.scss";
+
 .skeleton {
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 425px;
+
   .images {
     min-height: 300px;
     display: flex;
@@ -12,6 +14,7 @@
     align-items: center;
     flex-wrap: wrap;
     padding: 20px 10px 10px;
+
     > div {
       margin: 3px 3px;
       width: 72px;
@@ -22,6 +25,7 @@
       box-sizing: border-box;
     }
   }
+
   .pagination {
     width: 200px;
     height: 30px;

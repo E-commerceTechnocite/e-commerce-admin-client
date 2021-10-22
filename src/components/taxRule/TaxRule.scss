@@ -5,6 +5,7 @@
     display: flex;
     padding: 10px 30px;
     border-bottom: 1px solid $primary-border-color;
+
     .search {
       display: flex;
       align-items: center;
@@ -13,15 +14,18 @@
       border-radius: 4px;
       border: 1px solid $primary-border-color;
       margin-right: 10px;
+
       input {
         width: 130px;
         border: none;
       }
+
       i {
         margin-right: 7px;
       }
     }
   }
+
   .tax-list {
     .legend,
     .content .item {
@@ -31,54 +35,66 @@
       grid-template-columns: 7% 7% repeat(5, 1fr) 140px;
       grid-column-gap: 10px;
       align-items: center;
+
       span:nth-child(3) {
         grid-column-start: 3;
         grid-column-end: 5;
       }
+
       span:nth-child(4) {
         grid-column-start: 5;
       }
+
       span:nth-child(5) {
         grid-column-start: 6;
         grid-column-end: 8;
       }
+
       .edit,
       .delete {
         grid-column-start: 8;
         grid-row-start: 1;
       }
+
       .edit {
         margin-left: 23px;
         justify-self: flex-start;
       }
+
       .delete {
         justify-self: flex-end;
       }
     }
   }
+
   .legend {
     font-weight: bold;
   }
+
   .content {
     margin: 0;
   }
+
   .pagination {
-      padding-bottom: 20px;
+    padding-bottom: 20px;
   }
 }
 
 @media screen and (max-width: 1240px) {
   .tax-rule {
     .legend {
-      display: none!important;
+      display: none !important;
     }
+
     .content {
       .item {
         grid-template-rows: 1fr 1fr;
         align-items: center;
+
         span {
           position: relative;
         }
+
         span::before {
           position: absolute;
           content: "Tax Group";
@@ -86,57 +102,67 @@
           top: -13px;
           color: #b3b3b3;
         }
+
         span:first-child {
           grid-column-start: 1;
           grid-column-end: 3;
         }
+
         span:first-child::before {
           position: absolute;
           content: "Group";
           font-size: 12px;
           top: -13px;
         }
+
         span:nth-child(2) {
           grid-column-start: 4;
           grid-column-end: 6;
           grid-row-start: 1;
         }
+
         span:nth-child(2)::before {
           position: absolute;
           content: "Rate";
           font-size: 12px;
           top: -13px;
         }
+
         span:nth-child(3) {
-          grid-column-start: 6!important;
-          grid-column-end: 8!important;
+          grid-column-start: 6 !important;
+          grid-column-end: 8 !important;
           grid-row-start: 1;
           grid-row-end: 1;
         }
+
         span:nth-child(3)::before {
           position: absolute;
           content: "Country";
           font-size: 12px;
           top: -13px;
         }
+
         span:nth-child(4) {
-          grid-column-start: 1!important;
+          grid-column-start: 1 !important;
           grid-column-end: 4;
           grid-row-start: 2;
           align-self: flex-end;
         }
+
         span:nth-child(4)::before {
           position: absolute;
           content: "Zip code";
           font-size: 12px;
           top: -13px;
         }
+
         span:nth-child(5) {
-          grid-column-start: 4!important;
+          grid-column-start: 4 !important;
           grid-column-end: 8;
           grid-row-start: 2;
           align-self: flex-end;
         }
+
         span:nth-child(5)::before {
           position: absolute;
           content: "Description";

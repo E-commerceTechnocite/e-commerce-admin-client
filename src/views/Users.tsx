@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { useEffect, useState } from "react"
+import * as React from 'react'
+import { useEffect, useState } from 'react'
 import UsersList from '../components/UsersList'
 
 interface IUsersProps {
@@ -11,7 +11,7 @@ interface IUsersProps {
 }
 
 const Users: React.FunctionComponent<IUsersProps> = (props) => {
-  const [success, setSuccess] = useState<boolean|undefined>()
+  const [success, setSuccess] = useState<boolean | undefined>()
   useEffect(() => {
     if (props.location.state !== undefined) {
       console.log(props.location.state)
@@ -19,13 +19,12 @@ const Users: React.FunctionComponent<IUsersProps> = (props) => {
     } else {
       console.log(undefined)
     }
-    
-  }, [])  
-  
+  }, [])
+
   return (
-      <>
-        <UsersList number={10} pagination={true} success={success}/>
-      </>
-    )
-  }
-  export default Users;
+    <>
+      <UsersList number={10} pagination={true} success={success} />
+    </>
+  )
+}
+export default Users
