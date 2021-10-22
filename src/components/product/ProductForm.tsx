@@ -28,11 +28,10 @@ import { TaxRuleGroupModel } from "../../models/product/tax-rule-group.model";
 interface FormValuesInterface {
   title: string;
   reference: string;
-  quantity: number | string;
   stock?: {
-    physical: number;
-    pending: number;
-    incoming: number;
+    physical: number | null;
+    pending?: number | null;
+    incoming?: number | null;
   };
   price: number | string;
   description: string;
@@ -66,7 +65,11 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
   let [initialValues, setInitialValues] = useState<FormValuesInterface>({
     title: "",
     reference: "",
-    quantity: "",
+    stock: {
+      physical: null,
+      pending: 0,
+      incoming: 0
+    },
     price: "",
     description: "",
     categoryId: "",
@@ -232,7 +235,11 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
       taxRuleGroupId: data.taxRuleGroup.id,
       description: data.description,
       price: data.price,
-      quantity: data.quantity,
+      stock: {
+        physical: data.stock.physical,
+        pending: 0,
+        incoming: 0
+      } ,
       title: data.title,
       reference: data.reference,
     });
@@ -282,10 +289,13 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
               initialValues={initialValues}
               validationSchema={productSchema}
               onSubmit={async (data) => {
+                // console.log(data)
                 await submitProduct(data);
               }}
             >
-              {({ setFieldValue, setFieldTouched, handleSubmit, values }) => {
+              {({ setFieldValue, setFieldTouched, handleSubmit, values, errors }) => {
+                console.log(values.stock.physical)
+                console.log(errors)
                 return (
                   <form onSubmit={handleSubmit}>
                     <div className="top">
@@ -305,7 +315,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                             label={"Tax"}
                             options={taxOptions}
                           />
-                          <NumberInput name={"quantity"} label={"Quantity"} />
+                          <NumberInput name={"stock.physical"} label={"Quantity"} />
                           <NumberInput name={"price"} label={"Price"} />
                         </div>
                       </div>
