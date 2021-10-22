@@ -1,18 +1,16 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { CountryModel } from '../../models/product/country.model'
 import { http } from '../../util/http'
 import { config } from '../../index'
 import { sendRequest } from '../../util/helpers/refresh'
 import Previous from '../previous/Previous'
 import { Formik } from 'formik'
-import TextInput from '../inputs/TextInput'
-import { countrySchema } from '../../util/validation/taxValidation'
 import Granted from '../Granted'
 import { ProductModel } from '../../models/product/product.model'
 import NumberInput from '../inputs/NumberInput'
 import { stockSchema } from '../../util/validation/productValidation'
+import './ActionStock.scss'
 
 interface IActionStockProps {
   stock?: {
@@ -66,7 +64,7 @@ const ActionStock: React.FunctionComponent<IActionStockProps> = () => {
    * Returns get request for Stock product
    * @returns
    */
-  const currentTaxRateRequest = () => {
+  const currentProductRequest = () => {
     return http.get<ProductModel>(`${config.api}/v1/product/${params.slug}`, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -76,8 +74,8 @@ const ActionStock: React.FunctionComponent<IActionStockProps> = () => {
   /**
    * Submits get request for Stock product
    */
-  const submitCurrentTaxRate = async () => {
-    let { data, error } = await sendRequest(currentTaxRateRequest)
+  const submitCurrentProduct = async () => {
+    let { data, error } = await sendRequest(currentProductRequest)
     if (error) {
       history.push('/login')
     }
@@ -86,7 +84,7 @@ const ActionStock: React.FunctionComponent<IActionStockProps> = () => {
 
   useEffect(() => {
     if (params.slug) {
-      submitCurrentTaxRate().then()
+      submitCurrentProduct().then()
     }
   }, [params.slug])
   useEffect(() => {
@@ -113,6 +111,7 @@ const ActionStock: React.FunctionComponent<IActionStockProps> = () => {
           initialValues={initialValues}
           validationSchema={stockSchema}
           onSubmit={(data) => {
+            // submitStockPatch(data)
           }}
         >
           {({ handleSubmit, errors }) => {
@@ -124,7 +123,7 @@ const ActionStock: React.FunctionComponent<IActionStockProps> = () => {
                   <NumberInput name={'stock.incoming'} label={'Incoming'} />
                   <NumberInput name={'stock.pending'} label={'Pending'} />
                   {params.slug && (
-                    <Granted permissions={['u:country']}>
+                    <Granted permissions={['u:product']}>
                       <button className="action">submit</button>
                     </Granted>
                   )}
