@@ -34,7 +34,10 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   const inputEl = useRef<HTMLInputElement>();
   const history = useHistory();
 
-  // Preparing post request for upload of new files in media library
+  /**
+   * Returns post request of multiple files
+   * @returns request
+   */
   const request = () => {
     const formData = new FormData();
     files.forEach((file) => {
@@ -45,7 +48,9 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
     });
   };
 
-  // Calling Post request for file upload media library and verifiy user
+  /**
+   * Submits post request of multiple files
+   */
   const sendFiles = async () => {
     setImagePending(true);
     let { error } = await sendRequest(request);
@@ -55,7 +60,10 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
     setImagePending(false);
   };
 
-  // Preparing get request for media library files based on pages
+  /**
+   * Returns request files list with page number
+   * @returns request
+   */
   const imagesRequest = () =>
     http.get<PaginationModel<PictureModel>>(
       `${config.api}/v1/file?mimetype=image&page=${page}&limit=${numberOfImages}`,
@@ -64,22 +72,31 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
       }
     );
 
-  // Calling get request for media library files
+  /**
+   * Submits request files list with page number
+   * @returns 
+   */
   const fetchImages = async () => {
     const { data, error } = await sendRequest(imagesRequest);
     if (error) {
-      return history.push("/login");
+      history.push("/login");
     }
     setPictures(data);
   };
 
-  // pass to parent selected files
+  /**
+   * Pass selected files to parent component
+   */
   const sendData = () => {
     filesSelected.map((file) => libraryToParent(file));
     setFilesSelected([]);
   };
 
   // Verify if file is unique and push it
+  /**
+   * Push file in array. Verify if is currently in array or not
+   * @param pic 
+   */
   const pushFile = (pic: PictureModel) => {
     const currentFileInArray = filesSelected.find(
       (currentFile) => currentFile.id === pic.id
@@ -98,14 +115,17 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
     } else {
       setFilesSelected((file) => [...file, pic]);
     }
-    // console.log(filesSelected)
   };
 
   useEffect(() => {
     console.log(filesSelected);
   }, [filesSelected]);
 
-  // Return true is image is selected in the library
+  /**
+   * Check if image is selected
+   * @param id 
+   * @returns boolean
+   */
   const isSelected = (id: string) => {
     if (filesSelected.find((currentFile) => currentFile.id === id)) {
       return true;

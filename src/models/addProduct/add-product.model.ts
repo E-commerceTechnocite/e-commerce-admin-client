@@ -7,6 +7,9 @@ export interface GroupData {
     deletedAt: string
     name?: string
     label?: string
+    description?: string
+    behavior?: number
+    zipCode?: string
   }
   
   export interface TaxRuleGroup {

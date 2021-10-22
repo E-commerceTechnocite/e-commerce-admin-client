@@ -45,6 +45,18 @@ button {
 .action:hover {
   background: $primary-button-event;
 }
+.second-action {
+  background: $primary-button-event;
+  border-radius: 4px;
+  border: none;
+  color: $secondary-color-font;
+  padding: 8px 27px;
+  transition: 0.2s;
+  font-size: 15px;
+}
+.second-action:hover {
+  background: $primary-button;
+}
 
 .delete {
   background: $delete-button;
@@ -65,6 +77,32 @@ button {
   visibility: hidden;
   opacity: 0;
   transition: visibility 0s 1s, opacity 1s linear;
+}
+.toast-success {
+  margin-left: 10px;
+  background: #ecfbe0;
+  color: #3a9838;
+  border: 1px solid #3a9838;
+  padding: 7px 17px;
+  border-radius: 4px;
+  i {
+    margin-right: 7px;
+    color: #3a9838;
+  }
+  i:nth-child(2) {
+    margin: 0 0 0 15px;
+    font-size: 13px;
+    color: #aec09f;
+    cursor: pointer;
+  }
+}
+.global-error {
+  margin-top: 5px;
+  border-radius: 4px;
+  background: rgb(255, 241, 241);
+  color: $delete-button;
+  padding: 10px;
+  border: 1px solid $delete-button;
 }
 
 /* Login Admin */
@@ -413,24 +451,7 @@ button {
         margin-right: 7px;
       }
     }
-    .toast-success {
-      margin-left: 10px;
-      background: #ecfbe0;
-      color: #3a9838;
-      border: 1px solid #3a9838;
-      padding: 7px 17px;
-      border-radius: 4px;
-      i {
-        margin-right: 7px;
-        color: #3a9838;
-      }
-      i:nth-child(2) {
-        margin: 0 0 0 15px;
-        font-size: 13px;
-        color: #aec09f;
-        cursor: pointer;
-      }
-    }
+    
   }
 
   .product-list {
@@ -481,6 +502,10 @@ button {
       }
     }
   }
+}
+
+.media-library-view {
+  box-shadow: $primary-elts-shadow;
 }
 
 /* Home */
@@ -709,6 +734,29 @@ button {
   .rdw-history-dropdown,
   .rdw-colorpicker-wrapper {
     display: none;
+  }
+}
+
+/* Taxes */ 
+.taxes {
+  background: $primary-color-elts;
+  box-shadow: $primary-elts-shadow;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  .tabs {
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      .action:hover{
+        background: $primary-button;
+      }
+      button {
+        border-radius: 0;
+      }
+    }
+  }
+  .lists {
+    height: 600px;
   }
 }
 
