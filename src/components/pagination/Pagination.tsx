@@ -17,14 +17,14 @@ const Pagination: FunctionComponent<PaginationPropsInterface> = ({
   const lastPage = () => setPage(meta.maxPages)
 
   return (
-    <div className="pagination">
+    <div className="pagination-component">
       {meta.prevPage && (
         <>
           <button type="button" onClick={firstPage}>
-            <i className="fas fa-chevron-double-left"></i>
+            <i className="fas fa-angle-double-left" />
           </button>
           <button type="button" onClick={() => prevPage()}>
-            <i className="fas fa-chevron-left"></i>
+            <i className="fas fa-angle-left" />
           </button>
           {meta.prevPage - 1 > 0 && (
             <button type="button" onClick={() => prevPage(1)}>
@@ -50,10 +50,10 @@ const Pagination: FunctionComponent<PaginationPropsInterface> = ({
             </button>
           )}
           <button type="button" onClick={() => nextPage()}>
-            <i className="fas fa-chevron-right"></i>
+            <i className="fas fa-angle-right" />
           </button>
           <button type="button" onClick={lastPage}>
-            <i className="fas fa-chevron-double-right"></i>
+            <i className="fas fa-angle-double-right" />
           </button>
         </>
       )}
