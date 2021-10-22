@@ -13,12 +13,27 @@ export const productSchema = yup.object().shape({
     .positive()
     .min(1, "Must be a positive number.")
     .required("Required."),
-  quantity: yup
+  stock: yup.object().shape({
+    physical: yup
     .number()
     .typeError('Number required.')
     .positive()
     .min(1, "Must be a positive number.")
     .required("Required."),
+    pending: yup
+    .number()
+    .typeError('Number required.')
+    .positive()
+    .min(0, "Must be a positive number.")
+    .required("Required."),
+    incoming: yup
+    .number()
+    .typeError('Number required.')
+    .positive()
+    .min(0, "Must be a positive number.")
+    .required("Required."),
+
+  }),
   categoryId: yup.string().required("Required."),
   taxRuleGroupId: yup.string().required("Required."),
 })
