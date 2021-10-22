@@ -131,7 +131,7 @@ export const App = () => {
                   <GuardedRoute exact path="/stock" component={Stock} />
                   <GuardedRoute
                     exact
-                    path="/taxes/edit-stock/:slug"
+                    path="/stock/edit-stock/:slug"
                     component={EditStock}
                   />
                   <GuardedRoute path="*" component={NotFound} />

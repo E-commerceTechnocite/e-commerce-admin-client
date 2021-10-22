@@ -111,21 +111,11 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                         )}
                         <Granted permissions={['u:product']}>
                           <Link
-                            to={`/taxes/edit-stock/${stock.id}`}
+                            to={`/stock/edit-stock/${stock.id}`}
                             className="action edit"
                           >
                             Edit
                           </Link>
-                        </Granted>
-                        <Granted permissions={['d:product']}>
-                          <button
-                            className="delete"
-                            onClick={() =>
-                              alert('Feature not implemented yet.')
-                            }
-                          >
-                            <i className="fas fa-trash"></i>
-                          </button>{' '}
                         </Granted>
                       </div>
                     ))}
