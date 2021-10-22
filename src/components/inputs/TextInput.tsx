@@ -5,6 +5,7 @@ import "./Validation.scss"
 interface ITextInputProps {
   name: string
   label?: string
+  placeholder?: string
 }
 
 const TextInput: React.FunctionComponent<ITextInputProps> = (props) => {
@@ -12,7 +13,7 @@ const TextInput: React.FunctionComponent<ITextInputProps> = (props) => {
   return (
     <div className="form-control">
       {props.label && <label htmlFor={props.name}>{props.label}</label>}
-      <input {...field} {...props} />
+      <input {...field} {...props} placeholder={props.placeholder}/>
       <p className="error">
         <ErrorMessage name={props.name} />
       </p>
