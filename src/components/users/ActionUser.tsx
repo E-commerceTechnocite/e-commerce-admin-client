@@ -10,7 +10,7 @@ import { sendRequest } from "../../util/helpers/refresh"
 import { Formik, Field } from "formik"
 import { UserModel } from '../../models/user/user.model';
 import { userSchema } from "../../util/validation/userValidation"
-import "./ActionUser.scss"
+import "../ActionForm.scss"
 import ArrowPrevious from '../previous/ArrowPrevious'
 
 
@@ -115,19 +115,12 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
     return <>
         <ArrowPrevious />
         {roles && (          
-            <div className="add-user-t">
+            <div className="add-form">
                 <Formik
                     enableReinitialize
                     initialValues={initialValues}
                     validationSchema={userSchema}
                     onSubmit={(data) => {
-                    // console.log(data)
-
-                    if (params.slug) {
-                        //delete data.taxRuleGroupId
-                        //delete data.countryId
-                    }
-                    // console.log(data)
                     submitUserPost(data)
                  }}
                 >

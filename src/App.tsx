@@ -11,7 +11,7 @@ import EditProduct from "./views/EditProduct";
 import MediaLibrary from "./views/MediaLibrary";
 import Users from "./views/Users";
 import Roles from "./views/Roles";
-import AddRoles from "./components/role/AddRoles";
+import ActionRole from "./components/role/ActionRole";
 import  NotFound from "./views/NotFound"
 import ScrollToTop from "./components/ScrollToTop";
 import { config } from "./index";
@@ -20,9 +20,6 @@ import Categories from "./views/Categories";
 import Customers from "./views/Customers";
 import Orders from "./views/Orders";
 import Stock from "./views/Stock";
-import EditUsers from "./views/EditUsers";
-import EditRole from "./views/EditRole";
-import EditCategories from "./views/EditCategories";
 import ActionUser from "./components/users/ActionUser";
 import ActionCategory from "./components/category/ActionCategory";
 
@@ -45,8 +42,8 @@ export const App = () => {
               <Route exact path="/users/addusers" component={ActionUser} />
               <Route exact path="/users/edit/:slug" component={ActionUser} />
               <Route exact path="/roles" component={Roles} />
-              <Route exact path="/roles/addroles" component={AddRoles} />
-              <Route exact path="/roles/edit/:slug" component={EditRole} />
+              <Route exact path="/roles/addroles" component={ActionRole} />
+              <Route exact path="/roles/edit/:slug" component={ActionRole} />
               <Route exact path="/taxes" component={Taxes}/>
               <Route exact path="/categories" component={Categories}/>
               <Route exact path="/categories/addcategories" component={ActionCategory}/>

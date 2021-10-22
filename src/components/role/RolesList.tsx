@@ -59,9 +59,12 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
   const deleteRoles = async (id: string, role: string) => {
     if (confirm(`Delete role: ${role}?`)) {
       let { error } = await sendRequest(deleteRequest, id)
+      console.log(error)
       if (error) {
         console.log(error.message)
-        history.push("/login")
+        //history.push("/login")
+        alert("WARNING : AN ERROR OCCURED !")
+        if(error.message === "Error 500 Internal Server Error") alert("You can't delete this role cause at least one user is assigned to this role")
       }
       setRefreshPage(!refreshPage)
     }
@@ -83,7 +86,6 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
   }, [page, refreshPage])
 
   return (<>
-    <div className="essai">
       <div className="roles">
         <div className="top-container">
           {pagination && (
@@ -134,7 +136,6 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
           </>
         )}
       </div>
-    </div>
     </>
   )
 }

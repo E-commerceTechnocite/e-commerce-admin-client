@@ -7,7 +7,7 @@ import { Formik, Field } from "formik"
 import TextInput from "../inputs/TextInput"
 import { sendRequest } from "../../util/helpers/refresh"
 import { categorySchema } from "../../util/validation/categoryValidation"
-import "../users/ActionUser.scss"
+import "../ActionForm.scss"
 import ArrowPrevious from '../previous/ArrowPrevious'
 import { CategoryModel } from '../../models/category/category.model';
 
@@ -83,19 +83,12 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
 
     return <>
         <ArrowPrevious />          
-        <div className="add-user-t">
+        <div className="add-form">
             <Formik
                 enableReinitialize
                 initialValues={initialValues}
                 validationSchema={categorySchema}
                 onSubmit={(data) => {
-                // console.log(data)
-
-                /*if (params.slug) {
-                    delete data.taxRuleGroupId
-                    delete data.countryId
-                }*/
-                // console.log(data)
                 submitUserPost(data)
              }}
             >

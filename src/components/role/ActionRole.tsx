@@ -1,20 +1,58 @@
 import * as React from 'react';
-import { useHistory, withRouter } from "react-router"
+import { useHistory, useParams } from "react-router"
 import { useEffect, useState } from "react"
 import { http } from "../../util/http"
 import { config } from "../../index"
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import { sendRequest } from "../../util/helpers/refresh"
 import ArrowPrevious from '../previous/ArrowPrevious'
+import { RoleModel } from '../../models/role/role.model';
 
-const AddRoles: React.FunctionComponent = () => {
+const ActionRole: React.FunctionComponent = () => {
     const history = useHistory()
     const [rolePermissions, setRolePermissions] = useState<string[]>([])
     const [permissions, setPermissions] = useState([])
     const [myInputValue, setMyInputValue] = useState("")
+    const [submitError, setSubmitError] = useState<string>(null)
+    const params: { slug: string } = useParams()
     const perms = {};
 
-    const categoryRequest = () => {
+    /*const rolePostRequest = (data: RoleModel) => {
+        if (params.slug) {
+          return http.patch(`${config.api}/v1/role/${params.slug}`, data, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            },
+          })
+        }
+        return http.post(`${config.api}/v1/role`, data, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        })
+    }
+
+    const submitRolePost = async (data: RoleModel) => {
+      setSubmitError(null)
+      console.log(data)
+      let { error } = await sendRequest(rolePostRequest, data)
+      if (error) {
+          history.push("/login")
+      }
+      history.push({
+          pathname: "/roles",
+          state: { success: true },
+      })
+    }
+
+    const onSubmit = (e: React.FormEvent): void => {
+        const body = JSON.stringify({ name: myInputValue, permissions: rolePermissions }) as RoleModel
+        submitRolePost(body)
+    }*/
+
+    const permissionsRequest = () => {
         return http.get<PaginationModel<any>>(`${config.api}/v1/role/permissions`, {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("token")}`,
@@ -22,29 +60,17 @@ const AddRoles: React.FunctionComponent = () => {
         })
     }
 
-    const SubmitCategory = async () => {
-        let { data, error } = await sendRequest(categoryRequest)
+    const SubmitPermissions = async () => {
+        let { data, error } = await sendRequest(permissionsRequest)
         if (error) {
           history.push("/login")
         }
-        setPermissions(data)
+        setPermissions(data) //Error? NO IT WORKS!
     }
 
     useEffect(() => {
-        SubmitCategory().then()
-      }, [])
-  
-    /*useEffect(() => {
-        if (params.slug) {
-        //SubmitCurrentTax().then()
-        } else {
-        setInitialValues({
-            email: "",
-            username: "",
-            roleId: "",
-        })
-        }
-    }, [params.slug])*/
+        SubmitPermissions().then()
+      }, [params.slug])
 
     const capitalizeFirstLetter = (string) => {
         return string.charAt(0).toUpperCase() + string.slice(1);
@@ -52,26 +78,17 @@ const AddRoles: React.FunctionComponent = () => {
    
     permissions.forEach(item => {
         let [operation, entity] = item.split(':');
-        let name = null
         entity = entity.replace(/-/g, ' ') //replace dash between words with space
         const capitalizeEntity = capitalizeFirstLetter(entity)
-        if (!perms[capitalizeEntity]) perms[capitalizeEntity] = []
-        switch(operation) {
-            case 'r':
-                name = "Read"
-                break
-            case 'c':
-                name = "Create"
-                break
-            case 'u':
-                name = "Update"
-                break
-            case 'd':
-                name = "Delete"
-                break
-            default:
-                break
-        }
+        let name = null
+
+        if (!perms[capitalizeEntity]) perms[capitalizeEntity] = [] 
+
+        if(operation === 'r') name = "Read"
+        if(operation === 'c') name = "Create"
+        if(operation === 'u') name = "Update"
+        if(operation === 'd') name = "Delete"
+
         perms[capitalizeEntity].push({
             value: item,
             title: capitalizeEntity,
@@ -84,6 +101,8 @@ const AddRoles: React.FunctionComponent = () => {
         else setRolePermissions(rolePermissions.filter((item) => item !== value))
     }
 
+    
+
     const onSubmit = (e: React.FormEvent): void => {
         e.preventDefault()
         const body = JSON.stringify({ name: myInputValue, permissions: rolePermissions })
@@ -91,21 +110,30 @@ const AddRoles: React.FunctionComponent = () => {
         const options = {
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         }
-        http
-          .post<{ access_token: string; refresh_token: string }>(
-            `${config.api}/v1/role`,
-            body,
-            options
-          )
-          history.push({
+        if (params.slug) {
+            http
+            .patch<{ access_token: string; refresh_token: string }>(
+                `${config.api}/v1/role/${params.slug}`,
+                body,
+                options
+            )
+        }
+        else {
+            http
+            .post<{ access_token: string; refresh_token: string }>(
+                `${config.api}/v1/role`,
+                body,
+                options
+            )
+        }
+        setSubmitError(null)
+        history.push({
             pathname: "/roles",
             state: { success: true },
         })
       }
 
     return <>
-       
-
        {permissions && ( <>
             <ArrowPrevious/>
             <form onSubmit={onSubmit}>
@@ -126,7 +154,9 @@ const AddRoles: React.FunctionComponent = () => {
                         {
                             Object.entries(perms).map(([title, arr], index) => {
                                 return (<div className="permissions-choices" key={index}>
-                                    <div className="permissions-choices-title"><h4>{title}</h4></div>
+                                    <div className="permissions-choices-title">
+                                        <h4>{title}</h4>
+                                    </div>
                                     <div className="attrs" id="attrs">
                                         {  
                                             Object.values(arr).map((perm, index) => {
@@ -148,10 +178,14 @@ const AddRoles: React.FunctionComponent = () => {
                     <div className="perms-button">
                         <button type="submit" className="action">Submit</button>
                     </div>
+                    {submitError && (
+                    <div className="global-error">{submitError}</div>
+                  )} 
                 </div>
-            </form> </>)}
-            </>
-
+            </form> 
+        </>
+        )}
+    </>
 };
 
-export default AddRoles;
+export default ActionRole;

@@ -58,9 +58,12 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   const deleteCategories = async (id: string, category: string) => {
     if (confirm(`Delete category: ${category}?`)) {
       let { error } = await sendRequest(deleteRequest, id)
+      console.log(error)
       if (error) {
         console.log(error.message)
-        history.push("/login")
+        //history.push("/login")
+        alert("WARNING : AN ERROR OCCURED !")
+        if(error.message === "Error 500 Internal Server Error") alert("You can't delete this category cause at least one product is assigned to this category")
       }
       setRefreshPage(!refreshPage)
     }
@@ -82,7 +85,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   }, [page, refreshPage])
 
   return (
-    <div className="essai">
+    <>
       <div className="roles">
         <div className="top-container">
           {pagination && (
@@ -133,7 +136,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
           </>
         )}
       </div>
-    </div>
+    </>
   )
 }
 
