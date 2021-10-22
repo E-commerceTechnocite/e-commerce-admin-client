@@ -1,6 +1,6 @@
-import { PaginationMetadataModel } from "./pagination-metadata.model";
+import { PaginationMetadataModel } from './pagination-metadata.model'
 
 export interface PaginationModel<T> {
-  readonly data: T[];
-  readonly meta: PaginationMetadataModel;
+  readonly data: T[]
+  readonly meta: PaginationMetadataModel
 }

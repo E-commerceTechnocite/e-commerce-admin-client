@@ -1,35 +1,50 @@
-import * as React from "react";
-import { useHistory, useLocation } from "react-router";
-import { Link } from "react-router-dom";
-import { http } from "../util/http";
-import { config } from "../index"
+import * as React from 'react'
+import { FC } from 'react'
+import { useHistory, useLocation } from 'react-router'
+import { Link } from 'react-router-dom'
+import { http } from '../util/http'
+import { config } from '../index'
+import { auth } from '../util/helpers/auth'
+import Granted from './Granted'
 
 const SideBar: React.FunctionComponent = () => {
-  const location = useLocation();
-  const history = useHistory();
+  const location = useLocation()
+  const history = useHistory()
   const isActive = (uri: string, exact = false): boolean => {
-    return exact
-      ? location.pathname === uri
-      : location.pathname.startsWith(uri);
-  };
+    return exact ? location.pathname === uri : location.pathname.startsWith(uri)
+  }
   const logout = () => {
-    const refresh_token = sessionStorage.getItem("refresh");
-    const token = sessionStorage.getItem("token");
+    const refresh_token = auth.refresh
     const options = {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        ...auth.headers,
       },
-    };
+    }
     http
       .post(`${config.api}/v1/o-auth/logout`, { refresh_token }, options)
       .then(({ error }) => {
-        if (error) return console.error(error.message);
-        sessionStorage.removeItem("refresh");
-        sessionStorage.removeItem("token");
-        history.push("/login");
-      });
-  };
+        if (error) return console.error(error.message)
+        auth.clearSession()
+        history.push('/login')
+      })
+  }
+
+  const NavLink: FC<{ uri: string; icon: string; exact?: boolean }> = ({
+    children,
+    uri,
+    icon,
+    exact = false,
+  }) => (
+    <li className={`${isActive(uri, exact) ? 'sidebar-active' : ''}`}>
+      <Link to={uri}>
+        <span>
+          <i className={icon} />
+        </span>
+        {children}
+      </Link>
+    </li>
+  )
 
   return (
     <div className="sidebar">
@@ -40,93 +55,68 @@ const SideBar: React.FunctionComponent = () => {
       </div>
       <div className="search-bar">
         <div>
-          <i className="fas fa-search"></i>
+          <i className="fas fa-search" />
           <input type="text" placeholder="Search..." />
         </div>
       </div>
       <nav>
         <div>
           <ul>
-            <li className={`${isActive("/", true) ? "sidebar-active" : ""}`}>
-              <Link to="/">
-                <span>
-                  <i className="fas fa-tachometer-alt "></i>
-                </span>
-                Dashboard
-              </Link>
-            </li>
-            <li className={`${isActive("/products") ? "sidebar-active" : ""}`}>
-              <Link to="/products">
-                <span>
-                  <i className="fas fa-folder-open"></i>
-                </span>
+            <NavLink uri="/" icon="fas fa-tachometer-alt" exact>
+              Dashboard
+            </NavLink>
+            <Granted permissions={['r:product']}>
+              <NavLink uri="/products" icon="fas fa-folder-open">
                 Products
-              </Link>
-            </li>
-            <li className={`${isActive("/medias") ? "sidebar-active" : ""}`}>
-              <Link to="/medias">
-                <span>
-                  <i className="fas fa-image"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted permissions={['r:file']}>
+              <NavLink uri="/medias" icon="fas fa-image">
                 Media library
-                </Link>
-            </li>
-            <li className={`${isActive("/users") ? "sidebar-active" : ""}`}>
-              <Link to="/users">
-                <span>
-                  <i className="fas fa-users"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted permissions={['r:user']}>
+              <NavLink uri="/users" icon="fas fa-users">
                 Users
-              </Link>
-            </li>
-            <li className={`${isActive("/roles") ? "sidebar-active" : ""}`}>
-              <Link to="/roles">
-                <span>
-                  <i className="fas fa-user-tag"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted permissions={['r:role']}>
+              <NavLink uri="/roles" icon="fas fa-user-tag">
                 Roles
-              </Link>
-            </li>
-            <li className={`${isActive("/taxes") ? "sidebar-active" : ""}`}>
-              <Link to="/taxes">
-                <span>
-                  <i className="fas fa-donate"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted
+              permissions={[
+                'r:tax',
+                'r:tax-rule',
+                'r:tax-rule-group',
+                'r:country',
+              ]}
+            >
+              <NavLink uri="/taxes" icon="fas fa-donate">
                 Taxes
-              </Link>
-            </li>
-            <li className={`${isActive("/categories") ? "sidebar-active" : ""}`}>
-              <Link to="/categories">
-                <span>
-                  <i className="fas fa-list"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted permissions={['r:product-category']}>
+              <NavLink uri="/categories" icon="fas fa-list">
                 Categories
-              </Link>
-            </li>
-            <li className={`${isActive("/customers") ? "sidebar-active" : ""}`}>
-              <Link to="/customers">
-                <span>
-                  <i className="fas fa-user-circle"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted permissions={[]}>
+              <NavLink uri="/customers" icon="fas fa-user-circle">
                 Customers
-              </Link>
-            </li>
-            <li className={`${isActive("/orders") ? "sidebar-active" : ""}`}>
-              <Link to="/orders">
-                <span>
-                  <i className="fas fa-cart-arrow-down"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted permissions={[]}>
+              <NavLink uri="/orders" icon="fas fa-cart-arrow-down">
                 Orders
-              </Link>
-            </li>
-            <li className={`${isActive("/stock") ? "sidebar-active" : ""}`}>
-              <Link to="/stock">
-                <span>
-                  <i className="fas fa-dolly"></i>
-                </span>
+              </NavLink>
+            </Granted>
+            <Granted permissions={[]}>
+              <NavLink uri="/stock" icon="fas fa-dolly">
                 Stock
-              </Link>
-            </li>
+              </NavLink>
+            </Granted>
           </ul>
         </div>
         <div>
@@ -134,7 +124,7 @@ const SideBar: React.FunctionComponent = () => {
             <li className="">
               <a href="">
                 <span>
-                  <i className="fas fa-id-badge"></i>
+                  <i className="fas fa-id-badge" />
                 </span>
                 Profile
               </a>
@@ -142,7 +132,7 @@ const SideBar: React.FunctionComponent = () => {
             <li>
               <a href="#" onClick={logout}>
                 <span>
-                  <i className="fas fa-sign-out-alt"></i>
+                  <i className="fas fa-sign-out-alt" />
                 </span>
                 Sign out
               </a>
@@ -151,7 +141,7 @@ const SideBar: React.FunctionComponent = () => {
         </div>
       </nav>
     </div>
-  );
-};
+  )
+}
 
-export default SideBar;
+export default SideBar

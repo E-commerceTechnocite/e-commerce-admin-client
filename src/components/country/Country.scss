@@ -1,0 +1,81 @@
+@import "../../../public/scss/variables.scss";
+
+.country {
+  .top {
+    display: flex;
+    padding: 10px 30px;
+    border-bottom: 1px solid $primary-border-color;
+
+    .search {
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      background: $primary-color-elts;
+      border-radius: 4px;
+      border: 1px solid $primary-border-color;
+      margin-right: 10px;
+
+      input {
+        width: 130px;
+        border: none;
+      }
+
+      i {
+        margin-right: 7px;
+      }
+    }
+  }
+
+  .country-list {
+    .legend,
+    .content .item {
+      padding: 20px 30px;
+      border-bottom: 1px solid $primary-border-color;
+      display: grid;
+      grid-template-columns: 7% 7% repeat(5, 1fr) 140px;
+      grid-column-gap: 10px;
+      align-items: center;
+
+      span:nth-child(2) {
+        grid-column-start: 3;
+        grid-column-end: 5;
+      }
+
+      span:nth-child(4) {
+        grid-column-start: 5;
+      }
+
+      span:nth-child(5) {
+        grid-column-start: 6;
+        grid-column-end: 8;
+      }
+
+      .edit,
+      .delete {
+        grid-column-start: 8;
+        grid-row-start: 1;
+      }
+
+      .edit {
+        margin-left: 23px;
+        justify-self: flex-start;
+      }
+
+      .delete {
+        justify-self: flex-end;
+      }
+    }
+  }
+
+  .legend {
+    font-weight: bold;
+  }
+
+  .content {
+    margin: 0;
+  }
+
+  .pagination {
+    padding-bottom: 20px;
+  }
+}

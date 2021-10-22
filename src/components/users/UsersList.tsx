@@ -1,15 +1,15 @@
-import * as React from "react"
-import { useEffect, useState } from "react"
-import { useHistory } from "react-router"
-import { Link } from "react-router-dom"
-import Loading from "../loading/Loading"
-import Pagination from "../pagination/Pagination"
-import { PaginationMetadataModel } from "../../models/pagination/pagination-metadata.model"
-import { PaginationModel } from "../../models/pagination/pagination.model"
-import { config } from "../../index"
-import { sendRequest } from "../../util/helpers/refresh"
-import { http } from "../../util/http"
-import { UserModel } from "../../models/user/user.model"
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import { useHistory } from 'react-router'
+import { Link } from 'react-router-dom'
+import Loading from '../loading/Loading'
+import Pagination from '../pagination/Pagination'
+import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
+import { PaginationModel } from '../../models/pagination/pagination.model'
+import { config } from '../../index'
+import { sendRequest } from '../../util/helpers/refresh'
+import { http } from '../../util/http'
+import { UserModel } from '../../models/user/user.model'
 
 interface IUsersListProps {
   number?: number
@@ -31,18 +31,18 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
   // Request to get the page of the users list
   const pageRequest = () =>
     http.get<PaginationModel<UserModel>>(
-      `${config.api}/v1/user?page=${page}${number ? "&limit=" + number : ""}`,
+      `${config.api}/v1/user?page=${page}${number ? '&limit=' + number : ''}`,
       {
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
         },
       }
     )
   const getUsers = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
-      history.push("/login")
+      history.push('/login')
     }
     setUsers(data.data)
     setMeta(data.meta)
@@ -51,7 +51,7 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
   const deleteRequest = (id: string) => {
     return http.delete(`${config.api}/v1/user/${id}`, null, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
       },
     })
   }
@@ -60,7 +60,7 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
       let { error } = await sendRequest(deleteRequest, id)
       if (error) {
         console.log(error.message)
-        history.push("/login")
+        history.push('/login')
       }
       setRefreshPage(!refreshPage)
     }
@@ -94,8 +94,8 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
           <Link to="/users/addusers" className="action">
             New User
           </Link>
-          <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
-            {" "}
+          <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+            {' '}
             <i className="fas fa-check" />
             User Added
             <i className="fas fa-times" onClick={() => setToast(false)} />
@@ -117,10 +117,7 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                     <span>{user.username}</span>
                     <span>{user.email}</span>
                     <span>{user.role.name}</span>
-                    <Link
-                      to={`/users/edit/${user.id}`}
-                      className="action"
-                    >
+                    <Link to={`/users/edit/${user.id}`} className="action">
                       Edit
                     </Link>
                     <button

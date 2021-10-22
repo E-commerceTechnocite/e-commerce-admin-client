@@ -1,30 +1,26 @@
-import { useState, useEffect } from "react"
-import { useHistory, useLocation } from "react-router-dom"
-import { config } from "../../index"
-import refresh from "../helpers/refresh"
-import { http } from "../http"
+import { useEffect, useState } from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
+import { config } from '../../index'
+import { http } from '../http'
+import { ACCESS_TOKEN_KEY, auth, REFRESH_TOKEN_KEY } from '../helpers/auth'
 
 const useCheckUser = () => {
   const [isPending, setIsPending] = useState(true)
   const location = useLocation()
   const history = useHistory()
-  refresh
   useEffect(() => {
     const controller = new AbortController()
-    const token = sessionStorage.getItem("token")
     const options = {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { ...auth.headers },
       signal: controller.signal,
     }
     http
-      .get(`${config.api}/v1/product?limit=1&page=1`, options)
+      .post(`${config.api}/v1/o-auth/check`, null, options)
       .then(({ error }) => {
         if (error) {
-          console.log("hello update")
-
-          const refresh_token = sessionStorage.getItem("refresh")
+          const refresh_token = auth.refresh
           const options = {
-            headers: { "Content-Type": "application/json" },
+            headers: { 'Content-Type': 'application/json' },
           }
           http
             .post<{ access_token: string; refresh_token: string }>(
@@ -34,15 +30,14 @@ const useCheckUser = () => {
             )
             .then(({ data, error }) => {
               if (error) {
-                const keysToRemove = ["token", "refresh"]
+                const keysToRemove = [ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY]
                 keysToRemove.map((key) => sessionStorage.removeItem(key))
-                return history.push("/login")
+                return history.push('/login')
               }
               const { access_token, refresh_token } = data
-              sessionStorage.setItem("token", access_token)
-              sessionStorage.setItem("refresh", refresh_token)
+              auth.access = access_token
+              auth.refresh = refresh_token
             })
-
           setIsPending(false)
         }
         setIsPending(false)
