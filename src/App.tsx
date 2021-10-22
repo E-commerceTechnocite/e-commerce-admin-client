@@ -19,7 +19,8 @@ import AddTaxRule from './views/taxes/AddTaxRule'
 import Categories from './views/Categories'
 import Customers from './views/Customers'
 import Orders from './views/Orders'
-import Stock from './views/Stock'
+import Stock from './views/stock/Stock'
+import EditStock from './views/stock/EditStock'
 import AddTaxGroup from './views/taxes/AddTaxGroup'
 import AddTaxRate from './views/taxes/AddTaxRate'
 import AddCountry from './views/taxes/AddCountry'
@@ -149,6 +150,11 @@ export const App = () => {
                   <GuardedRoute exact path="/customers" component={Customers} />
                   <GuardedRoute exact path="/orders" component={Orders} />
                   <GuardedRoute exact path="/stock" component={Stock} />
+                  <GuardedRoute
+                    exact
+                    path="/stock/edit-stock/:slug"
+                    component={EditStock}
+                  />
                   <GuardedRoute path="*" component={NotFound} />
                 </Switch>
               </DashboardLayout>

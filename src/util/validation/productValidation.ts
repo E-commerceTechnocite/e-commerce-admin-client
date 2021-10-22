@@ -37,7 +37,32 @@ export const productSchema = yup.object().shape({
   taxRuleGroupId: yup.string().required('Required.'),
 })
 
+export const stockSchema = yup.object().shape({
+  stock: yup.object().shape({
+    physical: yup
+      .number()
+      .typeError('Number required.')
+      .positive()
+      .min(1, 'Must be a positive number.')
+      .required('Required.'),
+    pending: yup
+      .number()
+      .typeError('Number required.')
+      .positive()
+      .min(0, 'Must be a positive number.')
+      .required('Required.'),
+    incoming: yup
+      .number()
+      .typeError('Number required.')
+      .positive()
+      .min(0, 'Must be a positive number.')
+      .required('Required.'),
+  })
+})
+
 export const imagesSchema = yup.object().shape({
   picturesId: yup.array().of(yup.string()).required(),
   thumbnailId: yup.string().required('Thumbnail required.'),
 })
+
+

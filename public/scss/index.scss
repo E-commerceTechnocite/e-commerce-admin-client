@@ -1011,7 +1011,6 @@ table th {
         span:nth-child(3)::before {
           position: absolute;
           top: -17px;
-          // background: red;
           font-size: 13px;
           color: #b3b3b3;
           content: "Reference";
@@ -1023,7 +1022,6 @@ table th {
         span:nth-child(5)::before {
           position: absolute;
           top: -17px;
-          // background: red;
           font-size: 13px;
           color: #b3b3b3;
           content: "Category";
@@ -1031,18 +1029,15 @@ table th {
         span:nth-child(6) {
           grid-column-start: 4;
           align-self: flex-end;
-          // justify-self: center;
         }
         span:nth-child(6)::before {
           position: absolute;
           top: -17px;
-          // background: red;
           font-size: 13px;
           color: #b3b3b3;
           content: "Price";
         }
         span:nth-child(4) {
-          // background: red;
           grid-row-start: 3;
           grid-column-start: 2;
           grid-column-end: 6;
@@ -1051,7 +1046,6 @@ table th {
         span:nth-child(4)::before {
           position: absolute;
           top: -17px;
-          // background: red;
           font-size: 13px;
           color: #b3b3b3;
           content: "Description";
