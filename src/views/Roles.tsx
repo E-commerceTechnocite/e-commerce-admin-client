@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { useEffect, useState } from "react"
+import * as React from 'react'
+import { useEffect, useState } from 'react'
 import RolesList from '../components/RolesList'
 
 interface IRolesProps {
@@ -11,7 +11,7 @@ interface IRolesProps {
 }
 
 const Roles: React.FunctionComponent<IRolesProps> = (props) => {
-  const [success, setSuccess] = useState<boolean|undefined>()
+  const [success, setSuccess] = useState<boolean | undefined>()
   useEffect(() => {
     if (props.location.state !== undefined) {
       console.log(props.location.state)
@@ -19,13 +19,12 @@ const Roles: React.FunctionComponent<IRolesProps> = (props) => {
     } else {
       console.log(undefined)
     }
-    
-  }, [])  
-  
+  }, [])
+
   return (
-      <>
-        <RolesList number={10} pagination={true} success={success}/>
-      </>
-    )
-  }
-  export default Roles;
+    <>
+      <RolesList number={10} pagination={true} success={success} />
+    </>
+  )
+}
+export default Roles

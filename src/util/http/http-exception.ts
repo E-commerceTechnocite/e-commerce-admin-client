@@ -1,5 +1,5 @@
 export class HttpException extends Error {
-  statusCode: string | number;
+  statusCode: string | number
 }
 
 export class HttpClientSideException extends HttpException {}

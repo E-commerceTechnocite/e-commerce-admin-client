@@ -1,36 +1,34 @@
-import * as React from "react";
-import { useHistory, useLocation } from "react-router";
-import { Link } from "react-router-dom";
-import { http } from "../util/http";
-import { config } from "../index";
-import { auth } from "../util/helpers/auth";
-import Granted from "./Granted";
-import { FC } from "react";
+import * as React from 'react'
+import { FC } from 'react'
+import { useHistory, useLocation } from 'react-router'
+import { Link } from 'react-router-dom'
+import { http } from '../util/http'
+import { config } from '../index'
+import { auth } from '../util/helpers/auth'
+import Granted from './Granted'
 
 const SideBar: React.FunctionComponent = () => {
-  const location = useLocation();
-  const history = useHistory();
+  const location = useLocation()
+  const history = useHistory()
   const isActive = (uri: string, exact = false): boolean => {
-    return exact
-      ? location.pathname === uri
-      : location.pathname.startsWith(uri);
-  };
+    return exact ? location.pathname === uri : location.pathname.startsWith(uri)
+  }
   const logout = () => {
-    const refresh_token = auth.refresh;
+    const refresh_token = auth.refresh
     const options = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         ...auth.headers,
       },
-    };
+    }
     http
       .post(`${config.api}/v1/o-auth/logout`, { refresh_token }, options)
       .then(({ error }) => {
-        if (error) return console.error(error.message);
-        auth.clearSession();
-        history.push("/login");
-      });
-  };
+        if (error) return console.error(error.message)
+        auth.clearSession()
+        history.push('/login')
+      })
+  }
 
   const NavLink: FC<{ uri: string; icon: string; exact?: boolean }> = ({
     children,
@@ -38,7 +36,7 @@ const SideBar: React.FunctionComponent = () => {
     icon,
     exact = false,
   }) => (
-    <li className={`${isActive(uri, exact) ? "sidebar-active" : ""}`}>
+    <li className={`${isActive(uri, exact) ? 'sidebar-active' : ''}`}>
       <Link to={uri}>
         <span>
           <i className={icon} />
@@ -46,7 +44,7 @@ const SideBar: React.FunctionComponent = () => {
         {children}
       </Link>
     </li>
-  );
+  )
 
   return (
     <div className="sidebar">
@@ -67,32 +65,39 @@ const SideBar: React.FunctionComponent = () => {
             <NavLink uri="/" icon="fas fa-tachometer-alt" exact>
               Dashboard
             </NavLink>
-            <Granted permissions={["r:product"]}>
+            <Granted permissions={['r:product']}>
               <NavLink uri="/products" icon="fas fa-folder-open">
                 Products
               </NavLink>
             </Granted>
-            <Granted permissions={["r:file"]}>
+            <Granted permissions={['r:file']}>
               <NavLink uri="/medias" icon="fas fa-image">
                 Media library
               </NavLink>
             </Granted>
-            <Granted permissions={["r:user"]}>
+            <Granted permissions={['r:user']}>
               <NavLink uri="/users" icon="fas fa-users">
                 Users
               </NavLink>
             </Granted>
-            <Granted permissions={["r:role"]}>
+            <Granted permissions={['r:role']}>
               <NavLink uri="/roles" icon="fas fa-user-tag">
                 Roles
               </NavLink>
             </Granted>
-            <Granted permissions={["r:tax", "r:tax-rule", "r:tax-rule-group", "r:country"]}>
+            <Granted
+              permissions={[
+                'r:tax',
+                'r:tax-rule',
+                'r:tax-rule-group',
+                'r:country',
+              ]}
+            >
               <NavLink uri="/taxes" icon="fas fa-donate">
                 Taxes
               </NavLink>
             </Granted>
-            <Granted permissions={["r:product-category"]}>
+            <Granted permissions={['r:product-category']}>
               <NavLink uri="/categories" icon="fas fa-list">
                 Categories
               </NavLink>
@@ -136,7 +141,7 @@ const SideBar: React.FunctionComponent = () => {
         </div>
       </nav>
     </div>
-  );
-};
+  )
+}
 
-export default SideBar;
+export default SideBar

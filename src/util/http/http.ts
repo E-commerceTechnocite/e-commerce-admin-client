@@ -1,12 +1,11 @@
-import { HttpClientInterface, HttpReturnValue } from "./http-client.interface";
-import { handleAsync } from "../async/handle-async";
-import { RequestOptionsInterface } from "./request-options.interface";
+import { HttpClientInterface, HttpReturnValue } from './http-client.interface'
+import { RequestOptionsInterface } from './request-options.interface'
 import {
   HttpClientSideException,
   HttpException,
   HttpServerSideException,
-} from "./http-exception";
-import { HttpResponseInterface } from "./http-response.interface";
+} from './http-exception'
+import { HttpResponseInterface } from './http-response.interface'
 
 const sendRequest = async <T>(
   url: string,
@@ -14,31 +13,31 @@ const sendRequest = async <T>(
   override: RequestInit
 ): Promise<HttpReturnValue<T>> => {
   if (override.body instanceof Object && !(override.body instanceof FormData)) {
-    override.body = JSON.stringify(override.body);
+    override.body = JSON.stringify(override.body)
   }
   const opts = { ...options, ...override }
   const res = await fetch(url, opts)
 
-  let exception: HttpException = null;
+  let exception: HttpException = null
   if (res.status >= 400 && res.status < 500) {
     exception = new HttpClientSideException(
       `Error ${res.status} ${res.statusText}`
-    );
+    )
   } else if (res.status >= 500) {
     exception = new HttpServerSideException(
       `Error ${res.status} ${res.statusText}`
-    );
+    )
   }
   if (exception) {
-    exception.statusCode = res.status;
+    exception.statusCode = res.status
   }
-  let data;
+  let data
   try {
-    data = await res.json();
+    data = await res.json()
   } catch (err) {
     data = null
   }
-  const error: HttpException = exception;
+  const error: HttpException = exception
   const {
     ok,
     status,
@@ -47,7 +46,7 @@ const sendRequest = async <T>(
     headers,
     redirected,
     type,
-  } = res;
+  } = res
   const response: HttpResponseInterface = {
     ok,
     status,
@@ -56,9 +55,9 @@ const sendRequest = async <T>(
     headers,
     redirected,
     type,
-  };
-  return { data, error, response };
-};
+  }
+  return { data, error, response }
+}
 
 export const http: HttpClientInterface = {
   async delete<T>(
@@ -66,14 +65,14 @@ export const http: HttpClientInterface = {
     body?: BodyInit,
     options?: RequestOptionsInterface
   ): Promise<HttpReturnValue<T>> {
-    return await sendRequest(url, options, { method: "DELETE", body });
+    return await sendRequest(url, options, { method: 'DELETE', body })
   },
 
   async get<T>(
     url: string,
     options?: RequestOptionsInterface
   ): Promise<HttpReturnValue<T>> {
-    return await sendRequest(url, options, { method: "GET" });
+    return await sendRequest(url, options, { method: 'GET' })
   },
 
   async patch<T>(
@@ -81,7 +80,7 @@ export const http: HttpClientInterface = {
     body?: BodyInit | null,
     options?: RequestOptionsInterface | undefined
   ): Promise<HttpReturnValue<T>> {
-    return await sendRequest(url, options, { method: "PATCH", body });
+    return await sendRequest(url, options, { method: 'PATCH', body })
   },
 
   async post<T>(
@@ -89,7 +88,7 @@ export const http: HttpClientInterface = {
     body?: BodyInit | null,
     options?: RequestOptionsInterface | undefined
   ): Promise<HttpReturnValue<T>> {
-    return await sendRequest(url, options, { method: "POST", body });
+    return await sendRequest(url, options, { method: 'POST', body })
   },
 
   async put<T>(
@@ -97,6 +96,6 @@ export const http: HttpClientInterface = {
     body?: BodyInit | null,
     options?: RequestOptionsInterface | undefined
   ): Promise<HttpReturnValue<T>> {
-    return await sendRequest(url, options, { method: "PUT", body });
+    return await sendRequest(url, options, { method: 'PUT', body })
   },
-};
+}

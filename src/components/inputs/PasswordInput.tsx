@@ -2,18 +2,23 @@ import { ErrorMessage, useField } from 'formik'
 import * as React from 'react'
 import './Validation.scss'
 
-interface ITextInputProps {
+interface IPasswordInputProps {
   name: string
   label?: string
   placeholder?: string
 }
 
-const TextInput: React.FunctionComponent<ITextInputProps> = (props) => {
+const PasswordInput: React.FunctionComponent<IPasswordInputProps> = (props) => {
   const [field, meta] = useField(props.name)
   return (
     <div className="form-control">
       {props.label && <label htmlFor={props.name}>{props.label}</label>}
-      <input {...field} {...props} placeholder={props.placeholder} />
+      <input
+        type="password"
+        {...field}
+        {...props}
+        placeholder={props.placeholder}
+      />
       <p className="error">
         <ErrorMessage name={props.name} />
       </p>
@@ -21,4 +26,4 @@ const TextInput: React.FunctionComponent<ITextInputProps> = (props) => {
   )
 }
 
-export default TextInput
+export default PasswordInput
