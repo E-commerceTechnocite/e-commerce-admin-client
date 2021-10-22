@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import RolesList from '../components/RolesList'
+import RolesList from '../components/role/RolesList'
 
 interface IRolesProps {
   location?: {
