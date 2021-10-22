@@ -1,18 +1,21 @@
 @import "../../../public/scss/variables.scss";
+
 .form-control,
 .description,
 .current-images {
   position: relative;
+
   .error {
     font-size: 13px;
     position: absolute;
     padding: 2px 10px;
     bottom: -19px;
-    left: 0%;
+    left: 0;
     color: $delete-button;
     background: rgb(255, 241, 241);
   }
 }
+
 .description,
 .pictures {
   .error {

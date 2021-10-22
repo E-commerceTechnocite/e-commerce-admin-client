@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 
 export interface isUpdate {
   value: boolean
@@ -15,7 +15,7 @@ export const authUpdate = createSlice({
     update: (state) => {
       state.value = !state.value
       console.log('update')
-    }
+    },
   },
 })
 

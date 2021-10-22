@@ -1,6 +1,6 @@
-import { ErrorMessage, useField } from "formik"
-import * as React from "react"
-import "./Validation.scss"
+import { ErrorMessage, useField } from 'formik'
+import * as React from 'react'
+import './Validation.scss'
 
 interface ITextInputProps {
   name: string

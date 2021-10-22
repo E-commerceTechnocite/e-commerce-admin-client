@@ -1,7 +1,7 @@
-import { EntityInterface } from "../entity.interface";
-import { ProductModel } from "./product.model";
+import { EntityInterface } from '../entity.interface'
+import { ProductModel } from './product.model'
 
 export interface ProductCategoryModel extends EntityInterface {
-  label?: string;
-  products?: ProductModel[];
+  label?: string
+  products?: ProductModel[]
 }

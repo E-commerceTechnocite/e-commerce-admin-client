@@ -6,15 +6,19 @@
   box-shadow: $primary-elts-shadow;
   border-radius: 4px;
   padding: 20px;
+
   .form-control {
     display: flex;
     flex-direction: column;
+
     .error {
-        bottom: 11px;
+      bottom: 11px;
     }
+
     label {
-        margin-bottom: 3px;
+      margin-bottom: 3px;
     }
+
     select,
     input,
     textarea {
@@ -23,19 +27,23 @@
       border: 1px solid $primary-border-color;
       border-radius: 4px;
     }
+
     select {
       max-width: 400px;
     }
+
     textarea {
       height: 200px;
       resize: none;
     }
-    
+
   }
+
   button {
     margin-top: 30px;
     width: 100%;
-    }
+  }
+
   // input {
 
   // }
