@@ -11,8 +11,9 @@ import { config } from '../index'
 import { sendRequest } from '../util/helpers/refresh'
 import { http } from '../util/http'
 import { htmlToText } from 'html-to-text'
-import { auth } from '../util/helpers/auth'
+import { motion } from 'framer-motion'
 import Granted from './Granted'
+import { auth } from '../util/helpers/auth'
 
 interface IProductsListProps {
   number?: number
@@ -135,51 +136,78 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                 <span>Category</span>
                 <span>Price</span>
               </div>
-              {products.map((product) => {
-                var strippedHtml = htmlToText(product.description)
-                return (
-                  <div className="product" key={product.id}>
-                    {product.thumbnail && product.thumbnail.uri && (
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.01,
+                    },
+                  },
+                }}
+                initial="hidden"
+                animate="show"
+              >
+                {products.map((product) => {
+                  const strippedHtml = htmlToText(product.description)
+                  return (
+                    <motion.div
+                      variants={{
+                        hidden: { opacity: 0 },
+                        show: { opacity: 1 },
+                      }}
+                      className="product"
+                      key={product.id}
+                    >
+                      {product.thumbnail && product.thumbnail.uri && (
+                        <span>
+                          <img
+                            src={config.api + product.thumbnail.uri}
+                            alt={product.thumbnail.title}
+                          />
+                        </span>
+                      )}
+                      {!product.thumbnail && (
+                        <span>
+                          <img />
+                        </span>
+                      )}
+                      <span>{product.title}</span>
+                      <span>{product.reference}</span>
                       <span>
-                        <img
-                          src={config.api + product.thumbnail.uri}
-                          alt={product.thumbnail.title}
-                        />
+                        {strippedHtml.length >= 100
+                          ? strippedHtml.substr(0, 50) + '...'
+                          : strippedHtml}
                       </span>
-                    )}
-                    {!product.thumbnail && (
-                      <span>
-                        <img alt="placeholder" />
-                      </span>
-                    )}
-                    <span>{product.title}</span>
-                    <span>{product.reference}</span>
-                    <span>
-                      {strippedHtml.length >= 100
-                        ? strippedHtml.substr(0, 50) + '...'
-                        : strippedHtml}
-                    </span>
-                    <span>{product.category.label}</span>
-                    <span>{product.price} €</span>
-                    <Granted permissions={['u:product']}>
-                      <Link
-                        to={`/products/edit/${product.id}`}
-                        className="action"
-                      >
-                        Edit
-                      </Link>
-                    </Granted>
-                    <Granted permissions={['d:product']}>
-                      <button
-                        className="delete"
-                        onClick={() => deleteProduct(product.id, product.title)}
-                      >
-                        <i className="fas fa-trash" />
-                      </button>
-                    </Granted>
-                  </div>
-                )
-              })}
+                      <span>{product.category.label}</span>
+                      <span>{product.price} €</span>
+
+                      <Granted permissions={['u:product']}>
+                        <Link
+                          to={`/products/edit/${product.id}`}
+                          className="action"
+                        >
+                          Edit
+                        </Link>
+                      </Granted>
+                      <Granted permissions={['d:product']}>
+                        <motion.button
+                          whileHover={{
+                            scale: 1.1,
+                          }}
+                          className="delete"
+                          onClick={() =>
+                            deleteProduct(product.id, product.title)
+                          }
+                        >
+                          <i className="fas fa-trash" />
+                        </motion.button>
+                      </Granted>
+                    </motion.div>
+                  )
+                })}
+              </motion.div>
               {pagination && <Pagination meta={meta} pageSetter={setPage} />}
             </div>
           </>
