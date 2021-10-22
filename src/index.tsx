@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { useHistory } from "react-router";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 import "../public/scss/index.scss";
 import { App } from "./App";
 import { http } from "./util/http";
@@ -13,7 +13,6 @@ export interface Configuration {
 export let config: Configuration = {};
 
 http.get<Configuration>("/admin/config.json").then(({ data, error }) => {
-  
   if (error) {
     console.error("Configuration file not found");
   }
