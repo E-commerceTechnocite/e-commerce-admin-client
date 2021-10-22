@@ -64,7 +64,7 @@ const ActionRole: React.FunctionComponent = () => {
     if (error) {
       history.push('/login')
     }
-    setPermissions(data.data) //Error? NO IT WORKS!
+    setPermissions(data) //Error? NO IT WORKS!
   }
 
   useEffect(() => {
