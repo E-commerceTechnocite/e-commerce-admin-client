@@ -9,6 +9,11 @@ export interface ProductModel extends EntityInterface {
   description?: string;
   price?: number;
   quantity?: number;
+  stock?: {
+    physical?: number;
+    incoming?: number;
+    pending?: number
+  }
   category?: ProductCategoryModel;
   taxRuleGroup?: TaxRuleGroupModel;
   pictures?: PictureModel[];
