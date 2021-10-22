@@ -80,16 +80,18 @@ export const auth = {
 
   hasEachPermissions(permissions: Permission[]): boolean {
     const actualPermissions = this.permissions;
-    return permissions.every((permission) =>
-      actualPermissions.includes(permission)
-    );
+    return actualPermissions
+      ? permissions.every((permission) =>
+          actualPermissions.includes(permission)
+        )
+      : null;
   },
 
   hasOneOfPermissions(permissions: Permission[]): boolean {
     const actualPermissions = this.permissions;
-    return permissions.some((permission) =>
-      actualPermissions.includes(permission)
-    );
+    return actualPermissions
+      ? permissions.some((permission) => actualPermissions.includes(permission))
+      : null;
   },
 
   clearSession() {
