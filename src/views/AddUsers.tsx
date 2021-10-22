@@ -1,57 +1,57 @@
-import * as React from "react";
-import { useHistory } from "react-router";
-import { useEffect, useState } from "react";
-import { http } from "../util/http";
-import { config } from "../index";
-import Loading from "../components/loading/Loading";
-import { PaginationModel } from "../models/pagination/pagination.model";
-import { auth } from "../util/helpers/auth";
-import { RoleModel } from "../models/role/role.model";
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import { useHistory } from 'react-router'
+import { http } from '../util/http'
+import { config } from '../index'
+import Loading from '../components/loading/Loading'
+import { PaginationModel } from '../models/pagination/pagination.model'
+import { auth } from '../util/helpers/auth'
+import { RoleModel } from '../models/role/role.model'
 
 const AddUsers: React.FunctionComponent = () => {
-  const history = useHistory();
-  const [roles, setRoles] = useState([]);
-  const [isPending, setIsPending] = useState(true);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [roleId, setRoleId] = useState("");
+  const history = useHistory()
+  const [roles, setRoles] = useState([])
+  const [isPending, setIsPending] = useState(true)
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [roleId, setRoleId] = useState('')
 
   useEffect(() => {
-    const options = { headers: { ...auth.headers } };
+    const options = { headers: { ...auth.headers } }
     http
       .get<PaginationModel<RoleModel>>(`${config.api}/v1/role`, options)
       .then(({ data, error }) => {
-        setIsPending(true);
+        setIsPending(true)
         if (!error) {
-          setRoles(data.data);
-          setRoleId(data.data[0].id);
-          setIsPending(false);
+          setRoles(data.data)
+          setRoleId(data.data[0].id)
+          setIsPending(false)
         }
-      });
-  }, []);
+      })
+  }, [])
 
   const onSubmit = (e: React.FormEvent): void => {
-    e.preventDefault();
-    setIsPending(true);
+    e.preventDefault()
+    setIsPending(true)
     const body = JSON.stringify({
       email: email,
       username: username,
       roleId: roleId,
-    });
+    })
     const options = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         ...auth.headers,
       },
-    };
+    }
     http
       .post<{ access_token: string; refresh_token: string }>(
         `${config.api}/v1/user`,
         body,
         options
       )
-      .then(() => history.push("/users"));
-  };
+      .then(() => history.push('/users'))
+  }
 
   return (
     <>
@@ -91,7 +91,7 @@ const AddUsers: React.FunctionComponent = () => {
                     <option value={item.id} key={item.id}>
                       {item.name}
                     </option>
-                  );
+                  )
                 })}
               </select>
             </div>
@@ -104,7 +104,7 @@ const AddUsers: React.FunctionComponent = () => {
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default AddUsers;
+export default AddUsers

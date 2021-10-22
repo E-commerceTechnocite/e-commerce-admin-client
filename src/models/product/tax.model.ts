@@ -1,7 +1,7 @@
-import { EntityInterface } from "../entity.interface";
-import { TaxRuleModel } from "./tax-rule.model";
+import { EntityInterface } from '../entity.interface'
+import { TaxRuleModel } from './tax-rule.model'
 
 export interface TaxModel extends EntityInterface {
-  rate?: number;
-  taxRules?: TaxRuleModel[];
+  rate?: number
+  taxRules?: TaxRuleModel[]
 }

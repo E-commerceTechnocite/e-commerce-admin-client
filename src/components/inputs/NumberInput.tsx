@@ -1,6 +1,6 @@
-import { useField } from "formik"
-import * as React from "react"
-import "./Validation.scss"
+import { useField } from 'formik'
+import * as React from 'react'
+import './Validation.scss'
 
 interface INumberInputProps {
   name: string

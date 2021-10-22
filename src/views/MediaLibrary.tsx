@@ -1,6 +1,6 @@
-import * as React from "react";
-import { FC } from "react";
-import MediaLibraryContainer from "../components/media-library/MediaLibraryContainer";
+import * as React from 'react'
+import { FC } from 'react'
+import MediaLibraryContainer from '../components/media-library/MediaLibraryContainer'
 
 const MediaLibrary: FC = () => {
   return (
@@ -9,7 +9,7 @@ const MediaLibrary: FC = () => {
         <MediaLibraryContainer />
       </div>
     </>
-  );
-};
+  )
+}
 
-export default MediaLibrary;
+export default MediaLibrary

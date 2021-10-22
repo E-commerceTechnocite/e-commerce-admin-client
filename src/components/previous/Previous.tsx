@@ -1,5 +1,5 @@
-import * as React from "react"
-import { useHistory } from "react-router-dom"
+import * as React from 'react'
+import { useHistory } from 'react-router-dom'
 
 interface IPreviousProps {}
 
@@ -8,7 +8,7 @@ const Previous: React.FunctionComponent<IPreviousProps> = () => {
   return (
     <button
       className="action"
-      style={{ marginBottom: "15px" }}
+      style={{ marginBottom: '15px' }}
       onClick={() => history.goBack()}
     >
       Previous Page

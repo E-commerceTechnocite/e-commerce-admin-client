@@ -1,9 +1,15 @@
-import * as React from 'react';
+import * as React from 'react'
 import './loading.scss'
 
-
 const Loading: React.FunctionComponent = () => {
-  return <div className="lds-ring"><div></div><div></div><div></div><div></div></div>;
-};
+  return (
+    <div className="lds-ring">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  )
+}
 
-export default Loading;
+export default Loading

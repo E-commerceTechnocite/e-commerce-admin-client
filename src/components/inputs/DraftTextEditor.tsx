@@ -1,22 +1,27 @@
-import * as React from "react"
-import { useState } from "react"
-import { EditorState, convertToRaw, ContentState } from "draft-js"
-import { Editor } from "react-draft-wysiwyg"
-import draftToHtml from "draftjs-to-html"
-import htmlToDraft from "html-to-draftjs"
-import { ErrorMessage, useField } from "formik"
+import * as React from 'react'
+import { useState } from 'react'
+import { ContentState, convertToRaw, EditorState } from 'draft-js'
+import { Editor } from 'react-draft-wysiwyg'
+import draftToHtml from 'draftjs-to-html'
+import htmlToDraft from 'html-to-draftjs'
+import { ErrorMessage, useField } from 'formik'
 
 interface IDrafTextEditorProps {
   setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void
-  setFieldTouched: (field: string, isTouched?: boolean, shouldValidate?: boolean) => void
+  setFieldTouched: (
+    field: string,
+    isTouched?: boolean,
+    shouldValidate?: boolean
+  ) => void
   value: string
 }
-const DrafTextEditor: React.FunctionComponent<IDrafTextEditorProps> = ( {
+
+const DrafTextEditor: React.FunctionComponent<IDrafTextEditorProps> = ({
   setFieldValue,
   setFieldTouched,
   value,
 }) => {
-  const [field, meta] = useField("description")
+  const [field, meta] = useField('description')
   const prepareDraft = (value) => {
     const draft = htmlToDraft(value)
     const contentState = ContentState.createFromBlockArray(draft.contentBlocks)
@@ -29,8 +34,8 @@ const DrafTextEditor: React.FunctionComponent<IDrafTextEditorProps> = ( {
   )
   const onEditorStateChange = (editorState) => {
     const forFormik = draftToHtml(convertToRaw(editorState.getCurrentContent()))
-    setFieldValue("description", forFormik)
-    setFieldTouched("description", true)
+    setFieldValue('description', forFormik)
+    setFieldTouched('description', true)
     setEditorState(editorState)
   }
 
