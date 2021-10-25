@@ -1,17 +1,17 @@
-@import "./variables.scss";
+@import './variables.scss';
 
 // Font declaration
 @font-face {
-  font-family: "Roboto-Regular";
-  src: url(../font/Roboto-Regular.ttf) format("truetype");
+  font-family: 'Roboto-Regular';
+  src: url(../font/Roboto-Regular.ttf) format('truetype');
 }
 @font-face {
-  font-family: "Roboto-Medium";
-  src: url(../font/Roboto-Medium.ttf) format("truetype");
+  font-family: 'Roboto-Medium';
+  src: url(../font/Roboto-Medium.ttf) format('truetype');
 }
 @font-face {
-  font-family: "Roboto-Bold";
-  src: url(../font/Roboto-Bold.ttf) format("truetype");
+  font-family: 'Roboto-Bold';
+  src: url(../font/Roboto-Bold.ttf) format('truetype');
 }
 
 // Global
@@ -29,7 +29,7 @@ body {
 input {
   outline: none;
 }
-input[type="submit"],
+input[type='submit'],
 button {
   cursor: pointer;
 }
@@ -152,14 +152,14 @@ button {
       width: 100%;
       height: 35px;
       margin-bottom: 75px;
-      border-bottom:1px solid #4262d6;
+      border-bottom: 1px solid #4262d6;
       display: flex;
       justify-content: space-between;
       .form-control {
         width: 100%;
         input {
-        width: 100%;
-        height: 35px;
+          width: 100%;
+          height: 35px;
 
           border: none;
           font-size: 17px;
@@ -177,7 +177,6 @@ button {
       i {
         align-self: center;
         font-size: 17px;
-
       }
     }
     .password {
@@ -196,7 +195,7 @@ button {
       label {
       } */
       label::before {
-        content: "";
+        content: '';
         position: absolute;
         width: 16px;
         height: 16px;
@@ -209,7 +208,7 @@ button {
         background: 0;
       }
     }
-    [type="submit"] {
+    [type='submit'] {
       align-self: stretch;
       border-radius: 0;
     }
@@ -314,7 +313,7 @@ button {
     border-radius: 7px 0 0 7px;
   }
   li::after {
-    content: "";
+    content: '';
     position: absolute;
     left: 100%;
     top: 0;
@@ -468,7 +467,6 @@ button {
         margin-right: 7px;
       }
     }
-    
   }
 
   .product-list {
@@ -508,11 +506,27 @@ button {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 100%;
+        width: 65px;
         height: 65px;
+        position: relative;
         img {
-          max-width: 110px;
+          position: absolute;
+          max-width: 80px;
         }
+      }
+      span:first-child::before {
+        content: '';
+        width: 65px;
+        height: 65px;
+        position: absolute;
+        background: #eee;
+      }
+      .placeholder::before {
+        display: flex;
+        align-items: center;
+        font-size: 10px;
+        text-align: center;
+        content: 'Missing \ image' !important;
       }
       span:nth-child(2) {
         margin-left: 15px;
@@ -682,16 +696,13 @@ button {
       }
     }
     .legend {
-      display:grid;
+      display: grid;
       justify-content: center;
       padding: 20px 30px;
       font-weight: bold;
     }
   }
 }
-
-
-
 
 /* Add Product */
 .form-control,
@@ -738,7 +749,7 @@ button {
   }
 }
 
-/* Taxes */ 
+/* Taxes */
 .taxes {
   background: $primary-color-elts;
   box-shadow: $primary-elts-shadow;
@@ -748,7 +759,7 @@ button {
     .buttons {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      .action:hover{
+      .action:hover {
         background: $primary-button;
       }
       button {
@@ -870,7 +881,6 @@ table th {
   padding: 5px;
 }
 
-
 /* NEW USER TITLE */
 .add-user-title {
   padding-bottom: 5px;
@@ -879,46 +889,44 @@ table th {
   border-bottom: 1px solid $primary-border-color;
 }
 
-
 /*NEW ROLE */
 .perms-form {
   background-color: $primary-color-elts;
 }
-.role-name{
+.role-name {
   border-bottom: 1px solid $primary-border-color;
   padding: 15px;
   .role-name-entry {
-      margin: 10px 0px 0px 15px;
-      width: 300px;
-      padding: 0 10px;
-      background: $primary-color-elts;
-      border-radius: 4px;
-      border: 1px solid $primary-border-color;
-      input {
-        width: 250px;
-        height: 35px;
-        font-size: 13px;
-        border: none;
-      }
-      i {
-        margin-right: 7px;
-      }
+    margin: 10px 0px 0px 15px;
+    width: 300px;
+    padding: 0 10px;
+    background: $primary-color-elts;
+    border-radius: 4px;
+    border: 1px solid $primary-border-color;
+    input {
+      width: 250px;
+      height: 35px;
+      font-size: 13px;
+      border: none;
+    }
+    i {
+      margin-right: 7px;
+    }
   }
 }
 .role-permissions {
   border-bottom: 1px solid $primary-border-color;
-  padding:15px;
+  padding: 15px;
   .permissions-list {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-column-gap: 75px;
     grid-row-gap: 25px;
     justify-items: stretch;
-    padding:15px;
+    padding: 15px;
   }
-
 }
-.permissions-choices{
+.permissions-choices {
   min-width: 150px;
   box-shadow: $primary-elts-shadow;
   .permissions-choices-title {
@@ -935,7 +943,7 @@ table th {
   }
 }
 .perms-button {
-  padding:15px;
+  padding: 15px;
   button {
     width: 100px;
   }
@@ -954,12 +962,11 @@ table th {
 .arrowBackButton:hover {
   background: $primary-button-event;
 }
-.arrowBackButton .fas{
-  color:$secondary-color-font;
+.arrowBackButton .fas {
+  color: $secondary-color-font;
   font-size: 15px;
   margin-right: 3px;
 }
-
 
 @media screen and (max-width: 1240px) {
   .products {
@@ -993,16 +1000,26 @@ table th {
           display: flex;
           justify-content: center;
           align-items: center;
-          width: 100%;
+          width: 150px;
           height: 150px;
           img {
-            max-width: 180px;
+            max-width: 160px;
           }
+        }
+        span:first-child::before {
+          width: 150px;
+          height: 150px;
+        }
+        .placeholder::before {
+          text-align: center;
+          justify-content: center;
+          font-size: 15px;
         }
         span:nth-child(2) {
           grid-row-start: 1;
           font-size: 20px;
           font-weight: bold;
+          margin: 0;
         }
         span:nth-child(3) {
           grid-column-start: 2;
@@ -1013,7 +1030,7 @@ table th {
           top: -17px;
           font-size: 13px;
           color: #b3b3b3;
-          content: "Reference";
+          content: 'Reference';
         }
         span:nth-child(5) {
           grid-column-start: 3;
@@ -1024,7 +1041,7 @@ table th {
           top: -17px;
           font-size: 13px;
           color: #b3b3b3;
-          content: "Category";
+          content: 'Category';
         }
         span:nth-child(6) {
           grid-column-start: 4;
@@ -1035,7 +1052,7 @@ table th {
           top: -17px;
           font-size: 13px;
           color: #b3b3b3;
-          content: "Price";
+          content: 'Price';
         }
         span:nth-child(4) {
           grid-row-start: 3;
@@ -1048,7 +1065,7 @@ table th {
           top: -17px;
           font-size: 13px;
           color: #b3b3b3;
-          content: "Description";
+          content: 'Description';
         }
         a {
           grid-row-start: 1;

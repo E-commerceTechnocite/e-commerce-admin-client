@@ -10,7 +10,6 @@ import Pagination from '../pagination/Pagination'
 import './Stocks.scss'
 import { sendRequest } from '../../util/helpers/refresh'
 import { PaginationModel } from '../../models/pagination/pagination.model'
-import { spawn } from 'child_process'
 
 interface IStocksProps {
   success?: boolean | undefined
@@ -45,7 +44,6 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
     if (error) {
       history.push('/login')
     }
-    console.log(data)
     setStock(data.data)
     setMeta(data.meta)
   }
@@ -85,6 +83,7 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
               <>
                 <div className="stocks-list">
                   <div className="legend">
+                    <span>Image</span>
                     <span>Product</span>
                     <span>Physical</span>
                     <span>Incoming</span>
@@ -93,6 +92,19 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                   <div className="content">
                     {stock.map((stock, index) => (
                       <div className="item" key={index}>
+                        {stock.thumbnail && stock.thumbnail.uri && (
+                          <span>
+                            <img
+                              src={config.api + stock.thumbnail.uri}
+                              alt={stock.thumbnail.title}
+                            />
+                          </span>
+                        )}
+                        {!stock.thumbnail && (
+                        <span className="placeholder">
+                          <img/>
+                        </span>
+                      )}
                         <span>{stock.title}</span>
                         {stock.stock && stock.stock.physical ? (
                           <span>{stock.stock.physical}</span>
