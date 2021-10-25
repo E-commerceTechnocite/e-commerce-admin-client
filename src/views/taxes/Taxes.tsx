@@ -25,6 +25,7 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
   const [group, setGroup] = useState<boolean>(true)
   const [rate, setRate] = useState<boolean>(false)
   const [country, setCountry] = useState<boolean>(false)
+  const [isUpdated, setIsUpdated] = useState<boolean>(false)
 
   const switchTabs = (name: string): void => {
     setGroup(false)
@@ -44,7 +45,9 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
         break
     }
   }
-
+  const groupToParent = () => {
+    setIsUpdated(!isUpdated)
+  }
   useEffect(() => {
     if (props.location.state !== undefined) {
       console.log(props.location.state)
@@ -63,11 +66,10 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
       }
     }
   }, [])
-  useEffect(() => {}, [group, rate, country])
   return (
     <div className="taxes">
       <Granted permissions={['r:tax-rule']}>
-        <TaxRule success={success} />
+        <TaxRule success={success} isUpdated={isUpdated}/>
       </Granted>
       <div className="tabs">
         <div className="buttons">
@@ -94,7 +96,7 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
           {group && (
             <>
               <Granted permissions={['r:tax-rule-group']}>
-                <TaxGroup successGroup={successGroup} />
+                <TaxGroup successGroup={successGroup} groupToParent={groupToParent}/>
               </Granted>
             </>
           )}

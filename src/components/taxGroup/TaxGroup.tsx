@@ -17,10 +17,12 @@ import { ProductModel } from '../../models/product/product.model'
 
 interface ITaxGroupProps {
   successGroup?: boolean | undefined
+  groupToParent?: () => void
 }
 
 const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   successGroup,
+  groupToParent
 }) => {
   const [group, setGroup] = useState<TaxRuleGroupModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
@@ -87,6 +89,7 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
       setProductsDeleted([...data[1].products])
       setRefreshPage(!refreshPage)
       setIsDeleted(true)
+      groupToParent()
     }
   }
 
