@@ -307,6 +307,10 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                 console.log(errors)
                 return (
                   <form onSubmit={handleSubmit}>
+                    <div className="add-user-title">
+                      {params.slug && <label>Edit product</label>}
+                      {!params.slug && <label>New product</label>}
+                    </div>
                     <div className="top">
                       <div className="inputs">
                         <div className="product">

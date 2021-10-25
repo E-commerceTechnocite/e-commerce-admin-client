@@ -539,90 +539,6 @@ button {
   box-shadow: $primary-elts-shadow;
 }
 
-/* Home */
-
-/* Users */
-
-
-/* Home */
-
-/* Roles */
-.roles {
-  background: $primary-color-elts;
-  padding-bottom: 30px;
-  box-shadow: $primary-elts-shadow;
-  .top-container {
-    display: flex;
-    padding: 10px 30px;
-    border-bottom: 1px solid $primary-border-color;
-    .search {
-      display: flex;
-      align-items: center;
-      padding: 0 10px;
-      background: $primary-color-elts;
-      border-radius: 4px;
-      border: 1px solid $primary-border-color;
-      margin-right: 10px;
-      input {
-        width: 130px;
-        border: none;
-      }
-      i {
-        margin-right: 7px;
-      }
-    }
-    .toast-success {
-      margin-left: 10px;
-      background: #ecfbe0;
-      color: #3a9838;
-      border: 1px solid #3a9838;
-      padding: 7px 17px;
-      border-radius: 4px;
-      i {
-        margin-right: 7px;
-        color: #3a9838;
-      }
-      i:nth-child(2) {
-        margin: 0 0 0 15px;
-        font-size: 13px;
-        color: #aec09f;
-        cursor: pointer;
-      }
-    }
-  }
-  .role-list {
-    .legend,
-    .role {
-      padding: 5px 30px;
-      display: grid;
-      grid-template-columns: 117px 117px;
-      grid-template-rows: 1;
-      border-bottom: 1px solid $primary-border-color;
-      grid-column-gap: 350px;
-      align-items: center;
-      justify-content: center;
-      button {
-        justify-self: center;
-        grid-column-start: 2;
-        grid-column-end: 3;
-        grid-row-start: 1;
-        justify-self: flex-end;
-      }
-      a {
-        justify-self: flex-start;
-        grid-column-start: 2;
-        grid-column-end: 3;
-        grid-row-start: 1;
-      }
-    }
-    .legend {
-      display: grid;
-      justify-content: center;
-      padding: 20px 30px;
-      font-weight: bold;
-    }
-  }
-}
 
 /* Add Product */
 .form-control,
@@ -667,6 +583,14 @@ button {
   .rdw-colorpicker-wrapper {
     display: none;
   }
+}
+
+/* Categories */
+.category {
+  background: $primary-color-elts;
+  box-shadow: $primary-elts-shadow;
+  border-radius: 4px;
+  margin-bottom: 20px;
 }
 
 /* Taxes */

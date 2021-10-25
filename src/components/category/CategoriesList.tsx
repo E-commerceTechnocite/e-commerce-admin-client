@@ -1,15 +1,16 @@
-import * as React from "react"
-import { useEffect, useState } from "react"
-import { useHistory } from "react-router"
-import { Link } from "react-router-dom"
-import Loading from "../loading/Loading"
-import Pagination from "../pagination/Pagination"
-import { PaginationMetadataModel } from "../../models/pagination/pagination-metadata.model"
-import { PaginationModel } from "../../models/pagination/pagination.model"
-import { config } from "../../index"
-import { sendRequest } from "../../util/helpers/refresh"
-import { http } from "../../util/http"
-import { CategoryModel } from "../../models/category/category.model"
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import { useHistory } from 'react-router'
+import { Link } from 'react-router-dom'
+import Loading from '../loading/Loading'
+import Pagination from '../pagination/Pagination'
+import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
+import { PaginationModel } from '../../models/pagination/pagination.model'
+import { config } from '../../index'
+import { sendRequest } from '../../util/helpers/refresh'
+import { http } from '../../util/http'
+import { CategoryModel } from '../../models/category/category.model'
+import './CategoriesList.scss'
 
 interface ICategoriesListProps {
   number?: number
@@ -31,18 +32,20 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   // Request to get the page of the category list
   const pageRequest = () =>
     http.get<PaginationModel<CategoryModel>>(
-      `${config.api}/v1/product-category?page=${page}${number ? "&limit=" + number : ""}`,
+      `${config.api}/v1/product-category?page=${page}${
+        number ? '&limit=' + number : ''
+      }`,
       {
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
         },
       }
     )
   const getRoles = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
-      history.push("/login")
+      history.push('/login')
     }
     setCategories(data.data)
     setMeta(data.meta)
@@ -51,7 +54,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   const deleteRequest = (id: string) => {
     return http.delete(`${config.api}/v1/product-category/${id}`, null, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
       },
     })
   }
@@ -62,8 +65,11 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
       if (error) {
         console.log(error.message)
         //history.push("/login")
-        alert("WARNING : AN ERROR OCCURED !")
-        if(error.message === "Error 500 Internal Server Error") alert("You can't delete this category cause at least one product is assigned to this category")
+        alert('WARNING : AN ERROR OCCURED !')
+        if (error.message === 'Error 500 Internal Server Error')
+          alert(
+            "You can't delete this category cause at least one product is assigned to this category"
+          )
       }
       setRefreshPage(!refreshPage)
     }
@@ -86,8 +92,8 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
 
   return (
     <>
-      <div className="roles">
-        <div className="top-container">
+      <div className="category">
+        <div className="top">
           {pagination && (
             <div className="search">
               <i className="fas fa-search"></i>
@@ -97,8 +103,8 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
           <Link to="/categories/addcategories" className="action">
             New Category
           </Link>
-          <div className={`toast-success ${!toast ? "hidden-fade" : ""}`}>
-            {" "}
+          <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+            {' '}
             <i className="fas fa-check" />
             Category Added
             <i className="fas fa-times" onClick={() => setToast(false)} />
@@ -107,10 +113,9 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
         {!categories && !meta && <Loading />}
         {categories && meta && (
           <>
-            <div className="role-list">
+            <div className="category-list">
               <div className="legend">
                 <span>Category</span>
-                <span>Action</span>
               </div>
               {categories.map((category) => {
                 return (
@@ -118,15 +123,17 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
                     <span>{category.label}</span>
                     <Link
                       to={`/categories/edit/${category.id}`}
-                      className="action"
+                      className="action edit"
                     >
                       Edit
                     </Link>
                     <button
                       className="delete"
-                      onClick={() => deleteCategories(category.id, category.label)}
+                      onClick={() =>
+                        deleteCategories(category.id, category.label)
+                      }
                     >
-                      <i className="fas fa-trash"></i>
+                      <i className="fas fa-trash" />
                     </button>
                   </div>
                 )
@@ -140,4 +147,4 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   )
 }
 
-export default CategoriesList;
+export default CategoriesList

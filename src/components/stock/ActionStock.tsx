@@ -119,6 +119,9 @@ const ActionStock: React.FunctionComponent<IActionStockProps> = () => {
             return (
               <>
                 <form onSubmit={handleSubmit}>
+                  <div className="add-user-title">
+                    <label>Edit tax rule</label>
+                  </div>
                   <NumberInput name={'stock.physical'} label={'Physical'} />
                   <NumberInput name={'stock.incoming'} label={'Incoming'} />
                   <NumberInput name={'stock.pending'} label={'Pending'} />
