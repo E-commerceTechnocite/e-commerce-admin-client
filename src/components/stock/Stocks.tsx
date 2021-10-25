@@ -55,6 +55,7 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
   // Check if a has been added and sends a confirmation toast
   useEffect(() => {
     if (success === true) {
+      console.log(success)
       setToast(true)
       setTimeout(() => {
         setToast(false)

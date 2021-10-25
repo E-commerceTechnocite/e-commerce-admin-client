@@ -111,7 +111,7 @@ const ActionStock: React.FunctionComponent<IActionStockProps> = () => {
           initialValues={initialValues}
           validationSchema={stockSchema}
           onSubmit={(data) => {
-            // submitStockPatch(data)
+            submitStockPatch(data)
           }}
         >
           {({ handleSubmit, errors }) => {
