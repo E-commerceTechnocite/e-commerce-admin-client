@@ -5,7 +5,6 @@
     display: flex;
     padding: 10px 30px;
     border-bottom: 1px solid $primary-border-color;
-
     .search {
       display: flex;
       align-items: center;
@@ -14,12 +13,10 @@
       border-radius: 4px;
       border: 1px solid $primary-border-color;
       margin-right: 10px;
-
       input {
         width: 130px;
         border: none;
       }
-
       i {
         margin-right: 7px;
       }
@@ -36,36 +33,31 @@
       grid-column-gap: 10px;
       align-items: center;
       span:nth-child(1) {
-        grid-column-start: 1;
-        grid-column-end: 4;
+        grid-column-start: 3;
+        grid-column-end: 8;
+        grid-row-start: 1;
       }
-
       span:nth-child(2) {
-        grid-column-start: 4;
-        grid-column-end: 6;
+        grid-column-start: 1;
+        grid-column-end: 3;
       }
-
       .edit,
       .delete {
         grid-column-start: 8;
         grid-row-start: 1;
       }
-
       .edit {
         margin-left: 23px;
         justify-self: flex-start;
       }
-
       .delete {
         justify-self: flex-end;
       }
     }
   }
-
   .legend {
     font-weight: bold;
   }
-
   .content {
     margin: 0;
   }
