@@ -5,7 +5,7 @@ import { http } from '../../util/http'
 import { config } from '../../index'
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import { sendRequest } from '../../util/helpers/refresh'
-import ArrowPrevious from '../previous/ArrowPrevious'
+import Previous from '../previous/Previous'
 
 const ActionRole: React.FunctionComponent = () => {
   const history = useHistory()
@@ -137,7 +137,7 @@ const ActionRole: React.FunctionComponent = () => {
     <>
       {permissions && (
         <>
-          <ArrowPrevious />
+          <Previous />
           <form onSubmit={onSubmit}>
             <div className="perms-form">
               <div className="role-name">

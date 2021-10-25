@@ -11,7 +11,7 @@ import { Formik, Field } from "formik"
 import { UserModel } from '../../models/user/user.model';
 import { userSchema } from "../../util/validation/userValidation"
 import "../ActionForm.scss"
-import ArrowPrevious from '../previous/ArrowPrevious'
+import Previous from '../previous/Previous'
 
 
 interface IActionUserProps {}
@@ -113,7 +113,7 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
       }, [params.slug])
 
     return <>
-        <ArrowPrevious />
+        <Previous />
         {roles && (          
             <div className="add-form">
                 <Formik

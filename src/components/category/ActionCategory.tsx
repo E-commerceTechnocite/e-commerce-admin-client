@@ -8,7 +8,7 @@ import TextInput from "../inputs/TextInput"
 import { sendRequest } from "../../util/helpers/refresh"
 import { categorySchema } from "../../util/validation/categoryValidation"
 import "../ActionForm.scss"
-import ArrowPrevious from '../previous/ArrowPrevious'
+import Previous from '../previous/Previous'
 import { CategoryModel } from '../../models/category/category.model';
 
 interface IActionUserProps {}
@@ -82,7 +82,7 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
       }, [params.slug])
 
     return <>
-        <ArrowPrevious />          
+        <Previous />          
         <div className="add-form">
             <Formik
                 enableReinitialize
