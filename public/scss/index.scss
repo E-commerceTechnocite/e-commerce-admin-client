@@ -539,7 +539,6 @@ button {
   box-shadow: $primary-elts-shadow;
 }
 
-
 /* Add Product */
 .form-control,
 .description {
@@ -613,6 +612,28 @@ button {
   }
   .lists {
     height: 600px;
+  }
+  .deleted {
+    margin: 5px 30px;
+    border-radius: 4px;
+    background: rgb(255, 241, 241);
+    color: $delete-button;
+    padding: 10px;
+    border: 1px solid $delete-button;
+    .tax-rule-deleted {
+      margin-bottom: 5px;
+    }
+    li {
+      list-style: inside;
+      margin-bottom: 5px;
+    }
+    p {
+      font-weight: bold;
+    }
+
+    * {
+      color: $delete-button;
+    }
   }
 }
 

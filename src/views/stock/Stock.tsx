@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { useHistory, withRouter } from 'react-router'
 import Stocks from '../../components/stock/Stocks'
 import './Stock.scss'
 
