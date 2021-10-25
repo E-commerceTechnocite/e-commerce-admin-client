@@ -7,7 +7,7 @@ import { Formik, Field } from "formik"
 import TextInput from "../inputs/TextInput"
 import { sendRequest } from "../../util/helpers/refresh"
 import { categorySchema } from "../../util/validation/categoryValidation"
-import "../ActionForm.scss"
+import "./ActionCategory.scss"
 import Previous from '../previous/Previous'
 import { CategoryModel } from '../../models/category/category.model';
 
@@ -83,7 +83,7 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
 
     return <>
         <Previous />          
-        <div className="add-form">
+        <div className="action-category">
             <Formik
                 enableReinitialize
                 initialValues={initialValues}
@@ -96,7 +96,8 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
             return (
               <form onSubmit={handleSubmit}>
                   <div className="add-user-title">
-                    <label>New Category</label>
+                    {params.slug && <label>Edit category</label>}
+                    {!params.slug && <label>New category</label>}
                   </div>
                   <TextInput name={"label"} label={"Category"}/>
                   <button type="submit" className="action">Submit</button>

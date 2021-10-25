@@ -112,6 +112,10 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
             return (
               <>
                 <form onSubmit={handleSubmit}>
+                <div className="add-user-title">
+                    {params.slug && <label>Edit tax group</label>}
+                    {!params.slug && <label>New tax group</label>}
+                  </div>
                   <TextInput name={'name'} label={'Name'} />
                   {!params.slug && (
                     <Granted permissions={['c:tax-rule-group']}>

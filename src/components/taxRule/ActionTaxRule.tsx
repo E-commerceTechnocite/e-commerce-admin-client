@@ -216,6 +216,10 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
               return (
                 <>
                   <form onSubmit={handleSubmit}>
+                    <div className="add-user-title">
+                      {params.slug && <label>Edit tax rule</label>}
+                      {!params.slug && <label>New tax rule</label>}
+                    </div>
                     {!params.slug && (
                       <Select
                         name={'countryId'}
