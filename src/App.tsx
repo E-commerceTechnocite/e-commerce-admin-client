@@ -1,5 +1,10 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from 'react-router-dom'
 import { store } from './store/store'
 import { Provider } from 'react-redux'
 import { DashboardLayout } from './views/layout/DashboardLayout'
@@ -31,6 +36,7 @@ import { auth } from './util/helpers/auth'
 import ActionUser from './components/users/ActionUser'
 import ActionCategory from './components/category/ActionCategory'
 import ActionRole from './components/role/ActionRole'
+import Loading from './components/loading/Loading'
 
 const loginCheck = () =>
   http.post(`${config.api}/v1/o-auth/check`, null, {
@@ -38,6 +44,10 @@ const loginCheck = () =>
   })
 
 const loginGuard: GuardFunction = async (to, from, next) => {
+  if (!auth.access) {
+    auth.clearSession()
+    next.redirect('/login')
+  }
   const { error } = await sendRequest(loginCheck)
   if (error) {
     next.redirect('/login')
@@ -54,7 +64,7 @@ export const App = () => {
           <ScrollToTop />
           <Switch>
             <Route path="/login" component={Login} />
-            <GuardProvider guards={[loginGuard]}>
+            <GuardProvider guards={[loginGuard]} loading={Loading}>
               <DashboardLayout>
                 <Switch>
                   <GuardedRoute exact path="/" component={Home} />
@@ -155,7 +165,8 @@ export const App = () => {
                     path="/stock/edit-stock/:slug"
                     component={EditStock}
                   />
-                  <GuardedRoute path="*" component={NotFound} />
+                  <GuardedRoute path="/not-found" component={NotFound} />
+                  <Redirect to="/not-found" />
                 </Switch>
               </DashboardLayout>
             </GuardProvider>
