@@ -15,9 +15,19 @@ import Granted from '../Granted'
 
 interface ITaxRuleProps {
   success?: boolean | undefined
+  groupUpdate?: boolean
+  rateUpdate?: boolean
+  countryUpdate?: boolean
+  isUpdated?: boolean
 }
 
-const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({ success }) => {
+const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
+  success,
+  groupUpdate,
+  rateUpdate,
+  countryUpdate,
+  isUpdated
+}) => {
   const [taxRule, setTaxRule] = useState<TaxRuleModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [page, setPage] = useState<number>(1)
@@ -71,7 +81,10 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({ success }) => {
   // Call the requests before render
   useEffect(() => {
     SubmitTaxRule().then()
-  }, [page, refreshPage])
+    console.log('----------')
+    console.log(isUpdated)
+    console.log('----------')
+  }, [page, refreshPage, isUpdated])
 
   // Check if tax rule has been added
   useEffect(() => {
