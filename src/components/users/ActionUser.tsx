@@ -10,8 +10,9 @@ import { sendRequest } from "../../util/helpers/refresh"
 import { Formik, Field } from "formik"
 import { UserModel } from '../../models/user/user.model';
 import { userSchema } from "../../util/validation/userValidation"
-import "../ActionForm.scss"
 import Previous from '../previous/Previous'
+import "./ActionUser.scss"
+
 
 
 interface IActionUserProps {}
@@ -115,7 +116,7 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
     return <>
         <Previous />
         {roles && (          
-            <div className="add-form">
+            <div className="action-user">
                 <Formik
                     enableReinitialize
                     initialValues={initialValues}
@@ -130,9 +131,9 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
                       <div className="add-user-title">
                         <label>New user</label>
                       </div>
+                      <Select name={"roleId"} label={"Role"} options={roles}/>
                       <TextInput name={"username"} label={"Username"}/>                      
                       <TextInput name={"email"} label={"E-mail"}/>
-                      <Select name={"roleId"} label={"Role"} options={roles}/>
                       <button type="submit" className="action">Submit</button>
                       {submitError && (
                         <div className="global-error">{submitError}</div>
