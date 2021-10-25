@@ -36,20 +36,6 @@
       grid-column-gap: 10px;
       align-items: center;
 
-      span:nth-child(3) {
-        grid-column-start: 3;
-        grid-column-end: 5;
-      }
-
-      span:nth-child(4) {
-        grid-column-start: 5;
-      }
-
-      span:nth-child(5) {
-        grid-column-start: 6;
-        grid-column-end: 8;
-      }
-
       .edit,
       .delete {
         grid-column-start: 8;
@@ -73,9 +59,5 @@
 
   .content {
     margin: 0;
-  }
-
-  .pagination {
-    padding-bottom: 20px;
   }
 }
