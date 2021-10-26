@@ -26,7 +26,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
   groupUpdate,
   rateUpdate,
   countryUpdate,
-  isUpdated
+  isUpdated,
 }) => {
   const [taxRule, setTaxRule] = useState<TaxRuleModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()

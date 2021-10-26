@@ -48,7 +48,7 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
   const childToParent = () => {
     setIsUpdated(!isUpdated)
   }
-  
+
   useEffect(() => {
     if (props.location.state !== undefined) {
       console.log(props.location.state)
@@ -104,7 +104,7 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
           {rate && (
             <>
               <Granted permissions={['r:tax']}>
-                <TaxRate successRate={successRate} />
+                <TaxRate successRate={successRate} rateToParent={childToParent}/>
               </Granted>
             </>
           )}

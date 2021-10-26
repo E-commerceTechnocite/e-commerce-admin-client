@@ -118,16 +118,16 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
     }
   }, [successGroup])
 
-  // Hide delete confirmation message  after 6 seconds
+  // Hide delete confirmation message  after 10 seconds
   useEffect(() => {
     if (isDeleted) {
       setTimeout(() => {
         setIsDeleted(false)
-      }, 10000)
+      }, 9000)
       setTimeout(() => {
         setTaxRulesDeleted(null)
         setProductsDeleted(null)
-      }, 11000)
+      }, 10000)
     }
   }, [isDeleted])
 
