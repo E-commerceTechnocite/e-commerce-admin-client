@@ -387,6 +387,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                             ))}
                           </Slider>
                         )}
+                        {fileError && <p className="error">Select a file</p>}
                       </div>
                     </div>
                     <div className="pictures">
@@ -396,7 +397,6 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                         mini={true}
                         libraryToParent={libraryToParent}
                       />
-                      {fileError && <div className="error">Select a file</div>}
                     </div>
                     <div className="description">
                       <Field
