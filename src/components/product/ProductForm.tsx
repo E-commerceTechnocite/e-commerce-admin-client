@@ -85,7 +85,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
    * @param currentImage
    * @returns boolean
    */
-  const isThumb = (thumbId: string, currentImage: string) => {
+  const isThumb = (thumbId: string | null, currentImage: string | null) => {
     if (thumbId === currentImage) return true
   }
 
@@ -210,10 +210,10 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
    * Remove image from slider
    * @param id
    */
-  const removeImage = (id) => {
+  const removeImage = (e: React.MouseEvent<HTMLElement>, id: string) => {
+    e.stopPropagation()
     setLibraryData((lib) => lib.filter((item) => item.id !== id))
     setPicturesId((picIds) => picIds.filter((picId) => picId !== id))
-    setThumbnail(null)
   }
 
   /**
@@ -270,7 +270,13 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
     getTaxRuleGroup().then()
   }, [])
 
-  useEffect(() => {}, [thumbnail])
+  useEffect(() => {
+    if (libraryData.length > 0) {
+      setThumbnail(libraryData[0])
+    } else {
+      setThumbnail(null)
+    }
+  }, [libraryData])
 
   // Get product information
   useEffect(() => {
@@ -296,15 +302,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                 await submitProduct(data)
               }}
             >
-              {({
-                setFieldValue,
-                setFieldTouched,
-                handleSubmit,
-                values,
-                errors,
-              }) => {
-                console.log(values.stock.physical)
-                console.log(errors)
+              {({ setFieldValue, setFieldTouched, handleSubmit, values }) => {
                 return (
                   <form onSubmit={handleSubmit}>
                     <div className="add-user-title">
@@ -375,7 +373,9 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                               >
                                 <div
                                   className="top-border"
-                                  onClick={() => removeImage(image.id)}
+                                  onClick={(e: React.MouseEvent<HTMLElement>) =>
+                                    removeImage(e, image.id)
+                                  }
                                 >
                                   <i className="fas fa-window-close" />
                                 </div>
