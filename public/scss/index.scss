@@ -595,6 +595,7 @@ button {
 /* Taxes */
 .taxes {
   background: $primary-color-elts;
+  min-height: 100%;
   box-shadow: $primary-elts-shadow;
   border-radius: 4px;
   margin-bottom: 20px;
@@ -611,7 +612,8 @@ button {
     }
   }
   .lists {
-    height: 600px;
+    min-height: 550px;
+    padding-bottom: 30px;
   }
   .deleted {
     margin: 5px 30px;
@@ -620,8 +622,15 @@ button {
     color: $delete-button;
     padding: 10px;
     border: 1px solid $delete-button;
+    position: relative;
     .tax-rule-deleted {
       margin-bottom: 5px;
+    }
+    i {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      cursor: pointer;
     }
     li {
       list-style: inside;

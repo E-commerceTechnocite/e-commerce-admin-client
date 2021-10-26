@@ -22,7 +22,7 @@ interface ITaxGroupProps {
 
 const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   successGroup,
-  groupToParent
+  groupToParent,
 }) => {
   const [group, setGroup] = useState<TaxRuleGroupModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
@@ -93,12 +93,20 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
     }
   }
 
+  /**
+   * Close the delete message
+   */
+  const onClickClose = () => {
+    setIsDeleted(false)
+    setTimeout(() => {
+      setTaxRulesDeleted(null)
+      setProductsDeleted(null)
+    }, 1000)
+  }
+
   useEffect(() => {
     SubmitTaxRuleGroup().then()
   }, [page, refreshPage])
-  useEffect(() => {
-    // if (taxRulesDeleted) console.log(taxRulesDeleted)
-  }, [taxRulesDeleted])
 
   // Check if a tax group has been added and sends a confirmation toast
   useEffect(() => {
@@ -115,11 +123,11 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
     if (isDeleted) {
       setTimeout(() => {
         setIsDeleted(false)
-      }, 5000)
+      }, 10000)
       setTimeout(() => {
         setTaxRulesDeleted(null)
         setProductsDeleted(null)
-      }, 6000)
+      }, 11000)
     }
   }, [isDeleted])
 
@@ -148,9 +156,10 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
             <div className="group-list">
               {(productsDeleted || taxRulesDeleted) && (
                 <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
+                  <i className="fas fa-times" onClick={onClickClose} />
                   {taxRulesDeleted && (
                     <div className="tax-rule-deleted">
-                      <p>Tax rules deleted :</p>
+                      {taxRulesDeleted.length > 0 && <p>Tax rules deleted :</p>}
                       <ul>
                         {taxRulesDeleted.map((taxRule, index) => (
                           <>
@@ -162,7 +171,7 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
                   )}
                   {productsDeleted && (
                     <div className="product-deleted">
-                      <p>Products deleted :</p>
+                      {productsDeleted.length > 0 && <p>Products deleted :</p>}
                       <ul>
                         {productsDeleted.map((product, index) => (
                           <>
