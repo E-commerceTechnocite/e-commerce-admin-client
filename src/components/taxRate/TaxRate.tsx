@@ -26,7 +26,10 @@ interface DeleteTax {
   }[]
 }
 
-const TaxRate: React.FunctionComponent<ITaxRateProps> = ({ successRate, rateToParent }) => {
+const TaxRate: React.FunctionComponent<ITaxRateProps> = ({
+  successRate,
+  rateToParent,
+}) => {
   const [page, setPage] = useState<number>(1)
   const [rate, setRate] = useState<TaxModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()

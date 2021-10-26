@@ -111,7 +111,7 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
           {country && (
             <>
               <Granted permissions={['r:country']}>
-                <Country successCountry={successCountry} />
+                <Country successCountry={successCountry} countryToParent={childToParent}/>
               </Granted>
             </>
           )}

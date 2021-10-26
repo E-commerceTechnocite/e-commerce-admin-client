@@ -118,7 +118,7 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
     }
   }, [successGroup])
 
-  // Hide delete confirmation message  after 10 seconds
+  // Hide delete confirmation message after 10 seconds
   useEffect(() => {
     if (isDeleted) {
       setTimeout(() => {
@@ -155,37 +155,41 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
           <>
             <div className="group-list">
               {(productsDeleted || taxRulesDeleted) && (
-                <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
-                  <i className="fas fa-times" onClick={onClickClose} />
-                  {taxRulesDeleted && (
-                    <div className="tax-rule-deleted">
-                      {taxRulesDeleted.length > 0 && <p>Tax rules deleted :</p>}
-                      <ul>
-                        {taxRulesDeleted.map((taxRule, index) => (
-                          <>
-                            <li key={index}>{taxRule.id}</li>
-                          </>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {productsDeleted && (
-                    <div className="product-deleted">
-                      {productsDeleted.length > 0 && <p>Products deleted :</p>}
-                      <ul>
-                        {productsDeleted.map((product, index) => (
-                          <>
-                            <li key={index}>
-                              {product.id} - {product.title} -{' '}
-                              {`${product.price}€`}
-                            </li>
-                          </>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
+                  <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
+                    <i className="fas fa-times" onClick={onClickClose} />
+                    {taxRulesDeleted && (
+                      <div className="tax-group-deleted">
+                        {taxRulesDeleted.length > 0 && (
+                          <p>Tax rules deleted :</p>
+                        )}
+                        <ul>
+                          {taxRulesDeleted.map((taxRule, index) => (
+                            <>
+                              <li key={index}>{taxRule.id}</li>
+                            </>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {productsDeleted && (
+                      <div className="product-deleted">
+                        {productsDeleted.length > 0 && (
+                          <p>Products deleted :</p>
+                        )}
+                        <ul>
+                          {productsDeleted.map((product, index) => (
+                            <>
+                              <li key={index}>
+                                {product.id} - {product.title} -{' '}
+                                {`${product.price}€`}
+                              </li>
+                            </>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
 
               <div className="legend">
                 <span>Name</span>
