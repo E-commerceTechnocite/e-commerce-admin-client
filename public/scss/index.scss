@@ -924,6 +924,9 @@ table th {
   .permissions-choices-title {
     padding: 5px;
     border-bottom: 1px solid $primary-border-color;
+    input {
+      margin-right: 5px;
+    }
   }
   .attrs {
     label {
@@ -1114,7 +1117,10 @@ table th {
 }
 
 .toggleAll {
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
   margin-top: 10px;
   margin-left: 15px;
-  width: 20px
 }
