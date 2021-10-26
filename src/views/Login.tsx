@@ -10,10 +10,12 @@ import { Formik } from 'formik'
 import { adminLoginSchema } from '../util/validation/loginValidation'
 import TextInput from '../components/inputs/TextInput'
 import PasswordInput from '../components/inputs/PasswordInput'
+import LoadingButton from '../components/loading/LoadingButton'
 
 const Login: React.FunctionComponent = () => {
   const [checkbox] = useState(false)
   const [isPending, setIsPending] = useState(true)
+  const [isLogging, setIsLogging] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string>(null)
   const history = useHistory()
 
@@ -58,7 +60,8 @@ const Login: React.FunctionComponent = () => {
    * @param data
    */
   const onSubmit = (data: { email: string; password: string }): void => {
-    setIsPending(true)
+    // setIsPending(true)
+    setIsLogging(true)
     setErrorMessage(null)
     const { email, password } = data
     const body = { email, password }
@@ -87,7 +90,9 @@ const Login: React.FunctionComponent = () => {
           if (error.statusCode === 400) {
             setErrorMessage('Wrong email and/or password.')
           }
-          setIsPending(false)
+          // setIsPending(false)
+    setIsLogging(false)
+
         }
       })
   }
@@ -139,7 +144,9 @@ const Login: React.FunctionComponent = () => {
                       <input type="checkbox" id="checkbox" name="checkbox" />
                       <label htmlFor="checkbox">Remember me</label>
                     </div>
-                    <input type="submit" value="Login" className="action" />
+                    {!isLogging && <input type="submit" value="Login" className="action" />}
+                    {isLogging && <LoadingButton/>}
+                    
                     {errorMessage && (
                       <div className="login-error">
                         <div className="global-error">{errorMessage}</div>
