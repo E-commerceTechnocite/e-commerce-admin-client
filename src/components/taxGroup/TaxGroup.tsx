@@ -22,7 +22,7 @@ interface ITaxGroupProps {
 
 const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   successGroup,
-  groupToParent
+  groupToParent,
 }) => {
   const [group, setGroup] = useState<TaxRuleGroupModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
@@ -93,12 +93,20 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
     }
   }
 
+  /**
+   * Close the delete message
+   */
+  const onClickClose = () => {
+    setIsDeleted(false)
+    setTimeout(() => {
+      setTaxRulesDeleted(null)
+      setProductsDeleted(null)
+    }, 1000)
+  }
+
   useEffect(() => {
     SubmitTaxRuleGroup().then()
   }, [page, refreshPage])
-  useEffect(() => {
-    // if (taxRulesDeleted) console.log(taxRulesDeleted)
-  }, [taxRulesDeleted])
 
   // Check if a tax group has been added and sends a confirmation toast
   useEffect(() => {
@@ -110,16 +118,16 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
     }
   }, [successGroup])
 
-  // Hide delete confirmation message  after 6 seconds
+  // Hide delete confirmation message after 10 seconds
   useEffect(() => {
     if (isDeleted) {
       setTimeout(() => {
         setIsDeleted(false)
-      }, 5000)
+      }, 9000)
       setTimeout(() => {
         setTaxRulesDeleted(null)
         setProductsDeleted(null)
-      }, 6000)
+      }, 10000)
     }
   }, [isDeleted])
 
@@ -147,36 +155,41 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
           <>
             <div className="group-list">
               {(productsDeleted || taxRulesDeleted) && (
-                <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
-                  {taxRulesDeleted && (
-                    <div className="tax-rule-deleted">
-                      <p>Tax rules deleted :</p>
-                      <ul>
-                        {taxRulesDeleted.map((taxRule, index) => (
-                          <>
-                            <li key={index}>{taxRule.id}</li>
-                          </>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {productsDeleted && (
-                    <div className="product-deleted">
-                      <p>Products deleted :</p>
-                      <ul>
-                        {productsDeleted.map((product, index) => (
-                          <>
-                            <li key={index}>
-                              {product.id} - {product.title} -{' '}
-                              {`${product.price}€`}
-                            </li>
-                          </>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
+                  <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
+                    <i className="fas fa-times" onClick={onClickClose} />
+                    {taxRulesDeleted && (
+                      <div className="tax-group-deleted">
+                        {taxRulesDeleted.length > 0 && (
+                          <p>Tax rules deleted :</p>
+                        )}
+                        <ul>
+                          {taxRulesDeleted.map((taxRule, index) => (
+                            <>
+                              <li key={index}>{taxRule.id}</li>
+                            </>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {productsDeleted && (
+                      <div className="product-deleted">
+                        {productsDeleted.length > 0 && (
+                          <p>Products deleted :</p>
+                        )}
+                        <ul>
+                          {productsDeleted.map((product, index) => (
+                            <>
+                              <li key={index}>
+                                {product.id} - {product.title} -{' '}
+                                {`${product.price}€`}
+                              </li>
+                            </>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
 
               <div className="legend">
                 <span>Name</span>

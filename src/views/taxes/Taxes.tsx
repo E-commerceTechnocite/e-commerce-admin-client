@@ -45,9 +45,10 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
         break
     }
   }
-  const groupToParent = () => {
+  const childToParent = () => {
     setIsUpdated(!isUpdated)
   }
+
   useEffect(() => {
     if (props.location.state !== undefined) {
       console.log(props.location.state)
@@ -96,21 +97,21 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
           {group && (
             <>
               <Granted permissions={['r:tax-rule-group']}>
-                <TaxGroup successGroup={successGroup} groupToParent={groupToParent}/>
+                <TaxGroup successGroup={successGroup} groupToParent={childToParent}/>
               </Granted>
             </>
           )}
           {rate && (
             <>
               <Granted permissions={['r:tax']}>
-                <TaxRate successRate={successRate} />
+                <TaxRate successRate={successRate} rateToParent={childToParent}/>
               </Granted>
             </>
           )}
           {country && (
             <>
               <Granted permissions={['r:country']}>
-                <Country successCountry={successCountry} />
+                <Country successCountry={successCountry} countryToParent={childToParent}/>
               </Granted>
             </>
           )}
