@@ -4,8 +4,8 @@ import { useHistory, useParams } from 'react-router'
 import { http } from '../../util/http'
 import { config } from '../../index'
 import { sendRequest } from '../../util/helpers/refresh'
-import ArrowPrevious from '../previous/ArrowPrevious'
 import { RoleModel } from '../../models/role/role.model'
+import Previous from '../previous/Previous'
 
 interface IActionRoleProps {}
 
@@ -208,7 +208,7 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
     <>
       {allPermissions && (
         <>
-          <ArrowPrevious />
+          <Previous />
           <form onSubmit={onSubmit}>
             <div className="perms-form">
               <div className="role-name">

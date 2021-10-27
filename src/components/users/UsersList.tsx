@@ -10,6 +10,7 @@ import { config } from '../../index'
 import { sendRequest } from '../../util/helpers/refresh'
 import { http } from '../../util/http'
 import { UserModel } from '../../models/user/user.model'
+import './UsersList.scss'
 
 interface IUsersListProps {
   number?: number
@@ -107,16 +108,15 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
             <div className="user-list">
               <div className="legend">
                 <span>Username</span>
-                <span>E-mail</span>
                 <span>Role</span>
-                <span>Action</span>
+                <span>E-mail</span>
               </div>
               {users.map((user) => {
                 return (
                   <div className="user" key={user.id}>
                     <span>{user.username}</span>
-                    <span>{user.email}</span>
                     <span>{user.role.name}</span>
+                    <span>{user.email}</span>
                     <Link to={`/users/edit/${user.id}`} className="action">
                       Edit
                     </Link>

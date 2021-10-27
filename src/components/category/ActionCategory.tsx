@@ -7,8 +7,8 @@ import { Formik, Field } from "formik"
 import TextInput from "../inputs/TextInput"
 import { sendRequest } from "../../util/helpers/refresh"
 import { categorySchema } from "../../util/validation/categoryValidation"
-import "../ActionForm.scss"
-import ArrowPrevious from '../previous/ArrowPrevious'
+import "./ActionCategory.scss"
+import Previous from '../previous/Previous'
 import { CategoryModel } from '../../models/category/category.model';
 
 interface IActionUserProps {}
@@ -82,8 +82,8 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
       }, [params.slug])
 
     return <>
-        <ArrowPrevious />          
-        <div className="add-form">
+        <Previous />          
+        <div className="action-category">
             <Formik
                 enableReinitialize
                 initialValues={initialValues}
@@ -96,7 +96,8 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
             return (
               <form onSubmit={handleSubmit}>
                   <div className="add-user-title">
-                    <label>New Category</label>
+                    {params.slug && <label>Edit category</label>}
+                    {!params.slug && <label>New category</label>}
                   </div>
                   <TextInput name={"label"} label={"Category"}/>
                   <button type="submit" className="action">Submit</button>

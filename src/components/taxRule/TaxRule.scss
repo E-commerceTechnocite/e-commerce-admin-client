@@ -1,6 +1,9 @@
-@import "../../../public/scss/variables.scss";
+@import '../../../public/scss/variables.scss';
 
 .tax-rule {
+  .pagination-component {
+    padding-bottom: 20px;
+  }
   .top {
     display: flex;
     padding: 10px 30px;
@@ -40,9 +43,9 @@
         grid-column-start: 3;
         grid-column-end: 5;
       }
-
       span:nth-child(4) {
         grid-column-start: 5;
+        align-self: center;
       }
 
       span:nth-child(5) {
@@ -74,10 +77,6 @@
   .content {
     margin: 0;
   }
-
-  .pagination {
-    padding-bottom: 20px;
-  }
 }
 
 @media screen and (max-width: 1240px) {
@@ -90,6 +89,7 @@
       .item {
         grid-template-rows: 1fr 1fr;
         align-items: center;
+        grid-template-rows: repeat(3, 1fr);
 
         span {
           position: relative;
@@ -97,7 +97,7 @@
 
         span::before {
           position: absolute;
-          content: "Tax Group";
+          content: 'Tax Group';
           font-size: 12px;
           top: -13px;
           color: #b3b3b3;
@@ -110,7 +110,7 @@
 
         span:first-child::before {
           position: absolute;
-          content: "Group";
+          content: 'Group';
           font-size: 12px;
           top: -13px;
         }
@@ -123,7 +123,7 @@
 
         span:nth-child(2)::before {
           position: absolute;
-          content: "Rate";
+          content: 'Rate';
           font-size: 12px;
           top: -13px;
         }
@@ -137,7 +137,7 @@
 
         span:nth-child(3)::before {
           position: absolute;
-          content: "Country";
+          content: 'Country';
           font-size: 12px;
           top: -13px;
         }
@@ -145,13 +145,14 @@
         span:nth-child(4) {
           grid-column-start: 1 !important;
           grid-column-end: 4;
-          grid-row-start: 2;
+          grid-row: 2 / span 2;
+          align-self: center;
           align-self: flex-end;
         }
 
         span:nth-child(4)::before {
           position: absolute;
-          content: "Zip code";
+          content: 'Zip code';
           font-size: 12px;
           top: -13px;
         }
@@ -159,13 +160,14 @@
         span:nth-child(5) {
           grid-column-start: 4 !important;
           grid-column-end: 8;
-          grid-row-start: 2;
+          grid-row: 2 / span 2;
+          align-self: center;
           align-self: flex-end;
         }
 
         span:nth-child(5)::before {
           position: absolute;
-          content: "Description";
+          content: 'Description';
           font-size: 12px;
           top: -13px;
         }

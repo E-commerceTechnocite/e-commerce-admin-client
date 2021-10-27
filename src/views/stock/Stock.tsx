@@ -1,14 +1,30 @@
-import * as React from 'react';
-import { useHistory, withRouter } from "react-router"
-import Stocks from '../../components/stock/Stocks';
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import Stocks from '../../components/stock/Stocks'
 import './Stock.scss'
 
-const Stock: React.FunctionComponent = () => {
-    const history = useHistory()
-    return (
-        <div className="stock">
-            <Stocks/>
-        </div>
-    )
+interface IStocksProps {
+  location?: {
+    state: {
+      success?: boolean
+    }
   }
-  export default Stock;
+}
+
+const Stock: React.FunctionComponent<IStocksProps> = (props) => {
+  const [success, setSuccess] = useState<boolean | undefined>()
+  useEffect(() => {
+    if (props.location.state !== undefined) {
+      console.log(props.location.state)
+      setSuccess(props.location.state.success)
+    } else {
+      console.log(undefined)
+    }
+  }, [])
+  return (
+    <div className="stock">
+      <Stocks success={success}/>
+    </div>
+  )
+}
+export default Stock

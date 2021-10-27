@@ -169,7 +169,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                         </span>
                       )}
                       {!product.thumbnail && (
-                        <span>
+                        <span className="placeholder">
                           <img />
                         </span>
                       )}

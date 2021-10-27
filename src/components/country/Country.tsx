@@ -10,17 +10,31 @@ import { sendRequest } from '../../util/helpers/refresh'
 import Pagination from '../pagination/Pagination'
 import './Country.scss'
 import Granted from '../Granted'
+import { auth } from '../../util/helpers/auth'
+import { TaxRuleModel } from '../../models/product/tax-rule.model'
 
 interface ICountryProps {
   successCountry?: boolean | undefined
+  countryToParent?: () => void
+}
+
+interface DeleteCountry {
+  entityType: string
+  taxRules: {
+    id: string
+  }[]
 }
 
 const Country: React.FunctionComponent<ICountryProps> = ({
   successCountry,
+  countryToParent,
 }) => {
   const [page, setPage] = useState<number>(1)
   const [country, setCountry] = useState<CountryModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
+  const [taxRulesDeleted, setTaxRulesDeleted] = useState<TaxRuleModel[]>()
+  const [refreshPage, setRefreshPage] = useState(false)
+  const [isDeleted, setIsDeleted] = useState<boolean>(false)
   const [toast, setToast] = useState<boolean>(false)
   const history = useHistory()
 
@@ -50,9 +64,54 @@ const Country: React.FunctionComponent<ICountryProps> = ({
     setMeta(data.meta)
   }
 
+  /**
+   * Returns delete request of selected Country
+   * @param id: string
+   * @returns: request
+   */
+  const deleteCountryRequest = (id: string) => {
+    return http.delete<DeleteCountry>(`${config.api}/v1/country/${id}`, null, {
+      headers: { ...auth.headers },
+    })
+  }
+  /**
+   * Submits delete request of selected country
+   * @param id: string
+   * @param rate: number
+   */
+  const submitDeleteCountry = async (id: string, name: string) => {
+    if (
+      confirm(
+        `Delete country: ${name}%? \nAll tax rules related will be deleted.`
+      )
+    ) {
+      let { data, error } = await sendRequest(deleteCountryRequest, id)
+      if (error) {
+        console.log('error lol')
+        // history.push('/login')
+        return
+      }
+      console.log(data)
+      setTaxRulesDeleted(data[0].taxRules)
+      setRefreshPage(!refreshPage)
+      setIsDeleted(true)
+      countryToParent()
+    }
+  }
+
+  /**
+   * Close the delete message
+   */
+  const onClickClose = () => {
+    setIsDeleted(false)
+    setTimeout(() => {
+      setTaxRulesDeleted(null)
+    }, 1000)
+  }
+
   useEffect(() => {
     submitCountry().then()
-  }, [page])
+  }, [page, refreshPage])
 
   // Check if a country has been added and sends a confirmation toast
   useEffect(() => {
@@ -63,6 +122,18 @@ const Country: React.FunctionComponent<ICountryProps> = ({
       }, 10000)
     }
   }, [successCountry])
+
+  // Hide delete confirmation message  after 10 seconds
+  useEffect(() => {
+    if (isDeleted) {
+      setTimeout(() => {
+        setIsDeleted(false)
+      }, 10000)
+      setTimeout(() => {
+        setTaxRulesDeleted(null)
+      }, 11000)
+    }
+  }, [isDeleted])
 
   return (
     <>
@@ -87,6 +158,23 @@ const Country: React.FunctionComponent<ICountryProps> = ({
         {country && meta && (
           <>
             <div className="country-list">
+              {taxRulesDeleted && taxRulesDeleted.length > 0 && (
+                <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
+                  <i className="fas fa-times" onClick={onClickClose} />
+                  {taxRulesDeleted && (
+                    <div className="tax-rule-deleted">
+                      <p>Tax rules deleted :</p>
+                      <ul>
+                        {taxRulesDeleted.map((taxRule, index) => (
+                          <>
+                            <li key={index}>{taxRule.id}</li>
+                          </>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
               <div className="legend">
                 <span>Country</span>
                 <span>Code</span>
@@ -107,7 +195,9 @@ const Country: React.FunctionComponent<ICountryProps> = ({
                     <Granted permissions={['d:country']}>
                       <button
                         className="delete"
-                        onClick={() => alert('Feature not implemented yet.')}
+                        onClick={() =>
+                          submitDeleteCountry(country.id, country.name)
+                        }
                       >
                         <i className="fas fa-trash"></i>
                       </button>{' '}

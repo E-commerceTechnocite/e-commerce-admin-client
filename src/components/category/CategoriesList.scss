@@ -1,13 +1,10 @@
-@import "../../../public/scss/variables.scss";
+@import '../../../public/scss/variables.scss';
 
-.tax-group {
-  // background: $primary-color-elts;
-  // min-height: 550px;
+.category {
   .top {
     display: flex;
     padding: 10px 30px;
     border-bottom: 1px solid $primary-border-color;
-
     .search {
       display: flex;
       align-items: center;
@@ -16,49 +13,47 @@
       border-radius: 4px;
       border: 1px solid $primary-border-color;
       margin-right: 10px;
-
       input {
         width: 130px;
         border: none;
       }
-
       i {
         margin-right: 7px;
       }
     }
   }
 
-  .group-list {
+  .category-list {
     .legend,
-    .content .item {
+    .role {
       padding: 20px 30px;
       border-bottom: 1px solid $primary-border-color;
       display: grid;
-      grid-template-columns: 7% 7% repeat(5, 1fr) 140px;
       grid-column-gap: 10px;
       align-items: center;
 
       .edit,
       .delete {
-        grid-column-start: 8;
+        grid-column-start: 2;
         grid-row-start: 1;
       }
-
       .edit {
-        margin-left: 23px;
-        justify-self: flex-start;
+        margin-right: 38px;
+        justify-self: flex-end;
       }
-
       .delete {
         justify-self: flex-end;
       }
     }
+    .pagination-component {
+      button {
+        margin-bottom: 20px;
+      }
+    }
   }
-
   .legend {
     font-weight: bold;
   }
-
   .content {
     margin: 0;
   }

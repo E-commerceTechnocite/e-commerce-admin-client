@@ -11,19 +11,27 @@ import Pagination from '../pagination/Pagination'
 import { Link } from 'react-router-dom'
 import './TaxGroup.scss'
 import Granted from '../Granted'
+import { auth } from '../../util/helpers/auth'
+import { TaxRuleModel } from '../../models/product/tax-rule.model'
+import { ProductModel } from '../../models/product/product.model'
 
 interface ITaxGroupProps {
   successGroup?: boolean | undefined
+  groupToParent?: () => void
 }
 
 const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   successGroup,
+  groupToParent,
 }) => {
   const [group, setGroup] = useState<TaxRuleGroupModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [page, setPage] = useState<number>(1)
   const [toast, setToast] = useState<boolean>(false)
   const [refreshPage, setRefreshPage] = useState(false)
+  const [taxRulesDeleted, setTaxRulesDeleted] = useState<TaxRuleModel[]>()
+  const [productsDeleted, setProductsDeleted] = useState<ProductModel[]>()
+  const [isDeleted, setIsDeleted] = useState<boolean>(false)
   const history = useHistory()
 
   /**
@@ -53,30 +61,47 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   }
 
   /**
-   * Returns the delete request for the tax group select
+   * Returns delete request of selected tax group
    * @param id
    * @returns request
    */
-  const deleteGroupRequest = (id: string) => {
+  const deleteTaxGroupRequest = (id: string) => {
     return http.delete(`${config.api}/v1/tax-rule-group/${id}`, null, {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-      },
+      headers: { ...auth.headers },
     })
   }
   /**
-   * Sends the delete request for tax rule group
+   * Submits delete request of selected tax group
    * @param id
-   * @param name
+   * @param title
    */
-  const deleteGroup = async (id: string, name: string) => {
-    if (confirm(`Delete tax rule: ${name}?`)) {
-      let { error } = await sendRequest(deleteGroupRequest, id)
+  const submitDeleteTaxGroup = async (id: string, name: string) => {
+    if (
+      confirm(
+        `Delete tax group: ${name}? \nAll products and tax rules related will be deleted.`
+      )
+    ) {
+      let { data, error } = await sendRequest(deleteTaxGroupRequest, id)
       if (error) {
         history.push('/login')
       }
+      setTaxRulesDeleted([...data[0].taxRules])
+      setProductsDeleted([...data[1].products])
       setRefreshPage(!refreshPage)
+      setIsDeleted(true)
+      groupToParent()
     }
+  }
+
+  /**
+   * Close the delete message
+   */
+  const onClickClose = () => {
+    setIsDeleted(false)
+    setTimeout(() => {
+      setTaxRulesDeleted(null)
+      setProductsDeleted(null)
+    }, 1000)
   }
 
   useEffect(() => {
@@ -92,6 +117,19 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
       }, 10000)
     }
   }, [successGroup])
+
+  // Hide delete confirmation message after 10 seconds
+  useEffect(() => {
+    if (isDeleted) {
+      setTimeout(() => {
+        setIsDeleted(false)
+      }, 9000)
+      setTimeout(() => {
+        setTaxRulesDeleted(null)
+        setProductsDeleted(null)
+      }, 10000)
+    }
+  }, [isDeleted])
 
   return (
     <>
@@ -116,6 +154,43 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
         {group && meta && (
           <>
             <div className="group-list">
+              {(productsDeleted || taxRulesDeleted) && (
+                  <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
+                    <i className="fas fa-times" onClick={onClickClose} />
+                    {taxRulesDeleted && (
+                      <div className="tax-group-deleted">
+                        {taxRulesDeleted.length > 0 && (
+                          <p>Tax rules deleted :</p>
+                        )}
+                        <ul>
+                          {taxRulesDeleted.map((taxRule, index) => (
+                            <>
+                              <li key={index}>{taxRule.id}</li>
+                            </>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {productsDeleted && (
+                      <div className="product-deleted">
+                        {productsDeleted.length > 0 && (
+                          <p>Products deleted :</p>
+                        )}
+                        <ul>
+                          {productsDeleted.map((product, index) => (
+                            <>
+                              <li key={index}>
+                                {product.id} - {product.title} -{' '}
+                                {`${product.price}€`}
+                              </li>
+                            </>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+
               <div className="legend">
                 <span>Name</span>
               </div>
@@ -134,7 +209,9 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
                     <Granted permissions={['d:tax-rule-group']}>
                       <button
                         className="delete"
-                        onClick={() => alert('Feature not implemented yet.')}
+                        onClick={() =>
+                          submitDeleteTaxGroup(group.id, group.name)
+                        }
                       >
                         <i className="fas fa-trash"></i>
                       </button>
