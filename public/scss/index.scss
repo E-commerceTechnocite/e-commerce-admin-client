@@ -127,7 +127,7 @@ button {
     box-shadow: $primary-elts-shadow;
     border-radius: 5px;
     width: 325px;
-    min-height: 410px;
+    min-height: 420px;
     padding: 65px 60px;
     display: flex;
     flex-direction: column;
@@ -200,8 +200,8 @@ button {
         width: 16px;
         height: 16px;
         background: #eee;
-        top: 1px;
-        left: 0px;
+        top: 2px;
+        left: -2px;
         border-radius: 2px;
       }
       input:focus + label::before {
@@ -209,6 +209,10 @@ button {
       }
     }
     [type='submit'] {
+      align-self: stretch;
+      border-radius: 0;
+    }
+    .loading-button {
       align-self: stretch;
       border-radius: 0;
     }

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import './loading.scss'
+import './Loading.scss'
 
 const Loading: React.FunctionComponent = () => {
   return (
