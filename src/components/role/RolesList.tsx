@@ -62,8 +62,7 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
       let { error } = await sendRequest(deleteRequest, id)
       if (error) {
         console.log(error.message)
-        history.push('/login')
-        //history.push("/login")
+        //history.push('/login')
         alert('WARNING : AN ERROR OCCURED !')
         if (error.message === 'Error 500 Internal Server Error')
           alert(

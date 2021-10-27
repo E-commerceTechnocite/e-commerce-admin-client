@@ -543,6 +543,84 @@ button {
   box-shadow: $primary-elts-shadow;
 }
 
+/* Roles */
+.roles {
+  background: $primary-color-elts;
+  padding-bottom: 30px;
+  box-shadow: $primary-elts-shadow;
+  .top-container {
+    display: flex;
+    padding: 10px 30px;
+    border-bottom: 1px solid $primary-border-color;
+    .search {
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      background: $primary-color-elts;
+      border-radius: 4px;
+      border: 1px solid $primary-border-color;
+      margin-right: 10px;
+      input {
+        width: 130px;
+        border: none;
+      }
+      i {
+        margin-right: 7px;
+      }
+    }
+    .toast-success {
+      margin-left: 10px;
+      background: #ecfbe0;
+      color: #3a9838;
+      border: 1px solid #3a9838;
+      padding: 7px 17px;
+      border-radius: 4px;
+      i {
+        margin-right: 7px;
+        color: #3a9838;
+      }
+      i:nth-child(2) {
+        margin: 0 0 0 15px;
+        font-size: 13px;
+        color: #aec09f;
+        cursor: pointer;
+      }
+    }
+  }
+  .role-list {
+    .legend,
+    .role {
+      padding: 5px 30px;
+      display: grid;
+      grid-template-columns: 117px 117px;
+      grid-template-rows: 1;
+      border-bottom: 1px solid $primary-border-color;
+      grid-column-gap: 350px;
+      align-items: center;
+      justify-content: center;
+      button {
+        justify-self: center;
+        grid-column-start: 2;
+        grid-column-end: 3;
+        grid-row-start: 1;
+        justify-self: flex-end;
+      }
+      a {
+        justify-self: flex-start;
+        grid-column-start: 2;
+        grid-column-end: 3;
+        grid-row-start: 1;
+      }
+    }
+    .legend {
+      display:grid;
+      justify-content: center;
+      padding: 20px 30px;
+      font-weight: bold;
+    }
+  }
+}
+
 /* Add Product */
 .form-control,
 .description {
@@ -763,19 +841,24 @@ table th {
 .add-user-title {
   padding-bottom: 5px;
   font-size: 23px;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   border-bottom: 1px solid $primary-border-color;
 }
 
 /*NEW ROLE */
 .perms-form {
   background-color: $primary-color-elts;
+  padding: 15px;
 }
 .role-name {
-  border-bottom: 1px solid $primary-border-color;
-  padding: 15px;
+  margin-bottom: 25px;
+  .role-name-title {
+    label {
+      font-size: 17px;
+    }
+  }
   .role-name-entry {
-    margin: 10px 0px 0px 15px;
+    margin: 5px 0px 0px 0px;
     width: 300px;
     padding: 0 10px;
     background: $primary-color-elts;
@@ -787,43 +870,76 @@ table th {
       font-size: 13px;
       border: none;
     }
-    i {
-      margin-right: 7px;
-    }
   }
 }
 .role-permissions {
-  border-bottom: 1px solid $primary-border-color;
-  padding: 15px;
+  margin-bottom: 25px;
+  .role-permissions-title {
+    label {
+      font-size: 17px;
+    }
+  }
   .permissions-list {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-column-gap: 75px;
     grid-row-gap: 25px;
     justify-items: stretch;
-    padding: 15px;
+    margin-top: 10px;
   }
 }
 .permissions-choices {
   min-width: 150px;
   box-shadow: $primary-elts-shadow;
   .permissions-choices-title {
+    display:flex;
+    flex-direction: row;
+    align-items: center;
     padding: 5px;
     border-bottom: 1px solid $primary-border-color;
+    input {
+      width:15px;
+      height:15px;
+      margin-right: 4px;
+    }
   }
   .attrs {
+   /* display:flex;
+      flex-direction: row;
+      align-items: center;*/
+    .checkBox {
+      display:flex;
+      flex-direction: row;
+      align-items: center;
+    }
     label {
       font-size: 15px;
     }
     input {
-      width: 25px;
+      width:14px;
+      height:14px;
+      margin-right: 4px;
+      margin-left: 5px;
+      //width: 25px;
     }
   }
 }
 .perms-button {
-  padding: 15px;
   button {
-    width: 100px;
+    width: 100%;
+  }
+}
+
+.toggleAll {
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  input {
+    width: 15px;
+    height: 15px;
   }
 }
 
@@ -1007,3 +1123,5 @@ table th {
     display: none;
   }
 }
+
+
