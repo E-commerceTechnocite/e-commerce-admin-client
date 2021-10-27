@@ -138,6 +138,7 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
       const permsCheckbox : any = document.querySelectorAll('input[name=' + title + ']')
       crudTogglePermsCheckbox(permsCheckbox)
     })
+    console.log(rolePermissions)
   }, [rolePermissions])
 
   useEffect(() => {
@@ -183,7 +184,7 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
     for (let i = 0; i < checkboxes.length; i++) {
       if (checkboxes[i] != source && checkboxes[i].checked != source.checked) {
         checkboxes[i].checked = source.checked
-        if(source.checked) 
+        if(source.checked && checkboxes[i].id !== "") 
           checkboxClick(true,checkboxes[i].id)
         else 
           checkboxClick(false,checkboxes[i].id)
@@ -194,9 +195,6 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
   const toggleAll = (source) => {
     const checkboxes : any = document.querySelectorAll('input[type="checkbox"]')
     changeAllCheckboxes(checkboxes, source)
-    setRolePermissions([])
-    if(source.checked) 
-      setRolePermissions(allPermissions)
   }
 
   const togglePermsAll = (source, title) => {
@@ -211,9 +209,13 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
           <Previous />
           <form onSubmit={onSubmit}>
             <div className="perms-form">
+              <div className="add-user-title">
+                {params.slug && <label>Edit role</label>}
+                {!params.slug && <label>New role</label>}
+              </div>
               <div className="role-name">
                 <div className="role-name-title">
-                  <h3>Role name</h3>
+                  <label>Role name</label>
                 </div>
                 <div className="role-name-entry">
                   <input
@@ -228,40 +230,32 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
               </div>
               <div className="role-permissions">
                 <div className="role-permissions-title">
-                  <h3>Role permissions</h3>
+                  <label>Role permissions</label>
                 </div>
-                <div className="toggleAll">
-                  <input type="checkbox" name="toggleAll" onChange={(e) => toggleAll(e.target)}/> 
-                  Select All
-                </div>
+                
                 <div className="permissions-list">
                   {Object.entries(perms).map(([title, arr], index) => {
                     return (
                       <div className="permissions-choices" key={index}>
                         <div className="permissions-choices-title"> 
-                          <h4>
-                            <input type="checkbox" name={title} onChange={(e) => togglePermsAll(e.target,title)}/> 
-                            {changeTitleForm(title)}
-                          </h4>
+                          <input type="checkbox" name={title} onChange={(e) => togglePermsAll(e.target,title)}/> 
+                          <label>{changeTitleForm(title)}</label>
                         </div>
                         <div className="attrs" id="attrs">
                           {Object.values(arr).map((perm, index) => {
                             return (
                               <div className="checkBox" key={index}>
-                                <label>
-                                  <input
-                                    type="checkbox"
-                                    id={perm.value}
-                                    name= {perm.title}
-                                    onChange={(e) =>
-                                      checkboxClick(
-                                        e.target.checked,
-                                        perm.value
-                                      )
-                                    }
-                                  ></input>
-                                  {perm.name}
-                                </label>
+                                <input
+                                  type="checkbox"
+                                  id={perm.value}
+                                  name= {perm.title}
+                                  onChange={(e) =>
+                                    checkboxClick(
+                                      e.target.checked,
+                                      perm.value
+                                    )
+                                  }/>
+                                <label>{perm.name}</label>
                               </div>
                             )
                           })}
@@ -269,6 +263,10 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
                       </div>
                     )
                   })}
+                </div>
+                <div className="toggleAll">
+                  <input type="checkbox" name="toggleAll" onChange={(e) => toggleAll(e.target)}/> 
+                  All permissions
                 </div>
               </div>
               <div className="perms-button">
