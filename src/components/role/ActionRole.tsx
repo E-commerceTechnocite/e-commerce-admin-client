@@ -93,17 +93,12 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
     return string.charAt(0).toUpperCase() + string.slice(1)
   }
 
-  const crudTogglePermsCheckbox = (permsCheckbox) => {
-    let counter = 0
-    for (let i = 0; i < permsCheckbox.length; i++) {
-      console.log(permsCheckbox[i].checked)
-      if (i !== 0 && permsCheckbox[i].checked)
-        counter++
+  const crudTogglePermsCheckbox = (checkbox) => {
+    if(checkbox[1].checked && checkbox[2].checked && checkbox[3].checked && checkbox[4].checked) {
+      checkbox[0].checked = true
+    } else {
+      checkbox[0].checked = false
     }
-    if(counter === 4) 
-      permsCheckbox[0].checked = true
-    else
-      permsCheckbox[0].checked = false
   }
 
   const setName = (name) => {
@@ -134,12 +129,10 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
   
   useEffect(() => {
     const allCheckbox : any = document.querySelectorAll('input[name=toggleAll]')
-    if(rolePermissions.length === allPermissions.length && rolePermissions.length !== 0) {
+    if(rolePermissions.length === allPermissions.length && rolePermissions.length !== 0) 
       allCheckbox[0].checked = true // check the select all checkbox if all checkboxes are checked 
-    }
     else
       allCheckbox[0].checked = false
-    
     rolePermissions.map((perm) => {
       let [operation, title] = perm.split(':')
       const permsCheckbox : any = document.querySelectorAll('input[name=' + title + ']')
@@ -182,14 +175,19 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
   })
 
   const checkboxClick = (onClick: boolean, value: string) => {
-    if(onClick) setRolePermissions([...rolePermissions, value])
-    else setRolePermissions(rolePermissions.filter((item) => item !== value))
+    if(onClick) setRolePermissions((permission) => [...permission, value])
+    else setRolePermissions((permissions) => permissions.filter((item) => item !== value))
   }
 
-  const changeAllCheckboxes = (checkboxes, source) => { //change multiple checkboxes for ( selectAll and Permission checkboxes)
+  const changeAllCheckboxes = (checkboxes: any, source : any) => { //change multiple checkboxes for ( selectAll and Permission checkboxes)
     for (let i = 0; i < checkboxes.length; i++) {
-      if (checkboxes[i] != source)
-        checkboxes[i].checked = source.checked;
+      if (checkboxes[i] != source && checkboxes[i].checked != source.checked) {
+        checkboxes[i].checked = source.checked
+        if(source.checked) 
+          checkboxClick(true,checkboxes[i].id)
+        else 
+          checkboxClick(false,checkboxes[i].id)
+      }
     }
   }
 
@@ -197,27 +195,13 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
     const checkboxes : any = document.querySelectorAll('input[type="checkbox"]')
     changeAllCheckboxes(checkboxes, source)
     setRolePermissions([])
-    if(source.checked) setRolePermissions(allPermissions)
+    if(source.checked) 
+      setRolePermissions(allPermissions)
   }
 
   const togglePermsAll = (source, title) => {
     const checkboxes : any = document.querySelectorAll('input[name=' + title + ']')
     changeAllCheckboxes(checkboxes, source) // 4 crud check/uncheck if we check/uncheck permissions checkbox
-    
-    if(source.checked) {
-      checkboxes.forEach((element) => { // if the c,r,u,d is not checked yet we add the value in permissions array
-        if (rolePermissions.indexOf(element.id) === -1) {
-          if(element.id !== "") 
-            setRolePermissions((permission) => [...permission, element.id])
-        }          
-      })
-    } else {
-      checkboxes.forEach((element) => { //if c,r,u,d is not unchecked we remove the value in the permissions array
-        if (rolePermissions.indexOf(element.id) !== -1) {
-          setRolePermissions((permissions) => permissions.filter((item) => item !== element.id))
-        }          
-      })
-    }
   }
 
   return (
