@@ -231,42 +231,43 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
               <div className="role-permissions">
                 <div className="role-permissions-title">
                   <label>Role permissions</label>
-                </div>
-                
-                <div className="permissions-list">
-                  {Object.entries(perms).map(([title, arr], index) => {
-                    return (
-                      <div className="permissions-choices" key={index}>
-                        <div className="permissions-choices-title"> 
-                          <input type="checkbox" name={title} onChange={(e) => togglePermsAll(e.target,title)}/> 
-                          <label>{changeTitleForm(title)}</label>
+                </div> 
+                <div className="permissions-all">  
+                  <div className="permissions-list">
+                    {Object.entries(perms).map(([title, arr], index) => {
+                      return (
+                        <div className="permissions-choices" key={index}>
+                          <div className="permissions-choices-title"> 
+                            <input type="checkbox" name={title} onChange={(e) => togglePermsAll(e.target,title)}/> 
+                            <label>{changeTitleForm(title)}</label>
+                          </div>
+                          <div className="attrs" id="attrs">
+                            {Object.values(arr).map((perm, index) => {
+                              return (
+                                <div className="checkBox" key={index}>
+                                  <input
+                                    type="checkbox"
+                                    id={perm.value}
+                                    name= {perm.title}
+                                    onChange={(e) =>
+                                      checkboxClick(
+                                        e.target.checked,
+                                        perm.value
+                                      )
+                                    }/>
+                                  <label>{perm.name}</label>
+                                </div>
+                              )
+                            })}
+                          </div>
                         </div>
-                        <div className="attrs" id="attrs">
-                          {Object.values(arr).map((perm, index) => {
-                            return (
-                              <div className="checkBox" key={index}>
-                                <input
-                                  type="checkbox"
-                                  id={perm.value}
-                                  name= {perm.title}
-                                  onChange={(e) =>
-                                    checkboxClick(
-                                      e.target.checked,
-                                      perm.value
-                                    )
-                                  }/>
-                                <label>{perm.name}</label>
-                              </div>
-                            )
-                          })}
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-                <div className="toggleAll">
-                  <input type="checkbox" name="toggleAll" onChange={(e) => toggleAll(e.target)}/> 
-                  All permissions
+                      )
+                    })}
+                  </div>
+                  <div className="toggleAll">
+                    <input type="checkbox" name="toggleAll" onChange={(e) => toggleAll(e.target)}/> 
+                    All permissions
+                  </div>  
                 </div>
               </div>
               <div className="perms-button">
