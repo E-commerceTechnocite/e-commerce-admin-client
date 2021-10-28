@@ -39,6 +39,7 @@
   "scripts": {
     "start": "vite --port=3006",
     "build": "eslint src && vite build",
+    "cy:open": "cypress open",
     "build:force": "vite build"
   },
   "eslintConfig": {
