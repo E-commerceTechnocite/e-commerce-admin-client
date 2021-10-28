@@ -58,7 +58,7 @@ const DrafTextEditor: React.FunctionComponent<IDrafTextEditorProps> = ({
         onEditorStateChange={onEditorStateChange}
       />
       <p className="error">
-        <ErrorMessage name={field.name} />
+        <ErrorMessage name={field.name} data-cy={`description-error`}/>
       </p>
     </div>
   )

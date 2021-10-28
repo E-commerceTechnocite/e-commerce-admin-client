@@ -14,7 +14,7 @@ const TextInput: React.FunctionComponent<ITextInputProps> = (props) => {
     <div className="form-control">
       {props.label && <label htmlFor={props.name}>{props.label}</label>}
       <input {...field} {...props} placeholder={props.placeholder} />
-      {meta.error && meta.touched && <p className="error">{meta.error}</p>}
+      {meta.error && meta.touched && <p className="error" data-cy={`${props.name}-error`}>{meta.error}</p>}
     </div>
   )
 }

@@ -129,6 +129,7 @@ const Login: React.FunctionComponent = () => {
                         name={'email'}
                         label={'Email'}
                         placeholder={'Email'}
+                        data-cy="email"
                       />
                       <i className="fas fa-envelope" />
                     </div>
@@ -137,6 +138,7 @@ const Login: React.FunctionComponent = () => {
                         name={'password'}
                         label={'Password'}
                         placeholder={'Password'}
+                        data-cy="password"
                       />
                       <i className="fas fa-lock" />
                     </div>
@@ -144,11 +146,11 @@ const Login: React.FunctionComponent = () => {
                       <input type="checkbox" id="checkbox" name="checkbox" />
                       <label htmlFor="checkbox">Remember me</label>
                     </div>
-                    {!isLogging && <input type="submit" value="Login" className="action" />}
+                    {!isLogging && <input type="submit" value="Login" className="action" data-cy="submit" />}
                     {isLogging && <LoadingButton/>}
                     
                     {errorMessage && (
-                      <div className="login-error">
+                      <div className="login-error" data-cy="global-error">
                         <div className="global-error">{errorMessage}</div>
                       </div>
                     )}
