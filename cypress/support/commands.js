@@ -28,11 +28,13 @@
 Cypress.Commands.add('getByTestId', (testId) => {
   cy.get(`[data-cy='${testId}']`)
 })
+
 // contains by data-cy id
 Cypress.Commands.add('containsByTestId', (testId, contains) => {
   cy.contains(`[data-cy='${testId}']`, contains)
 })
-// Login 201
+
+// Post login, status 201
 Cypress.Commands.add('login', (email, password) => {
   cy.getByTestId('email').type(email).blur()
   cy.getByTestId('email-error').should('not.exist')
@@ -51,7 +53,23 @@ Cypress.Commands.add('login', (email, password) => {
     expect(res.status).to.eq(201)
     expect(res.body).to.have.property('access_token')
     expect(res.body).to.have.property('refresh_token')
+    Cypress.env('refresh', res.body.refresh_token)
   })
+  var token = Cypress.env('token')
   cy.containsByTestId('submit', 'Login').click()
   cy.url().should('include', '/')
+  cy.window().its('sessionStorage').invoke('getItem', 'token').should('exist')
+  cy.window().its('sessionStorage').invoke('getItem', 'refresh').should('exist')
+  console.log(token)
+  cy.request({
+    url: 'http://localhost:3000/v1/o-auth/permissions',
+    headers: {
+      authorization: 'Bearer ' + token,
+      //   'Content-Type': 'application/json',
+    },
+  }).then((res) => {
+    expect(res.status).to.eq(200)
+    cy.window().its('sessionStorage').invoke('getItem', 'permissions').should('exist')
+      console.log(res)
+  })
 })

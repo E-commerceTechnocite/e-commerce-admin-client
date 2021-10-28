@@ -89,7 +89,6 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
   // Check if product has been added and if so displays a toast
   useEffect(() => {
-    console.log(success)
     if (success === true) {
       setToast(true)
       setTimeout(() => {

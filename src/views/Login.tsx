@@ -113,7 +113,6 @@ const Login: React.FunctionComponent = () => {
             }}
             validationSchema={adminLoginSchema}
             onSubmit={(data) => {
-              console.log(data)
               onSubmit(data)
             }}
           >
