@@ -1,6 +1,5 @@
-import { useField } from "formik"
-import * as React from "react"
-import { useEffect } from "react"
+import { useField } from 'formik'
+import * as React from 'react'
 
 interface ISelectProps {
   name: string
@@ -15,6 +14,7 @@ interface Options {
   deletedAt: string
   label?: string
   name?: string
+  rate?: string
 }
 
 const Select: React.FunctionComponent<ISelectProps> = (props) => {
@@ -23,15 +23,18 @@ const Select: React.FunctionComponent<ISelectProps> = (props) => {
     <div className="form-control">
       {props.label && <label htmlFor={props.name}>{props.label}</label>}
       <select {...field} {...props}>
-      <option value="" defaultValue="selected" disabled hidden>Select {props.label}</option>
+        <option value="" defaultValue="selected" disabled hidden>
+          Select {props.label}
+        </option>
         {props.options.map((option: Options, index: number) => (
           <option key={index} value={option.id}>
             {option.label}
             {option.name}
+            {option.rate && `${option.rate}%`}
           </option>
         ))}
       </select>
-      {meta.error && meta.touched && <p className="error">{meta.error}</p>}
+      {meta.error && meta.touched && <p className="error" data-cy={`${props.name}-error`}>{meta.error}</p>}
     </div>
   )
 }

@@ -4,8 +4,8 @@ import authUpdate from './reducer/authUpdate'
 
 export const store = configureStore({
   reducer: {
-      counter: exampleReducer,
-      update: authUpdate,
+    counter: exampleReducer,
+    update: authUpdate,
   },
 })
 

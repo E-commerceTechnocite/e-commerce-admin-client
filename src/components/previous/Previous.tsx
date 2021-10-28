@@ -6,14 +6,14 @@ interface IPreviousProps {}
 const Previous: React.FunctionComponent<IPreviousProps> = () => {
   const history = useHistory()
   return (
-    <button
-      className="action"
+    <button 
+      className="arrowBackButton"
       style={{ marginBottom: "15px" }}
       onClick={() => history.goBack()}
     >
-      Previous Page
+      <i className="fas fa-caret-left" /> Previous Page
     </button>
   )
 }
 
-export default Previous
+export default Previous;

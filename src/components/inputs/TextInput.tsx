@@ -1,10 +1,11 @@
-import { ErrorMessage, useField } from "formik"
-import * as React from "react"
-import "./Validation.scss"
+import { ErrorMessage, useField } from 'formik'
+import * as React from 'react'
+import './Validation.scss'
 
 interface ITextInputProps {
   name: string
   label?: string
+  placeholder?: string
 }
 
 const TextInput: React.FunctionComponent<ITextInputProps> = (props) => {
@@ -12,10 +13,8 @@ const TextInput: React.FunctionComponent<ITextInputProps> = (props) => {
   return (
     <div className="form-control">
       {props.label && <label htmlFor={props.name}>{props.label}</label>}
-      <input {...field} {...props} />
-      <p className="error">
-        <ErrorMessage name={props.name} />
-      </p>
+      <input {...field} {...props} placeholder={props.placeholder} />
+      {meta.error && meta.touched && <p className="error" data-cy={`${props.name}-error`}>{meta.error}</p>}
     </div>
   )
 }

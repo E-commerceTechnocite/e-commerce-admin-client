@@ -1,39 +1,72 @@
-import * as React from "react"
-import { useEffect, useState } from "react"
-import { useHistory } from "react-router"
-import Loading from "../components/loading/Loading"
-import { http } from "../util/http"
-import { config } from "../index"
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import { useHistory } from 'react-router'
+import Loading from '../components/loading/Loading'
+import { http } from '../util/http'
+import { config } from '../index'
+import { auth, Permission } from '../util/helpers/auth'
+import { sendRequest } from '../util/helpers/refresh'
+import { Formik } from 'formik'
+import { adminLoginSchema } from '../util/validation/loginValidation'
+import TextInput from '../components/inputs/TextInput'
+import PasswordInput from '../components/inputs/PasswordInput'
+import LoadingButton from '../components/loading/LoadingButton'
 
 const Login: React.FunctionComponent = () => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const [checkbox] = useState(false)
   const [isPending, setIsPending] = useState(true)
+  const [isLogging, setIsLogging] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string>(null)
   const history = useHistory()
+
+  /**
+   * Returns request for persmissions list
+   * @returns request
+   */
+  const fetchPermissions = () =>
+    http.get<Permission[]>(`${config.api}/v1/o-auth/permissions`, {
+      headers: { ...auth.headers },
+    })
+
+  /**
+   * Set permissions
+   * @param param0
+   * @returns
+   */
+  const setPermissions = ({ data, error }) => {
+    if (!error) {
+      auth.permissions = data
+      return history.push('/')
+    }
+    setIsPending(false)
+  }
 
   // Check if the user is already logged
   useEffect(() => {
-    const token = sessionStorage.getItem("token")
-    const options = {
-      headers: { Authorization: `Bearer ${token}` },
+    setIsPending(true)
+    if (auth.refresh) {
+      sendRequest(fetchPermissions)
+        .then(setPermissions)
+        .then(() => setIsPending(false))
+    } else {
+      fetchPermissions()
+        .then(setPermissions)
+        .then(() => setIsPending(false))
     }
-    http
-      .get(`${config.api}/v1/product?limit=1&page=1`, options)
-      .then(({ error }) => {
-        setIsPending(true)
-        if (!error) return history.push("/")
-        setIsPending(false)
-      })
   }, [])
 
-  // Log the user if the credentials exists 
-  const onSubmit = (e: React.FormEvent): void => {
-    e.preventDefault()
-    setIsPending(true)
+  /**
+   * Submits credentials for connection
+   * @param data
+   */
+  const onSubmit = (data: { email: string; password: string }): void => {
+    // setIsPending(true)
+    setIsLogging(true)
+    setErrorMessage(null)
+    const { email, password } = data
     const body = { email, password }
     const options = {
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     }
     http
       .post<{ access_token: string; refresh_token: string }>(
@@ -44,11 +77,22 @@ const Login: React.FunctionComponent = () => {
       .then(({ data, error }) => {
         const { access_token, refresh_token } = data
         if (!error) {
-          sessionStorage.setItem("token", access_token)
-          sessionStorage.setItem("refresh", refresh_token)
-          history.push("/")
+          auth.access = access_token
+          auth.refresh = refresh_token
+          sendRequest(fetchPermissions)
+            .then(({ data, error }) => {
+              auth.permissions = data
+            })
+            .then(() => {
+              history.push('/')
+            })
         } else {
-          setIsPending(false)
+          if (error.statusCode === 400) {
+            setErrorMessage('Wrong email and/or password.')
+          }
+          // setIsPending(false)
+    setIsLogging(false)
+
         }
       })
   }
@@ -61,44 +105,59 @@ const Login: React.FunctionComponent = () => {
           <div>
             <h2>SHOPTYK</h2>
           </div>
-          <form onSubmit={onSubmit}>
-            <p>
-              <span>Login</span> your account
-            </p>
-            <div className="email">
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Email"
-                required
-                defaultValue={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setEmail(e.target.value)
-                }
-              />
-              <i className="fas fa-envelope" />
-            </div>
-            <div className="password">
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Password"
-                required
-                defaultValue={password}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setPassword(e.target.value)
-                }
-              />
-              <i className="fas fa-lock" />
-            </div>
-            <div className="checkbox">
-              <input type="checkbox" id="checkbox" name="checkbox" />
-              <label htmlFor="checkbox">Remember me</label>
-            </div>
-            <input type="submit" value="Login" className="action" />
-          </form>
+          <Formik
+            enableReinitialize
+            initialValues={{
+              email: '',
+              password: '',
+            }}
+            validationSchema={adminLoginSchema}
+            onSubmit={(data) => {
+              onSubmit(data)
+            }}
+          >
+            {({ handleSubmit }) => {
+              return (
+                <>
+                  <form onSubmit={handleSubmit}>
+                    <p>
+                      <span>Login</span> your account
+                    </p>
+                    <div className="email">
+                      <TextInput
+                        name={'email'}
+                        label={'Email'}
+                        placeholder={'Email'}
+                        data-cy="email"
+                      />
+                      <i className="fas fa-envelope" />
+                    </div>
+                    <div className="password">
+                      <PasswordInput
+                        name={'password'}
+                        label={'Password'}
+                        placeholder={'Password'}
+                        data-cy="password"
+                      />
+                      <i className="fas fa-lock" />
+                    </div>
+                    <div className="checkbox">
+                      <input type="checkbox" id="checkbox" name="checkbox" />
+                      <label htmlFor="checkbox">Remember me</label>
+                    </div>
+                    {!isLogging && <input type="submit" value="Login" className="action" data-cy="submit" />}
+                    {isLogging && <LoadingButton/>}
+                    
+                    {errorMessage && (
+                      <div className="login-error" data-cy="global-error">
+                        <div className="global-error">{errorMessage}</div>
+                      </div>
+                    )}
+                  </form>
+                </>
+              )
+            }}
+          </Formik>
         </div>
       )}
     </>

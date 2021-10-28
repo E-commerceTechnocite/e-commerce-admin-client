@@ -24,5 +24,6 @@ export const exampleReducer = createSlice({
   },
 })
 
-export const { increment, decrement, incrementByAmount } = exampleReducer.actions
+export const { increment, decrement, incrementByAmount } =
+  exampleReducer.actions
 export default exampleReducer.reducer

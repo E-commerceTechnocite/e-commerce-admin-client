@@ -1,0 +1,32 @@
+@import "../../../public/scss/variables.scss";
+
+.action-tax-group {
+  background: $primary-color-elts;
+  box-shadow: $primary-elts-shadow;
+  border-radius: 4px;
+  padding: 20px;
+
+  .form-control {
+    display: flex;
+    flex-direction: column;
+
+    .error {
+      bottom: 11px;
+    }
+
+    label {
+      margin-bottom: 3px;
+    }
+
+    input {
+      margin-bottom: 30px;
+      height: 30px;
+      border: 1px solid $primary-border-color;
+      border-radius: 4px;
+    }
+  }
+
+  button {
+    width: 100%;
+  }
+}
