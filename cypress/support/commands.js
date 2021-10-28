@@ -25,13 +25,13 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 // get by data-cy id
-Cypress.Commands.add('getByTestId', (testId) => {
-  cy.get(`[data-cy='${testId}']`)
+Cypress.Commands.add('getByTestId', (testId, additionnalSelector) => {
+  cy.get(`[data-cy='${testId}'] ${additionnalSelector}`)
 })
 
 // contains by data-cy id
-Cypress.Commands.add('containsByTestId', (testId, contains) => {
-  cy.contains(`[data-cy='${testId}']`, contains)
+Cypress.Commands.add('containsByTestId', (testId, contains, additionnalSelector) => {
+  cy.contains(`[data-cy='${testId}'] ${additionnalSelector}`, contains)
 })
 
 // Post login, status 201
@@ -69,7 +69,30 @@ Cypress.Commands.add('login', (email, password) => {
     },
   }).then((res) => {
     expect(res.status).to.eq(200)
-    cy.window().its('sessionStorage').invoke('getItem', 'permissions').should('exist')
-      console.log(res)
+    cy.window()
+      .its('sessionStorage')
+      .invoke('getItem', 'permissions')
+      .should('exist')
+    console.log(res)
+  })
+})
+
+// Quick login
+Cypress.Commands.add('quickLogin', (email, password) => {
+  cy.getByTestId('email').type(email).blur()
+  cy.getByTestId('password').type(password).blur()
+  cy.containsByTestId('submit', 'Login').click()
+  cy.url().should('include', '/')
+})
+
+// Check user auth
+Cypress.Commands.add('checkUser', () => {
+  cy.request({
+    url: 'http://localhost:3000/v1/o-auth/check',
+    // headers: {
+    //   authorization: 'Bearer ' + ,
+    // },
+  }).then((res) => {
+    expect(res.status).to.eq(201)
   })
 })

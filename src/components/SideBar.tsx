@@ -30,14 +30,15 @@ const SideBar: React.FunctionComponent = () => {
       })
   }
 
-  const NavLink: FC<{ uri: string; icon: string; exact?: boolean }> = ({
+  const NavLink: FC<{ uri: string; icon: string; name: string; exact?: boolean }> = ({
     children,
     uri,
     icon,
+    name,
     exact = false,
   }) => (
     <li className={`${isActive(uri, exact) ? 'sidebar-active' : ''}`}>
-      <Link to={uri}>
+      <Link to={uri} data-cy={name}>
         <span>
           <i className={icon} />
         </span>
@@ -49,7 +50,7 @@ const SideBar: React.FunctionComponent = () => {
   return (
     <div className="sidebar">
       <div className="logo">
-        <Link to="/">
+        <Link to="/" >
           <h1>SHOPTYK</h1>
         </Link>
       </div>
@@ -62,26 +63,26 @@ const SideBar: React.FunctionComponent = () => {
       <nav>
         <div>
           <ul>
-            <NavLink uri="/" icon="fas fa-tachometer-alt" exact>
+            <NavLink uri="/" icon="fas fa-tachometer-alt" name="dashboard" exact>
               Dashboard
             </NavLink>
             <Granted permissions={['r:product']}>
-              <NavLink uri="/products" icon="fas fa-folder-open">
+              <NavLink uri="/products" icon="fas fa-folder-open" name="products">
                 Products
               </NavLink>
             </Granted>
             <Granted permissions={['r:file']}>
-              <NavLink uri="/medias" icon="fas fa-image">
+              <NavLink uri="/medias" icon="fas fa-image" name="media-library">
                 Media library
               </NavLink>
             </Granted>
             <Granted permissions={['r:user']}>
-              <NavLink uri="/users" icon="fas fa-users">
+              <NavLink uri="/users" icon="fas fa-users" name="users">
                 Users
               </NavLink>
             </Granted>
             <Granted permissions={['r:role']}>
-              <NavLink uri="/roles" icon="fas fa-user-tag">
+              <NavLink uri="/roles" icon="fas fa-user-tag" name="roles">
                 Roles
               </NavLink>
             </Granted>
@@ -93,27 +94,27 @@ const SideBar: React.FunctionComponent = () => {
                 'r:country',
               ]}
             >
-              <NavLink uri="/taxes" icon="fas fa-donate">
+              <NavLink uri="/taxes" icon="fas fa-donate" name="taxes">
                 Taxes
               </NavLink>
             </Granted>
             <Granted permissions={['r:product-category']}>
-              <NavLink uri="/categories" icon="fas fa-list">
+              <NavLink uri="/categories" icon="fas fa-list" name="categories">
                 Categories
               </NavLink>
             </Granted>
             <Granted permissions={[]}>
-              <NavLink uri="/customers" icon="fas fa-user-circle">
+              <NavLink uri="/customers" icon="fas fa-user-circle" name="customers">
                 Customers
               </NavLink>
             </Granted>
             <Granted permissions={[]}>
-              <NavLink uri="/orders" icon="fas fa-cart-arrow-down">
+              <NavLink uri="/orders" icon="fas fa-cart-arrow-down" name="orders">
                 Orders
               </NavLink>
             </Granted>
             <Granted permissions={[]}>
-              <NavLink uri="/stock" icon="fas fa-dolly">
+              <NavLink uri="/stock" icon="fas fa-dolly" name="stock">
                 Stock
               </NavLink>
             </Granted>
