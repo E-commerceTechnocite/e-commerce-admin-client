@@ -1,4 +1,5 @@
 import * as React from 'react'
+import './DailyInformations.scss'
 import { motion } from 'framer-motion'
 
 const container = {
