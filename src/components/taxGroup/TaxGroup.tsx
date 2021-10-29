@@ -136,7 +136,6 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   return (
     <>
       {!group && !meta && <TaxGroupSkeleton />}
-      {/* <TaxGroupSkeleton /> */}
       {group && meta && (
         <div className="tax-group">
           <div className="top">

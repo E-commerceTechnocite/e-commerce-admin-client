@@ -1,11 +1,19 @@
 @import '../../../../public/scss/variables.scss';
 @import '../../../../public/scss/skeleton.scss';
 
-.tax-group-skeleton {
+.tax-rate-skeleton {
+  .pagination-skeleton {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 20px;
+  }
   .top-container {
     display: flex;
     padding: 10px 30px;
     border-bottom: 1px solid $primary-border-color;
+
     .search {
       display: flex;
       align-items: center;
@@ -16,53 +24,44 @@
       margin-right: 10px;
     }
   }
-  .group-list {
+
+  .rate-list {
     .legend,
     .content .item {
       padding: 20px 30px;
       border-bottom: 1px solid $primary-border-color;
       display: grid;
-      grid-template-columns: 7% 7% repeat(5, 1fr) 140px;
+      grid-template-columns: 1fr 1fr 140px;
       grid-column-gap: 10px;
       align-items: center;
       span:first-child {
         border-radius: 4px;
-        width: 90%;
+        width: 50%;
         height: 19px;
         background: #eee;
-        grid-column-start: 1;
-        grid-column-end: 5;
       }
       span:nth-child(2) {
-        grid-column-start: 8;
-        grid-column-end: 9;
+        grid-column-start: 2;
+        grid-column-start: 3;
         grid-row-start: 1;
         justify-self: flex-end;
         margin-right: 39px;
       }
       span:nth-child(3) {
-        grid-column-start: 8;
-        grid-column-end: 9;
+        grid-column-start: 2;
+        grid-column-start: 3;
         grid-row-start: 1;
         justify-self: flex-end;
       }
     }
-  }
-  .pagination-skeleton {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-bottom: 20px;
-  }
-  .legend {
-    font-weight: bold;
-    span:first-child {
-      grid-column-start: 1;
-      grid-column-end: 3 !important;
+    .legend {
+      font-weight: bold;
+      span:first-child {
+        width: 30% !important;
+      }
     }
-  }
-  .content {
-    margin: 0;
+    .content {
+      margin: 0;
+    }
   }
 }

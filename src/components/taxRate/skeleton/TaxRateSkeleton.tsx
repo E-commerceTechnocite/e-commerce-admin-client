@@ -1,17 +1,17 @@
 import * as React from 'react'
 import Granted from '../../Granted'
-import './TaxGroupSkeleton.scss'
+import './TaxRateSkeleton.scss'
 
-const TaxGroupSkeleton: React.FunctionComponent = () => {
+const TaxRateSkeleton: React.FunctionComponent = () => {
   return (
     <>
-      <div className="tax-group-skeleton">
+      <div className="tax-rate-skeleton">
         <div className="top-container">
-          <Granted permissions={['c:tax-rule-group']}>
+          <Granted permissions={['c:tax']}>
             <div className="button-skeleton"></div>
           </Granted>
         </div>
-        <div className="group-list">
+        <div className="rate-list">
           <div className="legend">
             <span></span>
           </div>
@@ -19,10 +19,10 @@ const TaxGroupSkeleton: React.FunctionComponent = () => {
             {[...Array(5)].map(() => (
               <div className="item">
                 <span></span>
-                <Granted permissions={['u:tax-rule-group']}>
+                <Granted permissions={['u:tax']}>
                   <span className="edit-skeleton"></span>
                 </Granted>
-                <Granted permissions={['d:tax-rule-group']}>
+                <Granted permissions={['d:tax']}>
                   <span className="delete-skeleton"></span>
                 </Granted>
               </div>
@@ -35,4 +35,4 @@ const TaxGroupSkeleton: React.FunctionComponent = () => {
   )
 }
 
-export default TaxGroupSkeleton
+export default TaxRateSkeleton
