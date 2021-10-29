@@ -2,7 +2,6 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
-import Loading from '../loading/Loading'
 import Pagination from '../pagination/Pagination'
 import { motion } from 'framer-motion'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
@@ -13,6 +12,7 @@ import { http } from '../../util/http'
 import { UserModel } from '../../models/user/user.model'
 import './UsersList.scss'
 import UsersListSkeleton from './skeleton/UsersListSkeleton'
+import Granted from '../Granted'
 
 interface IUsersListProps {
   number?: number
@@ -71,7 +71,6 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
 
   // Check if product has been added and if so displays a toast
   useEffect(() => {
-    console.log(success)
     if (success === true) {
       setToast(true)
       setTimeout(() => {
@@ -96,9 +95,11 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                 <input type="text" placeholder="Search..." />
               </div>
             )}
-            <Link to="/users/addusers" className="action">
-              New User
-            </Link>
+            <Granted permissions={['c:user']}>
+              <Link to="/users/addusers" className="action">
+                New User
+              </Link>
+            </Granted>
             <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
               {' '}
               <i className="fas fa-check" />
@@ -138,15 +139,19 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                     <span>{user.username}</span>
                     <span>{user.role.name}</span>
                     <span>{user.email}</span>
-                    <Link to={`/users/edit/${user.id}`} className="action">
-                      Edit
-                    </Link>
-                    <button
-                      className="delete"
-                      onClick={() => deleteUsers(user.id, user.username)}
-                    >
-                      <i className="fas fa-trash"></i>
-                    </button>
+                    <Granted permissions={['u:user']}>
+                      <Link to={`/users/edit/${user.id}`} className="action">
+                        Edit
+                      </Link>
+                    </Granted>
+                    <Granted permissions={['d:user']}>
+                      <button
+                        className="delete"
+                        onClick={() => deleteUsers(user.id, user.username)}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </Granted>
                   </motion.div>
                 )
               })}
