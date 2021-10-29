@@ -1,4 +1,4 @@
-@import '../../../public/scss/variables.scss';
+@import "../../../public/scss/variables.scss";
 
 .tax-group {
   .top {
@@ -52,13 +52,7 @@
       }
     }
   }
-  .pagination-component {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-bottom: 20px;
-  }
+
   .legend {
     font-weight: bold;
   }
