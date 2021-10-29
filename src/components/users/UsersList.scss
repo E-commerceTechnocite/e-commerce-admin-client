@@ -46,13 +46,13 @@
   .user-list {
     .legend,
     .user {
-      padding: 5px 30px;
+      padding: 20px 30px;
       display: grid;
       grid-template-columns: 1fr 1fr 2fr 117px;
       grid-template-rows: 1;
       border-bottom: 1px solid $primary-border-color;
       grid-column-gap: 10px;
-      align-items: center;
+      align-items: center; 
       justify-items: flex-start;
       button {
         justify-self: center;

@@ -1,6 +1,9 @@
 @import '../../../public/scss/variables.scss';
 
 .category {
+  min-height: 960px;
+  margin-bottom: 15px;
+  position: relative;
   .top {
     display: flex;
     padding: 10px 30px;
@@ -46,9 +49,11 @@
       }
     }
     .pagination-component {
-      button {
-        margin-bottom: 20px;
-      }
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 20px;
     }
   }
   .legend {

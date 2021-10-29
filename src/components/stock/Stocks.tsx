@@ -7,6 +7,7 @@ import { http } from '../../util/http'
 import { config } from '../../index'
 import Granted from '../Granted'
 import Pagination from '../pagination/Pagination'
+import { motion } from 'framer-motion'
 import './Stocks.scss'
 import { sendRequest } from '../../util/helpers/refresh'
 import { PaginationModel } from '../../models/pagination/pagination.model'
@@ -90,9 +91,29 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                     <span>Incoming</span>
                     <span>Pending</span>
                   </div>
-                  <div className="content">
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: {
+                        opacity: 1,
+                        transition: {
+                          staggerChildren: 0.01,
+                        },
+                      },
+                    }}
+                    initial="hidden"
+                    animate="show"
+                    className="content"
+                  >
                     {stock.map((stock, index) => (
-                      <div className="item" key={index}>
+                      <motion.div
+                        variants={{
+                          hidden: { opacity: 0 },
+                          show: { opacity: 1 },
+                        }}
+                        className="item"
+                        key={index}
+                      >
                         {stock.thumbnail && stock.thumbnail.uri && (
                           <span>
                             <img
@@ -102,10 +123,10 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                           </span>
                         )}
                         {!stock.thumbnail && (
-                        <span className="placeholder">
-                          <img/>
-                        </span>
-                      )}
+                          <span className="placeholder">
+                            <img />
+                          </span>
+                        )}
                         <span>{stock.title}</span>
                         {stock.stock && stock.stock.physical ? (
                           <span>{stock.stock.physical}</span>
@@ -130,9 +151,9 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                             Edit
                           </Link>
                         </Granted>
-                      </div>
+                      </motion.div>
                     ))}
-                  </div>
+                  </motion.div>
                 </div>
                 <Pagination meta={meta} pageSetter={setPage} />
               </>

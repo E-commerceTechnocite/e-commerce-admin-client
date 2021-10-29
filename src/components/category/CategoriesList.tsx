@@ -4,6 +4,7 @@ import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 import Loading from '../loading/Loading'
 import Pagination from '../pagination/Pagination'
+import { motion } from 'framer-motion'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import { config } from '../../index'
@@ -117,27 +118,48 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
               <div className="legend">
                 <span>Category</span>
               </div>
-              {categories.map((category) => {
-                return (
-                  <div className="role" key={category.id}>
-                    <span>{category.label}</span>
-                    <Link
-                      to={`/categories/edit/${category.id}`}
-                      className="action edit"
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.01,
+                    },
+                  },
+                }}
+                initial="hidden"
+                animate="show"
+              >
+                {categories.map((category) => {
+                  return (
+                    <motion.div
+                      variants={{
+                        hidden: { opacity: 0 },
+                        show: { opacity: 1 },
+                      }}
+                      className="role"
+                      key={category.id}
                     >
-                      Edit
-                    </Link>
-                    <button
-                      className="delete"
-                      onClick={() =>
-                        deleteCategories(category.id, category.label)
-                      }
-                    >
-                      <i className="fas fa-trash" />
-                    </button>
-                  </div>
-                )
-              })}
+                      <span>{category.label}</span>
+                      <Link
+                        to={`/categories/edit/${category.id}`}
+                        className="action edit"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        className="delete"
+                        onClick={() =>
+                          deleteCategories(category.id, category.label)
+                        }
+                      >
+                        <i className="fas fa-trash" />
+                      </button>
+                    </motion.div>
+                  )
+                })}
+              </motion.div>
               {pagination && <Pagination meta={meta} pageSetter={setPage} />}
             </div>
           </>

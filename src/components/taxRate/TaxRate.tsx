@@ -9,6 +9,7 @@ import { TaxModel } from '../../models/product/tax.model'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import Pagination from '../pagination/Pagination'
+import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Granted from '../Granted'
 import { auth } from '../../util/helpers/auth'
@@ -177,9 +178,29 @@ const TaxRate: React.FunctionComponent<ITaxRateProps> = ({
               <div className="legend">
                 <span>Rate</span>
               </div>
-              <div className="content">
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.01,
+                    },
+                  },
+                }}
+                initial="hidden"
+                animate="show"
+                className="content"
+              >
                 {rate.map((rate, index) => (
-                  <div className="item" key={index}>
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: { opacity: 1 },
+                    }}
+                    className="item"
+                    key={index}
+                  >
                     <span>{rate.rate}%</span>
                     <Granted permissions={['u:tax']}>
                       <Link
@@ -197,9 +218,9 @@ const TaxRate: React.FunctionComponent<ITaxRateProps> = ({
                         <i className="fas fa-trash"></i>
                       </button>
                     </Granted>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </div>
             <Pagination meta={meta} pageSetter={setPage} />
           </>

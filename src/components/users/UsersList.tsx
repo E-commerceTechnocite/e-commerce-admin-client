@@ -4,6 +4,7 @@ import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 import Loading from '../loading/Loading'
 import Pagination from '../pagination/Pagination'
+import { motion } from 'framer-motion'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import { config } from '../../index'
@@ -111,24 +112,45 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                 <span>Role</span>
                 <span>E-mail</span>
               </div>
-              {users.map((user) => {
-                return (
-                  <div className="user" key={user.id}>
-                    <span>{user.username}</span>
-                    <span>{user.role.name}</span>
-                    <span>{user.email}</span>
-                    <Link to={`/users/edit/${user.id}`} className="action">
-                      Edit
-                    </Link>
-                    <button
-                      className="delete"
-                      onClick={() => deleteUsers(user.id, user.username)}
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.01,
+                    },
+                  },
+                }}
+                initial="hidden"
+                animate="show"
+              >
+                {users.map((user) => {
+                  return (
+                    <motion.div
+                      variants={{
+                        hidden: { opacity: 0 },
+                        show: { opacity: 1 },
+                      }}
+                      className="user"
+                      key={user.id}
                     >
-                      <i className="fas fa-trash"></i>
-                    </button>
-                  </div>
-                )
-              })}
+                      <span>{user.username}</span>
+                      <span>{user.role.name}</span>
+                      <span>{user.email}</span>
+                      <Link to={`/users/edit/${user.id}`} className="action">
+                        Edit
+                      </Link>
+                      <button
+                        className="delete"
+                        onClick={() => deleteUsers(user.id, user.username)}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </motion.div>
+                  )
+                })}
+              </motion.div>
               {pagination && <Pagination meta={meta} pageSetter={setPage} />}
             </div>
           </>
