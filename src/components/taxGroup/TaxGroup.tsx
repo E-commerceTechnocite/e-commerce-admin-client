@@ -8,6 +8,7 @@ import { PaginationModel } from '../../models/pagination/pagination.model'
 import { TaxRuleGroupModel } from '../../models/product/tax-rule-group.model'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import Pagination from '../pagination/Pagination'
+import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import './TaxGroup.scss'
 import Granted from '../Granted'
@@ -155,48 +156,64 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
           <>
             <div className="group-list">
               {(productsDeleted || taxRulesDeleted) && (
-                  <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
-                    <i className="fas fa-times" onClick={onClickClose} />
-                    {taxRulesDeleted && (
-                      <div className="tax-group-deleted">
-                        {taxRulesDeleted.length > 0 && (
-                          <p>Tax rules deleted :</p>
-                        )}
-                        <ul>
-                          {taxRulesDeleted.map((taxRule, index) => (
-                            <>
-                              <li key={index}>{taxRule.id}</li>
-                            </>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {productsDeleted && (
-                      <div className="product-deleted">
-                        {productsDeleted.length > 0 && (
-                          <p>Products deleted :</p>
-                        )}
-                        <ul>
-                          {productsDeleted.map((product, index) => (
-                            <>
-                              <li key={index}>
-                                {product.id} - {product.title} -{' '}
-                                {`${product.price}€`}
-                              </li>
-                            </>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                )}
+                <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
+                  <i className="fas fa-times" onClick={onClickClose} />
+                  {taxRulesDeleted && (
+                    <div className="tax-group-deleted">
+                      {taxRulesDeleted.length > 0 && <p>Tax rules deleted :</p>}
+                      <ul>
+                        {taxRulesDeleted.map((taxRule, index) => (
+                          <>
+                            <li key={index}>{taxRule.id}</li>
+                          </>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {productsDeleted && (
+                    <div className="product-deleted">
+                      {productsDeleted.length > 0 && <p>Products deleted :</p>}
+                      <ul>
+                        {productsDeleted.map((product, index) => (
+                          <>
+                            <li key={index}>
+                              {product.id} - {product.title} -{' '}
+                              {`${product.price}€`}
+                            </li>
+                          </>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div className="legend">
                 <span>Name</span>
               </div>
-              <div className="content">
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.01,
+                    },
+                  },
+                }}
+                initial="hidden"
+                animate="show"
+                className="content"
+              >
                 {group.map((group, index) => (
-                  <div className="item" key={index}>
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: { opacity: 1 },
+                    }}
+                    className="item"
+                    key={index}
+                  >
                     <span>{group.name}</span>
                     <Granted permissions={['u:tax-rule-group']}>
                       <Link
@@ -216,9 +233,9 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
                         <i className="fas fa-trash"></i>
                       </button>
                     </Granted>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </div>
             <Pagination meta={meta} pageSetter={setPage} />
           </>

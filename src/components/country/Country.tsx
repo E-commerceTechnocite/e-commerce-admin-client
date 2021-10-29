@@ -8,6 +8,7 @@ import { http } from '../../util/http'
 import { config } from '../../index'
 import { sendRequest } from '../../util/helpers/refresh'
 import Pagination from '../pagination/Pagination'
+import { motion } from 'framer-motion'
 import './Country.scss'
 import Granted from '../Granted'
 import { auth } from '../../util/helpers/auth'
@@ -179,9 +180,29 @@ const Country: React.FunctionComponent<ICountryProps> = ({
                 <span>Country</span>
                 <span>Code</span>
               </div>
-              <div className="content">
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.01,
+                    },
+                  },
+                }}
+                initial="hidden"
+                animate="show"
+                className="content"
+              >
                 {country.map((country, index) => (
-                  <div className="item" key={index}>
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: { opacity: 1 },
+                    }}
+                    className="item"
+                    key={index}
+                  >
                     <span>{country.name}</span>
                     <span>{country.code}</span>
                     <Granted permissions={['u:country']}>
@@ -202,9 +223,9 @@ const Country: React.FunctionComponent<ICountryProps> = ({
                         <i className="fas fa-trash"></i>
                       </button>{' '}
                     </Granted>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </div>
             <Pagination meta={meta} pageSetter={setPage} />
           </>

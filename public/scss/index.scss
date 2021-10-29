@@ -444,99 +444,9 @@ button {
   }
 }
 
-/* Home */
-
-/* Products */
-.products {
-  background: $primary-color-elts;
-  padding-bottom: 30px;
-  box-shadow: $primary-elts-shadow;
-  .top-container {
-    display: flex;
-    padding: 10px 30px;
-    border-bottom: 1px solid $primary-border-color;
-    .search {
-      display: flex;
-      align-items: center;
-      padding: 0 10px;
-      background: $primary-color-elts;
-      border-radius: 4px;
-      border: 1px solid $primary-border-color;
-      margin-right: 10px;
-      input {
-        width: 130px;
-        border: none;
-      }
-      i {
-        margin-right: 7px;
-      }
-    }
-  }
-
-  .product-list {
-    .legend,
-    .product {
-      padding: 5px 30px;
-      display: grid;
-      grid-template-columns: 65px 1fr 1fr 2fr 1fr 100px 117px;
-      grid-template-rows: 1;
-      border-bottom: 1px solid $primary-border-color;
-      grid-column-gap: 10px;
-      align-items: center;
-      button {
-        justify-self: center;
-        grid-column-start: 7;
-        grid-column-end: 8;
-        grid-row-start: 1;
-        justify-self: flex-end;
-      }
-      a {
-        justify-self: flex-start;
-        grid-column-start: 7;
-        grid-column-end: 8;
-        grid-row-start: 1;
-      }
-    }
-    .legend {
-      padding: 20px 30px;
-      font-weight: bold;
-      span:nth-child(2) {
-        margin-left: 15px;
-      }
-    }
-    .product {
-      span:first-child {
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 65px;
-        height: 65px;
-        position: relative;
-        img {
-          position: absolute;
-          max-width: 80px;
-        }
-      }
-      span:first-child::before {
-        content: '';
-        width: 65px;
-        height: 65px;
-        position: absolute;
-        background: #eee;
-      }
-      .placeholder::before {
-        display: flex;
-        align-items: center;
-        font-size: 10px;
-        text-align: center;
-        content: 'Missing \ image' !important;
-      }
-      span:nth-child(2) {
-        margin-left: 15px;
-      }
-    }
-  }
+.home .products {
+  min-height: auto;
+  padding-bottom: 60px;
 }
 
 .media-library-view {
@@ -613,7 +523,7 @@ button {
       }
     }
     .legend {
-      display:grid;
+      display: grid;
       justify-content: center;
       padding: 20px 30px;
       font-weight: bold;
@@ -681,6 +591,7 @@ button {
   box-shadow: $primary-elts-shadow;
   border-radius: 4px;
   margin-bottom: 20px;
+  
   .tabs {
     .buttons {
       display: grid;
@@ -694,8 +605,10 @@ button {
     }
   }
   .lists {
-    min-height: 550px;
-    padding-bottom: 30px;
+    min-height: 490px;
+  position: relative;
+
+    padding-bottom: 90px;
   }
   .deleted {
     margin: 5px 30px;
@@ -890,30 +803,29 @@ table th {
     grid-column-gap: 75px;
     grid-row-gap: 25px;
     justify-items: stretch;
-    
   }
 }
 .permissions-choices {
   min-width: 150px;
   box-shadow: $primary-elts-shadow;
   .permissions-choices-title {
-    display:flex;
+    display: flex;
     flex-direction: row;
     align-items: center;
     padding: 5px;
     border-bottom: 1px solid $primary-border-color;
     input {
-      width:15px;
-      height:15px;
+      width: 15px;
+      height: 15px;
       margin-right: 4px;
     }
   }
   .attrs {
-   /* display:flex;
+    /* display:flex;
       flex-direction: row;
       align-items: center;*/
     .checkBox {
-      display:flex;
+      display: flex;
       flex-direction: row;
       align-items: center;
     }
@@ -921,8 +833,8 @@ table th {
       font-size: 15px;
     }
     input {
-      width:14px;
-      height:14px;
+      width: 14px;
+      height: 14px;
       margin-right: 4px;
       margin-left: 5px;
       //width: 25px;
@@ -936,7 +848,7 @@ table th {
 }
 
 .toggleAll {
-  display:flex;
+  display: flex;
   flex-direction: row;
   align-items: center;
   gap: 5px;
@@ -1127,5 +1039,3 @@ table th {
     display: none;
   }
 }
-
-

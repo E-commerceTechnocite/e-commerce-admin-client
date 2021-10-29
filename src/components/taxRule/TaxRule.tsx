@@ -10,6 +10,7 @@ import { PaginationModel } from '../../models/pagination/pagination.model'
 import Loading from '../loading/Loading'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import Pagination from '../pagination/Pagination'
+import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Granted from '../Granted'
 
@@ -126,9 +127,29 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
               <span>Zip code</span>
               <span>Description</span>
             </div>
-            <div className="content">
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.01,
+                  },
+                },
+              }}
+              initial="hidden"
+              animate="show"
+              className="content"
+            >
               {taxRule.map((tax, index) => (
-                <div className="item" key={index}>
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0 },
+                    show: { opacity: 1 },
+                  }}
+                  className="item"
+                  key={index}
+                >
                   <span>{tax.taxRuleGroup.name}</span>
                   <span>{tax.tax.rate}%</span>
                   <span>{tax.country.name}</span>
@@ -161,9 +182,9 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
                       <i className="fas fa-trash"></i>
                     </button>
                   </Granted>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
           <Pagination meta={meta} pageSetter={setPage} />
         </>

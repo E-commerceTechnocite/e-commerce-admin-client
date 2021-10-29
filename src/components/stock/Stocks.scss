@@ -1,6 +1,9 @@
 @import '../../../public/scss/variables.scss';
 
 .stocks {
+  min-height: 960px;
+  margin-bottom: 15px;
+  position: relative;
   .top {
     display: flex;
     padding: 10px 30px;
@@ -56,9 +59,6 @@
       }
       .edit {
         margin-left: 23px;
-        justify-self: flex-start;
-      }
-      .delete {
         justify-self: flex-end;
       }
     }
@@ -99,6 +99,10 @@
     margin: 0;
   }
   .pagination-component {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     padding-bottom: 20px;
   }
 }

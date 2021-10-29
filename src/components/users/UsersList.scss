@@ -2,8 +2,10 @@
 
 .users {
   background: $primary-color-elts;
-  padding-bottom: 30px;
   box-shadow: $primary-elts-shadow;
+  min-height: 960px;
+  margin-bottom: 15px;
+  position: relative;
   .top-container {
     display: flex;
     padding: 10px 30px;
@@ -46,13 +48,13 @@
   .user-list {
     .legend,
     .user {
-      padding: 5px 30px;
+      padding: 20px 30px;
       display: grid;
       grid-template-columns: 1fr 1fr 2fr 117px;
       grid-template-rows: 1;
       border-bottom: 1px solid $primary-border-color;
       grid-column-gap: 10px;
-      align-items: center;
+      align-items: center; 
       justify-items: flex-start;
       button {
         justify-self: center;
@@ -79,6 +81,13 @@
       span:nth-child(2) {
         margin-left: 15px;
       }
+    }
+    .pagination-component {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 20px;
     }
   }
 }
