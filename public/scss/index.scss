@@ -946,6 +946,9 @@ table th {
   gap: 5px;
   margin-top: 15px;
   .all {
+    display:flex;
+    flex-direction: row;
+    align-items: center;
     border-bottom: 1px solid $primary-border-color;
     input {
       width: 15px;
@@ -954,6 +957,9 @@ table th {
     }
   }
   .crud {
+    display:flex;
+    flex-direction: row;
+    align-items: center;
     input {
       margin-left: 5px;
       width: 14px;
