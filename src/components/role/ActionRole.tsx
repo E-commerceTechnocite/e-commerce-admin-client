@@ -283,16 +283,16 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
                     })}
                   </div>
                   <div className="toggleAll">
-                    <input type="checkbox" name="toggleAll" onChange={(e) => toggleAll(e.target)}/> 
-                    All permissions
-                    <input type="checkbox" name="toggleRead" onChange={(e) => toggleCRUDAll(e.target)}/> 
+                    <div className="all"><input type="checkbox" name="toggleAll" onChange={(e) => toggleAll(e.target)}/> 
+                    All permissions</div>
+                    <div className="crud"><input type="checkbox" name="toggleRead" onChange={(e) => toggleCRUDAll(e.target)}/> 
                     Read
                     <input type="checkbox" name="toggleCreate" onChange={(e) => toggleCRUDAll(e.target)}/> 
                     Create
                     <input type="checkbox" name="toggleUpdate" onChange={(e) => toggleCRUDAll(e.target)}/> 
                     Update
                     <input type="checkbox" name="toggleDelete" onChange={(e) => toggleCRUDAll(e.target)}/> 
-                    Delete
+                    Delete</div>
                   </div>
                 </div>
               </div>
