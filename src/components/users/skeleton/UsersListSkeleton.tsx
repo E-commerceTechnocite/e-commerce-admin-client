@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useState } from 'react'
+import Granted from '../../Granted'
 import './UsersListSkeleton.scss'
 
 const UsersListSkeleton: React.FunctionComponent = () => {
@@ -7,7 +7,9 @@ const UsersListSkeleton: React.FunctionComponent = () => {
     <div className="users-skeleton">
       <div className="top-container">
         <div className="search-skeleton"></div>
-        <div className="button-skeleton"></div>
+        <Granted permissions={['c:user']}>
+          <div className="button-skeleton"></div>
+        </Granted>
       </div>
       <div className="user-list">
         <div className="legend">
@@ -20,8 +22,12 @@ const UsersListSkeleton: React.FunctionComponent = () => {
             <span></span>
             <span></span>
             <span></span>
-            <span className="edit-skeleton"></span>
-            <span className="delete-skeleton"></span>
+            <Granted permissions={['u:user']}>
+              <span className="edit-skeleton"></span>
+            </Granted>
+            <Granted permissions={['d:user']}>
+              <span className="delete-skeleton"></span>
+            </Granted>
           </div>
         ))}
         <div className="pagination-skeleton"></div>

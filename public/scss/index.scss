@@ -444,7 +444,8 @@ button {
   }
 }
 
-.home .products {
+.home .products,
+.home .products-skeleton{
   min-height: auto;
   padding-bottom: 60px;
 }

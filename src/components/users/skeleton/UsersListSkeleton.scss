@@ -32,7 +32,7 @@
         justify-self: flex-end;
       }
       span:nth-child(4) {
-          margin-left: 42px;
+        margin-left: 42px;
         justify-self: flex-start;
         grid-column-start: 4;
         grid-column-end: 5;
@@ -40,6 +40,7 @@
       }
     }
     .legend {
+      height: 19px;
       padding: 20px 30px;
       font-weight: bold;
       span:nth-child(2) {
@@ -56,29 +57,18 @@
       }
     }
     .user {
+      height: 34px;
       span:nth-child(2) {
         margin-left: 15px;
       }
       span:nth-child(3) {
         margin-left: 15px;
       }
-      span {
+      span:nth-child(-n + 3) {
         border-radius: 4px;
         width: 90%;
         height: 19px;
         background: #eee;
-      }
-      .edit-skeleton {
-        width: 79px;
-        height: 34px;
-        background: #eee;
-        border-radius: 4px;
-      }
-      .delete-skeleton {
-        width: 35px;
-        height: 34px;
-        background: #eee;
-        border-radius: 4px;
       }
     }
     .pagination-skeleton {
@@ -87,9 +77,6 @@
       left: 50%;
       transform: translateX(-50%);
       margin-bottom: 20px;
-      height: 30px;
-      width: 180px;
-      background: #eee;
     }
   }
 }
