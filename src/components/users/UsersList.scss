@@ -3,8 +3,9 @@
 .users {
   background: $primary-color-elts;
   box-shadow: $primary-elts-shadow;
-  min-height: 960px;
+  min-height: 870px;
   margin-bottom: 15px;
+  padding-bottom: 90px;
   position: relative;
   .top-container {
     display: flex;
@@ -54,7 +55,7 @@
       grid-template-rows: 1;
       border-bottom: 1px solid $primary-border-color;
       grid-column-gap: 10px;
-      align-items: center; 
+      align-items: center;
       justify-items: flex-start;
       button {
         justify-self: center;
