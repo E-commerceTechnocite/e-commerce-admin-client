@@ -12,6 +12,7 @@ import { sendRequest } from '../../util/helpers/refresh'
 import { http } from '../../util/http'
 import { UserModel } from '../../models/user/user.model'
 import './UsersList.scss'
+import UsersListSkeleton from './skeleton/UsersListSkeleton'
 
 interface IUsersListProps {
   number?: number
@@ -85,77 +86,75 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
 
   return (
     <>
-      <div className="users">
-        <div className="top-container">
-          {pagination && (
-            <div className="search">
-              <i className="fas fa-search"></i>
-              <input type="text" placeholder="Search..." />
+      {!users && !meta && <UsersListSkeleton />}
+      {users && meta && (
+        <div className="users">
+          <div className="top-container">
+            {pagination && (
+              <div className="search">
+                <i className="fas fa-search"></i>
+                <input type="text" placeholder="Search..." />
+              </div>
+            )}
+            <Link to="/users/addusers" className="action">
+              New User
+            </Link>
+            <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+              {' '}
+              <i className="fas fa-check" />
+              User Added
+              <i className="fas fa-times" onClick={() => setToast(false)} />
             </div>
-          )}
-          <Link to="/users/addusers" className="action">
-            New User
-          </Link>
-          <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-            {' '}
-            <i className="fas fa-check" />
-            User Added
-            <i className="fas fa-times" onClick={() => setToast(false)} />
+          </div>
+          <div className="user-list">
+            <div className="legend">
+              <span>Username</span>
+              <span>Role</span>
+              <span>E-mail</span>
+            </div>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.01,
+                  },
+                },
+              }}
+              initial="hidden"
+              animate="show"
+            >
+              {users?.map((user) => {
+                return (
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: { opacity: 1 },
+                    }}
+                    className="user"
+                    key={user.id}
+                  >
+                    <span>{user.username}</span>
+                    <span>{user.role.name}</span>
+                    <span>{user.email}</span>
+                    <Link to={`/users/edit/${user.id}`} className="action">
+                      Edit
+                    </Link>
+                    <button
+                      className="delete"
+                      onClick={() => deleteUsers(user.id, user.username)}
+                    >
+                      <i className="fas fa-trash"></i>
+                    </button>
+                  </motion.div>
+                )
+              })}
+            </motion.div>
+            {pagination && <Pagination meta={meta} pageSetter={setPage} />}
           </div>
         </div>
-        {!users && !meta && <Loading />}
-        {users && meta && (
-          <>
-            <div className="user-list">
-              <div className="legend">
-                <span>Username</span>
-                <span>Role</span>
-                <span>E-mail</span>
-              </div>
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0 },
-                  show: {
-                    opacity: 1,
-                    transition: {
-                      staggerChildren: 0.01,
-                    },
-                  },
-                }}
-                initial="hidden"
-                animate="show"
-              >
-                {users.map((user) => {
-                  return (
-                    <motion.div
-                      variants={{
-                        hidden: { opacity: 0 },
-                        show: { opacity: 1 },
-                      }}
-                      className="user"
-                      key={user.id}
-                    >
-                      <span>{user.username}</span>
-                      <span>{user.role.name}</span>
-                      <span>{user.email}</span>
-                      <Link to={`/users/edit/${user.id}`} className="action">
-                        Edit
-                      </Link>
-                      <button
-                        className="delete"
-                        onClick={() => deleteUsers(user.id, user.username)}
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </motion.div>
-                  )
-                })}
-              </motion.div>
-              {pagination && <Pagination meta={meta} pageSetter={setPage} />}
-            </div>
-          </>
-        )}
-      </div>
+      )}
     </>
   )
 }

@@ -1,6 +1,6 @@
 import * as React from 'react'
-import DailyInformations from '../components/DailyInformations'
-import GraphicInformation from '../components/GraphicInformation'
+import DailyInformations from '../components/dailyInformation/DailyInformations'
+import GraphicInformation from '../components/graphicInformation/GraphicInformation'
 import ProductsList from '../components/product/ProductsList'
 
 interface IHomeProps {}
