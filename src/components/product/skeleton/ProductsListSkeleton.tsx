@@ -3,12 +3,12 @@ import { useEffect, useState } from 'react'
 import Granted from '../../Granted'
 import './ProductsListSkeleton.scss'
 
-interface ISkeletonProps {
+interface ProductsListSkeleton {
   number?: number
   pagination?: boolean
 }
 
-const Skeleton: React.FunctionComponent<ISkeletonProps> = ({
+const ProductsListSkeleton: React.FunctionComponent<ProductsListSkeleton> = ({
   number,
   pagination,
 }) => {
@@ -61,4 +61,4 @@ const Skeleton: React.FunctionComponent<ISkeletonProps> = ({
   )
 }
 
-export default Skeleton
+export default ProductsListSkeleton

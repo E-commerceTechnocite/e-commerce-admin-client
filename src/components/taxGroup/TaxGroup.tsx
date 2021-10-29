@@ -15,6 +15,7 @@ import Granted from '../Granted'
 import { auth } from '../../util/helpers/auth'
 import { TaxRuleModel } from '../../models/product/tax-rule.model'
 import { ProductModel } from '../../models/product/product.model'
+import TaxGroupSkeleton from './skeleton/TaxGroupSkeleton'
 
 interface ITaxGroupProps {
   successGroup?: boolean | undefined
@@ -134,113 +135,109 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
 
   return (
     <>
-      <div className="tax-group">
-        <div className="top">
-          <div className="search">
-            <i className="fas fa-search"></i>
-            <input type="text" placeholder="Search..." />
-          </div>
-          <Granted permissions={['c:tax-rule-group']}>
-            <Link to="/taxes/add-tax-group" className="action">
-              New Group
-            </Link>
-          </Granted>
-          <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-            {' '}
-            <i className="fas fa-check" />
-            Tax Group Added
-            <i className="fas fa-times" onClick={() => setToast(false)} />
-          </div>
-        </div>
-        {group && meta && (
-          <>
-            <div className="group-list">
-              {(productsDeleted || taxRulesDeleted) && (
-                <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
-                  <i className="fas fa-times" onClick={onClickClose} />
-                  {taxRulesDeleted && (
-                    <div className="tax-group-deleted">
-                      {taxRulesDeleted.length > 0 && <p>Tax rules deleted :</p>}
-                      <ul>
-                        {taxRulesDeleted.map((taxRule, index) => (
-                          <>
-                            <li key={index}>{taxRule.id}</li>
-                          </>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {productsDeleted && (
-                    <div className="product-deleted">
-                      {productsDeleted.length > 0 && <p>Products deleted :</p>}
-                      <ul>
-                        {productsDeleted.map((product, index) => (
-                          <>
-                            <li key={index}>
-                              {product.id} - {product.title} -{' '}
-                              {`${product.price}€`}
-                            </li>
-                          </>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div className="legend">
-                <span>Name</span>
-              </div>
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0 },
-                  show: {
-                    opacity: 1,
-                    transition: {
-                      staggerChildren: 0.01,
-                    },
-                  },
-                }}
-                initial="hidden"
-                animate="show"
-                className="content"
-              >
-                {group.map((group, index) => (
-                  <motion.div
-                    variants={{
-                      hidden: { opacity: 0 },
-                      show: { opacity: 1 },
-                    }}
-                    className="item"
-                    key={index}
-                  >
-                    <span>{group.name}</span>
-                    <Granted permissions={['u:tax-rule-group']}>
-                      <Link
-                        to={`/taxes/edit-tax-group/${group.id}`}
-                        className="action edit"
-                      >
-                        Edit
-                      </Link>
-                    </Granted>
-                    <Granted permissions={['d:tax-rule-group']}>
-                      <button
-                        className="delete"
-                        onClick={() =>
-                          submitDeleteTaxGroup(group.id, group.name)
-                        }
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </Granted>
-                  </motion.div>
-                ))}
-              </motion.div>
+      {!group && !meta && <TaxGroupSkeleton />}
+      {group && meta && (
+        <div className="tax-group">
+          <div className="top">
+            <div className="search">
+              <i className="fas fa-search"></i>
+              <input type="text" placeholder="Search..." />
             </div>
-            <Pagination meta={meta} pageSetter={setPage} />
-          </>
-        )}
-      </div>
+            <Granted permissions={['c:tax-rule-group']}>
+              <Link to="/taxes/add-tax-group" className="action">
+                New Group
+              </Link>
+            </Granted>
+            <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+              {' '}
+              <i className="fas fa-check" />
+              Tax Group Added
+              <i className="fas fa-times" onClick={() => setToast(false)} />
+            </div>
+          </div>
+          <div className="group-list">
+            {(productsDeleted || taxRulesDeleted) && (
+              <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
+                <i className="fas fa-times" onClick={onClickClose} />
+                {taxRulesDeleted && (
+                  <div className="tax-group-deleted">
+                    {taxRulesDeleted.length > 0 && <p>Tax rules deleted :</p>}
+                    <ul>
+                      {taxRulesDeleted.map((taxRule, index) => (
+                        <>
+                          <li key={index}>{taxRule.id}</li>
+                        </>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {productsDeleted && (
+                  <div className="product-deleted">
+                    {productsDeleted.length > 0 && <p>Products deleted :</p>}
+                    <ul>
+                      {productsDeleted.map((product, index) => (
+                        <>
+                          <li key={index}>
+                            {product.id} - {product.title} -{' '}
+                            {`${product.price}€`}
+                          </li>
+                        </>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+            <div className="legend">
+              <span>Name</span>
+            </div>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.01,
+                  },
+                },
+              }}
+              initial="hidden"
+              animate="show"
+              className="content"
+            >
+              {group.map((group, index) => (
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0 },
+                    show: { opacity: 1 },
+                  }}
+                  className="item"
+                  key={index}
+                >
+                  <span>{group.name}</span>
+                  <Granted permissions={['u:tax-rule-group']}>
+                    <Link
+                      to={`/taxes/edit-tax-group/${group.id}`}
+                      className="action edit"
+                    >
+                      Edit
+                    </Link>
+                  </Granted>
+                  <Granted permissions={['d:tax-rule-group']}>
+                    <button
+                      className="delete"
+                      onClick={() => submitDeleteTaxGroup(group.id, group.name)}
+                    >
+                      <i className="fas fa-trash"></i>
+                    </button>
+                  </Granted>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+          <Pagination meta={meta} pageSetter={setPage} />
+        </div>
+      )}
     </>
   )
 }
