@@ -1,13 +1,18 @@
-@import '../../../public/scss/variables.scss';
+@import '../../../../public/scss/variables.scss';
+@import '../../../../public/scss/skeleton.scss';
 
-.tax-rule {
+.tax-rule-skeleton {
   min-height: 500px;
   position: relative;
   padding-bottom: 90px;
-  .pagination-component {
-    padding-bottom: 20px;
-  }
-  .top {
+  .pagination-skeleton {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 20px;
+  }/*  */
+  .top-container {
     display: flex;
     padding: 10px 30px;
     border-bottom: 1px solid $primary-border-color;
@@ -55,7 +60,27 @@
         grid-column-start: 6;
         grid-column-end: 8;
       }
-
+      span:nth-child(6) {
+        grid-column-start: 8;
+        grid-column-end: 9;
+        grid-row-start: 1;
+        grid-row-end: 1;
+        justify-self: flex-end;
+        margin-right: 40px;
+      }
+      span:nth-child(7) {
+        grid-column-start: 8;
+        grid-column-end: 9;
+        grid-row-start: 1;
+        grid-row-end: 1;
+        justify-self: flex-end;
+      }
+      span:nth-child(-n + 5) {
+        border-radius: 4px;
+        width: 90%;
+        height: 19px;
+        background: #eee;
+      }
       .edit,
       .delete {
         grid-column-start: 8;
@@ -88,7 +113,7 @@
 }
 
 @media screen and (max-width: 1240px) {
-  .tax-rule {
+  .tax-rule-skeleton {
     .legend {
       display: none !important;
     }
@@ -103,24 +128,9 @@
           position: relative;
         }
 
-        span::before {
-          position: absolute;
-          content: 'Tax Group';
-          font-size: 12px;
-          top: -13px;
-          color: #b3b3b3;
-        }
-
         span:first-child {
           grid-column-start: 1;
           grid-column-end: 3;
-        }
-
-        span:first-child::before {
-          position: absolute;
-          content: 'Group';
-          font-size: 12px;
-          top: -13px;
         }
 
         span:nth-child(2) {
@@ -129,25 +139,11 @@
           grid-row-start: 1;
         }
 
-        span:nth-child(2)::before {
-          position: absolute;
-          content: 'Rate';
-          font-size: 12px;
-          top: -13px;
-        }
-
         span:nth-child(3) {
           grid-column-start: 6 !important;
           grid-column-end: 8 !important;
           grid-row-start: 1;
           grid-row-end: 1;
-        }
-
-        span:nth-child(3)::before {
-          position: absolute;
-          content: 'Country';
-          font-size: 12px;
-          top: -13px;
         }
 
         span:nth-child(4) {
@@ -158,25 +154,11 @@
           align-self: flex-end;
         }
 
-        span:nth-child(4)::before {
-          position: absolute;
-          content: 'Zip code';
-          font-size: 12px;
-          top: -13px;
-        }
-
         span:nth-child(5) {
           grid-column-start: 4 !important;
           grid-column-end: 8;
           grid-row: 2 / span 2;
           align-self: center;
-        }
-
-        span:nth-child(5)::before {
-          position: absolute;
-          content: 'Description';
-          font-size: 12px;
-          top: -13px;
         }
       }
     }
