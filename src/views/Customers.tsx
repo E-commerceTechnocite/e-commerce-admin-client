@@ -1,8 +1,31 @@
 import * as React from 'react'
-import { useHistory } from 'react-router'
+import { useEffect, useState } from 'react'
+import CustomersList from '../components/customers/CustomersList'
 
-const Customers: React.FunctionComponent = () => {
-  const history = useHistory()
-  return <div className="customers">Customers</div>
+interface ICustomersProps {
+  location?: {
+    state: {
+      success?: boolean
+    }
+  }
+}
+
+const Customers: React.FunctionComponent<ICustomersProps> = (props) => {
+  const [success, setSuccess] = useState<boolean | undefined>()
+  useEffect(() => {
+    if (props.location.state !== undefined) {
+      console.log(props.location.state)
+      setSuccess(props.location.state.success)
+    } else {
+      console.log(undefined)
+    }
+  }, [])
+
+  return (
+    <>
+      {//<CustomersList number={10} pagination={true} success={success} />
+      }
+    </>
+  )
 }
 export default Customers

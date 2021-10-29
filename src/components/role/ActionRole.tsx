@@ -15,6 +15,7 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
   const [allPermissions, setAllPermissions] = useState([])
   const [myInputValue, setMyInputValue] = useState('')
   const [submitError, setSubmitError] = useState<string>(null)
+  const allCheckbox : any = document.querySelectorAll('input[name=toggleAll]')
   const params: { slug: string } = useParams()
   const perms = {}
 
@@ -86,7 +87,6 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
     }
     setRolePermissions(data.permissions)
     setName(data.name)
-    initializeCheckboxes(data.permissions)
   }
 
   const capitalizeFirstLetter = (string) => {
@@ -98,6 +98,17 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
       checkbox[0].checked = true
     } else {
       checkbox[0].checked = false
+    }
+  }
+
+  const toggleCRUDAllCheckbox = (crud : string, id : string) => {
+    const crudAllCheckbox : any = document.querySelectorAll('input[name=toggle' + crud + ']')
+    const crudCheckboxes : any = document.querySelectorAll("[id^='" + id + "']")
+    crudAllCheckbox[0].checked = true
+    for (let i = 0 ; i < crudCheckboxes.length; i++) { 
+      if (!crudCheckboxes[i].checked) {
+        crudAllCheckbox[0].checked = false
+      }
     }
   }
 
@@ -121,11 +132,6 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
       crudTogglePermsCheckbox(permsCheckbox)
     })
   }
-
-  const initializeCheckboxes = (perm) => {
-    initializeCrudCheckboxes(perm)
-    initializePermsCheckboxes(perm)
-  }
   
   useEffect(() => {
     const allCheckbox : any = document.querySelectorAll('input[name=toggleAll]')
@@ -133,17 +139,20 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
       allCheckbox[0].checked = true // check the select all checkbox if all checkboxes are checked 
     else
       allCheckbox[0].checked = false
-    rolePermissions.map((perm) => {
-      let [operation, title] = perm.split(':')
-      const permsCheckbox : any = document.querySelectorAll('input[name=' + title + ']')
-      crudTogglePermsCheckbox(permsCheckbox)
-    })
-    console.log(rolePermissions)
   }, [rolePermissions])
 
   useEffect(() => {
     SubmitPermissions().then()
   }, [])
+
+  useEffect(() => {
+    initializeCrudCheckboxes(rolePermissions)
+    initializePermsCheckboxes(rolePermissions)
+    toggleCRUDAllCheckbox('Read', 'r:')
+    toggleCRUDAllCheckbox('Create', 'c:')
+    toggleCRUDAllCheckbox('Update', 'u:')
+    toggleCRUDAllCheckbox('Delete', 'd:')
+  }, [allCheckbox])
 
   useEffect(() => {
     if (params.slug) {
@@ -199,7 +208,16 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
 
   const togglePermsAll = (source, title) => {
     const checkboxes : any = document.querySelectorAll('input[name=' + title + ']')
-    changeAllCheckboxes(checkboxes, source) // 4 crud check/uncheck if we check/uncheck permissions checkbox
+    changeAllCheckboxes(checkboxes, source) 
+  }
+
+  const toggleCRUDAll = (source) => {
+    let checkboxes : any
+    if(source.name === "toggleRead") checkboxes = document.querySelectorAll(("[id^='r:']"))
+    if(source.name === "toggleCreate") checkboxes = document.querySelectorAll(("[id^='c:']"))
+    if(source.name === "toggleUpdate") checkboxes = document.querySelectorAll(("[id^='u:']"))
+    if(source.name === "toggleDelete") checkboxes = document.querySelectorAll(("[id^='d:']"))
+    changeAllCheckboxes(checkboxes, source) 
   }
 
   return (
@@ -267,7 +285,15 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
                   <div className="toggleAll">
                     <input type="checkbox" name="toggleAll" onChange={(e) => toggleAll(e.target)}/> 
                     All permissions
-                  </div>  
+                    <input type="checkbox" name="toggleRead" onChange={(e) => toggleCRUDAll(e.target)}/> 
+                    Read
+                    <input type="checkbox" name="toggleCreate" onChange={(e) => toggleCRUDAll(e.target)}/> 
+                    Create
+                    <input type="checkbox" name="toggleUpdate" onChange={(e) => toggleCRUDAll(e.target)}/> 
+                    Update
+                    <input type="checkbox" name="toggleDelete" onChange={(e) => toggleCRUDAll(e.target)}/> 
+                    Delete
+                  </div>
                 </div>
               </div>
               <div className="perms-button">
