@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useParams } from 'react-router'
-import ProductForm from '../components/product/ProductForm'
+import ProductForm from '../../components/product/ProductForm'
 
 interface IEditProductProps {}
 

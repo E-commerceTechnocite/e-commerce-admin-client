@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import ProductsList from '../components/ProductsList'
+import ProductsList from '../../components/product/ProductsList'
 
 interface IProductsProps {
   location?: {
