@@ -444,6 +444,11 @@ button {
   }
 }
 
+.home .products {
+  min-height: auto;
+  padding-bottom: 60px;
+}
+
 .media-library-view {
   box-shadow: $primary-elts-shadow;
 }
@@ -586,6 +591,7 @@ button {
   box-shadow: $primary-elts-shadow;
   border-radius: 4px;
   margin-bottom: 20px;
+  
   .tabs {
     .buttons {
       display: grid;
@@ -599,8 +605,10 @@ button {
     }
   }
   .lists {
-    min-height: 550px;
-    padding-bottom: 30px;
+    min-height: 490px;
+  position: relative;
+
+    padding-bottom: 90px;
   }
   .deleted {
     margin: 5px 30px;

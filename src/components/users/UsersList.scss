@@ -2,8 +2,10 @@
 
 .users {
   background: $primary-color-elts;
-  padding-bottom: 30px;
   box-shadow: $primary-elts-shadow;
+  min-height: 960px;
+  margin-bottom: 15px;
+  position: relative;
   .top-container {
     display: flex;
     padding: 10px 30px;
@@ -79,6 +81,13 @@
       span:nth-child(2) {
         margin-left: 15px;
       }
+    }
+    .pagination-component {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 20px;
     }
   }
 }

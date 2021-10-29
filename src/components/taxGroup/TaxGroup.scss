@@ -1,8 +1,6 @@
-@import "../../../public/scss/variables.scss";
+@import '../../../public/scss/variables.scss';
 
 .tax-group {
-  // background: $primary-color-elts;
-  // min-height: 550px;
   .top {
     display: flex;
     padding: 10px 30px;
@@ -54,7 +52,13 @@
       }
     }
   }
-
+  .pagination-component {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 20px;
+  }
   .legend {
     font-weight: bold;
   }
