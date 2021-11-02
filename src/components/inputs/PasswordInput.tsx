@@ -19,7 +19,7 @@ const PasswordInput: React.FunctionComponent<IPasswordInputProps> = (props) => {
         {...props}
         placeholder={props.placeholder}
       />
-      {meta.error && meta.touched && <p className="error">{meta.error}</p>}
+      {meta.error && meta.touched && <p className="error" data-cy={`${props.name}-error`}>{meta.error}</p>}
     </div>
   )
 }

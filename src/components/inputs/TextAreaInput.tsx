@@ -14,7 +14,7 @@ const TextInput: React.FunctionComponent<ITextInputProps> = (props) => {
       {props.label && <label htmlFor={props.name}>{props.label}</label>}
       <textarea {...field} {...props} />
       <p className="error">
-        <ErrorMessage name={props.name} />
+        <ErrorMessage name={props.name} data-cy={`${props.name}-error`}/>
       </p>
     </div>
   )

@@ -16,8 +16,6 @@ const Users: React.FunctionComponent<IUsersProps> = (props) => {
     if (props.location.state !== undefined) {
       console.log(props.location.state)
       setSuccess(props.location.state.success)
-    } else {
-      console.log(undefined)
     }
   }, [])
 

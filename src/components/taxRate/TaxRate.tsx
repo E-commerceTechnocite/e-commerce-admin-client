@@ -9,10 +9,12 @@ import { TaxModel } from '../../models/product/tax.model'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import Pagination from '../pagination/Pagination'
+import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Granted from '../Granted'
 import { auth } from '../../util/helpers/auth'
 import { TaxRuleModel } from '../../models/product/tax-rule.model'
+import TaxRateSkeleton from './skeleton/TaxRateSkeleton'
 
 interface ITaxRateProps {
   successRate?: boolean | undefined
@@ -136,75 +138,94 @@ const TaxRate: React.FunctionComponent<ITaxRateProps> = ({
 
   return (
     <>
-      <div className="tax-rate">
-        <div className="top">
-          <div className="search">
-            <i className="fas fa-search"></i>
-            <input type="text" placeholder="Search..." />
-          </div>
-          <Granted permissions={['c:tax']}>
-            <Link to="/taxes/add-tax-rate" className="action">
-              New rate
-            </Link>
-          </Granted>
-          <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-            {' '}
-            <i className="fas fa-check" />
-            Tax Rate Added
-            <i className="fas fa-times" onClick={() => setToast(false)} />
-          </div>
-        </div>
-        {rate && meta && (
-          <>
-            <div className="rate-list">
-              {taxRulesDeleted && taxRulesDeleted.length > 0 && (
-                <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
-                  <i className="fas fa-times" onClick={onClickClose} />
-                  {taxRulesDeleted && (
-                    <div className="tax-rule-deleted">
-                      <p>Tax rules deleted :</p>
-                      <ul>
-                        {taxRulesDeleted.map((taxRule, index) => (
-                          <>
-                            <li key={index}>{taxRule.id}</li>
-                          </>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
-              <div className="legend">
-                <span>Rate</span>
-              </div>
-              <div className="content">
-                {rate.map((rate, index) => (
-                  <div className="item" key={index}>
-                    <span>{rate.rate}%</span>
-                    <Granted permissions={['u:tax']}>
-                      <Link
-                        to={`/taxes/edit-tax-rate/${rate.id}`}
-                        className="action edit"
-                      >
-                        Edit
-                      </Link>
-                    </Granted>
-                    <Granted permissions={['d:tax']}>
-                      <button
-                        className="delete"
-                        onClick={() => submitDeleteTaxRate(rate.id, rate.rate)}
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </Granted>
-                  </div>
-                ))}
-              </div>
+      {!rate && !meta && <TaxRateSkeleton />}
+      {rate && meta && (
+        <div className="tax-rate">
+          <div className="top">
+            <div className="search">
+              <i className="fas fa-search"></i>
+              <input type="text" placeholder="Search..." />
             </div>
-            <Pagination meta={meta} pageSetter={setPage} />
-          </>
-        )}
-      </div>
+            <Granted permissions={['c:tax']}>
+              <Link to="/taxes/add-tax-rate" className="action">
+                New rate
+              </Link>
+            </Granted>
+            <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+              {' '}
+              <i className="fas fa-check" />
+              Tax Rate Added
+              <i className="fas fa-times" onClick={() => setToast(false)} />
+            </div>
+          </div>
+          <div className="rate-list">
+            {taxRulesDeleted && taxRulesDeleted.length > 0 && (
+              <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
+                <i className="fas fa-times" onClick={onClickClose} />
+                {taxRulesDeleted && (
+                  <div className="tax-rule-deleted">
+                    <p>Tax rules deleted :</p>
+                    <ul>
+                      {taxRulesDeleted.map((taxRule, index) => (
+                        <>
+                          <li key={index}>{taxRule.id}</li>
+                        </>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+            <div className="legend">
+              <span>Rate</span>
+            </div>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.01,
+                  },
+                },
+              }}
+              initial="hidden"
+              animate="show"
+              className="content"
+            >
+              {rate.map((rate, index) => (
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0 },
+                    show: { opacity: 1 },
+                  }}
+                  className="item"
+                  key={index}
+                >
+                  <span>{rate.rate}%</span>
+                  <Granted permissions={['u:tax']}>
+                    <Link
+                      to={`/taxes/edit-tax-rate/${rate.id}`}
+                      className="action edit"
+                    >
+                      Edit
+                    </Link>
+                  </Granted>
+                  <Granted permissions={['d:tax']}>
+                    <button
+                      className="delete"
+                      onClick={() => submitDeleteTaxRate(rate.id, rate.rate)}
+                    >
+                      <i className="fas fa-trash"></i>
+                    </button>
+                  </Granted>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+          <Pagination meta={meta} pageSetter={setPage} />
+        </div>
+      )}
     </>
   )
 }

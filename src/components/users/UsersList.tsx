@@ -2,8 +2,8 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
-import Loading from '../loading/Loading'
 import Pagination from '../pagination/Pagination'
+import { motion } from 'framer-motion'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import { config } from '../../index'
@@ -11,6 +11,8 @@ import { sendRequest } from '../../util/helpers/refresh'
 import { http } from '../../util/http'
 import { UserModel } from '../../models/user/user.model'
 import './UsersList.scss'
+import UsersListSkeleton from './skeleton/UsersListSkeleton'
+import Granted from '../Granted'
 
 interface IUsersListProps {
   number?: number
@@ -69,7 +71,6 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
 
   // Check if product has been added and if so displays a toast
   useEffect(() => {
-    console.log(success)
     if (success === true) {
       setToast(true)
       setTimeout(() => {
@@ -84,56 +85,81 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
 
   return (
     <>
-      <div className="users">
-        <div className="top-container">
-          {pagination && (
-            <div className="search">
-              <i className="fas fa-search"></i>
-              <input type="text" placeholder="Search..." />
-            </div>
-          )}
-          <Link to="/users/addusers" className="action">
-            New User
-          </Link>
-          <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-            {' '}
-            <i className="fas fa-check" />
-            User Added
-            <i className="fas fa-times" onClick={() => setToast(false)} />
-          </div>
-        </div>
-        {!users && !meta && <Loading />}
-        {users && meta && (
-          <>
-            <div className="user-list">
-              <div className="legend">
-                <span>Username</span>
-                <span>Role</span>
-                <span>E-mail</span>
+      {!users && !meta && <UsersListSkeleton />}
+      {users && meta && (
+        <div className="users">
+          <div className="top-container">
+            {pagination && (
+              <div className="search">
+                <i className="fas fa-search"></i>
+                <input type="text" placeholder="Search..." />
               </div>
-              {users.map((user) => {
+            )}
+            <Granted permissions={['c:user']}>
+              <Link to="/users/addusers" className="action">
+                New User
+              </Link>
+            </Granted>
+            <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+              {' '}
+              <i className="fas fa-check" />
+              User Added
+              <i className="fas fa-times" onClick={() => setToast(false)} />
+            </div>
+          </div>
+          <div className="user-list">
+            <div className="legend">
+              <span>Username</span>
+              <span>Role</span>
+              <span>E-mail</span>
+            </div>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.01,
+                  },
+                },
+              }}
+              initial="hidden"
+              animate="show"
+            >
+              {users?.map((user) => {
                 return (
-                  <div className="user" key={user.id}>
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: { opacity: 1 },
+                    }}
+                    className="user"
+                    key={user.id}
+                  >
                     <span>{user.username}</span>
                     <span>{user.role.name}</span>
                     <span>{user.email}</span>
-                    <Link to={`/users/edit/${user.id}`} className="action">
-                      Edit
-                    </Link>
-                    <button
-                      className="delete"
-                      onClick={() => deleteUsers(user.id, user.username)}
-                    >
-                      <i className="fas fa-trash"></i>
-                    </button>
-                  </div>
+                    <Granted permissions={['u:user']}>
+                      <Link to={`/users/edit/${user.id}`} className="action">
+                        Edit
+                      </Link>
+                    </Granted>
+                    <Granted permissions={['d:user']}>
+                      <button
+                        className="delete"
+                        onClick={() => deleteUsers(user.id, user.username)}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </Granted>
+                  </motion.div>
                 )
               })}
-              {pagination && <Pagination meta={meta} pageSetter={setPage} />}
-            </div>
-          </>
-        )}
-      </div>
+            </motion.div>
+            {pagination && <Pagination meta={meta} pageSetter={setPage} />}
+          </div>
+        </div>
+      )}
     </>
   )
 }

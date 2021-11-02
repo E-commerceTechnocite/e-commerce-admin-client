@@ -1,6 +1,9 @@
 @import '../../../public/scss/variables.scss';
 
 .tax-rule {
+  min-height: 500px;
+  position: relative;
+  padding-bottom: 90px;
   .pagination-component {
     padding-bottom: 20px;
   }
@@ -69,7 +72,12 @@
       }
     }
   }
-
+  .pagination-component {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
   .legend {
     font-weight: bold;
   }
@@ -162,7 +170,6 @@
           grid-column-end: 8;
           grid-row: 2 / span 2;
           align-self: center;
-          align-self: flex-end;
         }
 
         span:nth-child(5)::before {

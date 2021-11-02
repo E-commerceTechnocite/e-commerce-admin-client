@@ -8,10 +8,12 @@ import { http } from '../../util/http'
 import { config } from '../../index'
 import { sendRequest } from '../../util/helpers/refresh'
 import Pagination from '../pagination/Pagination'
+import { motion } from 'framer-motion'
 import './Country.scss'
 import Granted from '../Granted'
 import { auth } from '../../util/helpers/auth'
 import { TaxRuleModel } from '../../models/product/tax-rule.model'
+import CountrySkeleton from './skeleton/CountrySkeleton'
 
 interface ICountryProps {
   successCountry?: boolean | undefined
@@ -137,79 +139,99 @@ const Country: React.FunctionComponent<ICountryProps> = ({
 
   return (
     <>
-      <div className="country">
-        <div className="top">
-          <div className="search">
-            <i className="fas fa-search"></i>
-            <input type="text" placeholder="Search..." />
-          </div>
-          <Granted permissions={['c:country']}>
-            <Link to="/taxes/add-country" className="action">
-              New country
-            </Link>
-          </Granted>
-          <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-            {' '}
-            <i className="fas fa-check" />
-            Country Added
-            <i className="fas fa-times" onClick={() => setToast(false)} />
-          </div>
-        </div>
-        {country && meta && (
-          <>
-            <div className="country-list">
-              {taxRulesDeleted && taxRulesDeleted.length > 0 && (
-                <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
-                  <i className="fas fa-times" onClick={onClickClose} />
-                  {taxRulesDeleted && (
-                    <div className="tax-rule-deleted">
-                      <p>Tax rules deleted :</p>
-                      <ul>
-                        {taxRulesDeleted.map((taxRule, index) => (
-                          <>
-                            <li key={index}>{taxRule.id}</li>
-                          </>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              )}
-              <div className="legend">
-                <span>Country</span>
-                <span>Code</span>
-              </div>
-              <div className="content">
-                {country.map((country, index) => (
-                  <div className="item" key={index}>
-                    <span>{country.name}</span>
-                    <span>{country.code}</span>
-                    <Granted permissions={['u:country']}>
-                      <Link
-                        to={`/taxes/edit-country/${country.id}`}
-                        className="action edit"
-                      >
-                        Edit
-                      </Link>
-                    </Granted>
-                    <Granted permissions={['d:country']}>
-                      <button
-                        className="delete"
-                        onClick={() =>
-                          submitDeleteCountry(country.id, country.name)
-                        }
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>{' '}
-                    </Granted>
-                  </div>
-                ))}
-              </div>
+      {!country && !meta && <CountrySkeleton />}
+      {/* <CountrySkeleton /> */}
+      {country && meta && (
+        <div className="country">
+          <div className="top">
+            <div className="search">
+              <i className="fas fa-search"></i>
+              <input type="text" placeholder="Search..." />
             </div>
-            <Pagination meta={meta} pageSetter={setPage} />
-          </>
-        )}
-      </div>
+            <Granted permissions={['c:country']}>
+              <Link to="/taxes/add-country" className="action">
+                New country
+              </Link>
+            </Granted>
+            <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+              {' '}
+              <i className="fas fa-check" />
+              Country Added
+              <i className="fas fa-times" onClick={() => setToast(false)} />
+            </div>
+          </div>
+          <div className="country-list">
+            {taxRulesDeleted && taxRulesDeleted.length > 0 && (
+              <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
+                <i className="fas fa-times" onClick={onClickClose} />
+                {taxRulesDeleted && (
+                  <div className="tax-rule-deleted">
+                    <p>Tax rules deleted :</p>
+                    <ul>
+                      {taxRulesDeleted.map((taxRule, index) => (
+                        <>
+                          <li key={index}>{taxRule.id}</li>
+                        </>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+            <div className="legend">
+              <span>Country</span>
+              <span>Code</span>
+            </div>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.01,
+                  },
+                },
+              }}
+              initial="hidden"
+              animate="show"
+              className="content"
+            >
+              {country.map((country, index) => (
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0 },
+                    show: { opacity: 1 },
+                  }}
+                  className="item"
+                  key={index}
+                >
+                  <span>{country.name}</span>
+                  <span>{country.code}</span>
+                  <Granted permissions={['u:country']}>
+                    <Link
+                      to={`/taxes/edit-country/${country.id}`}
+                      className="action edit"
+                    >
+                      Edit
+                    </Link>
+                  </Granted>
+                  <Granted permissions={['d:country']}>
+                    <button
+                      className="delete"
+                      onClick={() =>
+                        submitDeleteCountry(country.id, country.name)
+                      }
+                    >
+                      <i className="fas fa-trash"></i>
+                    </button>{' '}
+                  </Granted>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+          <Pagination meta={meta} pageSetter={setPage} />
+        </div>
+      )}
     </>
   )
 }

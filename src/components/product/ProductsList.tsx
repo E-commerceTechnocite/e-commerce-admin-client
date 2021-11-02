@@ -2,18 +2,20 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
-import Loading from '../components//loading/Loading'
-import Pagination from '../components/pagination/Pagination'
-import { PaginationMetadataModel } from '../models/pagination/pagination-metadata.model'
-import { PaginationModel } from '../models/pagination/pagination.model'
-import { ProductModel } from '../models/product/product.model'
-import { config } from '../index'
-import { sendRequest } from '../util/helpers/refresh'
-import { http } from '../util/http'
+import Loading from '../loading/Loading'
+import Pagination from '../pagination/Pagination'
+import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
+import { PaginationModel } from '../../models/pagination/pagination.model'
+import { ProductModel } from '../../models/product/product.model'
+import { config } from '../../index'
+import { sendRequest } from '../../util/helpers/refresh'
+import { http } from '../../util/http'
 import { htmlToText } from 'html-to-text'
 import { motion } from 'framer-motion'
-import Granted from './Granted'
-import { auth } from '../util/helpers/auth'
+import Granted from '../Granted'
+import { auth } from '../../util/helpers/auth'
+import './ProductsList.scss'
+import ProductsListSkeleton from './skeleton/ProductsListSkeleton'
 
 interface IProductsListProps {
   number?: number
@@ -89,7 +91,6 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
   // Check if product has been added and if so displays a toast
   useEffect(() => {
-    console.log(success)
     if (success === true) {
       setToast(true)
       setTimeout(() => {
@@ -104,28 +105,31 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
   return (
     <>
-      <div className="products">
-        <div className="top-container">
-          {pagination && (
-            <div className="search">
-              <i className="fas fa-search" />
-              <input type="text" placeholder="Search..." />
+      {!products && !meta && (
+        <ProductsListSkeleton number={number} pagination={pagination} />
+      )}
+      {products && meta && (
+        <div className="products">
+          <div className="top-container">
+            {pagination && (
+              <div className="search">
+                <i className="fas fa-search" />
+                <input type="text" placeholder="Search..." />
+              </div>
+            )}
+            <Granted permissions={['c:product']}>
+              <Link to="/products/add" className="action">
+                New Product
+              </Link>
+            </Granted>
+            <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+              {' '}
+              <i className="fas fa-check" />
+              Product Added
+              <i className="fas fa-times" onClick={() => setToast(false)} />
             </div>
-          )}
-          <Granted permissions={['c:product']}>
-            <Link to="/products/add" className="action">
-              New Product
-            </Link>
-          </Granted>
-          <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-            {' '}
-            <i className="fas fa-check" />
-            Product Added
-            <i className="fas fa-times" onClick={() => setToast(false)} />
           </div>
-        </div>
-        {!products && !meta && <Loading />}
-        {products && meta && (
+
           <>
             <div className="product-list">
               <div className="legend">
@@ -211,8 +215,8 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
               {pagination && <Pagination meta={meta} pageSetter={setPage} />}
             </div>
           </>
-        )}
-      </div>
+        </div>
+      )}
     </>
   )
 }

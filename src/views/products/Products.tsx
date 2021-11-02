@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import ProductsList from '../components/ProductsList'
+import ProductsList from '../../components/product/ProductsList'
 
 interface IProductsProps {
   location?: {
@@ -16,8 +16,6 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
     if (props.location.state !== undefined) {
       console.log(props.location.state)
       setSuccess(props.location.state.success)
-    } else {
-      console.log(undefined)
     }
   }, [])
   return (
