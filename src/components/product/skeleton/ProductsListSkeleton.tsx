@@ -15,8 +15,6 @@ const ProductsListSkeleton: React.FunctionComponent<ProductsListSkeleton> = ({
   const [listNnumber, setListNnumber] = useState<number>(10)
   useEffect(() => {
     setListNnumber(number)
-    console.log(number)
-    console.log(pagination)
   }, [])
   return (
     <>
