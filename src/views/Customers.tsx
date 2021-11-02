@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import CustomersList from '../components/customers/CustomersList'
 
 interface ICustomersProps {
   location?: {
