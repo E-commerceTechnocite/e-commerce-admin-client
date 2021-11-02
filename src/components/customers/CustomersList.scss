@@ -52,7 +52,7 @@
     .customer {
       padding: 20px 30px;
       display: grid;
-      grid-template-columns: 150px 300px repeat(3, 190px);
+      grid-template-columns: minmax(150px, 300px) minmax(300px, 500px) repeat(3, minmax(190px, 300px));
       grid-template-rows: 1;
       border-bottom: 1px solid $primary-border-color;
       grid-column-gap: 10px;

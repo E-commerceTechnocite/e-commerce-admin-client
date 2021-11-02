@@ -11,6 +11,7 @@ import { http } from '../../util/http'
 import Granted from '../Granted'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import CustomersListSkeleton from './skeleton/CustomersListSkeleton'
 
 interface ICustomersListProps {
   number?: number
@@ -19,8 +20,6 @@ interface ICustomersListProps {
 }
 
 const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
-  number,
-  pagination,
   success,
 }) => {
   const [customers, setCustomers] = useState<CustomerModel[]>()
@@ -101,7 +100,7 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
 
   return (
     <>
-      {/* {!customers && !meta && <CustomersListSkeleton />} */}
+      {!customers && <CustomersListSkeleton />}
       {customers && (
         <div className="customers">
           <div className="top-container">
@@ -109,8 +108,6 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
               <i className="fas fa-search"></i>
               <input type="text" placeholder="Search..." />
             </div>
-            {/*  {pagination && (
-            )} */}
           </div>
           <div className="customer-list">
             <div className="legend">
@@ -152,7 +149,6 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
                 )
               })}
             </motion.div>
-            {/* {pagination && <Pagination meta={meta} pageSetter={setPage} />} */}
           </div>
         </div>
       )}
