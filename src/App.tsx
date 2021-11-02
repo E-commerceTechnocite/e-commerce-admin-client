@@ -23,7 +23,6 @@ import Taxes from './views/taxes/Taxes'
 import AddTaxRule from './views/taxes/AddTaxRule'
 import Categories from './views/Categories'
 import Customers from './views/customers/Customers'
-import AddCustomers from './views/customers/AddCustomers'
 import Orders from './views/Orders'
 import Stock from './views/stock/Stock'
 import EditStock from './views/stock/EditStock'
@@ -159,8 +158,6 @@ export const App = () => {
                     component={ActionCategory}
                   />
                   <GuardedRoute exact path="/customers" component={Customers} />
-                  <GuardedRoute exact path="/customers/add-customer" component={AddCustomers} />
-                  <GuardedRoute exact path="/customers/edit-customer/:slug" component={AddCustomers} />
                   <GuardedRoute exact path="/orders" component={Orders} />
                   <GuardedRoute exact path="/stock" component={Stock} />
                   <GuardedRoute

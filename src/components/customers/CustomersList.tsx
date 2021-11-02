@@ -111,17 +111,6 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
             </div>
             {/*  {pagination && (
             )} */}
-            {/* <Granted permissions={['c:customer']}> */}
-            <Link to="/customers/add-customer" className="action">
-              New Customer
-            </Link>
-            {/* </Granted> */}
-            <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-              {' '}
-              <i className="fas fa-check" />
-              Customer Added
-              <i className="fas fa-times" onClick={() => setToast(false)} />
-            </div>
           </div>
           <div className="customer-list">
             <div className="legend">
@@ -159,24 +148,6 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
                     <span>{customer.phoneNumber}</span>
                     <span>{customer.firstName}</span>
                     <span>{customer.lastName}</span>
-                    {/* <Granted permissions={['u:customer']}> */}
-                    <Link
-                      to={`/customers/edit-customer/${customer.id}`}
-                      className="action"
-                    >
-                      Edit
-                    </Link>
-                    {/* </Granted> */}
-                    {/* <Granted permissions={['d:customer']}> */}
-                    <button
-                      className="delete"
-                      onClick={() =>
-                        deleteCustomer(customer.id, customer.username)
-                      }
-                    >
-                      <i className="fas fa-trash"></i>
-                    </button>
-                    {/* </Granted> */}
                   </motion.div>
                 )
               })}

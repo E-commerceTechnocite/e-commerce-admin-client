@@ -9,5 +9,5 @@ export interface CustomerModel extends EntityInterface {
   lastName?: string
   gender?: string
   birthDate?: string
-  newsletter?: string
+  newsletter?: boolean
 }
