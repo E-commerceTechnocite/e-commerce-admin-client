@@ -6,6 +6,7 @@ import { config } from '../../index'
 import { sendRequest } from '../../util/helpers/refresh'
 import { RoleModel } from '../../models/role/role.model'
 import Previous from '../previous/Previous'
+import './ActionRole.scss'
 
 interface IActionRoleProps {}
 
@@ -88,21 +89,19 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
     setRolePermissions(data.permissions)
     setName(data.name)
   }
-
+  
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1)
   }
-
-  const crudTogglePermsCheckbox = (checkbox) => {
-    if(checkbox[1].checked && checkbox[2].checked && checkbox[3].checked && checkbox[4].checked) {
-      checkbox[0].checked = true
-    } else {
-      checkbox[0].checked = false
-    }
+  
+  const setName = (name) => {
+    const nameLabel : any = document.querySelectorAll('input[name=name]')
+    nameLabel[0].value = name
+    setMyInputValue(name)
   }
 
   const toggleCRUDAllCheckbox = (crud : string, id : string) => {
-    const crudAllCheckbox : any = document.querySelectorAll('input[name=toggle' + crud + ']')
+    const crudAllCheckbox : any = document.querySelectorAll('input[name='+ crud + 'Toggle]')
     const crudCheckboxes : any = document.querySelectorAll("[id^='" + id + "']")
     crudAllCheckbox[0].checked = true
     for (let i = 0 ; i < crudCheckboxes.length; i++) { 
@@ -112,46 +111,49 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
     }
   }
 
-  const setName = (name) => {
-    const nameLabel : any = document.querySelectorAll('input[name=name]')
-    nameLabel[0].value = name
-    setMyInputValue(name)
+  const updateCRUDAllcheckboxes = () => {
+    toggleCRUDAllCheckbox('read', 'r:')
+    toggleCRUDAllCheckbox('create', 'c:')
+    toggleCRUDAllCheckbox('update', 'u:')
+    toggleCRUDAllCheckbox('delete', 'd:')
   }
 
-  const initializeCrudCheckboxes = (perm) => {
+  const updateCrudCheckboxes = (perm) => {
     perm.map((permi) => {
       const check : any = document.querySelectorAll("[id='" + permi +"']")
       check[0].checked = true
     })
   }
 
-  const initializePermsCheckboxes = (perms) => {
+  const updatePermsCheckboxes = (perms) => {
     perms.map((perm) => {
       let [operation, title] = perm.split(':')
-      const permsCheckbox : any = document.querySelectorAll('input[name=' + title + ']')
-      crudTogglePermsCheckbox(permsCheckbox)
+      const pCheckbox : any = document.querySelectorAll('input[name=' + title + ']')
+      if(pCheckbox[1].checked && pCheckbox[2].checked && pCheckbox[3].checked && pCheckbox[4].checked) {
+        pCheckbox[0].checked = true
+      } else {
+        pCheckbox[0].checked = false
+      }
     })
   }
   
-  useEffect(() => {
+  const updateAllCheckbox = () => {
     const allCheckbox : any = document.querySelectorAll('input[name=toggleAll]')
     if(rolePermissions.length === allPermissions.length && rolePermissions.length !== 0) 
-      allCheckbox[0].checked = true // check the select all checkbox if all checkboxes are checked 
+      allCheckbox[0].checked = true  
     else
       allCheckbox[0].checked = false
-  }, [rolePermissions])
-
+  }
+ 
   useEffect(() => {
     SubmitPermissions().then()
   }, [])
 
   useEffect(() => {
-    initializeCrudCheckboxes(rolePermissions)
-    initializePermsCheckboxes(rolePermissions)
-    toggleCRUDAllCheckbox('Read', 'r:')
-    toggleCRUDAllCheckbox('Create', 'c:')
-    toggleCRUDAllCheckbox('Update', 'u:')
-    toggleCRUDAllCheckbox('Delete', 'd:')
+    updateAllCheckbox()
+    updateCrudCheckboxes(rolePermissions)
+    updatePermsCheckboxes(rolePermissions)
+    updateCRUDAllcheckboxes()
   }, [allCheckbox])
 
   useEffect(() => {
@@ -166,16 +168,18 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
     return title
   }
 
-  const crudName = (operation) => {
-    if (operation === 'r') return 'Read'
-    if (operation === 'c') return 'Create'
-    if (operation === 'u') return 'Update'
-    if (operation === 'd') return 'Delete'
+  const cr = (operation) => {
+    switch(operation) {
+      case 'r' : return 'Read'
+      case 'c' : return 'Create'
+      case 'u' : return 'Update'
+      case 'd' : return 'Delete'
+    }
   }
 
   allPermissions.forEach((item) => {
     const [operation, title] = item.split(':')
-    const name = crudName(operation)
+    const name = cr(operation)
     if (!perms[title]) perms[title] = []
     perms[title].push({
       value: item,
@@ -212,11 +216,7 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
   }
 
   const toggleCRUDAll = (source) => {
-    let checkboxes : any
-    if(source.name === "toggleRead") checkboxes = document.querySelectorAll(("[id^='r:']"))
-    if(source.name === "toggleCreate") checkboxes = document.querySelectorAll(("[id^='c:']"))
-    if(source.name === "toggleUpdate") checkboxes = document.querySelectorAll(("[id^='u:']"))
-    if(source.name === "toggleDelete") checkboxes = document.querySelectorAll(("[id^='d:']"))
+    const checkboxes : any = document.querySelectorAll("[id^='" + source.name.charAt(0) +":']")
     changeAllCheckboxes(checkboxes, source) 
   }
 
@@ -283,16 +283,20 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
                     })}
                   </div>
                   <div className="toggleAll">
-                    <div className="all"><input type="checkbox" name="toggleAll" onChange={(e) => toggleAll(e.target)}/> 
-                    All permissions</div>
-                    <div className="crud"><input type="checkbox" name="toggleRead" onChange={(e) => toggleCRUDAll(e.target)}/> 
-                    Read
-                    <input type="checkbox" name="toggleCreate" onChange={(e) => toggleCRUDAll(e.target)}/> 
-                    Create
-                    <input type="checkbox" name="toggleUpdate" onChange={(e) => toggleCRUDAll(e.target)}/> 
-                    Update
-                    <input type="checkbox" name="toggleDelete" onChange={(e) => toggleCRUDAll(e.target)}/> 
-                    Delete</div>
+                    <div className="all">
+                      <input type="checkbox" name="toggleAll" onChange={(e) => toggleAll(e.target)}/> 
+                      All permissions 
+                    </div>
+                    <div className="crud">
+                      <input type="checkbox" name="readToggle" onChange={(e) => toggleCRUDAll(e.target)}/> 
+                      Read
+                      <input type="checkbox" name="createToggle" onChange={(e) => toggleCRUDAll(e.target)}/> 
+                      Create
+                      <input type="checkbox" name="updateToggle" onChange={(e) => toggleCRUDAll(e.target)}/> 
+                      Update
+                      <input type="checkbox" name="deleteToggle" onChange={(e) => toggleCRUDAll(e.target)}/> 
+                      Delete
+                    </div>
                   </div>
                 </div>
               </div>

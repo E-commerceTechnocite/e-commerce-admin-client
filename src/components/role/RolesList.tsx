@@ -12,6 +12,7 @@ import { http } from '../../util/http'
 import { RoleModel } from '../../models/role/role.model'
 import { auth } from '../../util/helpers/auth'
 import Granted from '../Granted'
+import './RolesList.scss'
 
 interface IRolesListProps {
   number?: number
@@ -116,7 +117,6 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
             <div className="role-list">
               <div className="legend">
                 <span>Role</span>
-                <span>Action</span>
               </div>
               {roles.map((role) => {
                 return (
