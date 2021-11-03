@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 import Loading from '../loading/Loading'
@@ -16,6 +16,7 @@ import Granted from '../Granted'
 import { auth } from '../../util/helpers/auth'
 import './ProductsList.scss'
 import ProductsListSkeleton from './skeleton/ProductsListSkeleton'
+import _ from 'lodash';
 
 interface IProductsListProps {
   number?: number
@@ -30,6 +31,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 }) => {
   const [products, setProducts] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
+  const [debouncedState, setDebouncedState] = useState("");
   const [page, setPage] = useState<number>(1)
   const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
@@ -39,18 +41,33 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
    * Returns request to get the page of the product list
    * @returns request
    */
-  const pageRequest = () =>
-    http.get<PaginationModel<ProductModel>>(
-      `${config.api}/v1/product?page=${page}${
-        number ? '&limit=' + number : ''
-      }`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          ...auth.headers,
-        },
-      }
-    )
+  const pageRequest = () => {
+    if(debouncedState === "") {
+      return http.get<PaginationModel<ProductModel>>(
+        `${config.api}/v1/product?page=${page}${
+          number ? '&limit=' + number : ''
+        }`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            ...auth.headers,
+          },
+        }
+      )
+    } else {
+      return http.get<PaginationModel<ProductModel>>(
+        `${config.api}/v1/product/search?q=${debouncedState}?page=${page}${
+          number ? '&limit=' + number : ''
+        }`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            ...auth.headers,
+          },
+        }
+      )
+    }
+  }
   /**
    * Submits to get the page of the product list
    */
@@ -89,6 +106,13 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
     }
   }
 
+  const debounce = useCallback(
+    _.debounce((searchValue: string) => {
+      setDebouncedState(searchValue);
+    }, 500),
+    []
+  );
+
   // Check if product has been added and if so displays a toast
   useEffect(() => {
     if (success === true) {
@@ -101,7 +125,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
   useEffect(() => {
     getProducts().then()
-  }, [page, refreshPage])
+  }, [page, refreshPage, debouncedState])
 
   return (
     <>
@@ -114,7 +138,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
             {pagination && (
               <div className="search">
                 <i className="fas fa-search" />
-                <input type="text" placeholder="Search..." />
+                <input type="text" placeholder="Search..." onChange={(e) => debounce(e.target.value)}/>
               </div>
             )}
             <Granted permissions={['c:product']}>
@@ -153,6 +177,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                 initial="hidden"
                 animate="show"
               >
+                {products.length === 0 && <div className="notfound"><label>Product not found</label></div>}
                 {products.map((product) => {
                   const strippedHtml = htmlToText(product.description)
                   return (

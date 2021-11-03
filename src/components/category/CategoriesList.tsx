@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 import Loading from '../loading/Loading'
@@ -12,6 +12,7 @@ import { sendRequest } from '../../util/helpers/refresh'
 import { http } from '../../util/http'
 import { CategoryModel } from '../../models/category/category.model'
 import './CategoriesList.scss'
+import _ from 'lodash';
 
 interface ICategoriesListProps {
   number?: number
@@ -29,20 +30,37 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   const [page, setPage] = useState<number>(1)
   const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
+  const [debouncedState, setDebouncedState] = useState("");
   const history = useHistory()
+
   // Request to get the page of the category list
-  const pageRequest = () =>
-    http.get<PaginationModel<CategoryModel>>(
-      `${config.api}/v1/product-category?page=${page}${
-        number ? '&limit=' + number : ''
-      }`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-        },
-      }
-    )
+  const pageRequest = () => {
+    if(debouncedState === "") {
+      return http.get<PaginationModel<CategoryModel>>(
+        `${config.api}/v1/product-category?page=${page}${
+          number ? '&limit=' + number : ''
+        }`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          },
+        }
+      )
+    } else {
+      return http.get<PaginationModel<CategoryModel>>(
+        `${config.api}/v1/product-category/search?q=${debouncedState}?page=${page}${
+          number ? '&limit=' + number : ''
+        }`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          },
+        }
+      )
+    } 
+  }
   const getRoles = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
@@ -76,6 +94,13 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
     }
   }
 
+  const debounce = useCallback(
+    _.debounce((searchValue: string) => {
+      setDebouncedState(searchValue);
+    }, 500),
+    []
+  );
+
   // Check if category has been added and if so displays a toast
   useEffect(() => {
     console.log(success)
@@ -89,7 +114,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
 
   useEffect(() => {
     getRoles().then()
-  }, [page, refreshPage])
+  }, [page, refreshPage, debouncedState])
 
   return (
     <>
@@ -98,7 +123,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
           {pagination && (
             <div className="search">
               <i className="fas fa-search"></i>
-              <input type="text" placeholder="Search..." />
+              <input type="text" placeholder="Search..." onChange={(e) => debounce(e.target.value)} />
             </div>
           )}
           <Link to="/categories/addcategories" className="action">
@@ -131,7 +156,8 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
                 initial="hidden"
                 animate="show"
               >
-                {categories.map((category) => {
+                {categories.length === 0 && <div className="notfound"><label>Category not found</label></div>}
+                {categories && categories.map((category) => {
                   return (
                     <motion.div
                       variants={{

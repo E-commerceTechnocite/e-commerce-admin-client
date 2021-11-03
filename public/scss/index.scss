@@ -564,6 +564,15 @@ button {
   }
 }
 
+.notfound {
+  display: flex;
+  justify-content: center;
+  label {
+    padding: 5px;
+    font-size: 15px;
+    color: red;
+  }
+}
 /* Daily Information */
 
 
