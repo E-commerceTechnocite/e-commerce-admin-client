@@ -68,7 +68,6 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
     let { error } = await sendRequest(taxRulePostRequest, data)
     if (error) {
       if (error.statusCode === 400) {
-        console.log()
         setSubmitError(
           'This tax rule already exists, change tax group or country.'
         )

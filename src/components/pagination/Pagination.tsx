@@ -13,41 +13,47 @@ const Pagination: FunctionComponent<PaginationPropsInterface> = ({
   uri,
 }) => {
   return (
-    <div className="pagination-component">
-      {meta.prevPage && (
-        <>
-          <Link to={`${uri}1`}>
-            <i className="fas fa-angle-double-left" />
-          </Link>
-          <Link to={`${uri}${meta.prevPage}`}>
-            <i className="fas fa-angle-left" />
-          </Link>
-          {meta.prevPage - 1 > 0 && (
-            <Link to={`${uri}${meta.prevPage - 1}`}>
-              {meta.prevPage - 1}
-            </Link>
+    <>
+      {meta.maxPages > 1 && (
+        <div className="pagination-component">
+          {meta.prevPage && (
+            <>
+              <Link to={`${uri}1`}>
+                <i className="fas fa-angle-double-left" />
+              </Link>
+              <Link to={`${uri}${meta.prevPage}`}>
+                <i className="fas fa-angle-left" />
+              </Link>
+              {meta.prevPage - 1 > 0 && (
+                <Link to={`${uri}${meta.prevPage - 1}`}>
+                  {meta.prevPage - 1}
+                </Link>
+              )}
+              <Link to={`${uri}${meta.prevPage}`}>{meta.prevPage}</Link>
+            </>
           )}
-          <Link to={`${uri}${meta.prevPage}`}>{meta.prevPage}</Link>
-        </>
-      )}
-      <Link to={`${uri}${meta.currentPage}`} className="current">
-        {meta.currentPage}
-      </Link>
-      {meta.nextPage && (
-        <>
-          <Link to={`${uri}${meta.nextPage}`}>{meta.nextPage}</Link>
-          {meta.nextPage + 1 <= meta.maxPages && (
-            <Link to={`${uri}${meta.nextPage + 1}`}>{meta.nextPage + 1}</Link>
+          <Link to={`${uri}${meta.currentPage}`} className="current">
+            {meta.currentPage}
+          </Link>
+          {meta.nextPage && (
+            <>
+              <Link to={`${uri}${meta.nextPage}`}>{meta.nextPage}</Link>
+              {meta.nextPage + 1 <= meta.maxPages && (
+                <Link to={`${uri}${meta.nextPage + 1}`}>
+                  {meta.nextPage + 1}
+                </Link>
+              )}
+              <Link to={`${uri}${meta.nextPage + 1}`}>
+                <i className="fas fa-angle-right" />
+              </Link>
+              <Link to={`${uri}${meta.maxPages}`}>
+                <i className="fas fa-angle-double-right" />
+              </Link>
+            </>
           )}
-          <Link to={`${uri}${meta.nextPage + 1}`}>
-            <i className="fas fa-angle-right" />
-          </Link>
-          <Link to={`${uri}${meta.maxPages}`}>
-            <i className="fas fa-angle-double-right" />
-          </Link>
-        </>
+        </div>
       )}
-    </div>
+    </>
   )
 }
 

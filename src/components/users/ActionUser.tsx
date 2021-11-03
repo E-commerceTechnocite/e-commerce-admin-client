@@ -12,6 +12,8 @@ import { UserModel } from '../../models/user/user.model'
 import { userSchema } from '../../util/validation/userValidation'
 import Previous from '../previous/Previous'
 import './ActionUser.scss'
+import { useQuery } from '../../util/hook/useQuery'
+import LoadingButton from '../loading/LoadingButton'
 
 interface IActionUserProps {}
 
@@ -26,8 +28,15 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
   const [roles, setRoles] = useState([])
   const [submitError, setSubmitError] = useState<string>(null)
   const params: { slug: string } = useParams()
+  const query = useQuery()
   const [initialValues, setInitialValues] = useState<InitialValues>()
+  const [isSubmit, setIsSubmit] = useState<boolean>(false)
 
+  /**
+   * Returns post or patch request for user
+   * @param data
+   * @returns request
+   */
   const userPostRequest = (data: UserModel) => {
     if (params.slug) {
       return http.patch(`${config.api}/v1/user/${params.slug}`, data, {
@@ -45,19 +54,36 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
     })
   }
 
+  /**
+   * Submits post or patch request for user
+   * @param data
+   * @returns void
+   */
   const submitUserPost = async (data: UserModel) => {
     setSubmitError(null)
-
     let { error } = await sendRequest(userPostRequest, data)
     if (error) {
       history.push('/login')
     }
-    history.push({
-      pathname: '/users',
-      state: { success: true },
-    })
+    if (query.get('page')) {
+      history.push({
+        pathname: '/users',
+        search: `?page=${query.get('page')}`,
+        state: { successEdit: true },
+      })
+    } else {
+      history.push({
+        pathname: '/users',
+        search: `?page=1`,
+        state: { success: true },
+      })
+    }
   }
 
+  /**
+   * Returns get request for role list
+   * @returns request
+   */
   const roleRequest = () => {
     return http.get<PaginationModel<any>>(`${config.api}/v1/role`, {
       headers: {
@@ -66,6 +92,9 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
     })
   }
 
+  /**
+   * Submits get request for role list
+   */
   const SubmitRole = async () => {
     let { data, error } = await sendRequest(roleRequest)
     if (error) {
@@ -120,6 +149,7 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
             initialValues={initialValues}
             validationSchema={userSchema}
             onSubmit={(data) => {
+              setIsSubmit(true)
               submitUserPost(data)
             }}
           >
@@ -133,9 +163,12 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
                   <Select name={'roleId'} label={'Role'} options={roles} />
                   <TextInput name={'username'} label={'Username'} />
                   <TextInput name={'email'} label={'E-mail'} />
-                  <button type="submit" className="action">
-                    Submit
-                  </button>
+                  {!isSubmit && (
+                    <button type="submit" className="action">
+                      Submit
+                    </button>
+                  )}
+                  {isSubmit && <LoadingButton />}
                   {submitError && (
                     <div className="global-error">{submitError}</div>
                   )}

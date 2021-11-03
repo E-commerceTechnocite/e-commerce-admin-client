@@ -83,9 +83,6 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
   // Call the requests before render
   useEffect(() => {
     SubmitTaxRule().then()
-    console.log('----------')
-    console.log(isUpdated)
-    console.log('----------')
   }, [page, refreshPage, isUpdated])
 
   // Check if tax rule has been added

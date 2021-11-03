@@ -19,20 +19,27 @@ interface IUsersListProps {
   number?: number
   pagination?: boolean
   success?: boolean | undefined
+  successEdit?: boolean | undefined
 }
 
 const UsersList: React.FunctionComponent<IUsersListProps> = ({
   number,
   pagination,
   success,
+  successEdit,
 }) => {
   const [users, setUsers] = useState<UserModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [toast, setToast] = useState(false)
+  const [toastEdit, setToastEdit] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
   const query = useQuery()
-  // Request to get the page of the users list
+
+  /**
+   * Returns get request for users list
+   * @returns request
+   */
   const pageRequest = () =>
     http.get<PaginationModel<UserModel>>(
       `${config.api}/v1/user?page=${query.get('page')}${
@@ -45,6 +52,11 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
         },
       }
     )
+
+  /**
+   * Submits get request for users list
+   * @returns void
+   */
   const getUsers = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
@@ -58,6 +70,11 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
     setMeta(data.meta)
   }
 
+  /**
+   * Returns delete request for specific user
+   * @param id
+   * @returns request
+   */
   const deleteRequest = (id: string) => {
     return http.delete(`${config.api}/v1/user/${id}`, null, {
       headers: {
@@ -65,11 +82,16 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
       },
     })
   }
+
+  /**
+   * Submits delete request for specific user
+   * @param id
+   * @param username
+   */
   const deleteUsers = async (id: string, username: string) => {
     if (confirm(`Delete user: ${username}?`)) {
       let { error } = await sendRequest(deleteRequest, id)
       if (error) {
-        console.log(error.message)
         history.push('/login')
       }
       setRefreshPage(!refreshPage)
@@ -84,7 +106,13 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
         setToast(false)
       }, 10000)
     }
-  }, [success])
+    if (successEdit === true) {
+      setToastEdit(true)
+      setTimeout(() => {
+        setToastEdit(false)
+      }, 10000)
+    }
+  }, [success, successEdit])
 
   useEffect(() => {
     getUsers().then()
@@ -107,12 +135,22 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                 New User
               </Link>
             </Granted>
-            <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-              {' '}
-              <i className="fas fa-check" />
-              User Added
-              <i className="fas fa-times" onClick={() => setToast(false)} />
-            </div>
+            {success && (
+              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+                {' '}
+                <i className="fas fa-check" />
+                User Added
+                <i className="fas fa-times" onClick={() => setToast(false)} />
+              </div>
+            )}
+            {successEdit && (
+              <div className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}>
+                {' '}
+                <i className="fas fa-check" />
+                User Edited
+                <i className="fas fa-times" onClick={() => setToastEdit(false)} />
+              </div>
+            )}
           </div>
           <div className="user-list">
             <div className="legend">
@@ -147,7 +185,10 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                     <span>{user.role.name}</span>
                     <span>{user.email}</span>
                     <Granted permissions={['u:user']}>
-                      <Link to={`/users/edit/${user.id}`} className="action">
+                      <Link
+                        to={`/users/edit/${user.id}?page=${query.get('page')}`}
+                        className="action"
+                      >
                         Edit
                       </Link>
                     </Granted>

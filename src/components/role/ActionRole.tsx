@@ -8,6 +8,7 @@ import { RoleModel } from '../../models/role/role.model'
 import Previous from '../previous/Previous'
 import './ActionRole.scss'
 import { useQuery } from '../../util/hook/useQuery'
+import LoadingButton from '../loading/LoadingButton'
 
 interface IActionRoleProps {}
 
@@ -19,6 +20,7 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
   const [submitError, setSubmitError] = useState<string>(null)
   const allCheckbox: any = document.querySelectorAll('input[name=toggleAll]')
   const params: { slug: string } = useParams()
+  const [isSubmit, setIsSubmit] = useState<boolean>(false)
   const perms = {}
   const query = useQuery()
 
@@ -62,6 +64,7 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
 
   const onSubmit = (e: React.FormEvent): void => {
     e.preventDefault()
+    setIsSubmit(true)
     const body = JSON.stringify({
       name: myInputValue,
       permissions: rolePermissions,
@@ -360,9 +363,12 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
                 </div>
               </div>
               <div className="perms-button">
-                <button type="submit" className="action">
-                  Submit
-                </button>
+                {!isSubmit && (
+                  <button type="submit" className="action">
+                    Submit
+                  </button>
+                )}
+                {isSubmit && <LoadingButton />}
               </div>
               {submitError && <div className="global-error">{submitError}</div>}
             </div>
