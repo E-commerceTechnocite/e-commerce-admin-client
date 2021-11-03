@@ -13,28 +13,34 @@ import { RoleModel } from '../../models/role/role.model'
 import { auth } from '../../util/helpers/auth'
 import Granted from '../Granted'
 import './RolesList.scss'
+import { useQuery } from '../../util/hook/useQuery'
 
 interface IRolesListProps {
   number?: number
   pagination?: boolean
   success?: boolean | undefined
+  successEdit?: boolean | undefined
 }
 
 const RolesList: React.FunctionComponent<IRolesListProps> = ({
   number,
   pagination,
   success,
+  successEdit,
 }) => {
   const [roles, setRoles] = useState<RoleModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [page, setPage] = useState<number>(1)
   const [toast, setToast] = useState(false)
+  const [toastEdit, setToastEdit] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
+  const query = useQuery()
   // Request to get the page of the role list
   const pageRequest = () =>
     http.get<PaginationModel<RoleModel>>(
-      `${config.api}/v1/role?page=${page}${number ? '&limit=' + number : ''}`,
+      `${config.api}/v1/role?page=${query.get('page')}${
+        number ? '&limit=' + number : ''
+      }`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -45,6 +51,10 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
   const getRoles = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
+      if (error.statusCode === 404) {
+        history.push('/not-found')
+        return
+      }
       history.push('/login')
     }
     setRoles(data.data)
@@ -62,8 +72,6 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
     if (confirm(`Delete role: ${role}?`)) {
       let { error } = await sendRequest(deleteRequest, id)
       if (error) {
-        console.log(error.message)
-        //history.push('/login')
         alert('WARNING : AN ERROR OCCURED !')
         if (error.message === 'Error 500 Internal Server Error')
           alert(
@@ -76,18 +84,23 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
 
   // Check if role has been added and if so displays a toast
   useEffect(() => {
-    console.log(success)
     if (success === true) {
       setToast(true)
       setTimeout(() => {
         setToast(false)
       }, 10000)
     }
-  }, [success])
+    if (successEdit === true) {
+      setToastEdit(true)
+      setTimeout(() => {
+        setToastEdit(false)
+      }, 10000)
+    }
+  }, [success, successEdit])
 
   useEffect(() => {
     getRoles().then()
-  }, [page, refreshPage])
+  }, [refreshPage, query.get('page')])
 
   return (
     <>
@@ -104,12 +117,22 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
               New Role
             </Link>
           </Granted>
-          <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-            {' '}
-            <i className="fas fa-check" />
-            Role Added
-            <i className="fas fa-times" onClick={() => setToast(false)} />
-          </div>
+          {success && (
+            <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+              {' '}
+              <i className="fas fa-check" />
+              Role Added
+              <i className="fas fa-times" onClick={() => setToast(false)} />
+            </div>
+          )}
+          {successEdit && (
+            <div className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}>
+              {' '}
+              <i className="fas fa-check" />
+              Role Edited
+              <i className="fas fa-times" onClick={() => setToastEdit(false)} />
+            </div>
+          )}
         </div>
         {!roles && !meta && <Loading />}
         {roles && meta && (
@@ -123,7 +146,7 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
                   <div className="role" key={role.id}>
                     <span>{role.name}</span>
                     <Granted permissions={['u:role']}>
-                      <Link to={`/roles/edit/${role.id}`} className="action">
+                      <Link to={`/roles/edit/${role.id}?page=${query.get('page')}`} className="action">
                         Edit
                       </Link>
                     </Granted>
@@ -138,7 +161,7 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
                   </div>
                 )
               })}
-              {pagination && <Pagination meta={meta} pageSetter={setPage} />}
+              {pagination && <Pagination meta={meta} uri={'/roles?page='} />}
             </div>
           </>
         )}

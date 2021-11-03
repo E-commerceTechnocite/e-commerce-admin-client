@@ -68,7 +68,11 @@ export const App = () => {
               <DashboardLayout>
                 <Switch>
                   <GuardedRoute exact path="/" component={Home} />
-                  <GuardedRoute exact path="/products" component={Products} />
+                  <GuardedRoute
+                    exact
+                    path="/products"
+                    component={Products}
+                  />
                   <GuardedRoute
                     exact
                     path="/products/add"

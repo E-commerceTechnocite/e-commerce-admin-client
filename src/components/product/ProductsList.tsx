@@ -61,6 +61,10 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   const getProducts = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
+      if (error.statusCode === 404) {
+        history.push('/not-found')
+        return
+      }
       history.push('/login')
     }
     setProducts(data.data)
@@ -86,7 +90,6 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
     if (confirm(`Delete product: ${title}?`)) {
       let { error } = await sendRequest(deleteRequest, id)
       if (error) {
-        console.log(error.message)
         history.push('/login')
       }
       setRefreshPage(!refreshPage)

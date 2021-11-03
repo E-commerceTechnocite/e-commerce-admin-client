@@ -13,6 +13,7 @@ import { UserModel } from '../../models/user/user.model'
 import './UsersList.scss'
 import UsersListSkeleton from './skeleton/UsersListSkeleton'
 import Granted from '../Granted'
+import { useQuery } from '../../util/hook/useQuery'
 
 interface IUsersListProps {
   number?: number
@@ -27,14 +28,16 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
 }) => {
   const [users, setUsers] = useState<UserModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [page, setPage] = useState<number>(1)
   const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
+  const query = useQuery()
   // Request to get the page of the users list
   const pageRequest = () =>
     http.get<PaginationModel<UserModel>>(
-      `${config.api}/v1/user?page=${page}${number ? '&limit=' + number : ''}`,
+      `${config.api}/v1/user?page=${query.get('page')}${
+        number ? '&limit=' + number : ''
+      }`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -45,6 +48,10 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
   const getUsers = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
+      if (error.statusCode === 404) {
+        history.push('/not-found')
+        return
+      }
       history.push('/login')
     }
     setUsers(data.data)
@@ -81,7 +88,7 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
 
   useEffect(() => {
     getUsers().then()
-  }, [page, refreshPage])
+  }, [refreshPage, query.get('page')])
 
   return (
     <>
@@ -156,7 +163,7 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                 )
               })}
             </motion.div>
-            {pagination && <Pagination meta={meta} pageSetter={setPage} />}
+            {pagination && <Pagination meta={meta} uri="/users?page=" />}
           </div>
         </div>
       )}
