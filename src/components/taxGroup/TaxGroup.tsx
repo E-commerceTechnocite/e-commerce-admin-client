@@ -235,7 +235,7 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
               ))}
             </motion.div>
           </div>
-          <Pagination meta={meta} pageSetter={setPage} />
+          {/* <Pagination meta={meta} pageSetter={setPage} /> */}
         </div>
       )}
     </>

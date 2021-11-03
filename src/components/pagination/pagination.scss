@@ -5,9 +5,10 @@
   justify-content: center;
   margin-top: 30px;
 
-  a {
-    width: 25px;
-    height: 25px;
+  a,
+  button {
+    width: 28px;
+    height: 28px;
     border: none;
     font-size: 15px;
     margin: 0 3px;
@@ -22,12 +23,13 @@
     i {
       font-size: 13px;
       font-weight: 700;
-
     }
   }
 
   a:hover,
-  a:hover i {
+  a:hover i,
+  button:hover,
+  button:hover i {
     color: $primary-button-event;
   }
 

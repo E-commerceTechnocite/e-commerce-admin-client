@@ -22,16 +22,19 @@ interface IProductsListProps {
   number?: number
   pagination?: boolean
   success?: boolean | undefined
+  successEdit?: boolean | undefined
 }
 
 const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   number,
   pagination,
   success,
+  successEdit,
 }) => {
   const [products, setProducts] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [toast, setToast] = useState(false)
+  const [toastEdit, setToastEdit] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const query = useQuery()
   const history = useHistory()
@@ -98,7 +101,13 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
         setToast(false)
       }, 10000)
     }
-  }, [success])
+    if (successEdit === true) {
+      setToastEdit(true)
+      setTimeout(() => {
+        setToastEdit(false)
+      }, 10000)
+    }
+  }, [success, successEdit])
 
   useEffect(() => {
     getProducts().then()
@@ -123,12 +132,27 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                 New Product
               </Link>
             </Granted>
-            <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-              {' '}
-              <i className="fas fa-check" />
-              Product Added
-              <i className="fas fa-times" onClick={() => setToast(false)} />
-            </div>
+            {success && (
+              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+                {' '}
+                <i className="fas fa-check" />
+                Product Added
+                <i className="fas fa-times" onClick={() => setToast(false)} />
+              </div>
+            )}
+            {successEdit && (
+              <div
+                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
+              >
+                {' '}
+                <i className="fas fa-check" />
+                Product Edited
+                <i
+                  className="fas fa-times"
+                  onClick={() => setToastEdit(false)}
+                />
+              </div>
+            )}
           </div>
 
           <>

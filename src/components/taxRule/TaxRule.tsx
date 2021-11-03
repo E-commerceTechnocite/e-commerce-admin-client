@@ -187,7 +187,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
               ))}
             </motion.div>
           </div>
-          <Pagination meta={meta} pageSetter={setPage} />
+          {/* <Pagination meta={meta} pageSetter={setPage} /> */}
         </div>
       )}
     </>

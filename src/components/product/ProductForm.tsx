@@ -27,6 +27,7 @@ import Loading from '../loading/Loading'
 import { auth } from '../../util/helpers/auth'
 import { TaxRuleGroupModel } from '../../models/product/tax-rule-group.model'
 import { motion } from 'framer-motion'
+import { useQuery } from '../../util/hook/useQuery'
 
 interface FormValuesInterface {
   title: string
@@ -63,6 +64,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
   const [libraryData, setLibraryData] = useState<PictureModel[]>([])
   const [product, setProduct] = useState<ProductModel>()
   const params: { slug: string } = useParams()
+  const query = useQuery()
   const history = useHistory()
 
   let [initialValues, setInitialValues] = useState<FormValuesInterface>({
@@ -134,10 +136,19 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
             pathname: '/login',
           })
         }
-        history.push({
-          pathname: '/products/1',
-          state: { success: true },
-        })
+        if (query.get('page')) {
+          history.push({
+            pathname: '/products',
+            search: `?page=${query.get('page')}`,
+            state: { successEdit: true },
+          })
+        } else {
+          history.push({
+            pathname: '/products',
+            search: '?page=1',
+            state: { success: true },
+          })
+        }
       }
     } catch {
       setFileError(true)

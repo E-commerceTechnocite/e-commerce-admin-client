@@ -1,6 +1,5 @@
 import * as React from "react";
 import { FC, useEffect, useRef, useState } from "react";
-import Pagination from "../pagination/Pagination";
 import { PaginationModel } from "../../models/pagination/pagination.model";
 import { PictureModel } from "../../models/files/picture.model";
 import { useHistory } from "react-router";
@@ -12,6 +11,7 @@ import Skeleton from "./skeleton/Skeleton";
 import { auth } from "../../util/helpers/auth";
 import Granted from "../Granted";
 import { motion } from "framer-motion";
+import PaginationMini from "../pagination/PaginationMini";
 
 interface MediaLibraryContainerPropsInterface {
   numberOfImages?: number;
@@ -185,7 +185,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
         {!imagePending && (
           <>
             {pictures && upperPagination && (
-              <Pagination meta={pictures.meta} pageSetter={setPage} />
+              <PaginationMini meta={pictures.meta} pageSetter={setPage} />
             )}
             <ul>
               {pictures &&
@@ -215,7 +215,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                 })}
             </ul>
             {pictures && (
-              <Pagination meta={pictures.meta} pageSetter={setPage} />
+              <PaginationMini meta={pictures.meta} pageSetter={setPage} />
             )}
           </>
         )}
