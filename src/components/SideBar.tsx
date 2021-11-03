@@ -93,7 +93,7 @@ const SideBar: React.FunctionComponent = () => {
                 'r:country',
               ]}
             >
-              <NavLink uri="/taxes" icon="fas fa-donate">
+              <NavLink uri="/taxes?rule=1&group=1&country=1" icon="fas fa-donate">
                 Taxes
               </NavLink>
             </Granted>

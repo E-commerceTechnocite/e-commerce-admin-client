@@ -17,6 +17,7 @@ import CountrySkeleton from './skeleton/CountrySkeleton'
 
 interface ICountryProps {
   successCountry?: boolean | undefined
+  successCountryEdit?: boolean | undefined
   countryToParent?: () => void
 }
 
@@ -29,6 +30,7 @@ interface DeleteCountry {
 
 const Country: React.FunctionComponent<ICountryProps> = ({
   successCountry,
+  successCountryEdit,
   countryToParent,
 }) => {
   const [page, setPage] = useState<number>(1)
@@ -229,7 +231,7 @@ const Country: React.FunctionComponent<ICountryProps> = ({
               ))}
             </motion.div>
           </div>
-          <Pagination meta={meta} pageSetter={setPage} />
+          {/* <Pagination meta={meta} pageSetter={setPage} /> */}
         </div>
       )}
     </>

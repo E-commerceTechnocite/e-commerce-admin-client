@@ -19,11 +19,13 @@ import TaxGroupSkeleton from './skeleton/TaxGroupSkeleton'
 
 interface ITaxGroupProps {
   successGroup?: boolean | undefined
+  successGroupEdit?: boolean | undefined
   groupToParent?: () => void
 }
 
 const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   successGroup,
+  successGroupEdit,
   groupToParent,
 }) => {
   const [group, setGroup] = useState<TaxRuleGroupModel[]>()
