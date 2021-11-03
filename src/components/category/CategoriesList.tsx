@@ -160,7 +160,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
                   )
                 })}
               </motion.div>
-              {pagination && <Pagination meta={meta} pageSetter={setPage} />}
+              {/* {pagination && <Pagination meta={meta} pageSetter={setPage} uri={/>}/>} */}
             </div>
           </>
         )}

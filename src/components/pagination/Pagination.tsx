@@ -1,60 +1,50 @@
 import { Dispatch, FunctionComponent, SetStateAction } from 'react'
+import { Link } from 'react-router-dom'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import './pagination.scss'
 
 export interface PaginationPropsInterface {
   meta: PaginationMetadataModel
-  pageSetter: Dispatch<SetStateAction<number>>
+  uri?: string
 }
 
 const Pagination: FunctionComponent<PaginationPropsInterface> = ({
   meta,
-  pageSetter: setPage,
+  uri,
 }) => {
-  const prevPage = (minus: number = 0) => setPage(meta.prevPage - minus)
-  const nextPage = (plus: number = 0) => setPage(meta.nextPage + plus)
-  const firstPage = () => setPage(1)
-  const lastPage = () => setPage(meta.maxPages)
-
   return (
     <div className="pagination-component">
       {meta.prevPage && (
         <>
-          <button type="button" onClick={firstPage}>
+          <Link to={`${uri}1`}>
             <i className="fas fa-angle-double-left" />
-          </button>
-          <button type="button" onClick={() => prevPage()}>
+          </Link>
+          <Link to={`${uri}${meta.prevPage}`}>
             <i className="fas fa-angle-left" />
-          </button>
+          </Link>
           {meta.prevPage - 1 > 0 && (
-            <button type="button" onClick={() => prevPage(1)}>
+            <Link to={`${uri}${meta.prevPage - 1}`}>
               {meta.prevPage - 1}
-            </button>
+            </Link>
           )}
-          <button type="button" onClick={() => prevPage()}>
-            {meta.prevPage}
-          </button>
+          <Link to={`${uri}${meta.prevPage}`}>{meta.prevPage}</Link>
         </>
       )}
-      <button type="button" className="current">
+      <Link to={`${uri}${meta.currentPage}`} className="current">
         {meta.currentPage}
-      </button>
+      </Link>
       {meta.nextPage && (
         <>
-          <button type="button" onClick={() => nextPage()}>
-            {meta.nextPage}
-          </button>
+          <Link to={`${uri}${meta.nextPage}`}>{meta.nextPage}</Link>
           {meta.nextPage + 1 <= meta.maxPages && (
-            <button type="button" onClick={() => nextPage(1)}>
-              {meta.nextPage + 1}
-            </button>
+            <Link to={`${uri}${meta.nextPage + 1}`}>{meta.nextPage + 1}</Link>
           )}
-          <button type="button" onClick={() => nextPage()}>
+          <Link to={`${uri}${meta.nextPage + 1}`}>
             <i className="fas fa-angle-right" />
-          </button>
-          <button type="button" onClick={lastPage}>
+          </Link>
+          <Link to={`${uri}${meta.maxPages}`}>
             <i className="fas fa-angle-double-right" />
-          </button>
+          </Link>
         </>
       )}
     </div>

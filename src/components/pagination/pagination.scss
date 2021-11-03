@@ -5,17 +5,20 @@
   justify-content: center;
   margin-top: 30px;
 
-  button {
-    width: 30px;
-    height: 30px;
+  a {
+    width: 25px;
+    height: 25px;
     border: none;
+    font-size: 15px;
     margin: 0 3px;
     background: $primary-color-elts;
     border-radius: 4px;
     font-family: $font-bold;
     font-weight: 500;
     transition: 0.2s;
-
+    display: flex;
+    justify-content: center;
+    align-items: center;
     i {
       font-size: 13px;
       font-weight: 700;
@@ -23,8 +26,8 @@
     }
   }
 
-  button:hover,
-  button:hover i {
+  a:hover,
+  a:hover i {
     color: $primary-button-event;
   }
 

@@ -14,7 +14,6 @@ const Products: React.FunctionComponent<IProductsProps> = (props) => {
   const [success, setSuccess] = useState<boolean | undefined>()
   useEffect(() => {
     if (props.location.state !== undefined) {
-      console.log(props.location.state)
       setSuccess(props.location.state.success)
     }
   }, [])

@@ -135,7 +135,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
           })
         }
         history.push({
-          pathname: '/products',
+          pathname: '/products/1',
           state: { success: true },
         })
       }

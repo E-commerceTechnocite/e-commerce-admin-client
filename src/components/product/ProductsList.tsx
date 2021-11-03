@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { useHistory } from 'react-router'
+import { useHistory, useLocation, useParams } from 'react-router'
 import { Link } from 'react-router-dom'
 import Loading from '../loading/Loading'
 import Pagination from '../pagination/Pagination'
@@ -16,6 +16,7 @@ import Granted from '../Granted'
 import { auth } from '../../util/helpers/auth'
 import './ProductsList.scss'
 import ProductsListSkeleton from './skeleton/ProductsListSkeleton'
+import { useQuery } from '../../util/hook/useQuery'
 
 interface IProductsListProps {
   number?: number
@@ -30,9 +31,9 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 }) => {
   const [products, setProducts] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [page, setPage] = useState<number>(1)
   const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
+  const query = useQuery()
   const history = useHistory()
 
   /**
@@ -41,7 +42,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
    */
   const pageRequest = () =>
     http.get<PaginationModel<ProductModel>>(
-      `${config.api}/v1/product?page=${page}${
+      `${config.api}/v1/product?page=${pagination ? query.get('page') : '1'}${
         number ? '&limit=' + number : ''
       }`,
       {
@@ -101,7 +102,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
   useEffect(() => {
     getProducts().then()
-  }, [page, refreshPage])
+  }, [refreshPage, query.get('page')])
 
   return (
     <>
@@ -189,7 +190,9 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
                       <Granted permissions={['u:product']}>
                         <Link
-                          to={`/products/edit/${product.id}`}
+                          to={`/products/edit/${product.id}?page=${query.get(
+                            'page'
+                          )}`}
                           className="action"
                         >
                           Edit
@@ -212,7 +215,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                   )
                 })}
               </motion.div>
-              {pagination && <Pagination meta={meta} pageSetter={setPage} />}
+              {pagination && <Pagination meta={meta} uri="/products?page=" />}
             </div>
           </>
         </div>
