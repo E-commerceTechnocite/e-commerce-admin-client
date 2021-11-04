@@ -13,6 +13,7 @@ import { http } from '../../util/http'
 import { CategoryModel } from '../../models/category/category.model'
 import './CategoriesList.scss'
 import { useQuery } from '../../util/hook/useQuery'
+import Granted from '../Granted'
 
 interface ICategoriesListProps {
   number?: number
@@ -138,12 +139,11 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
               <input type="text" placeholder="Search..." />
             </div>
           )}
-          <Link
-            to={`/categories/addcategories`}
-            className="action"
-          >
-            New Category
-          </Link>
+          <Granted permissions={['c:product-category']}>
+            <Link to={`/categories/addcategories`} className="action">
+              New Category
+            </Link>
+          </Granted>
           {success && (
             <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
               {' '}
@@ -192,22 +192,26 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
                       key={category.id}
                     >
                       <span>{category.label}</span>
-                      <Link
-                        to={`/categories/edit/${category.id}?page=${query.get(
-                          'page'
-                        )}`}
-                        className="action edit"
-                      >
-                        Edit
-                      </Link>
-                      <button
-                        className="delete"
-                        onClick={() =>
-                          deleteCategories(category.id, category.label)
-                        }
-                      >
-                        <i className="fas fa-trash" />
-                      </button>
+                      <Granted permissions={['u:product-category']}>
+                        <Link
+                          to={`/categories/edit/${category.id}?page=${query.get(
+                            'page'
+                          )}`}
+                          className="action edit"
+                        >
+                          Edit
+                        </Link>
+                      </Granted>
+                      <Granted permissions={['d:product-category']}>
+                        <button
+                          className="delete"
+                          onClick={() =>
+                            deleteCategories(category.id, category.label)
+                          }
+                        >
+                          <i className="fas fa-trash" />
+                        </button>
+                      </Granted>
                     </motion.div>
                   )
                 })}

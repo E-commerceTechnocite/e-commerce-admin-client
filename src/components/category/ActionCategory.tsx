@@ -11,6 +11,7 @@ import './ActionCategory.scss'
 import Previous from '../previous/Previous'
 import { CategoryModel } from '../../models/category/category.model'
 import { useQuery } from '../../util/hook/useQuery'
+import Granted from '../Granted'
 
 interface IActionUserProps {}
 
@@ -134,9 +135,20 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
                   {!params.slug && <label>New category</label>}
                 </div>
                 <TextInput name={'label'} label={'Category'} />
-                <button type="submit" className="action">
-                  Submit
-                </button>
+                {!params.slug && (
+                  <Granted permissions={['c:product-category']}>
+                    <button type="submit" className="action">
+                      Submit
+                    </button>
+                  </Granted>
+                )}
+                {params.slug && (
+                  <Granted permissions={['u:product-category']}>
+                    <button type="submit" className="action">
+                      Submit
+                    </button>
+                  </Granted>
+                )}
                 {submitError && (
                   <div className="global-error">{submitError}</div>
                 )}
