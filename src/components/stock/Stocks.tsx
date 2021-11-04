@@ -19,12 +19,20 @@ import NumberInput from '../inputs/NumberInput'
 interface IStocksProps {
   success?: boolean | undefined
 }
+interface stock {
+  stock?: {
+    physical?: number
+    incoming?: number
+    pending?: number
+  }
+}
 
 const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
   const [stock, setStock] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [toast, setToast] = useState<boolean>(false)
   const [editArray, setEditArray] = useState<string[]>([])
+  const [submitEdit, setSubmitEdit] = useState<boolean>(false)
   const history = useHistory()
   const query = useQuery()
 
@@ -58,15 +66,47 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
     setMeta(data.meta)
   }
 
+  /**
+   * Opens edit for seleted stock
+   * @param id
+   */
   const setEditing = (id: string) => {
     if (editArray.includes(id)) {
-      const array = [...editArray]
+      /* const array = [...editArray]
       array.splice(editArray.indexOf(id), 1)
-      setEditArray(array)
+      setEditArray(array) */
+      // setSubmitEdit(!submitEdit)
     } else {
       setEditArray((array) => [...array, id])
     }
   }
+
+  /**
+   * Returns  patch request for Stock product
+   * @param data
+   * @returns request
+   */
+  const stockPatchRequest = (data: stock, id: string) => {
+    return http.patch(`${config.api}/v1/product/${id}`, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+      },
+    })
+  }
+  /**
+   * Submits the post request for new Stock product
+   * @param data
+   */
+  const submitStockPatch = async (data: stock, id: string) => {
+    let { error } = await sendRequest(stockPatchRequest, data, id)
+    if (error) {
+      history.push('/login')
+    }
+    setSubmitEdit(!submitEdit)
+  }
+
+  useEffect(() => {}, [submitEdit])
 
   useEffect(() => {
     if (editArray) console.log(editArray)
@@ -79,7 +119,7 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
     }
     if (query.get('s')) window.scrollTo(0, 0)
     submitStocks().then()
-  }, [query.get('page')])
+  }, [query.get('page'), submitEdit])
 
   // Check if a has been added and sends a confirmation toast
   useEffect(() => {
@@ -178,12 +218,13 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                             )}
 
                             <Granted permissions={['u:product']}>
-                              <a
+                              <button
+                                type="button"
                                 className="action edit"
                                 onClick={() => setEditing(stock.id)}
                               >
                                 Edit
-                              </a>
+                              </button>
                             </Granted>
                           </>
                         )}
@@ -201,13 +242,15 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                               }}
                               validationSchema={stockSchema}
                               onSubmit={(data) => {
-                                // submitStockPatch(data)
+                                submitStockPatch(data, stock.id)
+                                const array = [...editArray]
+                                array.splice(editArray.indexOf(stock.id), 1)
+                                setEditArray(array)
                               }}
                             >
-                              {({ handleSubmit, errors }) => {
-                                console.log(errors)
+                              {({ handleSubmit }) => {
                                 return (
-                                  <>
+                                  <form onSubmit={handleSubmit}>
                                     <NumberInput
                                       name={'stock.physical'}
                                       label={'Physical'}
@@ -220,18 +263,19 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                                       name={'stock.pending'}
                                       label={'Pending'}
                                     />
-                                  </>
+
+                                    <Granted permissions={['u:product']}>
+                                      <button
+                                        className="action edit"
+                                        onClick={() => setEditing(stock.id)}
+                                      >
+                                        Valid
+                                      </button>
+                                    </Granted>
+                                  </form>
                                 )
                               }}
                             </Formik>
-                            <Granted permissions={['u:product']}>
-                              <a
-                                className="action edit"
-                                onClick={() => setEditing(stock.id)}
-                              >
-                                Valid
-                              </a>
-                            </Granted>
                           </>
                         )}
                       </motion.div>
