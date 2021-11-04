@@ -1,0 +1,99 @@
+@import '../../../../public/scss/variables.scss';
+@import '../../../../public/scss/skeleton.scss';
+
+.customers-skeleton {
+  background: $primary-color-elts;
+  box-shadow: $primary-elts-shadow;
+  min-height: 870px;
+  margin-bottom: 15px;
+  padding-bottom: 90px;
+  position: relative;
+  .top-container {
+    display: flex;
+    padding: 10px 30px;
+    border-bottom: 1px solid $primary-border-color;
+  }
+  .customer-list {
+    .legend,
+    .customer-skeleton {
+      padding: 20px 30px;
+      display: grid;
+      grid-template-columns: minmax(150px, 300px) minmax(300px, 500px) repeat(
+          3,
+          minmax(190px, 300px)
+        );
+      grid-template-rows: 1;
+      border-bottom: 1px solid $primary-border-color;
+      grid-column-gap: 10px;
+      align-items: center;
+      justify-items: flex-start;
+    }
+    .legend {
+      height: 19px;
+      padding: 20px 30px;
+      font-weight: bold;
+      span {
+        border-radius: 4px;
+        width: 90%;
+        height: 19px;
+        background: #eee;
+      }
+    }
+    .customer-skeleton {
+      span:nth-child(-n + 5) {
+        border-radius: 4px;
+        width: 90%;
+        height: 19px;
+        background: #eee;
+      }
+    }
+    .pagination-skeleton {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 20px;
+    }
+  }
+}
+@media screen and (max-width: 1430px) {
+  .legend {
+    display: none !important;
+  }
+  .customer-skeleton {
+    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-rows: repeat(2, 50px);
+    span {
+      position: relative;
+      width: 90%;
+
+    }
+    span::before {
+      position: absolute;
+      top: -17px;
+      font-size: 13px;
+      color: #b3b3b3;
+    }
+    span:nth-child(2) {
+      grid-column-start: 2;
+      grid-column-end: 4;
+    }
+    span:nth-child(3) {
+      grid-row-start: 2;
+      grid-column-start: 3;
+      grid-column-end: 4;
+    }
+    span:nth-child(4) {
+      grid-row-start: 2;
+      grid-column-start: 1;
+      grid-column-end: 2;
+      width: 100%;
+    }
+    span:nth-child(5) {
+      grid-row-start: 2;
+      grid-column-start: 2;
+      grid-column-end: 3;
+      width: 100%;
+    }
+  }
+}

@@ -1,16 +1,17 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
-import { Link } from 'react-router-dom'
-import Loading from '../loading/Loading'
-import Pagination from '../pagination/Pagination'
+import { CustomerModel } from '../../models/customers/customers.model'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import { config } from '../../index'
+import './CustomersList.scss'
 import { sendRequest } from '../../util/helpers/refresh'
 import { http } from '../../util/http'
-import './CustomersList.scss'
-import { CustomerModel } from '../../models/customer/customer.model'
+import Granted from '../Granted'
+import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import CustomersListSkeleton from './skeleton/CustomersListSkeleton'
 
 interface ICustomersListProps {
   number?: number
@@ -18,31 +19,34 @@ interface ICustomersListProps {
   success?: boolean | undefined
 }
 
-const CustomersList = () => {
-/*const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
-  number,
-  pagination,
+const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
   success,
 }) => {
   const [customers, setCustomers] = useState<CustomerModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [page, setPage] = useState<number>(1)
   const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
-  // Request to get the page of the users list
-  const pageRequest = () =>
-    http.get<PaginationModel<CustomerModel>>(
-      `${config.api}/v1/customers?page=${page}${number ? '&limit=' + number : ''}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-        },
-      }
-    )
+
+  /*<PaginationModel<CustomerModel>> */
+  /* ?page=${page}${number ? '&limit=' + number : ''}*/
+  /**
+   * Returns the get request of the customers list
+   * @returns request
+   */
+  const customersRequest = () =>
+    http.get<PaginationModel<CustomerModel>>(`${config.api}/v1/customers?page=1`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+      },
+    })
+
+  /**
+   * Sends the get request of the customers list and sets customers & pagination state
+   */
   const getCustomers = async () => {
-    let { data, error } = await sendRequest(pageRequest)
+    let { data, error } = await sendRequest(customersRequest)
     if (error) {
       history.push('/login')
     }
@@ -50,6 +54,10 @@ const CustomersList = () => {
     setMeta(data.meta)
   }
 
+  /**
+   * Returns the delete request for a specific customer
+   * @return request
+   */
   const deleteRequest = (id: string) => {
     return http.delete(`${config.api}/v1/customers/${id}`, null, {
       headers: {
@@ -57,8 +65,14 @@ const CustomersList = () => {
       },
     })
   }
-  const deleteUsers = async (id: string, customer: string) => {
-    if (confirm(`Delete customer: ${customer}?`)) {
+
+  /**
+   * Sends the delete request for a specific customer
+   * @param id :string
+   * @param username :string
+   */
+  const deleteCustomer = async (id: string, username: string) => {
+    if (confirm(`Delete customer: ${username}?`)) {
       let { error } = await sendRequest(deleteRequest, id)
       if (error) {
         console.log(error.message)
@@ -68,9 +82,8 @@ const CustomersList = () => {
     }
   }
 
-  // Check if product has been added and if so displays a toast
+  // Check if customer has been added and if so displays a toast
   useEffect(() => {
-    console.log(success)
     if (success === true) {
       setToast(true)
       setTimeout(() => {
@@ -81,62 +94,64 @@ const CustomersList = () => {
 
   useEffect(() => {
     getCustomers().then()
-  }, [page, refreshPage])
+  }, [refreshPage])
 
-  return ( "true"
+  return (
     <>
-      <div className="users">
-        <div className="top-container">
-          {pagination && (
+      {!customers && !meta && <CustomersListSkeleton />}
+      {customers && meta && (
+        <div className="customers">
+          <div className="top-container">
             <div className="search">
               <i className="fas fa-search"></i>
               <input type="text" placeholder="Search..." />
             </div>
-          )}
-          <Link to="/users/addusers" className="action">
-            New User
-          </Link>
-          <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-            {' '}
-            <i className="fas fa-check" />
-            User Added
-            <i className="fas fa-times" onClick={() => setToast(false)} />
           </div>
-        </div>
-        {!customers && !meta && <Loading />}
-        {customers && meta && (
-          <>
-            <div className="user-list">
-              <div className="legend">
-                <span>Username</span>
-                <span>Role</span>
-                <span>E-mail</span>
-              </div>
-              {customers.map((user) => {
+          <div className="customer-list">
+            <div className="legend">
+              <span>Username</span>
+              <span>E-mail</span>
+              <span>phoneNumber</span>
+              <span>First Name</span>
+              <span>Last Name</span>
+            </div>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.01,
+                  },
+                },
+              }}
+              initial="hidden"
+              animate="show"
+            >
+              {customers?.map((customer, index) => {
                 return (
-                  <div className="user" key={user.id}>
-                    <span>{user.username}</span>
-                    <span>{user.role.name}</span>
-                    <span>{user.email}</span>
-                    <Link to={`/users/edit/${user.id}`} className="action">
-                      Edit
-                    </Link>
-                    <button
-                      className="delete"
-                      onClick={() => deleteUsers(user.id, user.username)}
-                    >
-                      <i className="fas fa-trash"></i>
-                    </button>
-                  </div>
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: { opacity: 1 },
+                    }}
+                    className="customer"
+                    key={index}
+                  >
+                    <span>{customer.username}</span>
+                    <span>{customer.email}</span>
+                    <span>{customer.phoneNumber}</span>
+                    <span>{customer.firstName}</span>
+                    <span>{customer.lastName}</span>
+                  </motion.div>
                 )
               })}
-              {pagination && <Pagination meta={meta} pageSetter={setPage} />}
-            </div>
-          </>
-        )}
-      </div>
+            </motion.div>
+          </div>
+        </div>
+      )}
     </>
-  )*/
+  )
 }
 
 export default CustomersList
