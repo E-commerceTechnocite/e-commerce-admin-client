@@ -12,6 +12,9 @@ import './Stocks.scss'
 import { sendRequest } from '../../util/helpers/refresh'
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import { useQuery } from '../../util/hook/useQuery'
+import { Formik } from 'formik'
+import { stockSchema } from '../../util/validation/productValidation'
+import NumberInput from '../inputs/NumberInput'
 
 interface IStocksProps {
   success?: boolean | undefined
@@ -21,6 +24,7 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
   const [stock, setStock] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [toast, setToast] = useState<boolean>(false)
+  const [editArray, setEditArray] = useState<string[]>([])
   const history = useHistory()
   const query = useQuery()
 
@@ -53,6 +57,20 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
     setStock(data.data)
     setMeta(data.meta)
   }
+
+  const setEditing = (id: string) => {
+    if (editArray.includes(id)) {
+      const array = [...editArray]
+      array.splice(editArray.indexOf(id), 1)
+      setEditArray(array)
+    } else {
+      setEditArray((array) => [...array, id])
+    }
+  }
+
+  useEffect(() => {
+    if (editArray) console.log(editArray)
+  }, [editArray])
 
   useEffect(() => {
     if (!query.get('page')) {
@@ -138,31 +156,84 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                           </span>
                         )}
                         <span>{stock.title}</span>
-                        {stock.stock && stock.stock.physical ? (
-                          <span>{stock.stock.physical}</span>
-                        ) : (
-                          <span>0</span>
+
+                        {!editArray.includes(stock.id) && (
+                          <>
+                            {stock.stock && stock.stock.physical ? (
+                              <span>{stock.stock.physical}</span>
+                            ) : (
+                              <span>0</span>
+                            )}
+
+                            {stock.stock && stock.stock.incoming ? (
+                              <span>{stock.stock.incoming}</span>
+                            ) : (
+                              <span>0</span>
+                            )}
+
+                            {stock.stock && stock.stock.pending ? (
+                              <span>{stock.stock.pending}</span>
+                            ) : (
+                              <span>0</span>
+                            )}
+
+                            <Granted permissions={['u:product']}>
+                              <a
+                                className="action edit"
+                                onClick={() => setEditing(stock.id)}
+                              >
+                                Edit
+                              </a>
+                            </Granted>
+                          </>
                         )}
-                        {stock.stock && stock.stock.incoming ? (
-                          <span>{stock.stock.incoming}</span>
-                        ) : (
-                          <span>0</span>
+
+                        {editArray.includes(stock.id) && (
+                          <>
+                            <Formik
+                              enableReinitialize
+                              initialValues={{
+                                stock: {
+                                  physical: stock.stock.physical,
+                                  incoming: stock.stock.incoming,
+                                  pending: stock.stock.pending,
+                                },
+                              }}
+                              validationSchema={stockSchema}
+                              onSubmit={(data) => {
+                                // submitStockPatch(data)
+                              }}
+                            >
+                              {({ handleSubmit, errors }) => {
+                                console.log(errors)
+                                return (
+                                  <>
+                                    <NumberInput
+                                      name={'stock.physical'}
+                                      label={'Physical'}
+                                    />
+                                    <NumberInput
+                                      name={'stock.incoming'}
+                                      label={'Incoming'}
+                                    />
+                                    <NumberInput
+                                      name={'stock.pending'}
+                                      label={'Pending'}
+                                    />
+                                  </>
+                                )
+                              }}
+                            </Formik>
+                            <Granted permissions={['u:product']}>
+                              <a
+                                className="action edit"
+                                onClick={() => setEditing(stock.id)}
+                              >
+                                Valid
+                              </a>
+                            </Granted>
+                          </>
                         )}
-                        {stock.stock && stock.stock.pending ? (
-                          <span>{stock.stock.pending}</span>
-                        ) : (
-                          <span>0</span>
-                        )}
-                        <Granted permissions={['u:product']}>
-                          <Link
-                            to={`/stock/edit-stock/${stock.id}?page=${query.get(
-                              'page'
-                            )}`}
-                            className="action edit"
-                          >
-                            Edit
-                          </Link>
-                        </Granted>
                       </motion.div>
                     ))}
                   </motion.div>
