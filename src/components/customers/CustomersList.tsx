@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useHistory } from 'react-router'
 import { CustomerModel } from '../../models/customers/customers.model'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
@@ -12,6 +12,7 @@ import Granted from '../Granted'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import CustomersListSkeleton from './skeleton/CustomersListSkeleton'
+import _ from 'lodash'
 
 interface ICustomersListProps {
   number?: number
@@ -24,6 +25,7 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
 }) => {
   const [customers, setCustomers] = useState<CustomerModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
+  const [debouncedState, setDebouncedState] = useState("")
   const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
@@ -34,14 +36,23 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
    * Returns the get request of the customers list
    * @returns request
    */
-  const customersRequest = () =>
-    http.get<PaginationModel<CustomerModel>>(`${config.api}/v1/customers?page=1`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-      },
-    })
-
+  const customersRequest = () => {
+    if(debouncedState === "") {
+      return http.get<PaginationModel<CustomerModel>>(`${config.api}/v1/customers?page=1`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        },
+      })
+    } else {
+      return http.get<PaginationModel<CustomerModel>>(`${config.api}/v1/customers/search?q=${debouncedState}?page=1`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        },
+      })
+    }
+  }
   /**
    * Sends the get request of the customers list and sets customers & pagination state
    */
@@ -82,6 +93,13 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
     }
   }
 
+  const debounce = useCallback(
+    _.debounce((searchValue: string) => {
+      setDebouncedState(searchValue);
+    }, 500),
+    []
+  )
+
   // Check if customer has been added and if so displays a toast
   useEffect(() => {
     if (success === true) {
@@ -94,7 +112,7 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
 
   useEffect(() => {
     getCustomers().then()
-  }, [refreshPage])
+  }, [refreshPage, debouncedState])
 
   return (
     <>
@@ -104,7 +122,7 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
           <div className="top-container">
             <div className="search">
               <i className="fas fa-search"></i>
-              <input type="text" placeholder="Search..." />
+              <input type="text" placeholder="Search..." onChange={(e) => debounce(e.target.value)}/>
             </div>
           </div>
           <div className="customer-list">
@@ -128,6 +146,7 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
               initial="hidden"
               animate="show"
             >
+              {customers.length === 0 && <div className="notfound"><label>Customer not found</label></div>}
               {customers?.map((customer, index) => {
                 return (
                   <motion.div

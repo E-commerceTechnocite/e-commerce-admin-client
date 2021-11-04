@@ -30,7 +30,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   const [page, setPage] = useState<number>(1)
   const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
-  const [debouncedState, setDebouncedState] = useState("");
+  const [debouncedState, setDebouncedState] = useState("")
   const history = useHistory()
 
   // Request to get the page of the category list

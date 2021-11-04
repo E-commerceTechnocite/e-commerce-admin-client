@@ -12,6 +12,7 @@ import { UserModel } from '../../models/user/user.model'
 import { userSchema } from '../../util/validation/userValidation'
 import Previous from '../previous/Previous'
 import './ActionUser.scss'
+import { RoleModel } from '../../models/role/role.model'
 
 interface IActionUserProps {}
 
@@ -24,6 +25,7 @@ interface InitialValues {
 const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
   const history = useHistory()
   const [roles, setRoles] = useState([])
+  const [allRoles, setAllRoles] = useState([])
   const [submitError, setSubmitError] = useState<string>(null)
   const params: { slug: string } = useParams()
   const [initialValues, setInitialValues] = useState<InitialValues>()
@@ -65,7 +67,7 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
       },
     })
   }
-
+  
   const SubmitRole = async () => {
     let { data, error } = await sendRequest(roleRequest)
     if (error) {
@@ -73,9 +75,26 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
     }
     setRoles(data.data)
   }
+  
+  const allRoleRequest = () => {
+    return http.get<string[]>(`${config.api}/v1/role/all`, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+      },
+    })
+  }
+
+  const SubmitAllRole = async () => {
+    let { data, error } = await sendRequest(allRoleRequest)
+    if (error) {
+      history.push('/login')
+    }
+    setAllRoles(data)
+  }
 
   useEffect(() => {
     SubmitRole().then()
+    SubmitAllRole().then()
   }, [])
 
   const currentUserRequest = () => {
@@ -130,7 +149,7 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
                     {params.slug && <label>Edit user</label>}
                     {!params.slug && <label>New user</label>}
                   </div>
-                  <Select name={'roleId'} label={'Role'} options={roles} />
+                  <Select name={'roleId'} label={'Role'} options={allRoles} />
                   <TextInput name={'username'} label={'Username'} />
                   <TextInput name={'email'} label={'E-mail'} />
                   <button type="submit" className="action">

@@ -202,7 +202,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                         }}
                       >
                         <img
-                          src={`${config.api}` + pic.uri}
+                          src={pic.uri.startsWith('http') ? pic.uri : `${config.api}` + pic.uri}
                           alt={pic.caption}
                           id={pic.id}
                           onClick={() => {

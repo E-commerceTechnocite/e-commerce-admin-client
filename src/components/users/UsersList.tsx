@@ -31,6 +31,7 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
   const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
+  
   // Request to get the page of the users list
   const pageRequest = () =>
     http.get<PaginationModel<UserModel>>(
@@ -63,7 +64,12 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
       let { error } = await sendRequest(deleteRequest, id)
       if (error) {
         console.log(error.message)
-        history.push('/login')
+        //history.push('/login')
+        alert('WARNING : AN ERROR OCCURED !')
+        if (error.message === 'Error 500 Internal Server Error')
+          alert(
+            "You can't delete this user"
+          )
       }
       setRefreshPage(!refreshPage)
     }

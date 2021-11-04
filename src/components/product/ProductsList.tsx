@@ -56,7 +56,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
       )
     } else {
       return http.get<PaginationModel<ProductModel>>(
-        `${config.api}/v1/product/search?q=${debouncedState}?page=${page}${
+        `${config.api}/v1/product/search?q=${debouncedState}&page=${page}${
           number ? '&limit=' + number : ''
         }`,
         {
@@ -125,6 +125,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
   useEffect(() => {
     getProducts().then()
+    console.log(products)
   }, [page, refreshPage, debouncedState])
 
   return (
