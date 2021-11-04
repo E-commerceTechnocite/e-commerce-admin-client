@@ -54,6 +54,10 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
   const SubmitTaxRule = async () => {
     let { data, error } = await sendRequest(TaxRuleRequest)
     if (error) {
+      if (error.statusCode === 404) {
+        history.push('/not-found')
+        return
+      }
       history.push('/login')
     }
     setTaxRule(data.data)
@@ -190,7 +194,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
                   key={index}
                 >
                   <span>{tax.taxRuleGroup.name}</span>
-                  <span>{tax.tax.rate}%</span>
+                  <span>{tax.tax}%</span>
                   <span>{tax.country.name}</span>
                   <span>{tax.zipCode}</span>
                   <span>

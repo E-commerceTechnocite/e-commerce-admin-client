@@ -11,6 +11,7 @@ import Previous from '../previous/Previous'
 import './ActionTaxGroup.scss'
 import { config } from '../../index'
 import Granted from '../Granted'
+import { useQuery } from '../../util/hook/useQuery'
 
 interface IActionTaxGroupProps {}
 
@@ -19,6 +20,7 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
   const [taxRuleGroup, setTaxRuleGroup] = useState<TaxRuleGroupModel>()
   const params: { slug: string } = useParams()
   const history = useHistory()
+  const query = useQuery()
 
   /**
    * Returns post or patch request for new tax group
@@ -54,10 +56,23 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
     if (error) {
       history.push('/login')
     }
-    history.push({
-      pathname: '/taxes',
-      state: { successGroup: true },
-    })
+    if (query.get('group')) {
+      history.push({
+        pathname: '/taxes',
+        search: `?rule=${query.get('rule')}&group=${query.get(
+          'group'
+        )}&country=${query.get('country')}`,
+        state: { successGroupEdit: true },
+      })
+    } else {
+      history.push({
+        pathname: '/taxes',
+        search: `?rule=${query.get('rule')}&group=1&country=${query.get(
+          'country'
+        )}`,
+        state: { successGroup: true },
+      })
+    }
   }
 
   /**
@@ -112,7 +127,7 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
             return (
               <>
                 <form onSubmit={handleSubmit}>
-                <div className="add-user-title">
+                  <div className="add-user-title">
                     {params.slug && <label>Edit tax group</label>}
                     {!params.slug && <label>New tax group</label>}
                   </div>

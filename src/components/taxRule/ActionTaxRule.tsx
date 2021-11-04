@@ -228,7 +228,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
                         options={taxRuleGroup}
                       />
                     )}
-                    <NumberInput name="tax" label={'Tax'} />
+                    <NumberInput name="tax" label={'Tax %'} />
                     <TextInput name={'zipCode'} label={'Zip Code'} />
                     <TextAreaInput name={'description'} label={'Description'} />
                     {!params.slug && (
