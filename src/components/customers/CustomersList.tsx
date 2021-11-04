@@ -12,36 +12,36 @@ import Granted from '../Granted'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import CustomersListSkeleton from './skeleton/CustomersListSkeleton'
+import { useQuery } from '../../util/hook/useQuery'
+import Pagination from '../pagination/Pagination'
 
 interface ICustomersListProps {
   number?: number
   pagination?: boolean
-  success?: boolean | undefined
 }
 
-const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
-  success,
-}) => {
+const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
   const [customers, setCustomers] = useState<CustomerModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [page, setPage] = useState<number>(1)
   const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
+  const query = useQuery()
 
-  /*<PaginationModel<CustomerModel>> */
-  /* ?page=${page}${number ? '&limit=' + number : ''}*/
   /**
    * Returns the get request of the customers list
    * @returns request
    */
   const customersRequest = () =>
-    http.get<CustomerModel[]>(`${config.api}/v1/customers`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-      },
-    })
+    http.get<PaginationModel<CustomerModel>>(
+      `${config.api}/v1/customers?page=${query.get('page')}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        },
+      }
+    )
 
   /**
    * Sends the get request of the customers list and sets customers & pagination state
@@ -49,11 +49,14 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
   const getCustomers = async () => {
     let { data, error } = await sendRequest(customersRequest)
     if (error) {
+      if (error.statusCode === 404) {
+        history.push('/not-found')
+        return
+      }
       history.push('/login')
     }
-    setCustomers(data)
-    // setCustomers(data.data)
-    // setMeta(data.meta)
+    setCustomers(data.data)
+    setMeta(data.meta)
   }
 
   /**
@@ -77,31 +80,24 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
     if (confirm(`Delete customer: ${username}?`)) {
       let { error } = await sendRequest(deleteRequest, id)
       if (error) {
-        console.log(error.message)
         history.push('/login')
       }
       setRefreshPage(!refreshPage)
     }
   }
 
-  // Check if customer has been added and if so displays a toast
   useEffect(() => {
-    if (success === true) {
-      setToast(true)
-      setTimeout(() => {
-        setToast(false)
-      }, 10000)
+    if (!query.get('page')) {
+      history.push('/customers?page=1')
+      return
     }
-  }, [success])
-
-  useEffect(() => {
     getCustomers().then()
-  }, [page, refreshPage])
+  }, [refreshPage, query.get('page')])
 
   return (
     <>
-      {!customers && <CustomersListSkeleton />}
-      {customers && (
+      {!customers && !meta && <CustomersListSkeleton />}
+      {customers && meta && (
         <div className="customers">
           <div className="top-container">
             <div className="search">
@@ -149,6 +145,7 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
                 )
               })}
             </motion.div>
+            <Pagination meta={meta} uri={`/customers?page=`} />
           </div>
         </div>
       )}

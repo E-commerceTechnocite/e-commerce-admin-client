@@ -29,7 +29,6 @@
       justify-items: flex-start;
     }
     .legend {
-      height: 19px;
       padding: 20px 30px;
       font-weight: bold;
       span {
@@ -38,8 +37,10 @@
         height: 19px;
         background: #eee;
       }
+      
     }
     .customer-skeleton {
+      height: 34px;
       span:nth-child(-n + 5) {
         border-radius: 4px;
         width: 90%;
@@ -66,7 +67,6 @@
     span {
       position: relative;
       width: 90%;
-
     }
     span::before {
       position: absolute;
