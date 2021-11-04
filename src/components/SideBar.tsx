@@ -71,7 +71,7 @@ const SideBar: React.FunctionComponent = () => {
               </NavLink>
             </Granted>
             <Granted permissions={['r:file']}>
-              <NavLink uri="/medias" icon="fas fa-image">
+              <NavLink uri="/medias?page=1" icon="fas fa-image">
                 Media library
               </NavLink>
             </Granted>
