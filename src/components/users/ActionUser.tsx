@@ -63,6 +63,11 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
     setSubmitError(null)
     let { error } = await sendRequest(userPostRequest, data)
     if (error) {
+      if (error.statusCode === 400) {
+        setIsSubmit(false)
+        setSubmitError('Username or Email already used')
+        return
+      }
       history.push('/login')
     }
     if (query.get('page')) {
