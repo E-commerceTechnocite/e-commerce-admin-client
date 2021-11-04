@@ -62,6 +62,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
   const [thumbnail, setThumbnail] = useState<PictureModel | null>(null)
   const [picturesId, setPicturesId] = useState<string[]>([])
   const [fileError, setFileError] = useState<boolean>(false)
+  const [submitError, setSubmitError] = useState<string>('')
   const [libraryData, setLibraryData] = useState<PictureModel[]>([])
   const [product, setProduct] = useState<ProductModel>()
   const [isSubmit, setIsSubmit] = useState<boolean>(false)
@@ -154,6 +155,8 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
       }
     } catch {
       setFileError(true)
+      setSubmitError('Select an image')
+      setIsSubmit(false)
     }
   }
 
@@ -428,6 +431,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                       )}
                       {isSubmit && <LoadingButton />}
                     </div>
+                    {submitError && <div className="global-error">{submitError}</div>}
                   </form>
                 )
               }}
