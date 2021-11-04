@@ -7,40 +7,40 @@ import { useHistory } from 'react-router'
 import { sendRequest } from '../../util/helpers/refresh'
 import { TaxRuleModel } from '../../models/taxRule/taxRule.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
-import Loading from '../loading/Loading'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import Pagination from '../pagination/Pagination'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import Granted from '../Granted'
 import TaxRuleSkeleton from './skeleton/TaxRuleSkeleton'
+import { useQuery } from '../../util/hook/useQuery'
 
 interface ITaxRuleProps {
   success?: boolean | undefined
-  groupUpdate?: boolean
-  rateUpdate?: boolean
-  countryUpdate?: boolean
+  successEdit?: boolean | undefined
   isUpdated?: boolean
 }
 
 const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
   success,
-  groupUpdate,
-  rateUpdate,
-  countryUpdate,
+  successEdit,
   isUpdated,
 }) => {
   const [taxRule, setTaxRule] = useState<TaxRuleModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [page, setPage] = useState<number>(1)
+  const query = useQuery()
   const [toast, setToast] = useState<boolean>(false)
+  const [toastEdit, setToastEdit] = useState<boolean>(false)
   const [refreshPage, setRefreshPage] = useState<boolean>(false)
   const history = useHistory()
 
-  // Get request for taxRules
+  /**
+   * Returns get request for tax rule
+   * @returns request
+   */
   const TaxRuleRequest = () => {
     return http.get<PaginationModel<TaxRuleModel>>(
-      `${config.api}/v1/tax-rule?page=${page}&limit=5`,
+      `${config.api}/v1/tax-rule?page=${query.get('rule')}&limit=5`,
       {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -48,16 +48,27 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
       }
     )
   }
+  /**
+   * Submits get request for tax rule
+   */
   const SubmitTaxRule = async () => {
     let { data, error } = await sendRequest(TaxRuleRequest)
     if (error) {
+      if (error.statusCode === 404) {
+        history.push('/not-found')
+        return
+      }
       history.push('/login')
     }
     setTaxRule(data.data)
     setMeta(data.meta)
   }
 
-  // Delete request for tax rule
+  /**
+   * Returns delete request for specific tax rule
+   * @param id
+   * @returns request
+   */
   const deleteTaxRequest = (id: string) => {
     return http.delete(`${config.api}/v1/tax-rule/${id}`, null, {
       headers: {
@@ -65,6 +76,14 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
       },
     })
   }
+
+  /**
+   * Submits delete request for specific tax rule
+   * @param id
+   * @param name
+   * @param rate
+   * @param country
+   */
   const deleteTax = async (
     id: string,
     name: number,
@@ -82,11 +101,12 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
 
   // Call the requests before render
   useEffect(() => {
+    if (!query.get('rule')) {
+      history.push('/taxes?rule=1&group=1&country=1&s=u')
+      return
+    }
     SubmitTaxRule().then()
-    console.log('----------')
-    console.log(isUpdated)
-    console.log('----------')
-  }, [page, refreshPage, isUpdated])
+  }, [refreshPage, isUpdated, query.get('rule')])
 
   // Check if tax rule has been added
   useEffect(() => {
@@ -96,11 +116,17 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
         setToast(false)
       }, 10000)
     }
-  }, [success])
+    if (successEdit === true) {
+      setToastEdit(true)
+      setTimeout(() => {
+        setToastEdit(false)
+      }, 10000)
+    }
+  }, [success, successEdit])
 
   return (
     <>
-      {!taxRule && !meta && <TaxRuleSkeleton/>}
+      {!taxRule && !meta && <TaxRuleSkeleton />}
       {taxRule && meta && (
         <div className="tax-rule">
           <div className="top">
@@ -109,16 +135,36 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
               <input type="text" placeholder="Search..." />
             </div>
             <Granted permissions={['c:tax-rule']}>
-              <Link to="/taxes/add-tax-rule" className="action">
+              <Link
+                to={`/taxes/add-tax-rule?group=${query.get(
+                  'group'
+                )}&country=${query.get('country')}`}
+                className="action"
+              >
                 New Tax
               </Link>
             </Granted>
-            <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-              {' '}
-              <i className="fas fa-check" />
-              Tax Rule Added
-              <i className="fas fa-times" onClick={() => setToast(false)} />
-            </div>
+            {success && (
+              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+                {' '}
+                <i className="fas fa-check" />
+                Tax Rule Added
+                <i className="fas fa-times" onClick={() => setToast(false)} />
+              </div>
+            )}
+            {successEdit && (
+              <div
+                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
+              >
+                {' '}
+                <i className="fas fa-check" />
+                Tax Rule Edited
+                <i
+                  className="fas fa-times"
+                  onClick={() => setToastEdit(false)}
+                />
+              </div>
+            )}
           </div>
           <div className="tax-list">
             <div className="legend">
@@ -152,7 +198,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
                   key={index}
                 >
                   <span>{tax.taxRuleGroup.name}</span>
-                  <span>{tax.tax.rate}%</span>
+                  <span>{tax.tax}%</span>
                   <span>{tax.country.name}</span>
                   <span>{tax.zipCode}</span>
                   <span>
@@ -162,7 +208,11 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
                   </span>
                   <Granted permissions={['u:tax-rule']}>
                     <Link
-                      to={`/taxes/edit-tax-rule/${tax.id}`}
+                      to={`/taxes/edit-tax-rule/${tax.id}?rule=${query.get(
+                        'rule'
+                      )}&group=${query.get('group')}&country=${query.get(
+                        'country'
+                      )}`}
                       className="action edit"
                     >
                       Edit
@@ -187,7 +237,13 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
               ))}
             </motion.div>
           </div>
-          <Pagination meta={meta} pageSetter={setPage} />
+          <Pagination
+            meta={meta}
+            uri={`taxes?rule=`}
+            restUri={`&group=${query.get('group')}&country=${query.get(
+              'country'
+            )}`}
+          />
         </div>
       )}
     </>

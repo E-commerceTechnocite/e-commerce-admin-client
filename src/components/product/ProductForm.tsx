@@ -27,6 +27,8 @@ import Loading from '../loading/Loading'
 import { auth } from '../../util/helpers/auth'
 import { TaxRuleGroupModel } from '../../models/product/tax-rule-group.model'
 import { motion } from 'framer-motion'
+import { useQuery } from '../../util/hook/useQuery'
+import LoadingButton from '../loading/LoadingButton'
 
 interface FormValuesInterface {
   title: string
@@ -62,7 +64,9 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
   const [fileError, setFileError] = useState<boolean>(false)
   const [libraryData, setLibraryData] = useState<PictureModel[]>([])
   const [product, setProduct] = useState<ProductModel>()
+  const [isSubmit, setIsSubmit] = useState<boolean>(false)
   const params: { slug: string } = useParams()
+  const query = useQuery()
   const history = useHistory()
 
   let [initialValues, setInitialValues] = useState<FormValuesInterface>({
@@ -134,10 +138,19 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
             pathname: '/login',
           })
         }
-        history.push({
-          pathname: '/products',
-          state: { success: true },
-        })
+        if (query.get('page')) {
+          history.push({
+            pathname: '/products',
+            search: `?page=${query.get('page')}`,
+            state: { successEdit: true },
+          })
+        } else {
+          history.push({
+            pathname: '/products',
+            search: '?page=1',
+            state: { success: true },
+          })
+        }
       }
     } catch {
       setFileError(true)
@@ -298,7 +311,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
               initialValues={initialValues}
               validationSchema={productSchema}
               onSubmit={async (data) => {
-                // console.log(data)
+                setIsSubmit(true)
                 await submitProduct(data)
               }}
             >
@@ -408,9 +421,12 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                       />
                     </div>
                     <div className="buttons">
-                      <button className="action" type="submit">
-                        {submitButtonContent ?? 'Add product'}
-                      </button>
+                      {!isSubmit && (
+                        <button className="action" type="submit">
+                          {submitButtonContent ?? 'Add product'}
+                        </button>
+                      )}
+                      {isSubmit && <LoadingButton />}
                     </div>
                   </form>
                 )

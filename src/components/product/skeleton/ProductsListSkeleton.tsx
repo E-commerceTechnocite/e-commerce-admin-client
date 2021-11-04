@@ -35,8 +35,8 @@ const ProductsListSkeleton: React.FunctionComponent<ProductsListSkeleton> = ({
             <span></span>
           </div>
           <div>
-            {[...Array(listNnumber)].map(() => (
-              <div className="product">
+            {[...Array(listNnumber)].map((params, index) => (
+              <div className="product" key={index}>
                 <span></span>
                 <span></span>
                 <span></span>

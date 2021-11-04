@@ -517,12 +517,21 @@ button {
   .tabs {
     .buttons {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 150px);
+    border-bottom: 2px solid $primary-button;
+
       .action:hover {
         background: $primary-button;
       }
       button {
         border-radius: 0;
+      }
+      button:nth-child(1) {
+        border-radius: 4px 0 0 0 ;
+      }
+      button:nth-child(2) {
+        border-radius: 0 4px 0 0 ;
+
       }
     }
   }

@@ -66,22 +66,22 @@ const SideBar: React.FunctionComponent = () => {
               Dashboard
             </NavLink>
             <Granted permissions={['r:product']}>
-              <NavLink uri="/products" icon="fas fa-folder-open">
+              <NavLink uri="/products?page=1&s=u" icon="fas fa-folder-open">
                 Products
               </NavLink>
             </Granted>
             <Granted permissions={['r:file']}>
-              <NavLink uri="/medias" icon="fas fa-image">
+              <NavLink uri="/medias?page=1&s=u" icon="fas fa-image">
                 Media library
               </NavLink>
             </Granted>
             <Granted permissions={['r:user']}>
-              <NavLink uri="/users" icon="fas fa-users">
+              <NavLink uri="/users?page=1&s=u" icon="fas fa-users">
                 Users
               </NavLink>
             </Granted>
             <Granted permissions={['r:role']}>
-              <NavLink uri="/roles" icon="fas fa-user-tag">
+              <NavLink uri="/roles?page=1&s=u" icon="fas fa-user-tag">
                 Roles
               </NavLink>
             </Granted>
@@ -93,27 +93,27 @@ const SideBar: React.FunctionComponent = () => {
                 'r:country',
               ]}
             >
-              <NavLink uri="/taxes" icon="fas fa-donate">
+              <NavLink uri="/taxes?rule=1&group=1&country=1&s=u" icon="fas fa-donate">
                 Taxes
               </NavLink>
             </Granted>
             <Granted permissions={['r:product-category']}>
-              <NavLink uri="/categories" icon="fas fa-list">
+              <NavLink uri="/categories?page=1&s=u" icon="fas fa-list">
                 Categories
               </NavLink>
             </Granted>
             <Granted permissions={[]}>
-              <NavLink uri="/customers" icon="fas fa-user-circle">
+              <NavLink uri="/customers?page=1&s=u" icon="fas fa-user-circle">
                 Customers
               </NavLink>
             </Granted>
             <Granted permissions={[]}>
-              <NavLink uri="/orders" icon="fas fa-cart-arrow-down">
+              <NavLink uri="/orders?page=1&s=u" icon="fas fa-cart-arrow-down">
                 Orders
               </NavLink>
             </Granted>
             <Granted permissions={[]}>
-              <NavLink uri="/stock" icon="fas fa-dolly">
+              <NavLink uri="/stock?page=1&s=u" icon="fas fa-dolly">
                 Stock
               </NavLink>
             </Granted>

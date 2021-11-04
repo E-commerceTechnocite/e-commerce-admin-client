@@ -17,7 +17,6 @@ import MediaLibrary from './views/MediaLibrary'
 import Users from './views/Users'
 import Roles from './views/Roles'
 import NotFound from './views/NotFound'
-import ScrollToTop from './components/ScrollToTop'
 import { config } from './index'
 import Taxes from './views/taxes/Taxes'
 import AddTaxRule from './views/taxes/AddTaxRule'
@@ -27,7 +26,6 @@ import Orders from './views/Orders'
 import Stock from './views/stock/Stock'
 import EditStock from './views/stock/EditStock'
 import AddTaxGroup from './views/taxes/AddTaxGroup'
-import AddTaxRate from './views/taxes/AddTaxRate'
 import AddCountry from './views/taxes/AddCountry'
 import { GuardedRoute, GuardFunction, GuardProvider } from 'react-router-guards'
 import { sendRequest } from './util/helpers/refresh'
@@ -61,14 +59,17 @@ export const App = () => {
     <>
       <Provider store={store}>
         <Router basename={config.basePath}>
-          <ScrollToTop />
           <Switch>
             <Route path="/login" component={Login} />
             <GuardProvider guards={[loginGuard]} loading={Loading}>
               <DashboardLayout>
                 <Switch>
                   <GuardedRoute exact path="/" component={Home} />
-                  <GuardedRoute exact path="/products" component={Products} />
+                  <GuardedRoute
+                    exact
+                    path="/products"
+                    component={Products}
+                  />
                   <GuardedRoute
                     exact
                     path="/products/add"
@@ -121,16 +122,6 @@ export const App = () => {
                     exact
                     path="/taxes/edit-tax-group/:slug"
                     component={AddTaxGroup}
-                  />
-                  <GuardedRoute
-                    exact
-                    path="/taxes/add-tax-rate"
-                    component={AddTaxRate}
-                  />
-                  <GuardedRoute
-                    exact
-                    path="/taxes/edit-tax-rate/:slug"
-                    component={AddTaxRate}
                   />
                   <GuardedRoute
                     exact
