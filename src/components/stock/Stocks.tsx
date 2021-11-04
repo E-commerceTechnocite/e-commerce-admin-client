@@ -11,17 +11,18 @@ import { motion } from 'framer-motion'
 import './Stocks.scss'
 import { sendRequest } from '../../util/helpers/refresh'
 import { PaginationModel } from '../../models/pagination/pagination.model'
+import { useQuery } from '../../util/hook/useQuery'
 
 interface IStocksProps {
   success?: boolean | undefined
 }
 
 const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
-  const [page, setPage] = useState<number>(1)
   const [stock, setStock] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [toast, setToast] = useState<boolean>(false)
   const history = useHistory()
+  const query = useQuery()
 
   /**
    * Returns the get request for Products (Stocks)
@@ -29,7 +30,7 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
    */
   const stocksRequest = () => {
     return http.get<PaginationModel<ProductModel>>(
-      `${config.api}/v1/product?page=${page}&limit=10`,
+      `${config.api}/v1/product?page=${query.get('page')}&limit=10`,
       {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -43,6 +44,10 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
   const submitStocks = async () => {
     let { data, error } = await sendRequest(stocksRequest)
     if (error) {
+      if (error.statusCode === 404) {
+        history.push('/not-found')
+        return
+      }
       history.push('/login')
     }
     setStock(data.data)
@@ -50,8 +55,12 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
   }
 
   useEffect(() => {
+    if (!query.get('page')) {
+      history.push('/users?page=1')
+      return
+    }
     submitStocks().then()
-  }, [page])
+  }, [query.get('page')])
 
   // Check if a has been added and sends a confirmation toast
   useEffect(() => {
@@ -145,7 +154,9 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                         )}
                         <Granted permissions={['u:product']}>
                           <Link
-                            to={`/stock/edit-stock/${stock.id}`}
+                            to={`/stock/edit-stock/${stock.id}?page=${query.get(
+                              'page'
+                            )}`}
                             className="action edit"
                           >
                             Edit
@@ -155,7 +166,7 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                     ))}
                   </motion.div>
                 </div>
-                {/* <Pagination meta={meta} pageSetter={setPage} /> */}
+                <Pagination meta={meta} uri={`/stock?page=`} />
               </>
             )}
           </div>
