@@ -5,6 +5,7 @@ import Granted from '../../components/Granted'
 import TaxGroup from '../../components/taxGroup/TaxGroup'
 import TaxRate from '../../components/taxRate/TaxRate'
 import TaxRule from '../../components/taxRule/TaxRule'
+import { useQuery } from '../../util/hook/useQuery'
 
 interface ITaxesProps {
   location?: {
@@ -30,6 +31,7 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
   const [rate, setRate] = useState<boolean>(false)
   const [country, setCountry] = useState<boolean>(false)
   const [isUpdated, setIsUpdated] = useState<boolean>(false)
+  const query = useQuery()
 
   const switchTabs = (name: string): void => {
     setGroup(false)
@@ -51,6 +53,7 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
   }
 
   useEffect(() => {
+    if (query.get('s')) window.scrollTo(0, 0)
     if (props.location.state !== undefined) {
       console.log(props.location.state)
       if (props.location.state.success) setSuccess(props.location.state.success)

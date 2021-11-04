@@ -56,9 +56,10 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
 
   useEffect(() => {
     if (!query.get('page')) {
-      history.push('/stock?page=1')
+      history.push('/stock?page=1&s=u')
       return
     }
+    if (query.get('s')) window.scrollTo(0, 0)
     submitStocks().then()
   }, [query.get('page')])
 

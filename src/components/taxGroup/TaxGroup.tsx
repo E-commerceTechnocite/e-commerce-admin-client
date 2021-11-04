@@ -116,7 +116,7 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
 
   useEffect(() => {
     if (!query.get('group')) {
-      history.push('/taxes?rule=1&group=1&country=1')
+      history.push('/taxes?rule=1&group=1&country=1&s=u')
       return
     }
     SubmitTaxRuleGroup().then()

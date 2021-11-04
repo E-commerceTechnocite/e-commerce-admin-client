@@ -61,7 +61,6 @@ export const App = () => {
     <>
       <Provider store={store}>
         <Router basename={config.basePath}>
-          <ScrollToTop />
           <Switch>
             <Route path="/login" component={Login} />
             <GuardProvider guards={[loginGuard]} loading={Loading}>

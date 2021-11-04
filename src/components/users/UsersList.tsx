@@ -116,9 +116,10 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
 
   useEffect(() => {
     if (!query.get('page')) {
-      history.push('/users?page=1')
+      history.push('/users?page=1&s=u')
       return
     }
+    if (query.get('s')) window.scrollTo(0, 0)
     getUsers().then()
   }, [refreshPage, query.get('page')])
 

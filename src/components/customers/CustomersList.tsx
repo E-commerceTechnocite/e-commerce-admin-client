@@ -88,9 +88,10 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
 
   useEffect(() => {
     if (!query.get('page')) {
-      history.push('/customers?page=1')
+      history.push('/customers?page=1&s=u')
       return
     }
+    if (query.get('s')) window.scrollTo(0, 0)
     getCustomers().then()
   }, [refreshPage, query.get('page')])
 

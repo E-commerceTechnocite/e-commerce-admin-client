@@ -147,9 +147,11 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   useEffect(() => {
     if (!query.get('page')) {
       if (path === '/admin/medias') {
-        history.push('/medias?page=1')
+        history.push('/medias?page=1&s=u')
         return
       }
+    if (query.get('s')) window.scrollTo(0, 0)
+
     }
     fetchImages().then()
   }, [page, query.get('page'), imagePending])

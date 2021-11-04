@@ -123,9 +123,10 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
 
   useEffect(() => {
     if (!query.get('page')) {
-      history.push('/categories?page=1')
+      history.push('/categories?page=1&s=u')
       return
     }
+    if (query.get('s')) window.scrollTo(0, 0)
     getRoles().then()
   }, [refreshPage, query.get('page')])
 

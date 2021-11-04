@@ -37,6 +37,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   const [refreshPage, setRefreshPage] = useState(false)
   const query = useQuery()
   const history = useHistory()
+  const [isMounted, setIsMounted] = useState(false)
 
   /**
    * Returns request to get the page of the product list
@@ -112,12 +113,16 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   }, [success, successEdit])
 
   useEffect(() => {
+    if (query.get('scroll')) {
+    }
     if (!query.get('page')) {
       if (window.location.pathname === '/admin/products') {
-        history.push('/products?page=1')
+        history.push('/products?page=1&s=u')
         return
       }
     }
+    if (query.get('s')) window.scrollTo(0, 0)
+
     getProducts().then()
   }, [refreshPage, query.get('page')])
 
@@ -162,94 +167,89 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
               </div>
             )}
           </div>
-
-          <>
-            <div className="product-list">
-              <div className="legend">
-                <span>Image</span>
-                <span>Title</span>
-                <span>Reference</span>
-                <span>Description</span>
-                <span>Category</span>
-                <span>Price</span>
-              </div>
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0 },
-                  show: {
-                    opacity: 1,
-                    transition: {
-                      staggerChildren: 0.01,
-                    },
-                  },
-                }}
-                initial="hidden"
-                animate="show"
-              >
-                {products.map((product) => {
-                  const strippedHtml = htmlToText(product.description)
-                  return (
-                    <motion.div
-                      variants={{
-                        hidden: { opacity: 0 },
-                        show: { opacity: 1 },
-                      }}
-                      className="product"
-                      key={product.id}
-                    >
-                      {product.thumbnail && product.thumbnail.uri && (
-                        <span>
-                          <img
-                            src={config.api + product.thumbnail.uri}
-                            alt={product.thumbnail.title}
-                          />
-                        </span>
-                      )}
-                      {!product.thumbnail && (
-                        <span className="placeholder">
-                          <img />
-                        </span>
-                      )}
-                      <span>{product.title}</span>
-                      <span>{product.reference}</span>
-                      <span>
-                        {strippedHtml.length >= 100
-                          ? strippedHtml.substr(0, 50) + '...'
-                          : strippedHtml}
-                      </span>
-                      <span>{product.category.label}</span>
-                      <span>{product.price} €</span>
-
-                      <Granted permissions={['u:product']}>
-                        <Link
-                          to={`/products/edit/${product.id}?page=${query.get(
-                            'page'
-                          )}`}
-                          className="action"
-                        >
-                          Edit
-                        </Link>
-                      </Granted>
-                      <Granted permissions={['d:product']}>
-                        <motion.button
-                          whileHover={{
-                            scale: 1.1,
-                          }}
-                          className="delete"
-                          onClick={() =>
-                            deleteProduct(product.id, product.title)
-                          }
-                        >
-                          <i className="fas fa-trash" />
-                        </motion.button>
-                      </Granted>
-                    </motion.div>
-                  )
-                })}
-              </motion.div>
-              {pagination && <Pagination meta={meta} uri="/products?page=" />}
+          <div className="product-list">
+            <div className="legend">
+              <span>Image</span>
+              <span>Title</span>
+              <span>Reference</span>
+              <span>Description</span>
+              <span>Category</span>
+              <span>Price</span>
             </div>
-          </>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.01,
+                  },
+                },
+              }}
+              initial="hidden"
+              animate="show"
+            >
+              {products.map((product) => {
+                const strippedHtml = htmlToText(product.description)
+                return (
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: { opacity: 1 },
+                    }}
+                    className="product"
+                    key={product.id}
+                  >
+                    {product.thumbnail && product.thumbnail.uri && (
+                      <span>
+                        <img
+                          src={config.api + product.thumbnail.uri}
+                          alt={product.thumbnail.title}
+                        />
+                      </span>
+                    )}
+                    {!product.thumbnail && (
+                      <span className="placeholder">
+                        <img />
+                      </span>
+                    )}
+                    <span>{product.title}</span>
+                    <span>{product.reference}</span>
+                    <span>
+                      {strippedHtml.length >= 100
+                        ? strippedHtml.substr(0, 50) + '...'
+                        : strippedHtml}
+                    </span>
+                    <span>{product.category.label}</span>
+                    <span>{product.price} €</span>
+
+                    <Granted permissions={['u:product']}>
+                      <Link
+                        to={`/products/edit/${product.id}?page=${query.get(
+                          'page'
+                        )}`}
+                        className="action"
+                      >
+                        Edit
+                      </Link>
+                    </Granted>
+                    <Granted permissions={['d:product']}>
+                      <motion.button
+                        whileHover={{
+                          scale: 1.1,
+                        }}
+                        className="delete"
+                        onClick={() => deleteProduct(product.id, product.title)}
+                      >
+                        <i className="fas fa-trash" />
+                      </motion.button>
+                    </Granted>
+                  </motion.div>
+                )
+              })}
+            </motion.div>
+            {pagination && <Pagination meta={meta} uri="/products?page=" />}
+          </div>
         </div>
       )}
     </>

@@ -35,7 +35,11 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
   const query = useQuery()
-  // Request to get the page of the role list
+
+  /**
+   * Returns get request for roles
+   * @returns request
+   */
   const pageRequest = () =>
     http.get<PaginationModel<RoleModel>>(
       `${config.api}/v1/role?page=${query.get('page')}${
@@ -48,6 +52,11 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
         },
       }
     )
+
+  /**
+   * Submits get request for roles
+   * @returns void
+   */
   const getRoles = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
@@ -61,6 +70,11 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
     setMeta(data.meta)
   }
 
+  /**
+   * Returns delete request for specific role
+   * @param id
+   * @returns request
+   */
   const deleteRequest = (id: string) => {
     return http.delete(`${config.api}/v1/role/${id}`, null, {
       headers: {
@@ -68,6 +82,12 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
       },
     })
   }
+
+  /**
+   * Submits delete request for specific role
+   * @param id
+   * @param role
+   */
   const deleteRoles = async (id: string, role: string) => {
     if (confirm(`Delete role: ${role}?`)) {
       let { error } = await sendRequest(deleteRequest, id)
@@ -99,6 +119,11 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
   }, [success, successEdit])
 
   useEffect(() => {
+    if (!query.get('page')) {
+      history.push('/roles?page=1&s=u')
+      return
+    }
+    if (query.get('s')) window.scrollTo(0, 0)
     getRoles().then()
   }, [refreshPage, query.get('page')])
 
@@ -146,7 +171,10 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
                   <div className="role" key={role.id}>
                     <span>{role.name}</span>
                     <Granted permissions={['u:role']}>
-                      <Link to={`/roles/edit/${role.id}?page=${query.get('page')}`} className="action">
+                      <Link
+                        to={`/roles/edit/${role.id}?page=${query.get('page')}`}
+                        className="action"
+                      >
                         Edit
                       </Link>
                     </Granted>
