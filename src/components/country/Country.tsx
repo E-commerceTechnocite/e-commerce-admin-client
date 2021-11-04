@@ -14,6 +14,7 @@ import Granted from '../Granted'
 import { auth } from '../../util/helpers/auth'
 import { TaxRuleModel } from '../../models/product/tax-rule.model'
 import CountrySkeleton from './skeleton/CountrySkeleton'
+import { useQuery } from '../../util/hook/useQuery'
 
 interface ICountryProps {
   successCountry?: boolean | undefined
@@ -40,7 +41,9 @@ const Country: React.FunctionComponent<ICountryProps> = ({
   const [refreshPage, setRefreshPage] = useState(false)
   const [isDeleted, setIsDeleted] = useState<boolean>(false)
   const [toast, setToast] = useState<boolean>(false)
+  const [toastEdit, setToastEdit] = useState<boolean>(false)
   const history = useHistory()
+  const query = useQuery()
 
   /**
    * Returns the get request for country
@@ -48,7 +51,7 @@ const Country: React.FunctionComponent<ICountryProps> = ({
    */
   const countryRequest = () => {
     return http.get<PaginationModel<CountryModel>>(
-      `${config.api}/v1/country?page=${page}&limit=5`,
+      `${config.api}/v1/country?page=${query.get('country')}&limit=5`,
       {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -62,6 +65,10 @@ const Country: React.FunctionComponent<ICountryProps> = ({
   const submitCountry = async () => {
     let { data, error } = await sendRequest(countryRequest)
     if (error) {
+      if (error.statusCode === 404) {
+        history.push('/not-found')
+        return
+      }
       history.push('/login')
     }
     setCountry(data.data)
@@ -91,8 +98,7 @@ const Country: React.FunctionComponent<ICountryProps> = ({
     ) {
       let { data, error } = await sendRequest(deleteCountryRequest, id)
       if (error) {
-        console.log('error lol')
-        // history.push('/login')
+        history.push('/login')
         return
       }
       console.log(data)
@@ -115,7 +121,7 @@ const Country: React.FunctionComponent<ICountryProps> = ({
 
   useEffect(() => {
     submitCountry().then()
-  }, [page, refreshPage])
+  }, [refreshPage, query.get('country')])
 
   // Check if a country has been added and sends a confirmation toast
   useEffect(() => {
@@ -125,7 +131,13 @@ const Country: React.FunctionComponent<ICountryProps> = ({
         setToast(false)
       }, 10000)
     }
-  }, [successCountry])
+    if (successCountryEdit === true) {
+      setToastEdit(true)
+      setTimeout(() => {
+        setToastEdit(false)
+      }, 10000)
+    }
+  }, [successCountry, successCountryEdit])
 
   // Hide delete confirmation message  after 10 seconds
   useEffect(() => {
@@ -142,7 +154,6 @@ const Country: React.FunctionComponent<ICountryProps> = ({
   return (
     <>
       {!country && !meta && <CountrySkeleton />}
-      {/* <CountrySkeleton /> */}
       {country && meta && (
         <div className="country">
           <div className="top">
@@ -151,16 +162,34 @@ const Country: React.FunctionComponent<ICountryProps> = ({
               <input type="text" placeholder="Search..." />
             </div>
             <Granted permissions={['c:country']}>
-              <Link to="/taxes/add-country" className="action">
+              <Link
+                to={`/taxes/add-country?rule=${query.get(
+                  'rule'
+                )}&group=${query.get('group')}`}
+                className="action"
+              >
                 New country
               </Link>
             </Granted>
-            <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-              {' '}
-              <i className="fas fa-check" />
-              Country Added
-              <i className="fas fa-times" onClick={() => setToast(false)} />
-            </div>
+            {successCountry && (
+              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+                {' '}
+                <i className="fas fa-check" />
+                Country Added
+                <i className="fas fa-times" onClick={() => setToast(false)} />
+              </div>
+            )}
+            {successCountryEdit && (
+              <div className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}>
+                {' '}
+                <i className="fas fa-check" />
+                Country Edited
+                <i
+                  className="fas fa-times"
+                  onClick={() => setToastEdit(false)}
+                />
+              </div>
+            )}
           </div>
           <div className="country-list">
             {taxRulesDeleted && taxRulesDeleted.length > 0 && (
@@ -211,7 +240,11 @@ const Country: React.FunctionComponent<ICountryProps> = ({
                   <span>{country.code}</span>
                   <Granted permissions={['u:country']}>
                     <Link
-                      to={`/taxes/edit-country/${country.id}`}
+                      to={`/taxes/edit-country/${country.id}?rule=${query.get(
+                        'rule'
+                      )}&group=${query.get('group')}&country=${query.get(
+                        'country'
+                      )}`}
                       className="action edit"
                     >
                       Edit
@@ -231,7 +264,12 @@ const Country: React.FunctionComponent<ICountryProps> = ({
               ))}
             </motion.div>
           </div>
-          {/* <Pagination meta={meta} pageSetter={setPage} /> */}
+          <Pagination
+            meta={meta}
+            uri={`/taxes?rule=${query.get('rule')}&group=${query.get(
+              'group'
+            )}&country=`}
+          />
         </div>
       )}
     </>

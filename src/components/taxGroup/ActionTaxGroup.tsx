@@ -12,6 +12,7 @@ import './ActionTaxGroup.scss'
 import { config } from '../../index'
 import Granted from '../Granted'
 import { useQuery } from '../../util/hook/useQuery'
+import LoadingButton from '../loading/LoadingButton'
 
 interface IActionTaxGroupProps {}
 
@@ -21,6 +22,7 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
   const params: { slug: string } = useParams()
   const history = useHistory()
   const query = useQuery()
+  const [isSubmit, setIsSubmit] = useState(false)
 
   /**
    * Returns post or patch request for new tax group
@@ -120,6 +122,7 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
           initialValues={initialValues}
           validationSchema={taxGroupSchema}
           onSubmit={(data) => {
+            setIsSubmit(true)
             submitTaxGroupPost(data)
           }}
         >
@@ -134,12 +137,14 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
                   <TextInput name={'name'} label={'Name'} />
                   {!params.slug && (
                     <Granted permissions={['c:tax-rule-group']}>
-                      <button className="action">submit</button>
+                      {!isSubmit && <button className="action">submit</button>}
+                      {isSubmit && <LoadingButton />}
                     </Granted>
                   )}
                   {params.slug && (
                     <Granted permissions={['u:tax-rule-group']}>
-                      <button className="action">submit</button>
+                      {!isSubmit && <button className="action">submit</button>}
+                      {isSubmit && <LoadingButton />}
                     </Granted>
                   )}
 

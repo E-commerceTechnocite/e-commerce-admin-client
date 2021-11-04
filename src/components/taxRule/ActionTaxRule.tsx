@@ -206,7 +206,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
               submitTaxRulePost(data)
             }}
           >
-            {({ handleSubmit, values, errors}) => {
+            {({ handleSubmit}) => {
               return (
                 <>
                   <form onSubmit={handleSubmit}>
