@@ -1,9 +1,11 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { auth } from '../util/helpers/auth'
 
 const UpperBar: React.FunctionComponent = () => {
   const [breadcrumbs, setBreadcrumbs] = useState<string[]>([])
+  const [username, setUsername] = useState<string>("")
   const location = useLocation()
   const isFirstOrLast = (array: string[], index: number): boolean => {
     if (index === array.length - 1) return true
@@ -14,12 +16,13 @@ const UpperBar: React.FunctionComponent = () => {
     let treatedPath = crumb.split('/')
     for (let i = 0; i < treatedPath.length; i++) {
       treatedPath[i] =
-        treatedPath[i].charAt(0).toUpperCase() + treatedPath[i].slice(1)
+      treatedPath[i].charAt(0).toUpperCase() + treatedPath[i].slice(1)
     }
     treatedPath.shift()
     if (treatedPath[0] === '')
       treatedPath[0] = treatedPath[0].replace('', 'Home')
     setBreadcrumbs(treatedPath)
+    setUsername(auth.decodedAccess.username) // PEUT ETRE SUJET A ERREUR !
   }, [location.pathname])
 
   return (
@@ -40,8 +43,7 @@ const UpperBar: React.FunctionComponent = () => {
         <div className="user">
           <div></div>
           <div>
-            <span>John</span>
-            <span>Doe</span>
+            <span>{username}</span>
             <i className="fas fa-sort-down"></i>
           </div>
         </div>
