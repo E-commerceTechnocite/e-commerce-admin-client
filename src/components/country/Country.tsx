@@ -120,6 +120,10 @@ const Country: React.FunctionComponent<ICountryProps> = ({
   }
 
   useEffect(() => {
+    if (!query.get('country')) {
+      history.push('/taxes?rule=1&group=1&country=1')
+      return
+    }
     submitCountry().then()
   }, [refreshPage, query.get('country')])
 
@@ -180,7 +184,9 @@ const Country: React.FunctionComponent<ICountryProps> = ({
               </div>
             )}
             {successCountryEdit && (
-              <div className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}>
+              <div
+                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
+              >
                 {' '}
                 <i className="fas fa-check" />
                 Country Edited

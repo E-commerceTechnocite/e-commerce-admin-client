@@ -115,6 +115,10 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   }
 
   useEffect(() => {
+    if (!query.get('group')) {
+      history.push('/taxes?rule=1&group=1&country=1')
+      return
+    }
     SubmitTaxRuleGroup().then()
   }, [refreshPage, query.get('group')])
 
@@ -158,7 +162,12 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
               <input type="text" placeholder="Search..." />
             </div>
             <Granted permissions={['c:tax-rule-group']}>
-              <Link to={`/taxes/add-tax-group?rule=${query.get('rule')}&country=${query.get('country')}`} className="action">
+              <Link
+                to={`/taxes/add-tax-group?rule=${query.get(
+                  'rule'
+                )}&country=${query.get('country')}`}
+                className="action"
+              >
                 New Group
               </Link>
             </Granted>

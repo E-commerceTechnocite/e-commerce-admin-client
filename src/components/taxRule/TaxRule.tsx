@@ -101,6 +101,10 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
 
   // Call the requests before render
   useEffect(() => {
+    if (!query.get('rule')) {
+      history.push('/taxes?rule=1&group=1&country=1')
+      return
+    }
     SubmitTaxRule().then()
   }, [refreshPage, isUpdated, query.get('rule')])
 

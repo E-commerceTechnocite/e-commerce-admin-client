@@ -56,7 +56,7 @@ const Pagination: FunctionComponent<PaginationPropsInterface> = ({
                   {meta.nextPage + 1}
                 </Link>
               )}
-              <Link to={`${uri}${meta.nextPage + 1}${restUri ? restUri : ''}`}>
+              <Link to={`${uri}${meta.nextPage}${restUri ? restUri : ''}`}>
                 <i className="fas fa-angle-right" />
               </Link>
               <Link to={`${uri}${meta.maxPages}${restUri ? restUri : ''}`}>

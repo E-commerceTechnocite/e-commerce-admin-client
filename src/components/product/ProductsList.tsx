@@ -113,6 +113,10 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   }, [success, successEdit])
 
   useEffect(() => {
+    if (!query.get('page')) {
+      history.push('/products?page=1')
+      return
+    }
     getProducts().then()
   }, [refreshPage, query.get('page')])
 

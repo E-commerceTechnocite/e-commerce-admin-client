@@ -98,7 +98,7 @@ const SideBar: React.FunctionComponent = () => {
               </NavLink>
             </Granted>
             <Granted permissions={['r:product-category']}>
-              <NavLink uri="/categories" icon="fas fa-list">
+              <NavLink uri="/categories?page=1" icon="fas fa-list">
                 Categories
               </NavLink>
             </Granted>

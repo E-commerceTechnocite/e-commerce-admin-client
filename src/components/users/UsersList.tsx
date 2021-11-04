@@ -115,6 +115,10 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
   }, [success, successEdit])
 
   useEffect(() => {
+    if (!query.get('page')) {
+      history.push('/users?page=1')
+      return
+    }
     getUsers().then()
   }, [refreshPage, query.get('page')])
 
