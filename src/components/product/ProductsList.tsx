@@ -33,8 +33,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 }) => {
   const [products, setProducts] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [debouncedState, setDebouncedState] = useState("");
-  //const [page, setPage] = useState<number>(1)
+  const [searchValue, setSearchedValue] = useState("")
   const [toast, setToast] = useState(false)
   const [toastEdit, setToastEdit] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
@@ -47,7 +46,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
    * @returns request
    */
   const pageRequest = () => {
-    if(debouncedState === "") {
+    if(searchValue === "") {
       return http.get<PaginationModel<ProductModel>>(
         `${config.api}/v1/product?page=${pagination ? query.get('page') : '1'}${
           number ? '&limit=' + number : ''
@@ -61,7 +60,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
       )
     } else {
       return http.get<PaginationModel<ProductModel>>(
-        `${config.api}/v1/product/search?q=${debouncedState}&page=${pagination ? query.get('page') : '1'}${
+        `${config.api}/v1/product/search?q=${searchValue}&page=${pagination ? query.get('page') : '1'}${
           number ? '&limit=' + number : ''
         }`,
         {
@@ -73,21 +72,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
       )
     }
   }
-  /*const pageRequest = () =>
-    http.get<PaginationModel<ProductModel>>(
-      `${config.api}/v1/product?page=${pagination ? query.get('page') : '1'}${
-        number ? '&limit=' + number : ''
-      }`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          ...auth.headers,
-        },
-      }
-    )*/
-  /**
-   * Submits to get the page of the product list
-   */
+
   const getProducts = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
@@ -128,7 +113,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
   const debounce = useCallback(
     _.debounce((searchValue: string) => {
-      setDebouncedState(searchValue);
+      setSearchedValue(searchValue);
     }, 500),
     []
   );
@@ -162,7 +147,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
     getProducts().then()
     console.log(products)
-  }, [refreshPage, query.get('page'), debouncedState])
+  }, [refreshPage, query.get('page'), searchValue])
 
   return (
     <>

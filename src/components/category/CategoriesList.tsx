@@ -34,7 +34,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   const [toast, setToast] = useState(false)
   const [toastEdit, setToastEdit] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
-  const [debouncedState, setDebouncedState] = useState("")
+  const [searchedValue, setSearchedValue] = useState("")
   const history = useHistory()
 
   // Request to get the page of the category list
@@ -43,7 +43,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
    * @returns request
    */
   const pageRequest = () => {
-    if(debouncedState === "") {
+    if(searchedValue === "") {
       return http.get<PaginationModel<CategoryModel>>(
         `${config.api}/v1/product-category?page=${query.get('page')}${
           number ? '&limit=' + number : ''
@@ -57,7 +57,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
       )
     } else {
       return http.get<PaginationModel<CategoryModel>>(
-        `${config.api}/v1/product-category/search?q=${debouncedState}?page=${query.get('page')}${
+        `${config.api}/v1/product-category/search?q=${searchedValue}&page=${query.get('page')}${
           number ? '&limit=' + number : ''
         }`,
         {
@@ -71,26 +71,6 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   }
   const query = useQuery()
 
-  /*/**
-   * Returns get request for product categories
-   * @returns request
-   */
-  /*const pageRequest = () =>
-    http.get<PaginationModel<CategoryModel>>(
-      `${config.api}/v1/product-category?page=${query.get('page')}${
-        number ? '&limit=' + number : ''
-      }`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-        },
-      }
-    )*/
-
-  /**
-   * Submits get request for product categories
-   */
   const getRoles = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
@@ -142,7 +122,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
 
   const debounce = useCallback(
     _.debounce((searchValue: string) => {
-      setDebouncedState(searchValue);
+      setSearchedValue(searchValue);
     }, 500),
     []
   );
@@ -170,7 +150,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
     }
     if (query.get('s')) window.scrollTo(0, 0)
     getRoles().then()
-  }, [refreshPage, query.get('page'), debouncedState])
+  }, [refreshPage, query.get('page'), searchedValue])
 
   return (
     <>

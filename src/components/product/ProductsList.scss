@@ -68,6 +68,7 @@
         align-items: center;
         width: 65px;
         height: 65px;
+        //border: 1px solid $primary-border-color;
         position: relative;
         img {
           position: absolute;
@@ -79,7 +80,7 @@
         width: 65px;
         height: 65px;
         position: absolute;
-        background: #eee;
+        background: #fff;
       }
       .placeholder::before {
         display: flex;

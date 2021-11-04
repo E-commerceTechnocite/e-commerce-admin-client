@@ -22,7 +22,7 @@ interface ICustomersListProps {
 const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
   const [customers, setCustomers] = useState<CustomerModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [debouncedState, setDebouncedState] = useState("")
+  const [searchedValue, setSearchedValue] = useState("")
   const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
@@ -33,7 +33,7 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
    * @returns request
    */
   const customersRequest = () => {
-    if(debouncedState === "") {
+    if(searchedValue === "") {
       return http.get<PaginationModel<CustomerModel>>(`${config.api}/v1/customers?page=${query.get('page')}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
         },
       })
     } else {
-      return http.get<PaginationModel<CustomerModel>>(`${config.api}/v1/customers/search?q=${debouncedState}?page=${query.get('page')}`, {
+      return http.get<PaginationModel<CustomerModel>>(`${config.api}/v1/customers/search?q=${searchedValue}&page=${query.get('page')}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -95,7 +95,7 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
 
   const debounce = useCallback(
     _.debounce((searchValue: string) => {
-      setDebouncedState(searchValue);
+      setSearchedValue(searchValue);
     }, 500),
     []
   )
@@ -108,7 +108,7 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
     }
     if (query.get('s')) window.scrollTo(0, 0)
     getCustomers().then()
-  }, [refreshPage, query.get('page'), debouncedState])
+  }, [refreshPage, query.get('page'), searchedValue])
 
   return (
     <>
