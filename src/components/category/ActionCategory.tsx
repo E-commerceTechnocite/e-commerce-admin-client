@@ -12,6 +12,7 @@ import Previous from '../previous/Previous'
 import { CategoryModel } from '../../models/category/category.model'
 import { useQuery } from '../../util/hook/useQuery'
 import Granted from '../Granted'
+import LoadingButton from '../loading/LoadingButton'
 
 interface IActionUserProps {}
 
@@ -25,6 +26,7 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
   const params: { slug: string } = useParams()
   const [initialValues, setInitialValues] = useState<InitialValues>()
   const query = useQuery()
+  const [isSubmit, setIsSubmit] = useState(false)
 
   /**
    * Returns post or patch request for product category
@@ -124,6 +126,7 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
           initialValues={initialValues}
           validationSchema={categorySchema}
           onSubmit={(data) => {
+            setIsSubmit(true)
             submitCategoryPost(data)
           }}
         >
@@ -137,16 +140,22 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
                 <TextInput name={'label'} label={'Category'} />
                 {!params.slug && (
                   <Granted permissions={['c:product-category']}>
-                    <button type="submit" className="action">
-                      Submit
-                    </button>
+                    {!isSubmit && (
+                      <button type="submit" className="action">
+                        Submit
+                      </button>
+                    )}
+                    {isSubmit && <LoadingButton />}
                   </Granted>
                 )}
                 {params.slug && (
                   <Granted permissions={['u:product-category']}>
-                    <button type="submit" className="action">
-                      Submit
-                    </button>
+                    {!isSubmit && (
+                      <button type="submit" className="action">
+                        Submit
+                      </button>
+                    )}
+                    {isSubmit && <LoadingButton />}
                   </Granted>
                 )}
                 {submitError && (
