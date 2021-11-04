@@ -24,7 +24,6 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
 }) => {
   const [customers, setCustomers] = useState<CustomerModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [page, setPage] = useState<number>(1)
   const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
@@ -36,7 +35,7 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
    * @returns request
    */
   const customersRequest = () =>
-    http.get<CustomerModel[]>(`${config.api}/v1/customers`, {
+    http.get<PaginationModel<CustomerModel>>(`${config.api}/v1/customers?page=1`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -51,9 +50,8 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
     if (error) {
       history.push('/login')
     }
-    setCustomers(data)
-    // setCustomers(data.data)
-    // setMeta(data.meta)
+    setCustomers(data.data)
+    setMeta(data.meta)
   }
 
   /**
@@ -96,12 +94,12 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
 
   useEffect(() => {
     getCustomers().then()
-  }, [page, refreshPage])
+  }, [refreshPage])
 
   return (
     <>
-      {!customers && <CustomersListSkeleton />}
-      {customers && (
+      {!customers && !meta && <CustomersListSkeleton />}
+      {customers && meta && (
         <div className="customers">
           <div className="top-container">
             <div className="search">
