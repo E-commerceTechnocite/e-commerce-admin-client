@@ -16,13 +16,16 @@ import TextAreaInput from '../inputs/TextAreaInput'
 import './ActionTaxRule.scss'
 import { TaxRuleModel } from '../../models/product/tax-rule.model'
 import Granted from '../Granted'
+import NumberInput from '../inputs/NumberInput'
+import LoadingButton from '../loading/LoadingButton'
+import { useQuery } from '../../util/hook/useQuery'
 
 interface IActionTaxRuleProps {}
 
 interface InitialValues {
   taxRuleGroupId?: string
   countryId: string
-  taxId: string
+  tax: number
   zipCode: string
   behavior: number
   description: string
@@ -30,12 +33,13 @@ interface InitialValues {
 
 const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   const [taxRuleGroup, setTaxRuleGroup] = useState<TaxRuleGroupModel[]>()
-  const [tax, setTax] = useState<TaxModel[]>()
   const [country, setCountry] = useState<CountryModel[]>()
   const [submitError, setSubmitError] = useState<string>(null)
+  const [isSubmit, setIsSubmit] = useState<boolean>(false)
   const history = useHistory()
   const params: { slug: string } = useParams()
   const [initialValues, setInitialValues] = useState<InitialValues>()
+  const query = useQuery()
 
   /**
    * Returns post or patch request for new tax rule
@@ -68,18 +72,31 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
     let { error } = await sendRequest(taxRulePostRequest, data)
     if (error) {
       if (error.statusCode === 400) {
-        console.log()
         setSubmitError(
           'This tax rule already exists, change tax group or country.'
         )
+        setIsSubmit(false)
         return
       }
       history.push('/login')
     }
-    history.push({
-      pathname: '/taxes',
-      state: { success: true },
-    })
+    if (query.get('rule')) {
+      history.push({
+        pathname: '/taxes',
+        search: `?rule=${query.get('rule')}&group=${query.get(
+          'group'
+        )}&country=${query.get('country')}`,
+        state: { successEdit: true },
+      })
+    } else {
+      history.push({
+        pathname: '/taxes',
+        search: `?rule=1&group=${query.get('group')}&country=${query.get(
+          'country'
+        )}`,
+        state: { success: true },
+      })
+    }
   }
 
   /**
@@ -108,28 +125,6 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   }
 
   /**
-   * Returns get request for tax rate
-   * @returns
-   */
-  const taxRequest = () => {
-    return http.get<TaxModel[]>(`${config.api}/v1/tax/all`, {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-      },
-    })
-  }
-  /**
-   * Submits get request for tax rate
-   */
-  const submitTax = async () => {
-    let { data, error } = await sendRequest(taxRequest)
-    if (error) {
-      history.push('/login')
-    }
-    setTax(data)
-  }
-
-  /**
    * Returns get request for country
    * @returns
    */
@@ -153,7 +148,6 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
 
   useEffect(() => {
     submitCountry().then()
-    submitTax().then()
     submitTaxRuleGroup().then()
   }, [])
 
@@ -172,7 +166,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
     setInitialValues({
       taxRuleGroupId: data.taxRuleGroup.id,
       countryId: data.country.id,
-      taxId: data.tax.id,
+      tax: data.tax ? data.tax : 0,
       zipCode: data.zipCode,
       behavior: 0,
       description: data.description,
@@ -186,7 +180,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
       setInitialValues({
         taxRuleGroupId: '',
         countryId: '',
-        taxId: '',
+        tax: 0,
         zipCode: '',
         behavior: 0,
         description: '',
@@ -197,14 +191,14 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   return (
     <>
       <Previous />
-
-      {country && tax && taxRuleGroup && (
+      {country && taxRuleGroup && (
         <div className="action-tax-rule">
           <Formik
             enableReinitialize
             initialValues={initialValues}
             validationSchema={taxRuleSchema}
             onSubmit={(data) => {
+              setIsSubmit(true)
               if (params.slug) {
                 delete data.taxRuleGroupId
                 delete data.countryId
@@ -212,7 +206,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
               submitTaxRulePost(data)
             }}
           >
-            {({ handleSubmit }) => {
+            {({ handleSubmit}) => {
               return (
                 <>
                   <form onSubmit={handleSubmit}>
@@ -227,7 +221,6 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
                         options={country}
                       />
                     )}
-                    <Select name={'taxId'} label={'Tax'} options={tax} />
                     {!params.slug && (
                       <Select
                         name={'taxRuleGroupId'}
@@ -235,16 +228,23 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
                         options={taxRuleGroup}
                       />
                     )}
+                    <NumberInput name="tax" label={'Tax %'} />
                     <TextInput name={'zipCode'} label={'Zip Code'} />
                     <TextAreaInput name={'description'} label={'Description'} />
                     {!params.slug && (
                       <Granted permissions={['c:tax-rule']}>
-                        <button className="action">submit</button>
+                        {!isSubmit && (
+                          <button type="submit" className="action">submit</button>
+                        )}{/*  */}
+                        {isSubmit && <LoadingButton />}
                       </Granted>
                     )}
                     {params.slug && (
                       <Granted permissions={['u:tax-rule']}>
-                        <button className="action">submit</button>
+                        {!isSubmit && (
+                          <button type="submit" className="action">submit</button>
+                        )}
+                        {isSubmit && <LoadingButton />}
                       </Granted>
                     )}
                     {submitError && (

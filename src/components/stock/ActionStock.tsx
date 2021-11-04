@@ -11,6 +11,7 @@ import { ProductModel } from '../../models/product/product.model'
 import NumberInput from '../inputs/NumberInput'
 import { stockSchema } from '../../util/validation/productValidation'
 import './ActionStock.scss'
+import { useQuery } from '../../util/hook/useQuery'
 
 interface IActionStockProps {
   stock?: {
@@ -31,6 +32,7 @@ const ActionStock: React.FunctionComponent<IActionStockProps> = () => {
   const [stock, setStock] = useState<IActionStockProps>()
   const params: { slug: string } = useParams()
   const history = useHistory()
+  const query = useQuery()
 
   /**
    * Returns  patch request for Stock product
@@ -56,6 +58,7 @@ const ActionStock: React.FunctionComponent<IActionStockProps> = () => {
     }
     history.push({
       pathname: '/stock',
+      search: `?page=${query.get('page')}`,
       state: { success: true },
     })
   }

@@ -17,8 +17,8 @@ const UsersListSkeleton: React.FunctionComponent = () => {
           <span></span>
           <span></span>
         </div>
-        {[...Array(10)].map(() => (
-          <div className="user">
+        {[...Array(10)].map((param, index) => (
+          <div className="user" key={index}>
             <span></span>
             <span></span>
             <span></span>

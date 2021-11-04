@@ -8,44 +8,40 @@ import { config } from '../../index'
 import './CustomersList.scss'
 import { sendRequest } from '../../util/helpers/refresh'
 import { http } from '../../util/http'
-import Granted from '../Granted'
-import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import CustomersListSkeleton from './skeleton/CustomersListSkeleton'
 import _ from 'lodash'
+import { useQuery } from '../../util/hook/useQuery'
+import Pagination from '../pagination/Pagination'
 
 interface ICustomersListProps {
   number?: number
   pagination?: boolean
-  success?: boolean | undefined
 }
 
-const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
-  success,
-}) => {
+const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
   const [customers, setCustomers] = useState<CustomerModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [debouncedState, setDebouncedState] = useState("")
   const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
+  const query = useQuery()
 
-  /*<PaginationModel<CustomerModel>> */
-  /* ?page=${page}${number ? '&limit=' + number : ''}*/
   /**
    * Returns the get request of the customers list
    * @returns request
    */
   const customersRequest = () => {
     if(debouncedState === "") {
-      return http.get<PaginationModel<CustomerModel>>(`${config.api}/v1/customers?page=1`, {
+      return http.get<PaginationModel<CustomerModel>>(`${config.api}/v1/customers?page=${query.get('page')}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${sessionStorage.getItem('token')}`,
         },
       })
     } else {
-      return http.get<PaginationModel<CustomerModel>>(`${config.api}/v1/customers/search?q=${debouncedState}?page=1`, {
+      return http.get<PaginationModel<CustomerModel>>(`${config.api}/v1/customers/search?q=${debouncedState}?page=${query.get('page')}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -53,12 +49,17 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
       })
     }
   }
+
   /**
    * Sends the get request of the customers list and sets customers & pagination state
    */
   const getCustomers = async () => {
     let { data, error } = await sendRequest(customersRequest)
     if (error) {
+      if (error.statusCode === 404) {
+        history.push('/not-found')
+        return
+      }
       history.push('/login')
     }
     setCustomers(data.data)
@@ -86,7 +87,6 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
     if (confirm(`Delete customer: ${username}?`)) {
       let { error } = await sendRequest(deleteRequest, id)
       if (error) {
-        console.log(error.message)
         history.push('/login')
       }
       setRefreshPage(!refreshPage)
@@ -102,17 +102,13 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
 
   // Check if customer has been added and if so displays a toast
   useEffect(() => {
-    if (success === true) {
-      setToast(true)
-      setTimeout(() => {
-        setToast(false)
-      }, 10000)
+    if (!query.get('page')) {
+      history.push('/customers?page=1&s=u')
+      return
     }
-  }, [success])
-
-  useEffect(() => {
+    if (query.get('s')) window.scrollTo(0, 0)
     getCustomers().then()
-  }, [refreshPage, debouncedState])
+  }, [refreshPage, query.get('page'), debouncedState])
 
   return (
     <>
@@ -166,6 +162,7 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = ({
                 )
               })}
             </motion.div>
+            <Pagination meta={meta} uri={`/customers?page=`} />
           </div>
         </div>
       )}

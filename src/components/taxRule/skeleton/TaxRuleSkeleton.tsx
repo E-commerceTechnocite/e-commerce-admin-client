@@ -20,8 +20,8 @@ const TaxRuleSkeleton: React.FunctionComponent = () => {
           <span></span>
         </div>
         <div className="content">
-          {[...Array(5)].map(() => (
-            <div className="item">
+          {[...Array(5)].map((param, index) => (
+            <div className="item" key={index}>
               <span></span>
               <span></span>
               <span></span>

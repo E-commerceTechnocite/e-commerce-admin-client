@@ -2,7 +2,7 @@ import * as yup from 'yup'
 
 export const taxRuleSchema = yup.object().shape({
   taxRuleGroupId: yup.string().required('Required.'),
-  taxId: yup.string().required('Required.'),
+  tax: yup.number().min(0).max(100).required('Must contain a number between 0 and 100.'),
   countryId: yup.string().required('Required.'),
   zipCode: yup
     .string()
