@@ -114,8 +114,10 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
   useEffect(() => {
     if (!query.get('page')) {
-      history.push('/products?page=1')
-      return
+      if (window.location.pathname === '/admin/products') {
+        history.push('/products?page=1')
+        return
+      }
     }
     getProducts().then()
   }, [refreshPage, query.get('page')])
