@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import Country from '../../components/country/Country'
 import Granted from '../../components/Granted'
 import TaxGroup from '../../components/taxGroup/TaxGroup'
-import TaxRate from '../../components/taxRate/TaxRate'
 import TaxRule from '../../components/taxRule/TaxRule'
 import { useQuery } from '../../util/hook/useQuery'
 
