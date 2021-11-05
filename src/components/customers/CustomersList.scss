@@ -52,7 +52,10 @@
     .customer {
       padding: 20px 30px;
       display: grid;
-      grid-template-columns: minmax(150px, 300px) minmax(300px, 500px) repeat(3, minmax(190px, 300px));
+      grid-template-columns: minmax(150px, 300px) minmax(300px, 500px) repeat(
+          3,
+          minmax(190px, 300px)
+        );
       grid-template-rows: 1;
       border-bottom: 1px solid $primary-border-color;
       grid-column-gap: 10px;
@@ -92,56 +95,60 @@
 }
 
 @media screen and (max-width: 1430px) {
-  .legend {
-    display: none !important;
-  }
-  .customer {
-    grid-template-columns: repeat(3, 1fr)!important;
-    grid-template-rows: repeat(2, 50px);
-    span {
-      position: relative;
-    }
-    span::before {
-      position: absolute;
-      top: -17px;
-      font-size: 13px;
-      color: #b3b3b3;
-    }
-    span:nth-child(1)::before {
-      content: 'Username';
-    }
-    span:nth-child(2) {
-      grid-column-start: 2;
-      grid-column-end: 7;
-    }
-    span:nth-child(2)::before {
-      content: 'E-mail';
-    }
-    span:nth-child(3) {
-      grid-row-start: 2;
-      grid-column-start: 3;
-      grid-column-end: 6;
-    }
-    span:nth-child(3)::before {
-      content: 'Phone';
-    }
-    span:nth-child(4) {
-      grid-row-start: 2;
-      grid-column-start: 1;
-      grid-column-end: 3;
-      width: 100%;
-    }
-    span:nth-child(4)::before {
-      content: 'First name';
-    }
-    span:nth-child(5) {
-      grid-row-start: 2;
-      grid-column-start: 2;
-      grid-column-end: 5;
-      width: 100%;
-    }
-    span:nth-child(5)::before {
-      content: 'Last name';
+  .customers {
+    .customer-list {
+      .legend {
+        display: none !important;
+      }
+      .customer {
+        grid-template-columns: repeat(3, 1fr) !important;
+        grid-template-rows: repeat(2, 50px);
+        span {
+          position: relative;
+        }
+        span::before {
+          position: absolute;
+          top: -17px;
+          font-size: 13px;
+          color: #b3b3b3;
+        }
+        span:nth-child(1)::before {
+          content: 'Username';
+        }
+        span:nth-child(2) {
+          grid-column-start: 2;
+          grid-column-end: 7;
+        }
+        span:nth-child(2)::before {
+          content: 'E-mail';
+        }
+        span:nth-child(3) {
+          grid-row-start: 2;
+          grid-column-start: 3;
+          grid-column-end: 6;
+        }
+        span:nth-child(3)::before {
+          content: 'Phone';
+        }
+        span:nth-child(4) {
+          grid-row-start: 2;
+          grid-column-start: 1;
+          grid-column-end: 3;
+          width: 100%;
+        }
+        span:nth-child(4)::before {
+          content: 'First name';
+        }
+        span:nth-child(5) {
+          grid-row-start: 2;
+          grid-column-start: 2;
+          grid-column-end: 5;
+          width: 100%;
+        }
+        span:nth-child(5)::before {
+          content: 'Last name';
+        }
+      }
     }
   }
 }

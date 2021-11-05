@@ -22,7 +22,7 @@ const Stock: React.FunctionComponent<IStocksProps> = (props) => {
     }
   }, [])
   return (
-    <div className="stock">
+    <div className="stocks-page">
       <Stocks success={success}/>
     </div>
   )

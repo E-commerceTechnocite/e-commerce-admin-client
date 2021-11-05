@@ -1,0 +1,91 @@
+@import '../../../../public/scss/variables.scss';
+@import '../../../../public/scss/skeleton.scss';
+
+.stocks-skeleton {
+  background: $primary-color-elts;
+  box-shadow: $primary-elts-shadow;
+  min-height: 870px;
+  margin-bottom: 15px;
+  padding-bottom: 90px;
+  position: relative;
+  .top-container {
+    display: flex;
+    padding: 10px 30px;
+    border-bottom: 1px solid $primary-border-color;
+  }
+  .stock-list {
+    .legend,
+    .stock {
+      padding: 20px 30px;
+      display: grid;
+      grid-template-columns: 7% 7% repeat(5, 1fr) 140px;
+      grid-template-rows: 1;
+      border-bottom: 1px solid $primary-border-color;
+      grid-column-gap: 10px;
+      align-items: center;
+      span:nth-child(n + 3) {
+        justify-self: flex-end;
+      }
+      span:nth-child(2) {
+        margin-left: 10px;
+        grid-column-start: 2;
+        grid-column-end: 4;
+      }
+      span:nth-child(3) {
+        grid-column-start: 5;
+        grid-column-end: 6;
+      }
+      span:nth-child(4) {
+        grid-column-start: 6;
+        grid-column-end: 7;
+      }
+      span:nth-child(5) {
+        grid-column-start: 7;
+        grid-column-end: 8;
+      }
+    }
+    .legend {
+      height: 19px;
+      padding: 20px 30px;
+      font-weight: bold;
+
+      span {
+        border-radius: 4px;
+        width: 90%;
+        height: 19px;
+        background: #eee;
+      }
+      span:nth-child(2) {
+        margin-left: 15px;
+      }
+    }
+    .stock {
+      //   height: 34px;
+      padding: 5px 30px;
+
+      span:nth-child(-n + 5) {
+        border-radius: 4px;
+        width: 90%;
+        height: 19px;
+        background: #eee;
+      }
+      span:nth-child(2) {
+        margin-left: 15px;
+      }
+      span:first-child {
+        height: 65px;
+        width: 65px;
+      }
+      span:nth-child(6) {
+        justify-self: flex-end;
+      }
+    }
+    .pagination-skeleton {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 20px;
+    }
+  }
+}
