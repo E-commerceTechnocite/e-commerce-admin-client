@@ -23,9 +23,13 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
   const [success, setSuccess] = useState<boolean | undefined>()
   const [successEdit, setSuccessEdit] = useState<boolean | undefined>()
   const [successGroup, setSuccessGroup] = useState<boolean | undefined>()
-  const [successGroupEdit, setSuccessGroupEdit] = useState<boolean | undefined>()
+  const [successGroupEdit, setSuccessGroupEdit] = useState<
+    boolean | undefined
+  >()
   const [successCountry, setSuccessCountry] = useState<boolean | undefined>()
-  const [successCountryEdit, setSuccessCountryEdit] = useState<boolean | undefined>()
+  const [successCountryEdit, setSuccessCountryEdit] = useState<
+    boolean | undefined
+  >()
   const [group, setGroup] = useState<boolean>(true)
   const [rate, setRate] = useState<boolean>(false)
   const [country, setCountry] = useState<boolean>(false)
@@ -54,15 +58,15 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
   useEffect(() => {
     if (query.get('s')) window.scrollTo(0, 0)
     if (props.location.state !== undefined) {
-      console.log(props.location.state)
       if (props.location.state.success) setSuccess(props.location.state.success)
-      if (props.location.state.successEdit) setSuccessEdit(props.location.state.successEdit)
+      if (props.location.state.successEdit)
+        setSuccessEdit(props.location.state.successEdit)
 
       if (props.location.state.successGroup)
         setSuccessGroup(props.location.state.successGroup)
       if (props.location.state.successGroupEdit)
         setSuccessGroupEdit(props.location.state.successGroupEdit)
-      
+
       if (props.location.state.successCountry) {
         setGroup(false)
         setCountry(true)
@@ -78,7 +82,11 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
   return (
     <div className="taxes">
       <Granted permissions={['r:tax-rule']}>
-        <TaxRule success={success} successEdit={successEdit} isUpdated={isUpdated}/>
+        <TaxRule
+          success={success}
+          successEdit={successEdit}
+          isUpdated={isUpdated}
+        />
       </Granted>
       <div className="tabs">
         <div className="buttons">
@@ -99,14 +107,22 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
           {group && (
             <>
               <Granted permissions={['r:tax-rule-group']}>
-                <TaxGroup successGroup={successGroup} successGroupEdit={successGroupEdit} groupToParent={childToParent}/>
+                <TaxGroup
+                  successGroup={successGroup}
+                  successGroupEdit={successGroupEdit}
+                  groupToParent={childToParent}
+                />
               </Granted>
             </>
           )}
           {country && (
             <>
               <Granted permissions={['r:country']}>
-                <Country successCountry={successCountry} successCountryEdit={successCountryEdit} countryToParent={childToParent}/>
+                <Country
+                  successCountry={successCountry}
+                  successCountryEdit={successCountryEdit}
+                  countryToParent={childToParent}
+                />
               </Granted>
             </>
           )}

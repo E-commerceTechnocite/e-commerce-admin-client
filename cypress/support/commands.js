@@ -60,7 +60,6 @@ Cypress.Commands.add('login', (email, password) => {
   cy.url().should('include', '/')
   cy.window().its('sessionStorage').invoke('getItem', 'token').should('exist')
   cy.window().its('sessionStorage').invoke('getItem', 'refresh').should('exist')
-  console.log(token)
   cy.request({
     url: 'http://localhost:3000/v1/o-auth/permissions',
     headers: {
@@ -70,6 +69,5 @@ Cypress.Commands.add('login', (email, password) => {
   }).then((res) => {
     expect(res.status).to.eq(200)
     cy.window().its('sessionStorage').invoke('getItem', 'permissions').should('exist')
-      console.log(res)
   })
 })

@@ -15,7 +15,6 @@ const MediaLibrarySkeleton: React.FunctionComponent<IMediaLibrarySkeletonProps> 
         frame.push(i)
       }
       setFrames([...frame])
-      console.log()
     }, [])
 
     return (

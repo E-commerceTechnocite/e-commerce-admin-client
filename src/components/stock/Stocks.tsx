@@ -107,12 +107,6 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
     setSubmitEdit(!submitEdit)
   }
 
-  useEffect(() => {}, [submitEdit])
-
-  useEffect(() => {
-    if (editArray) console.log(editArray)
-  }, [editArray])
-
   useEffect(() => {
     if (!query.get('page')) {
       history.push('/stock?page=1&s=u')
@@ -125,7 +119,6 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
   // Check if a has been added and sends a confirmation toast
   useEffect(() => {
     if (success === true) {
-      console.log(success)
       setToast(true)
       setTimeout(() => {
         setToast(false)
