@@ -34,6 +34,7 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
   const [toast, setToast] = useState<boolean>(false)
   const [editArray, setEditArray] = useState<string[]>([])
   const [submitEdit, setSubmitEdit] = useState<boolean>(false)
+  const [isEditAll, setIsEditAll] = useState<boolean>(false)
   const history = useHistory()
   const query = useQuery()
 
@@ -72,12 +73,7 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
    * @param id
    */
   const setEditing = (id: string) => {
-    if (editArray.includes(id)) {
-      /* const array = [...editArray]
-      array.splice(editArray.indexOf(id), 1)
-      setEditArray(array) */
-      // setSubmitEdit(!submitEdit)
-    } else {
+    if (!editArray.includes(id)) {
       setEditArray((array) => [...array, id])
     }
   }
@@ -107,6 +103,21 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
     setSubmitEdit(!submitEdit)
   }
 
+  /**
+   * Opens edit mod for all stock on current page
+   * @param isSubmit
+   */
+  const editAll = (isSubmit: boolean) => {
+    if (!isSubmit) {
+      setIsEditAll(true)
+      stock.map((stock) => {
+        setEditArray((array) => [...array, stock.id])
+      })
+    } else if (isSubmit) {
+
+    }
+  }
+
   useEffect(() => {
     if (!query.get('page')) {
       history.push('/stock?page=1&s=u')
@@ -115,6 +126,10 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
     if (query.get('s')) window.scrollTo(0, 0)
     submitStocks().then()
   }, [query.get('page'), submitEdit])
+
+  useEffect(() => {
+    setEditArray([])
+  }, [query.get('page')])
 
   // Check if a has been added and sends a confirmation toast
   useEffect(() => {
@@ -153,6 +168,16 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                     <span>Physical</span>
                     <span>Incoming</span>
                     <span>Pending</span>
+                    {!isEditAll && (
+                      <button type="button" onClick={() => editAll(false)}>
+                        Edit all
+                      </button>
+                    )}
+                    {isEditAll && (
+                      <button type="submit" onClick={() => editAll(true)}>
+                        Submit all
+                      </button>
+                    )}
                   </div>
                   <motion.div
                     variants={{
