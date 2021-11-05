@@ -150,7 +150,16 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
     }
     if (query.get('s')) window.scrollTo(0, 0)
     getRoles().then()
-  }, [refreshPage, query.get('page'), searchedValue])
+  }, [refreshPage, query.get('page')])
+
+  useEffect(() => {
+    if(meta) {
+      if(meta.currentPage === 1) {
+        setRefreshPage(!refreshPage)
+      }
+    }
+    history.push('/categories?page=1&s=u')
+  }, [searchedValue])
 
   return (
     <>
@@ -159,7 +168,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
           {pagination && (
             <div className="search">
               <i className="fas fa-search"></i>
-              <input type="text" placeholder="Search..." onChange={(e) => debounce(e.target.value)} />
+              <input type="text" name="searchbart" placeholder="Search..." onChange={(e) => debounce(e.target.value)} />
             </div>
           )}
           <Granted permissions={['c:product-category']}>
