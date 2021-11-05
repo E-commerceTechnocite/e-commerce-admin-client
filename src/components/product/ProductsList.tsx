@@ -149,12 +149,13 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   }, [refreshPage, query.get('page')])
 
   useEffect(() => {
-    if(meta) {
-      if(meta.currentPage === 1) {
-        setRefreshPage(!refreshPage)
+    if(pagination) {
+      if(meta) {
+        if(meta.currentPage === 1) {
+          setRefreshPage(!refreshPage)
+        }
       }
-    }
-    history.push('/products?page=1&s=u')
+    } 
   }, [searchedValue])
 
   return (
