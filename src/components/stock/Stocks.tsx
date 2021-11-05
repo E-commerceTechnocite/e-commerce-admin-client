@@ -228,7 +228,6 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                             </Granted>
                           </>
                         )}
-
                         {editArray.includes(stock.id) && (
                           <>
                             <Formik
@@ -253,17 +252,13 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                                   <form onSubmit={handleSubmit}>
                                     <NumberInput
                                       name={'stock.physical'}
-                                      label={'Physical'}
                                     />
                                     <NumberInput
                                       name={'stock.incoming'}
-                                      label={'Incoming'}
                                     />
                                     <NumberInput
                                       name={'stock.pending'}
-                                      label={'Pending'}
                                     />
-
                                     <Granted permissions={['u:product']}>
                                       <button
                                         className="action edit"

@@ -94,6 +94,40 @@
         text-align: center;
         content: 'Missing \ image' !important;
       }
+
+      form {
+        grid-column-start: 3;
+        grid-column-end: 9;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr) 140px;
+        .form-control {
+          justify-self: flex-end;
+          align-self: center;
+          input {
+            font-size: 16px;
+            height: 30px;
+            border: 1px solid $primary-border-color;
+            border-radius: 4px;
+            text-align: right;
+          }
+        }
+        .form-control:nth-child(1) {
+          grid-column-start: 3;
+          grid-column-end: 4;
+        }
+        .form-control:nth-child(2) {
+          grid-column-start: 4;
+          grid-column-end: 5;
+        }
+        .form-control:nth-child(3) {
+          grid-column-start: 5;
+          grid-column-end: 6;
+        }
+        button {
+          grid-column-start: 5;
+          grid-column-end: 6;
+        }
+      }
     }
   }
   .legend {
