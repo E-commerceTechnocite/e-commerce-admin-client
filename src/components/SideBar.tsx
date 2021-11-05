@@ -30,10 +30,6 @@ const SideBar: React.FunctionComponent = () => {
       })
   }
 
-  React.useEffect(() => {
-    console.log(location.pathname)
-  }, [location.pathname])
-
   const NavLink: FC<{ uri: string; icon: string; exact?: boolean }> = ({
     children,
     uri,
