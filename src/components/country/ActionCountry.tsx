@@ -102,7 +102,6 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
   useEffect(() => {
     if (params.slug) {
       if (country) {
-        console.log(country)
         seInitialValues({ name: country.name, code: country.code })
       }
     }

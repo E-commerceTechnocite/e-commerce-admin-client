@@ -1,6 +1,6 @@
 @import '../../../public/scss/variables.scss';
 
-.category {
+.categories {
   min-height: 870px;
   margin-bottom: 15px;
   padding-bottom: 90px;
@@ -29,7 +29,7 @@
 
   .category-list {
     .legend,
-    .role {
+    .category {
       padding: 20px 30px;
       border-bottom: 1px solid $primary-border-color;
       display: grid;

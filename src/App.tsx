@@ -24,7 +24,6 @@ import Categories from './views/Categories'
 import Customers from './views/customers/Customers'
 import Orders from './views/Orders'
 import Stock from './views/stock/Stock'
-import EditStock from './views/stock/EditStock'
 import AddTaxGroup from './views/taxes/AddTaxGroup'
 import AddCountry from './views/taxes/AddCountry'
 import { GuardedRoute, GuardFunction, GuardProvider } from 'react-router-guards'
@@ -151,11 +150,7 @@ export const App = () => {
                   <GuardedRoute exact path="/customers" component={Customers} />
                   <GuardedRoute exact path="/orders" component={Orders} />
                   <GuardedRoute exact path="/stock" component={Stock} />
-                  <GuardedRoute
-                    exact
-                    path="/stock/edit-stock/:slug"
-                    component={EditStock}
-                  />
+                  
                   <GuardedRoute path="/not-found" component={NotFound} />
                   <Redirect to="/not-found" />
                 </Switch>

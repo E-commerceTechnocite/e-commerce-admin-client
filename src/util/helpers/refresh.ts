@@ -25,18 +25,19 @@ const refresh = async (): Promise<HttpException | null> => {
 }
 
 export const sendRequest = async <T>(
-  req: (data?: any) => Promise<HttpReturnValue<T>>,
-  data?: any
+  req: (data?: any, id?: string) => Promise<HttpReturnValue<T>>,
+  data?: any,
+  id?: string
 ): Promise<HttpReturnValue<T>> => {
   const decodedToken = auth.decodedAccess
   const isExpired = Math.round(Date.now() / 1000) > decodedToken.exp
   let res: HttpReturnValue<T>
   if (!isExpired) {
-    res = await req(data)
+    res = await req(data, id)
   }
   if (isExpired || (res.error && res.error.statusCode === 401)) {
     await refresh()
-    res = await req(data)
+    res = await req(data, id)
   }
   return res
 }

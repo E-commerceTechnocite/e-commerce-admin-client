@@ -35,11 +35,18 @@
       grid-template-columns: 7% 7% repeat(5, 1fr) 140px;
       grid-column-gap: 10px;
       align-items: center;
+      a.edit {
+        cursor: pointer;
+      }
       span:nth-child(n + 3) {
         justify-self: flex-end;
       }
       span:nth-child(2) {
         margin-left: 10px;
+        grid-column-start: 2;
+        grid-column-end: 4;
+        grid-row-start: 1;
+        grid-row-end: 1;
       }
       span:nth-child(3) {
         grid-column-start: 5;
@@ -91,6 +98,45 @@
         text-align: center;
         content: 'Missing \ image' !important;
       }
+
+      form {
+        grid-column-start: 3;
+        grid-column-end: 9;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr) 140px;
+        grid-row-start: 1;
+        grid-row-end: 1;
+        .form-control {
+          justify-self: flex-end;
+          align-self: center;
+          max-width: 100px;
+
+          input {
+            max-width: 100px;
+            font-size: 16px;
+            height: 30px;
+            border: 1px solid $primary-border-color;
+            border-radius: 4px;
+            text-align: right;
+          }
+        }
+        .form-control:nth-child(1) {
+          grid-column-start: 3;
+          grid-column-end: 4;
+        }
+        .form-control:nth-child(2) {
+          grid-column-start: 4;
+          grid-column-end: 5;
+        }
+        .form-control:nth-child(3) {
+          grid-column-start: 5;
+          grid-column-end: 6;
+        }
+        button {
+          grid-column-start: 5;
+          grid-column-end: 6;
+        }
+      }
     }
   }
   .legend {
@@ -115,6 +161,8 @@
     }
     .content .item {
       grid-template-rows: repeat(2, 1fr);
+      position: relative;
+
       span {
         position: relative;
       }
@@ -182,6 +230,40 @@
         top: -17px;
         font-size: 13px;
         color: #b3b3b3;
+      }
+      form {
+        grid-template-columns: repeat(6, 1fr) 150px;
+        grid-row-start: 2 !important;
+        grid-row-end: 2 !important;
+        .form-control,
+        .form-control input {
+          max-width: 100px;
+          justify-self: flex-start !important;
+        }
+        .form-control:nth-child(1) {
+          grid-column-start: 1 !important;
+          grid-column-end: 3 !important;
+        }
+        .form-control:nth-child(2) {
+          grid-column-start: 3 !important;
+          grid-column-end: 5 !important;
+        }
+        .form-control:nth-child(3) {
+          grid-column-start: 5 !important;
+          grid-column-end: 7 !important;
+        }
+        input {
+          height: 32px!important;
+          text-align: left !important;
+        }
+        button {
+          position: absolute;
+          top: 0;
+          margin-left: -89px!important;
+          grid-column-start: 7 !important;
+          grid-column-end: 8 !important;
+          justify-self: flex-start !important;
+        }
       }
     }
   }

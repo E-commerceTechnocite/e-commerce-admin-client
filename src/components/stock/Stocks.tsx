@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { ProductModel } from '../../models/product/product.model'
 import { http } from '../../util/http'
@@ -12,15 +12,28 @@ import './Stocks.scss'
 import { sendRequest } from '../../util/helpers/refresh'
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import { useQuery } from '../../util/hook/useQuery'
+import { Formik } from 'formik'
+import { stockSchema } from '../../util/validation/productValidation'
+import NumberInput from '../inputs/NumberInput'
+import StocksSkeleton from './skeleton/StocksSkeleton'
 
 interface IStocksProps {
   success?: boolean | undefined
+}
+interface stock {
+  stock?: {
+    physical?: number
+    incoming?: number
+    pending?: number
+  }
 }
 
 const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
   const [stock, setStock] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [toast, setToast] = useState<boolean>(false)
+  const [editArray, setEditArray] = useState<string[]>([])
+  const [submitEdit, setSubmitEdit] = useState<boolean>(false)
   const history = useHistory()
   const query = useQuery()
 
@@ -54,6 +67,46 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
     setMeta(data.meta)
   }
 
+  /**
+   * Opens edit for seleted stock
+   * @param id
+   */
+  const setEditing = (id: string) => {
+    if (editArray.includes(id)) {
+      /* const array = [...editArray]
+      array.splice(editArray.indexOf(id), 1)
+      setEditArray(array) */
+      // setSubmitEdit(!submitEdit)
+    } else {
+      setEditArray((array) => [...array, id])
+    }
+  }
+
+  /**
+   * Returns  patch request for Stock product
+   * @param data
+   * @returns request
+   */
+  const stockPatchRequest = (data: stock, id: string) => {
+    return http.patch(`${config.api}/v1/product/${id}`, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+      },
+    })
+  }
+  /**
+   * Submits the post request for new Stock product
+   * @param data
+   */
+  const submitStockPatch = async (data: stock, id: string) => {
+    let { error } = await sendRequest(stockPatchRequest, data, id)
+    if (error) {
+      history.push('/login')
+    }
+    setSubmitEdit(!submitEdit)
+  }
+
   useEffect(() => {
     if (!query.get('page')) {
       history.push('/stock?page=1&s=u')
@@ -61,12 +114,11 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
     }
     if (query.get('s')) window.scrollTo(0, 0)
     submitStocks().then()
-  }, [query.get('page')])
+  }, [query.get('page'), submitEdit])
 
   // Check if a has been added and sends a confirmation toast
   useEffect(() => {
     if (success === true) {
-      console.log(success)
       setToast(true)
       setTimeout(() => {
         setToast(false)
@@ -76,6 +128,7 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
 
   return (
     <>
+      {!stock && !meta && <StocksSkeleton />}
       {stock && meta && (
         <>
           <div className="stocks">
@@ -138,31 +191,77 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                           </span>
                         )}
                         <span>{stock.title}</span>
-                        {stock.stock && stock.stock.physical ? (
-                          <span>{stock.stock.physical}</span>
-                        ) : (
-                          <span>0</span>
+
+                        {!editArray.includes(stock.id) && (
+                          <>
+                            {stock.stock && stock.stock.physical ? (
+                              <span>{stock.stock.physical}</span>
+                            ) : (
+                              <span>0</span>
+                            )}
+
+                            {stock.stock && stock.stock.incoming ? (
+                              <span>{stock.stock.incoming}</span>
+                            ) : (
+                              <span>0</span>
+                            )}
+
+                            {stock.stock && stock.stock.pending ? (
+                              <span>{stock.stock.pending}</span>
+                            ) : (
+                              <span>0</span>
+                            )}
+
+                            <Granted permissions={['u:product']}>
+                              <button
+                                type="button"
+                                className="action edit"
+                                onClick={() => setEditing(stock.id)}
+                              >
+                                Edit
+                              </button>
+                            </Granted>
+                          </>
                         )}
-                        {stock.stock && stock.stock.incoming ? (
-                          <span>{stock.stock.incoming}</span>
-                        ) : (
-                          <span>0</span>
+                        {editArray.includes(stock.id) && (
+                          <>
+                            <Formik
+                              enableReinitialize
+                              initialValues={{
+                                stock: {
+                                  physical: stock.stock.physical,
+                                  incoming: stock.stock.incoming,
+                                  pending: stock.stock.pending,
+                                },
+                              }}
+                              validationSchema={stockSchema}
+                              onSubmit={(data) => {
+                                submitStockPatch(data, stock.id)
+                                const array = [...editArray]
+                                array.splice(editArray.indexOf(stock.id), 1)
+                                setEditArray(array)
+                              }}
+                            >
+                              {({ handleSubmit }) => {
+                                return (
+                                  <form onSubmit={handleSubmit}>
+                                    <NumberInput name={'stock.physical'} />
+                                    <NumberInput name={'stock.incoming'} />
+                                    <NumberInput name={'stock.pending'} />
+                                    <Granted permissions={['u:product']}>
+                                      <button
+                                        className="action edit"
+                                        onClick={() => setEditing(stock.id)}
+                                      >
+                                        Submit
+                                      </button>
+                                    </Granted>
+                                  </form>
+                                )
+                              }}
+                            </Formik>
+                          </>
                         )}
-                        {stock.stock && stock.stock.pending ? (
-                          <span>{stock.stock.pending}</span>
-                        ) : (
-                          <span>0</span>
-                        )}
-                        <Granted permissions={['u:product']}>
-                          <Link
-                            to={`/stock/edit-stock/${stock.id}?page=${query.get(
-                              'page'
-                            )}`}
-                            className="action edit"
-                          >
-                            Edit
-                          </Link>
-                        </Granted>
                       </motion.div>
                     ))}
                   </motion.div>

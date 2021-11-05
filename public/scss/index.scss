@@ -279,7 +279,7 @@ button {
     overflow-y: scroll;
     overflow-x: hidden;
     direction: rtl;
-    height: 470px;
+    height: 520px;
     width: 242px;
   }
   nav > div:first-child::-webkit-scrollbar {
@@ -499,7 +499,7 @@ button {
 }
 
 /* Categories */
-.category {
+.categories {
   background: $primary-color-elts;
   box-shadow: $primary-elts-shadow;
   border-radius: 4px;

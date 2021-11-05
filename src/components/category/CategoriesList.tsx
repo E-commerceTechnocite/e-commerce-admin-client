@@ -15,6 +15,7 @@ import './CategoriesList.scss'
 import _ from 'lodash';
 import { useQuery } from '../../util/hook/useQuery'
 import Granted from '../Granted'
+import CategoriesListSkeleton from './skeleton/CategoriesListSkeleton'
 
 interface ICategoriesListProps {
   number?: number
@@ -71,7 +72,10 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   }
   const query = useQuery()
 
-  const getRoles = async () => {
+  /**
+   * Submits get request for product categories
+   */
+  const getCategory = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
       if (error.statusCode === 404) {
@@ -106,7 +110,6 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   const deleteCategories = async (id: string, category: string) => {
     if (confirm(`Delete category: ${category}?`)) {
       let { error } = await sendRequest(deleteRequest, id)
-      console.log(error)
       if (error) {
         if (error.message === 'Error 500 Internal Server Error') {
           alert(
@@ -149,7 +152,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
       return
     }
     if (query.get('s')) window.scrollTo(0, 0)
-    getRoles().then()
+    getCategory().then()
   }, [refreshPage, query.get('page')])
 
   useEffect(() => {
@@ -163,99 +166,102 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
 
   return (
     <>
-      <div className="category">
-        <div className="top">
-          {pagination && (
-            <div className="search">
-              <i className="fas fa-search"></i>
-              <input type="text" name="searchbart" placeholder="Search..." onChange={(e) => debounce(e.target.value)} />
-            </div>
-          )}
-          <Granted permissions={['c:product-category']}>
-            <Link to={`/categories/addcategories`} className="action">
-              New Category
-            </Link>
-          </Granted>
-          {success && (
-            <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-              {' '}
-              <i className="fas fa-check" />
-              Category Added
-              <i className="fas fa-times" onClick={() => setToast(false)} />
-            </div>
-          )}
-          {successEdit && (
-            <div className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}>
-              {' '}
-              <i className="fas fa-check" />
-              Category Edited
-              <i className="fas fa-times" onClick={() => setToastEdit(false)} />
-            </div>
-          )}
-        </div>
-        {!categories && !meta && <Loading />}
-        {categories && meta && (
-          <>
-            <div className="category-list">
-              <div className="legend">
-                <span>Category</span>
+      {!categories && !meta && <CategoriesListSkeleton />}
+      {/* <CategoriesListSkeleton /> */}
+      {categories && meta && (
+        <div className="categories">
+          <div className="top">
+            {pagination && (
+              <div className="search">
+                <i className="fas fa-search"></i>
+                <input type="text" placeholder="Search..." onChange={(e) => debounce(e.target.value)}/>
               </div>
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0 },
-                  show: {
-                    opacity: 1,
-                    transition: {
-                      staggerChildren: 0.01,
-                    },
-                  },
-                }}
-                initial="hidden"
-                animate="show"
+            )}
+            <Granted permissions={['c:product-category']}>
+              <Link to={`/categories/addcategories`} className="action">
+                New Category
+              </Link>
+            </Granted>
+            {success && (
+              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+                {' '}
+                <i className="fas fa-check" />
+                Category Added
+                <i className="fas fa-times" onClick={() => setToast(false)} />
+              </div>
+            )}
+            {successEdit && (
+              <div
+                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
               >
-                {categories.length === 0 && <div className="notfound"><label>Category not found</label></div>}
-                {categories && categories.map((category) => {
-                  return (
-                    <motion.div
-                      variants={{
-                        hidden: { opacity: 0 },
-                        show: { opacity: 1 },
-                      }}
-                      className="role"
-                      key={category.id}
-                    >
-                      <span>{category.label}</span>
-                      <Granted permissions={['u:product-category']}>
-                        <Link
-                          to={`/categories/edit/${category.id}?page=${query.get(
-                            'page'
-                          )}`}
-                          className="action edit"
-                        >
-                          Edit
-                        </Link>
-                      </Granted>
-                      <Granted permissions={['d:product-category']}>
-                        <button
-                          className="delete"
-                          onClick={() =>
-                            deleteCategories(category.id, category.label)
-                          }
-                        >
-                          <i className="fas fa-trash" />
-                        </button>
-                      </Granted>
-                    </motion.div>
-                  )
-                })}
-              </motion.div>
-              {pagination && (
-                <Pagination meta={meta} uri={`/categories?page=`} />
-              )}
+                {' '}
+                <i className="fas fa-check" />
+                Category Edited
+                <i
+                  className="fas fa-times"
+                  onClick={() => setToastEdit(false)}
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="category-list">
+            <div className="legend">
+              <span>Category</span>
             </div>
-          </>
-        )}
-      </div>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.01,
+                  },
+                },
+              }}
+              initial="hidden"
+              animate="show"
+            >
+              {categories.length === 0 && <div className="notfound"><label>Category not found</label></div>}
+              {categories.map((category) => {
+                return (
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: { opacity: 1 },
+                    }}
+                    className="category"
+                    key={category.id}
+                  >
+                    <span>{category.label}</span>
+                    <Granted permissions={['u:product-category']}>
+                      <Link
+                        to={`/categories/edit/${category.id}?page=${query.get(
+                          'page'
+                        )}`}
+                        className="action edit"
+                      >
+                        Edit
+                      </Link>
+                    </Granted>
+                    <Granted permissions={['d:product-category']}>
+                      <button
+                        className="delete"
+                        onClick={() =>
+                          deleteCategories(category.id, category.label)
+                        }
+                      >
+                        <i className="fas fa-trash" />
+                      </button>
+                    </Granted>
+                  </motion.div>
+                )
+              })}
+            </motion.div>
+            {pagination && <Pagination meta={meta} uri={`/categories?page=`} />}
+          </div>
+        </div>
+      )}
     </>
   )
 }
