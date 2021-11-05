@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import {  useHistory } from 'react-router-dom'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { ProductModel } from '../../models/product/product.model'
 import { http } from '../../util/http'
