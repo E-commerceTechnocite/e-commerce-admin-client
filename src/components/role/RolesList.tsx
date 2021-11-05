@@ -14,6 +14,7 @@ import { auth } from '../../util/helpers/auth'
 import Granted from '../Granted'
 import './RolesList.scss'
 import { useQuery } from '../../util/hook/useQuery'
+import RolesListSkeleton from './skeleton/RolesListSkeleton'
 
 interface IRolesListProps {
   number?: number
@@ -129,71 +130,75 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
 
   return (
     <>
-      <div className="roles">
-        <div className="top-container">
-          {pagination && (
-            <div className="search">
-              <i className="fas fa-search" />
-              <input type="text" placeholder="Search..." />
-            </div>
-          )}
-          <Granted permissions={['c:role']}>
-            <Link to="/roles/addroles" className="action">
-              New Role
-            </Link>
-          </Granted>
-          {success && (
-            <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-              {' '}
-              <i className="fas fa-check" />
-              Role Added
-              <i className="fas fa-times" onClick={() => setToast(false)} />
-            </div>
-          )}
-          {successEdit && (
-            <div className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}>
-              {' '}
-              <i className="fas fa-check" />
-              Role Edited
-              <i className="fas fa-times" onClick={() => setToastEdit(false)} />
-            </div>
-          )}
-        </div>
-        {!roles && !meta && <Loading />}
-        {roles && meta && (
-          <>
-            <div className="role-list">
-              <div className="legend">
-                <span>Role</span>
+      {!roles && !meta && <RolesListSkeleton />}
+      {roles && meta && (
+        <div className="roles">
+          <div className="top-container">
+            {pagination && (
+              <div className="search">
+                <i className="fas fa-search" />
+                <input type="text" placeholder="Search..." />
               </div>
-              {roles.map((role) => {
-                return (
-                  <div className="role" key={role.id}>
-                    <span>{role.name}</span>
-                    <Granted permissions={['u:role']}>
-                      <Link
-                        to={`/roles/edit/${role.id}?page=${query.get('page')}`}
-                        className="action"
-                      >
-                        Edit
-                      </Link>
-                    </Granted>
-                    <Granted permissions={['d:role']}>
-                      <button
-                        className="delete"
-                        onClick={() => deleteRoles(role.id, role.name)}
-                      >
-                        <i className="fas fa-trash" />
-                      </button>
-                    </Granted>
-                  </div>
-                )
-              })}
-              {pagination && <Pagination meta={meta} uri={'/roles?page='} />}
+            )}
+            <Granted permissions={['c:role']}>
+              <Link to="/roles/addroles" className="action">
+                New Role
+              </Link>
+            </Granted>
+            {success && (
+              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+                {' '}
+                <i className="fas fa-check" />
+                Role Added
+                <i className="fas fa-times" onClick={() => setToast(false)} />
+              </div>
+            )}
+            {successEdit && (
+              <div
+                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
+              >
+                {' '}
+                <i className="fas fa-check" />
+                Role Edited
+                <i
+                  className="fas fa-times"
+                  onClick={() => setToastEdit(false)}
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="role-list">
+            <div className="legend">
+              <span>Role</span>
             </div>
-          </>
-        )}
-      </div>
+            {roles.map((role) => {
+              return (
+                <div className="role" key={role.id}>
+                  <span>{role.name}</span>
+                  <Granted permissions={['u:role']}>
+                    <Link
+                      to={`/roles/edit/${role.id}?page=${query.get('page')}`}
+                      className="action"
+                    >
+                      Edit
+                    </Link>
+                  </Granted>
+                  <Granted permissions={['d:role']}>
+                    <button
+                      className="delete"
+                      onClick={() => deleteRoles(role.id, role.name)}
+                    >
+                      <i className="fas fa-trash" />
+                    </button>
+                  </Granted>
+                </div>
+              )
+            })}
+            {pagination && <Pagination meta={meta} uri={'/roles?page='} />}
+          </div>
+        </div>
+      )}
     </>
   )
 }

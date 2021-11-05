@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import {  useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { ProductModel } from '../../models/product/product.model'
 import { http } from '../../util/http'
@@ -15,6 +15,7 @@ import { useQuery } from '../../util/hook/useQuery'
 import { Formik } from 'formik'
 import { stockSchema } from '../../util/validation/productValidation'
 import NumberInput from '../inputs/NumberInput'
+import StocksSkeleton from './skeleton/StocksSkeleton'
 
 interface IStocksProps {
   success?: boolean | undefined
@@ -134,6 +135,7 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
 
   return (
     <>
+      {!stock && !meta && <StocksSkeleton />}
       {stock && meta && (
         <>
           <div className="stocks">
@@ -250,21 +252,15 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                               {({ handleSubmit }) => {
                                 return (
                                   <form onSubmit={handleSubmit}>
-                                    <NumberInput
-                                      name={'stock.physical'}
-                                    />
-                                    <NumberInput
-                                      name={'stock.incoming'}
-                                    />
-                                    <NumberInput
-                                      name={'stock.pending'}
-                                    />
+                                    <NumberInput name={'stock.physical'} />
+                                    <NumberInput name={'stock.incoming'} />
+                                    <NumberInput name={'stock.pending'} />
                                     <Granted permissions={['u:product']}>
                                       <button
                                         className="action edit"
                                         onClick={() => setEditing(stock.id)}
                                       >
-                                        Valid
+                                        Submit
                                       </button>
                                     </Granted>
                                   </form>
