@@ -1,31 +1,31 @@
 import * as React from 'react'
 import Granted from '../../Granted'
-import './RolesListSkeleton.scss'
+import './CategoriesListSkeleton.scss'
 
-const RolesListSkeleton: React.FunctionComponent = () => {
+const CategoriesListSkeleton: React.FunctionComponent = () => {
   return (
-    <div className="roles-skeleton">
+    <div className="categories-skeleton">
       <div className="top-container">
-        <div className="search-skeleton"></div>
-        <Granted permissions={['c:role']}>
+        <div className="search-skeleton" ></div>
+        <Granted permissions={['c:product-category']}>
           <div className="button-skeleton"></div>
         </Granted>
       </div>
-      <div className="role-list">
+      <div className="category-list">
         <div className="legend">
           <span></span>
           <span></span>
           <span></span>
         </div>
         {[...Array(10)].map((param, index) => (
-          <div className="role" key={index}>
+          <div className="category" key={index}>
             <span></span>
             <span></span>
             <span></span>
-            <Granted permissions={['u:role']}>
+            <Granted permissions={['u:product-category']}>
               <span className="edit-skeleton"></span>
             </Granted>
-            <Granted permissions={['d:role']}>
+            <Granted permissions={['d:product-category']}>
               <span className="delete-skeleton"></span>
             </Granted>
           </div>
@@ -36,4 +36,4 @@ const RolesListSkeleton: React.FunctionComponent = () => {
   )
 }
 
-export default RolesListSkeleton
+export default CategoriesListSkeleton
