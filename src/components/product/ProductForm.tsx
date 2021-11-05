@@ -354,7 +354,6 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                           {!thumbnail && (
                             <div
                               className="placeholder"
-                              onClick={() => console.log(thumbnail)}
                             >
                               Select an image to set the thumbnail
                             </div>
@@ -362,7 +361,6 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                           {thumbnail && (
                             <div
                               className="placeholder"
-                              onClick={() => console.log(thumbnail)}
                             >
                               <img
                                 src={`${config.api + thumbnail.uri}`}

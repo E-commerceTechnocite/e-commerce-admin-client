@@ -92,7 +92,6 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   const deleteCategories = async (id: string, category: string) => {
     if (confirm(`Delete category: ${category}?`)) {
       let { error } = await sendRequest(deleteRequest, id)
-      console.log(error)
       if (error) {
         if (error.message === 'Error 500 Internal Server Error') {
           alert(

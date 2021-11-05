@@ -101,7 +101,6 @@ const Country: React.FunctionComponent<ICountryProps> = ({
         history.push('/login')
         return
       }
-      console.log(data)
       setTaxRulesDeleted(data[0].taxRules)
       setRefreshPage(!refreshPage)
       setIsDeleted(true)
