@@ -30,16 +30,21 @@ const Legend: React.FunctionComponent<ILegendProps> = ({
               {name}
             </Link>
           )}
-        {query.get('search') && query.get('order') == 'ASC' && (
+        {query.get('search') && query.get('search') !== search && (
           <Link to={`${uri}?page=1&s=u&search=${search}&order=DESC`}>
             {name}
-            <i className="fas fa-sort-up" />
           </Link>
         )}
-        {query.get('search') && query.get('order') == 'DESC' && (
+        {query.get('search') === search && query.get('order') == 'ASC' && (
+          <Link to={`${uri}?page=1&s=u&search=${search}&order=DESC`}>
+            {name}
+            <i className="fas fa-sort-up up" />
+          </Link>
+        )}
+        {query.get('search') === search && query.get('order') == 'DESC' && (
           <Link to={`${uri}?page=1&s=u&search=${search}&order=ASC`}>
             {name}
-            <i className="fas fa-sort-down" />
+            <i className="fas fa-sort-down down" />
           </Link>
         )}
       </span>

@@ -70,6 +70,10 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
         history.push('/not-found')
         return
       }
+      if (error.statusCode === 405) {
+        // TODO when feature available
+        // redirect if search incorrect
+      }
       history.push('/login')
     }
     setProducts(data.data)
@@ -174,11 +178,18 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
             <div className="legend">
               <span>Image</span>
               <Legend uri={`/products`} name={`Title`} search={`title`} />
-              {/* <span>Title</span> */}
-              <span>Reference</span>
-              <span>Description</span>
-              <span>Category</span>
-              <span>Price</span>
+              <Legend
+                uri={`/products`}
+                name={`Reference`}
+                search={`reference`}
+              />
+              <Legend
+                uri={`/products`}
+                name={`Description`}
+                search={`description`}
+              />
+              <Legend uri={`/products`} name={`Category`} search={`category`} />
+              <Legend uri={`/products`} name={`Price`} search={`price`} />
             </div>
             <motion.div
               variants={{
@@ -252,7 +263,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                 )
               })}
             </motion.div>
-            {pagination && <Pagination meta={meta} uri="/products?page=" />}
+            {pagination && <Pagination meta={meta} uri={`/products?page=`} />}
           </div>
         </div>
       )}

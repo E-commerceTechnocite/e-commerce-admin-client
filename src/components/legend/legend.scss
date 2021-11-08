@@ -1,5 +1,17 @@
 @import '../../../public/scss/variables.scss';
 
 .legend-item {
-
+  a {
+    position: relative;
+    i {
+      margin-left: 5px;  
+      position: absolute;
+    }
+    .up {
+      top: 20%;
+    }
+    .down {
+      bottom: 20%;
+    }
+  }
 }
