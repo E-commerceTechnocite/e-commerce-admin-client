@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom'
 import Granted from '../Granted'
 import TaxRuleSkeleton from './skeleton/TaxRuleSkeleton'
 import { useQuery } from '../../util/hook/useQuery'
+import Legend from '../legend/legend'
 
 interface ITaxRuleProps {
   success?: boolean | undefined
@@ -40,7 +41,11 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
    */
   const TaxRuleRequest = () => {
     return http.get<PaginationModel<TaxRuleModel>>(
-      `${config.api}/v1/tax-rule?page=${query.get('rule')}&limit=5`,
+      `${config.api}/v1/tax-rule${
+        query.get('search')
+          ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
+          : '?'
+      }page=${query.get('rule')}&limit=5`,
       {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -57,6 +62,10 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
       if (error.statusCode === 404) {
         history.push('/not-found')
         return
+      }
+      if (error.statusCode === 405) {
+        // TODO when feature available
+        // redirect if search incorrect
       }
       history.push('/login')
     }
@@ -106,7 +115,13 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
       return
     }
     SubmitTaxRule().then()
-  }, [refreshPage, isUpdated, query.get('rule')])
+  }, [
+    refreshPage,
+    isUpdated,
+    query.get('rule'),
+    query.get('search'),
+    query.get('order'),
+  ])
 
   // Check if tax rule has been added
   useEffect(() => {
@@ -168,11 +183,46 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
           </div>
           <div className="tax-list">
             <div className="legend">
-              <span>Name</span>
-              <span>Rate</span>
-              <span>Country</span>
-              <span>Zip code</span>
-              <span>Description</span>
+              <Legend
+                uri={`/taxes`}
+                name={`Name`}
+                search={`taxRuleGroup`}
+                customQuery={`rule=1&group=${query.get(
+                  'group'
+                )}&country=${query.get('country')}`}
+              />
+              <Legend
+                uri={`/taxes`}
+                name={`Rate`}
+                search={`tax`}
+                customQuery={`rule=1&group=${query.get(
+                  'group'
+                )}&country=${query.get('country')}`}
+              />
+              <Legend
+                uri={`/taxes`}
+                name={`Country`}
+                search={`country`}
+                customQuery={`rule=1&group=${query.get(
+                  'group'
+                )}&country=${query.get('country')}`}
+              />
+              <Legend
+                uri={`/taxes`}
+                name={`Zip code`}
+                search={`zipCode`}
+                customQuery={`rule=1&group=${query.get(
+                  'group'
+                )}&country=${query.get('country')}`}
+              />
+              <Legend
+                uri={`/taxes`}
+                name={`Description`}
+                search={`description`}
+                customQuery={`rule=1&group=${query.get(
+                  'group'
+                )}&country=${query.get('country')}`}
+              />
             </div>
             <motion.div
               variants={{

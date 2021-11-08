@@ -15,6 +15,7 @@ import Granted from '../Granted'
 import './RolesList.scss'
 import { useQuery } from '../../util/hook/useQuery'
 import RolesListSkeleton from './skeleton/RolesListSkeleton'
+import Legend from '../legend/legend'
 
 interface IRolesListProps {
   number?: number
@@ -43,9 +44,11 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
    */
   const pageRequest = () =>
     http.get<PaginationModel<RoleModel>>(
-      `${config.api}/v1/role?page=${query.get('page')}${
-        number ? '&limit=' + number : ''
-      }`,
+      `${config.api}/v1/role${
+        query.get('search')
+          ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
+          : '?'
+      }page=${query.get('page')}${number ? '&limit=' + number : ''}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -64,6 +67,10 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
       if (error.statusCode === 404) {
         history.push('/not-found')
         return
+      }
+      if (error.statusCode === 405) {
+        // TODO when feature available
+        // redirect if search incorrect
       }
       history.push('/login')
     }
@@ -126,7 +133,7 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
     }
     if (query.get('s')) window.scrollTo(0, 0)
     getRoles().then()
-  }, [refreshPage, query.get('page')])
+  }, [refreshPage, query.get('page'), query.get('search'), query.get('order')])
 
   return (
     <>
@@ -170,7 +177,7 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
 
           <div className="role-list">
             <div className="legend">
-              <span>Role</span>
+              <Legend uri={`/roles`} name={`Role`} search={`name`} />
             </div>
             {roles.map((role) => {
               return (
