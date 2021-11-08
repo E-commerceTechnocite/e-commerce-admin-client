@@ -73,13 +73,13 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
     if (query.get('page')) {
       history.push({
         pathname: '/users',
-        search: `?page=${query.get('page')}`,
+        search: `?page=${query.get('page')}&s=u`,
         state: { successEdit: true },
       })
     } else {
       history.push({
         pathname: '/users',
-        search: `?page=1`,
+        search: `?page=1&s=u`,
         state: { success: true },
       })
     }

@@ -17,7 +17,9 @@ const Pagination: FunctionComponent<PaginationPropsInterface> = ({
 }) => {
   const query = useQuery()
   const search = `${
-    query.get('search')
+    query.get('search') &&
+    query.get('order') &&
+    (query.get('order') == 'ASC' || query.get('order') == 'DESC')
       ? `&search=${query.get('search')}&order=${query.get('order')}`
       : ``
   }`

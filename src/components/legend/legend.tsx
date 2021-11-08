@@ -23,13 +23,6 @@ const Legend: React.FunctionComponent<ILegendProps> = ({
             {name}
           </Link>
         )}
-        {query.get('search') &&
-          query.get('order') != 'DESC' &&
-          query.get('order') != 'ASC' && (
-            <Link to={`${uri}?page=1&s=u&search=${search}&order=DESC`}>
-              {name}
-            </Link>
-          )}
         {query.get('search') && query.get('search') !== search && (
           <Link to={`${uri}?page=1&s=u&search=${search}&order=DESC`}>
             {name}

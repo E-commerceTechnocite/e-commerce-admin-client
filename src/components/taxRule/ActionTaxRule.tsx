@@ -85,7 +85,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
         pathname: '/taxes',
         search: `?rule=${query.get('rule')}&group=${query.get(
           'group'
-        )}&country=${query.get('country')}`,
+        )}&country=${query.get('country')}&s=u`,
         state: { successEdit: true },
       })
     } else {
@@ -93,7 +93,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
         pathname: '/taxes',
         search: `?rule=1&group=${query.get('group')}&country=${query.get(
           'country'
-        )}`,
+        )}&s=u`,
         state: { success: true },
       })
     }
