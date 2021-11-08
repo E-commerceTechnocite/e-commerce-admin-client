@@ -25,40 +25,38 @@ const Legend: React.FunctionComponent<ILegendProps> = ({
   const querySearch = `${customSearch ? customSearch : `search`}`
   const queryOrder = `${customOrder ? customOrder : `order`}`
   return (
-    <div className="legend-item">
-      <span>
-        {!query.get(querySearch) && !query.get(queryOrder) && (
-          <Link
-            to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=DESC`}
-          >
-            {name}
-          </Link>
-        )}
-        {query.get(querySearch) && query.get(querySearch) !== search && (
-          <Link
-            to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=DESC`}
-          >
-            {name}
-          </Link>
-        )}
-        {query.get(querySearch) === search && query.get(queryOrder) == 'ASC' && (
-          <Link
-            to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=DESC`}
-          >
-            {name}
-            <i className="fas fa-sort-up up" />
-          </Link>
-        )}
-        {query.get(querySearch) === search && query.get(queryOrder) == 'DESC' && (
-          <Link
-            to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=ASC`}
-          >
-            {name}
-            <i className="fas fa-sort-down down" />
-          </Link>
-        )}
-      </span>
-    </div>
+    <span className="legend-item">
+      {!query.get(querySearch) && !query.get(queryOrder) && (
+        <Link
+          to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=DESC`}
+        >
+          {name}
+        </Link>
+      )}
+      {query.get(querySearch) && query.get(querySearch) !== search && (
+        <Link
+          to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=DESC`}
+        >
+          {name}
+        </Link>
+      )}
+      {query.get(querySearch) === search && query.get(queryOrder) == 'ASC' && (
+        <Link
+          to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=DESC`}
+        >
+          {name}
+          <i className="fas fa-sort-up up" />
+        </Link>
+      )}
+      {query.get(querySearch) === search && query.get(queryOrder) == 'DESC' && (
+        <Link
+          to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=ASC`}
+        >
+          {name}
+          <i className="fas fa-sort-down down" />
+        </Link>
+      )}
+    </span>
   )
 }
 

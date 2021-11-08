@@ -54,9 +54,8 @@
       grid-template-columns: 1fr 117px;
       grid-template-rows: 1;
       border-bottom: 1px solid $primary-border-color;
-      grid-column-gap: 350px;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       button {
         justify-self: center;
         grid-column-start: 2;
