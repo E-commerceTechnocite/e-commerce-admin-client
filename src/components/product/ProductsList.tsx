@@ -16,6 +16,7 @@ import { auth } from '../../util/helpers/auth'
 import './ProductsList.scss'
 import ProductsListSkeleton from './skeleton/ProductsListSkeleton'
 import { useQuery } from '../../util/hook/useQuery'
+import Legend from '../legend/legend'
 
 interface IProductsListProps {
   number?: number
@@ -45,7 +46,11 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
    */
   const pageRequest = () =>
     http.get<PaginationModel<ProductModel>>(
-      `${config.api}/v1/product?page=${pagination ? query.get('page') : '1'}${
+      `${config.api}/v1/product${
+        query.get('search')
+          ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
+          : '?'
+      }page=${pagination ? query.get('page') : '1'}${
         number ? '&limit=' + number : ''
       }`,
       {
@@ -113,8 +118,6 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   }, [success, successEdit])
 
   useEffect(() => {
-    if (query.get('scroll')) {
-    }
     if (!query.get('page')) {
       if (window.location.pathname === '/admin/products') {
         history.push('/products?page=1&s=u')
@@ -124,7 +127,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
     if (query.get('s')) window.scrollTo(0, 0)
 
     getProducts().then()
-  }, [refreshPage, query.get('page')])
+  }, [refreshPage, query.get('page'), query.get('search'), query.get('order')])
 
   return (
     <>
@@ -170,7 +173,8 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
           <div className="product-list">
             <div className="legend">
               <span>Image</span>
-              <span>Title</span>
+              <Legend uri={`/products`} name={`Title`} search={`title`} />
+              {/* <span>Title</span> */}
               <span>Reference</span>
               <span>Description</span>
               <span>Category</span>
