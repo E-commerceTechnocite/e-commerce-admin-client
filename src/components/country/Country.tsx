@@ -53,7 +53,7 @@ const Country: React.FunctionComponent<ICountryProps> = ({
   const countryRequest = () => {
     return http.get<PaginationModel<CountryModel>>(
       `${config.api}/v1/country${
-        query.get('search')
+        query.get('searchCountry')
           ? `?orderBy=${query.get('searchCountry')}&order=${query.get(
               'orderCountry'
             )}&`
@@ -245,9 +245,9 @@ const Country: React.FunctionComponent<ICountryProps> = ({
                 uri={`/taxes`}
                 name={`Code`}
                 search={`code`}
-                customQuery={`rule=${query.get(
-                  'rule'
-                )}&group=1&country=${query.get('country')}`}
+                customQuery={`rule=${query.get('rule')}&group=${query.get(
+                  'group'
+                )}&country=1`}
                 customSearch={`searchCountry`}
                 customOrder={`orderCountry`}
               />
