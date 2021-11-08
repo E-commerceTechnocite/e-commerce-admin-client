@@ -114,7 +114,7 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
         setEditArray((array) => [...array, stock.id])
       })
     } else if (isSubmit) {
-
+      
     }
   }
 
@@ -216,7 +216,6 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                           </span>
                         )}
                         <span>{stock.title}</span>
-
                         {!editArray.includes(stock.id) && (
                           <>
                             {stock.stock && stock.stock.physical ? (
@@ -224,19 +223,16 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                             ) : (
                               <span>0</span>
                             )}
-
                             {stock.stock && stock.stock.incoming ? (
                               <span>{stock.stock.incoming}</span>
                             ) : (
                               <span>0</span>
                             )}
-
                             {stock.stock && stock.stock.pending ? (
                               <span>{stock.stock.pending}</span>
                             ) : (
                               <span>0</span>
                             )}
-
                             <Granted permissions={['u:product']}>
                               <button
                                 type="button"
