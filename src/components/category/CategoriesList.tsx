@@ -15,6 +15,7 @@ import './CategoriesList.scss'
 import { useQuery } from '../../util/hook/useQuery'
 import Granted from '../Granted'
 import CategoriesListSkeleton from './skeleton/CategoriesListSkeleton'
+import Legend from '../legend/legend'
 
 interface ICategoriesListProps {
   number?: number
@@ -43,9 +44,11 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
    */
   const pageRequest = () =>
     http.get<PaginationModel<CategoryModel>>(
-      `${config.api}/v1/product-category?page=${query.get('page')}${
-        number ? '&limit=' + number : ''
-      }`,
+      `${config.api}/v1/product-category${
+        query.get('search')
+          ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
+          : '?'
+      }page=${query.get('page')}${number ? '&limit=' + number : ''}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -63,6 +66,10 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
       if (error.statusCode === 404) {
         history.push('/not-found')
         return
+      }
+      if (error.statusCode === 405) {
+        // TODO when feature available
+        // redirect if search incorrect
       }
       history.push('/login')
     }
@@ -128,12 +135,11 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
     }
     if (query.get('s')) window.scrollTo(0, 0)
     getCategory().then()
-  }, [refreshPage, query.get('page')])
+  }, [refreshPage, query.get('page'), query.get('search'), query.get('order')])
 
   return (
     <>
       {!categories && !meta && <CategoriesListSkeleton />}
-      {/* <CategoriesListSkeleton /> */}
       {categories && meta && (
         <div className="categories">
           <div className="top">
@@ -173,7 +179,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
 
           <div className="category-list">
             <div className="legend">
-              <span>Category</span>
+              <Legend uri={`/categories`} name={`Category`} search={`label`} />
             </div>
             <motion.div
               variants={{

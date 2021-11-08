@@ -12,6 +12,7 @@ import { motion } from 'framer-motion'
 import CustomersListSkeleton from './skeleton/CustomersListSkeleton'
 import { useQuery } from '../../util/hook/useQuery'
 import Pagination from '../pagination/Pagination'
+import Legend from '../legend/legend'
 
 interface ICustomersListProps {
   number?: number
@@ -32,7 +33,11 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
    */
   const customersRequest = () =>
     http.get<PaginationModel<CustomerModel>>(
-      `${config.api}/v1/customers?page=${query.get('page')}`,
+      `${config.api}/v1/customers${
+        query.get('search')
+          ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
+          : '?'
+      }page=${query.get('page')}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -50,6 +55,10 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
       if (error.statusCode === 404) {
         history.push('/not-found')
         return
+      }
+      if (error.statusCode === 405) {
+        // TODO when feature available
+        // redirect if search incorrect
       }
       history.push('/login')
     }
@@ -91,7 +100,7 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
     }
     if (query.get('s')) window.scrollTo(0, 0)
     getCustomers().then()
-  }, [refreshPage, query.get('page')])
+  }, [refreshPage, query.get('page'), query.get('search'), query.get('order')])
 
   return (
     <>
@@ -106,11 +115,27 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
           </div>
           <div className="customer-list">
             <div className="legend">
-              <span>Username</span>
-              <span>E-mail</span>
-              <span>phoneNumber</span>
-              <span>First Name</span>
-              <span>Last Name</span>
+              <Legend
+                uri={`/customers`}
+                name={`Username`}
+                search={`username`}
+              />
+              <Legend uri={`/customers`} name={`E-mail`} search={`email`} />
+              <Legend
+                uri={`/customers`}
+                name={`Phone number`}
+                search={`phoneNumber`}
+              />
+              <Legend
+                uri={`/customers`}
+                name={`First name`}
+                search={`firstName`}
+              />
+              <Legend
+                uri={`/customers`}
+                name={`Last name`}
+                search={`lastName`}
+              />
             </div>
             <motion.div
               variants={{
