@@ -15,6 +15,7 @@ import { auth } from '../../util/helpers/auth'
 import { TaxRuleModel } from '../../models/product/tax-rule.model'
 import CountrySkeleton from './skeleton/CountrySkeleton'
 import { useQuery } from '../../util/hook/useQuery'
+import Legend from '../legend/legend'
 
 interface ICountryProps {
   successCountry?: boolean | undefined
@@ -51,7 +52,13 @@ const Country: React.FunctionComponent<ICountryProps> = ({
    */
   const countryRequest = () => {
     return http.get<PaginationModel<CountryModel>>(
-      `${config.api}/v1/country?page=${query.get('country')}&limit=5`,
+      `${config.api}/v1/country${
+        query.get('search')
+          ? `?orderBy=${query.get('searchCountry')}&order=${query.get(
+              'orderCountry'
+            )}&`
+          : '?'
+      }page=${query.get('country')}&limit=5`,
       {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -68,6 +75,10 @@ const Country: React.FunctionComponent<ICountryProps> = ({
       if (error.statusCode === 404) {
         history.push('/not-found')
         return
+      }
+      if (error.statusCode === 405) {
+        // TODO when feature available
+        // redirect if search incorrect
       }
       history.push('/login')
     }
@@ -124,7 +135,12 @@ const Country: React.FunctionComponent<ICountryProps> = ({
       return
     }
     submitCountry().then()
-  }, [refreshPage, query.get('country')])
+  }, [
+    refreshPage,
+    query.get('country'),
+    query.get('searchCountry'),
+    query.get('orderCountry'),
+  ])
 
   // Check if a country has been added and sends a confirmation toast
   useEffect(() => {
@@ -215,8 +231,26 @@ const Country: React.FunctionComponent<ICountryProps> = ({
               </div>
             )}
             <div className="legend">
-              <span>Country</span>
-              <span>Code</span>
+              <Legend
+                uri={`/taxes`}
+                name={`Name`}
+                search={`name`}
+                customQuery={`rule=${query.get(
+                  'rule'
+                )}&group=1&country=${query.get('country')}`}
+                customSearch={`searchCountry`}
+                customOrder={`orderCountry`}
+              />
+              <Legend
+                uri={`/taxes`}
+                name={`Code`}
+                search={`code`}
+                customQuery={`rule=${query.get(
+                  'rule'
+                )}&group=1&country=${query.get('country')}`}
+                customSearch={`searchCountry`}
+                customOrder={`orderCountry`}
+              />
             </div>
             <motion.div
               variants={{
@@ -274,6 +308,8 @@ const Country: React.FunctionComponent<ICountryProps> = ({
             uri={`/taxes?rule=${query.get('rule')}&group=${query.get(
               'group'
             )}&country=`}
+            customSearch={`searchCountry`}
+            customOrder={`orderCountry`}
           />
         </div>
       )}

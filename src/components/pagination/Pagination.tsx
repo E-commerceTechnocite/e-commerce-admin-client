@@ -8,19 +8,27 @@ export interface PaginationPropsInterface {
   meta: PaginationMetadataModel
   uri?: string
   restUri?: string
+  customSearch?: string
+  customOrder?: string
 }
 
 const Pagination: FunctionComponent<PaginationPropsInterface> = ({
   meta,
   uri,
   restUri,
+  customSearch,
+  customOrder,
 }) => {
   const query = useQuery()
+  const paramSearch = `${customSearch ? customSearch : 'search'}`
+  const paramOrder = `${customOrder ? customOrder : 'order'}`
+  const querySearch = `${paramSearch}=${query.get(`${paramSearch}`)}`
+  const queryOrder = `${paramOrder}=${query.get(`${paramOrder}`)}`
   const search = `${
-    query.get('search') &&
-    query.get('order') &&
-    (query.get('order') == 'ASC' || query.get('order') == 'DESC')
-      ? `&search=${query.get('search')}&order=${query.get('order')}`
+    query.get(paramSearch) &&
+    query.get(paramOrder) &&
+    (query.get(paramOrder) == 'ASC' || query.get(paramOrder) == 'DESC')
+      ? `&${querySearch}&${queryOrder}`
       : ``
   }`
   const endUri = restUri ? restUri : ''
