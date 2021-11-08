@@ -14,7 +14,6 @@ export const authUpdate = createSlice({
   reducers: {
     update: (state) => {
       state.value = !state.value
-      console.log('update')
     },
   },
 })

@@ -5,7 +5,7 @@ import { CountryModel } from './country.model'
 
 export interface TaxRuleModel extends EntityInterface {
   taxRuleGroup?: TaxRuleGroupModel
-  tax?: TaxModel
+  tax?: number
   country?: CountryModel
   zipCode?: string
   behavior?: number

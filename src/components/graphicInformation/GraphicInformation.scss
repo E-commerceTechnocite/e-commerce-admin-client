@@ -1,0 +1,36 @@
+@import '../../../public/scss/variables.scss';
+
+.graphic-information {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap: 15px;
+  margin: 15px 0;
+
+  .graphicItem {
+    background-color: #ffffff;
+    color: #67748e;
+    border-radius: 4px;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    height: 400px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+  }
+  .graph1 {
+    margin: 15px 15px 15px 0px;
+  }
+  .graph2 {
+    margin: 15px 0px 15px 15px;
+  }
+}
+
+@media screen and (max-width: 1240px) {
+    .graphic-information {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr;
+        grid-gap: 15px;
+    }
+}

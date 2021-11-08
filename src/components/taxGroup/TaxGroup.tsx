@@ -8,31 +8,37 @@ import { PaginationModel } from '../../models/pagination/pagination.model'
 import { TaxRuleGroupModel } from '../../models/product/tax-rule-group.model'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import Pagination from '../pagination/Pagination'
+import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import './TaxGroup.scss'
 import Granted from '../Granted'
 import { auth } from '../../util/helpers/auth'
 import { TaxRuleModel } from '../../models/product/tax-rule.model'
 import { ProductModel } from '../../models/product/product.model'
+import TaxGroupSkeleton from './skeleton/TaxGroupSkeleton'
+import { useQuery } from '../../util/hook/useQuery'
 
 interface ITaxGroupProps {
   successGroup?: boolean | undefined
+  successGroupEdit?: boolean | undefined
   groupToParent?: () => void
 }
 
 const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   successGroup,
+  successGroupEdit,
   groupToParent,
 }) => {
   const [group, setGroup] = useState<TaxRuleGroupModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [page, setPage] = useState<number>(1)
   const [toast, setToast] = useState<boolean>(false)
+  const [toastEdit, setToastEdit] = useState<boolean>(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const [taxRulesDeleted, setTaxRulesDeleted] = useState<TaxRuleModel[]>()
   const [productsDeleted, setProductsDeleted] = useState<ProductModel[]>()
   const [isDeleted, setIsDeleted] = useState<boolean>(false)
   const history = useHistory()
+  const query = useQuery()
 
   /**
    * Returns the get request for tax rule group
@@ -40,7 +46,7 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
    */
   const TaxRuleGroupRequest = () => {
     return http.get<PaginationModel<TaxRuleGroupModel>>(
-      `${config.api}/v1/tax-rule-group?page=${page}&limit=5`,
+      `${config.api}/v1/tax-rule-group?page=${query.get('group')}&limit=5`,
       {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -54,6 +60,10 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   const SubmitTaxRuleGroup = async () => {
     let { data, error } = await sendRequest(TaxRuleGroupRequest)
     if (error) {
+      if (error.statusCode === 404) {
+        history.push('/not-found')
+        return
+      }
       history.push('/login')
     }
     setGroup(data.data)
@@ -105,8 +115,12 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   }
 
   useEffect(() => {
+    if (!query.get('group')) {
+      history.push('/taxes?rule=1&group=1&country=1&s=u')
+      return
+    }
     SubmitTaxRuleGroup().then()
-  }, [page, refreshPage])
+  }, [refreshPage, query.get('group')])
 
   // Check if a tax group has been added and sends a confirmation toast
   useEffect(() => {
@@ -116,7 +130,13 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
         setToast(false)
       }, 10000)
     }
-  }, [successGroup])
+    if (successGroupEdit === true) {
+      setToastEdit(true)
+      setTimeout(() => {
+        setToastEdit(false)
+      }, 10000)
+    }
+  }, [successGroup, successGroupEdit])
 
   // Hide delete confirmation message after 10 seconds
   useEffect(() => {
@@ -133,97 +153,137 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
 
   return (
     <>
-      <div className="tax-group">
-        <div className="top">
-          <div className="search">
-            <i className="fas fa-search"></i>
-            <input type="text" placeholder="Search..." />
+      {!group && !meta && <TaxGroupSkeleton />}
+      {group && meta && (
+        <div className="tax-group">
+          <div className="top">
+            <div className="search">
+              <i className="fas fa-search"></i>
+              <input type="text" placeholder="Search..." />
+            </div>
+            <Granted permissions={['c:tax-rule-group']}>
+              <Link
+                to={`/taxes/add-tax-group?rule=${query.get(
+                  'rule'
+                )}&country=${query.get('country')}`}
+                className="action"
+              >
+                New Group
+              </Link>
+            </Granted>
+            {successGroup && (
+              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
+                {' '}
+                <i className="fas fa-check" />
+                Tax Group Added
+                <i className="fas fa-times" onClick={() => setToast(false)} />
+              </div>
+            )}
+            {successGroupEdit && (
+              <div
+                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
+              >
+                {' '}
+                <i className="fas fa-check" />
+                Tax Group Edited
+                <i
+                  className="fas fa-times"
+                  onClick={() => setToastEdit(false)}
+                />
+              </div>
+            )}
           </div>
-          <Granted permissions={['c:tax-rule-group']}>
-            <Link to="/taxes/add-tax-group" className="action">
-              New Group
-            </Link>
-          </Granted>
-          <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-            {' '}
-            <i className="fas fa-check" />
-            Tax Group Added
-            <i className="fas fa-times" onClick={() => setToast(false)} />
-          </div>
-        </div>
-        {group && meta && (
-          <>
-            <div className="group-list">
-              {(productsDeleted || taxRulesDeleted) && (
-                  <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
-                    <i className="fas fa-times" onClick={onClickClose} />
-                    {taxRulesDeleted && (
-                      <div className="tax-group-deleted">
-                        {taxRulesDeleted.length > 0 && (
-                          <p>Tax rules deleted :</p>
-                        )}
-                        <ul>
-                          {taxRulesDeleted.map((taxRule, index) => (
-                            <>
-                              <li key={index}>{taxRule.id}</li>
-                            </>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {productsDeleted && (
-                      <div className="product-deleted">
-                        {productsDeleted.length > 0 && (
-                          <p>Products deleted :</p>
-                        )}
-                        <ul>
-                          {productsDeleted.map((product, index) => (
-                            <>
-                              <li key={index}>
-                                {product.id} - {product.title} -{' '}
-                                {`${product.price}€`}
-                              </li>
-                            </>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+          <div className="group-list">
+            {(productsDeleted || taxRulesDeleted) && (
+              <div className={`deleted ${!isDeleted ? 'hidden-fade' : ''}`}>
+                <i className="fas fa-times" onClick={onClickClose} />
+                {taxRulesDeleted && (
+                  <div className="tax-group-deleted">
+                    {taxRulesDeleted.length > 0 && <p>Tax rules deleted :</p>}
+                    <ul>
+                      {taxRulesDeleted.map((taxRule, index) => (
+                        <>
+                          <li key={index}>{taxRule.id}</li>
+                        </>
+                      ))}
+                    </ul>
                   </div>
                 )}
-
-              <div className="legend">
-                <span>Name</span>
-              </div>
-              <div className="content">
-                {group.map((group, index) => (
-                  <div className="item" key={index}>
-                    <span>{group.name}</span>
-                    <Granted permissions={['u:tax-rule-group']}>
-                      <Link
-                        to={`/taxes/edit-tax-group/${group.id}`}
-                        className="action edit"
-                      >
-                        Edit
-                      </Link>
-                    </Granted>
-                    <Granted permissions={['d:tax-rule-group']}>
-                      <button
-                        className="delete"
-                        onClick={() =>
-                          submitDeleteTaxGroup(group.id, group.name)
-                        }
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </Granted>
+                {productsDeleted && (
+                  <div className="product-deleted">
+                    {productsDeleted.length > 0 && <p>Products deleted :</p>}
+                    <ul>
+                      {productsDeleted.map((product, index) => (
+                        <>
+                          <li key={index}>
+                            {product.id} - {product.title} -{' '}
+                            {`${product.price}€`}
+                          </li>
+                        </>
+                      ))}
+                    </ul>
                   </div>
-                ))}
+                )}
               </div>
+            )}
+            <div className="legend">
+              <span>Name</span>
             </div>
-            <Pagination meta={meta} pageSetter={setPage} />
-          </>
-        )}
-      </div>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.01,
+                  },
+                },
+              }}
+              initial="hidden"
+              animate="show"
+              className="content"
+            >
+              {group.map((group, index) => (
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0 },
+                    show: { opacity: 1 },
+                  }}
+                  className="item"
+                  key={index}
+                >
+                  <span>{group.name}</span>
+                  <Granted permissions={['u:tax-rule-group']}>
+                    <Link
+                      to={`/taxes/edit-tax-group/${group.id}?rule=${query.get(
+                        'rule'
+                      )}&group=${query.get('group')}&country=${query.get(
+                        'country'
+                      )}`}
+                      className="action edit"
+                    >
+                      Edit
+                    </Link>
+                  </Granted>
+                  <Granted permissions={['d:tax-rule-group']}>
+                    <button
+                      className="delete"
+                      onClick={() => submitDeleteTaxGroup(group.id, group.name)}
+                    >
+                      <i className="fas fa-trash"></i>
+                    </button>
+                  </Granted>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+          <Pagination
+            meta={meta}
+            uri={`taxes?rule=${query.get('rule')}&group=`}
+            restUri={`&country=${query.get('country')}`}
+          />
+        </div>
+      )}
     </>
   )
 }

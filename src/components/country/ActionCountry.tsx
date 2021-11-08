@@ -10,6 +10,8 @@ import { Formik } from 'formik'
 import TextInput from '../inputs/TextInput'
 import { countrySchema } from '../../util/validation/taxValidation'
 import Granted from '../Granted'
+import { useQuery } from '../../util/hook/useQuery'
+import LoadingButton from '../loading/LoadingButton'
 
 interface IActionCountryProps {}
 
@@ -18,6 +20,8 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
   const [country, setCountry] = useState<CountryModel>()
   const params: { slug: string } = useParams()
   const history = useHistory()
+  const query = useQuery()
+  const [isSubmit, setIsSubmit] = useState(false)
 
   /**
    * Returns post or patch request for new country
@@ -49,10 +53,23 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
     if (error) {
       history.push('/login')
     }
-    history.push({
-      pathname: '/taxes',
-      state: { successCountry: true },
-    })
+    if (query.get('country')) {
+      history.push({
+        pathname: '/taxes',
+        search: `?rule=${query.get('rule')}&group=${query.get(
+          'group'
+        )}&country=${query.get('country')}`,
+        state: { successCountryEdit: true },
+      })
+    } else {
+      history.push({
+        pathname: '/taxes',
+        search: `?rule=${query.get('rule')}&group=${query.get(
+          'group'
+        )}&country=1`,
+        state: { successCountry: true },
+      })
+    }
   }
 
   /**
@@ -85,7 +102,6 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
   useEffect(() => {
     if (params.slug) {
       if (country) {
-        console.log(country)
         seInitialValues({ name: country.name, code: country.code })
       }
     }
@@ -100,6 +116,7 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
           initialValues={initialValues}
           validationSchema={countrySchema}
           onSubmit={(data) => {
+            setIsSubmit(true)
             submitCountry(data)
           }}
         >
@@ -111,12 +128,14 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
                   <TextInput name={'code'} label={'Code'} />
                   {!params.slug && (
                     <Granted permissions={['c:country']}>
-                      <button className="action">submit</button>
+                      {!isSubmit && <button className="action">submit</button>}
+                      {isSubmit && <LoadingButton />}
                     </Granted>
                   )}
                   {params.slug && (
                     <Granted permissions={['u:country']}>
-                      <button className="action">submit</button>
+                      {!isSubmit && <button className="action">submit</button>}
+                      {isSubmit && <LoadingButton />}
                     </Granted>
                   )}
                   {/* {submitError && (

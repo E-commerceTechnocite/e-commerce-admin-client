@@ -1,0 +1,126 @@
+@import '../../../public/scss/variables.scss';
+
+/*NEW ROLE */
+.perms-form {
+    background-color: $primary-color-elts;
+    padding: 15px;
+  }
+  .role-name {
+    margin-bottom: 25px;
+    .role-name-title {
+      label {
+        font-size: 17px;
+      }
+    }
+    .role-name-entry {
+      margin: 5px 0px 0px 0px;
+      width: 300px;
+      padding: 0 10px;
+      background: $primary-color-elts;
+      border-radius: 4px;
+      border: 1px solid $primary-border-color;
+      input {
+        width: 250px;
+        height: 35px;
+        font-size: 13px;
+        border: none;
+      }
+    }
+  }
+  .role-permissions {
+    margin-bottom: 25px;
+    .role-permissions-title {
+      label {
+        font-size: 17px;
+      }
+    }
+    .permissions-all {
+      padding: 15px;
+      margin-top: 10px;
+      border: 1px solid $primary-border-color;
+    }
+    .permissions-list {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-column-gap: 75px;
+      grid-row-gap: 25px;
+      justify-items: stretch;
+      
+    }
+  }
+  .permissions-choices {
+    min-width: 150px;
+    box-shadow: $primary-elts-shadow;
+    .permissions-choices-title {
+      display:flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 5px;
+      border-bottom: 1px solid $primary-border-color;
+      input {
+        width:15px;
+        height:15px;
+        margin-right: 4px;
+      }
+    }
+    .attrs {
+     /* display:flex;
+        flex-direction: row;
+        align-items: center;*/
+      .checkBox {
+        display:flex;
+        flex-direction: row;
+        align-items: center;
+      }
+      label {
+        font-size: 15px;
+      }
+      input {
+        width:14px;
+        height:14px;
+        margin-right: 4px;
+        margin-left: 5px;
+        //width: 25px;
+      }
+    }
+  }
+  .perms-button {
+    button {
+      width: 100%;
+    }
+  }
+  
+  .toggleAll {
+    display:flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width:fit-content;
+    align-content: space-between;
+    //border: 1px solid $primary-border-color;
+    padding: 3px;
+    gap: 5px;
+    margin-top: 15px;
+    .all {
+      display:flex;
+      flex-direction: row;
+      align-items: center;
+      border-bottom: 1px solid $primary-border-color;
+      padding-bottom: 2px;
+      input {
+        width: 15px;
+        height: 15px;
+        margin-right: 3px;
+      }
+    }
+    .crud {
+      display:flex;
+      flex-direction: row;
+      align-items: center;
+      input {
+        margin-left: 5px;
+        width: 14px;
+        height: 14px;
+        margin-right: 3px;
+      }
+    }
+  }
