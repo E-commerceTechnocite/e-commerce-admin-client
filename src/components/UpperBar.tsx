@@ -13,6 +13,7 @@ const UpperBar: React.FunctionComponent = () => {
 
   useEffect(() => {
     const crumb = location.pathname
+    
     let treatedPath = crumb.split('/')
     for (let i = 0; i < treatedPath.length; i++) {
       treatedPath[i] =
@@ -25,6 +26,7 @@ const UpperBar: React.FunctionComponent = () => {
     //setUsername("John Doe")
     try {
     setUsername(auth.decodedAccess.username) // PEUT ETRE SUJET A ERREUR !
+    console.log(auth.decodedAccess)
     } catch (e) {
     console.log("username error")
     setUsername("John Doe")
@@ -50,11 +52,10 @@ const UpperBar: React.FunctionComponent = () => {
           <div></div>
           <div>
             <span>{username}</span>
-            <i className="fas fa-sort-down"></i>
           </div>
         </div>
         <div className="user-img">
-          <img src="" alt="" />
+          <img src={`https://avatars.dicebear.com/api/initials/${username}p.svg`} alt="" className="user-img2"/>
         </div>
       </div>
     </div>

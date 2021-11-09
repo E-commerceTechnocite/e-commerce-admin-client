@@ -308,7 +308,7 @@ button {
     width: 220px;
   }
   li {
-    width: 140px;
+    width: 175px;
     padding: 5px 0 5px 7px;
     margin: 3px 0;
     transition: 0.2s;
@@ -395,9 +395,17 @@ button {
   .user-info .user-img {
     width: 38px;
     height: 38px;
-    background: #dddddd;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 50%;
     margin-left: 10px;
+  }
+  .user-info .user-img2 {
+    width : 38px; height : 38px;
+    border: none;
+    border-radius: 50%;
   }
   .user-info .user {
     position: relative;
@@ -702,5 +710,159 @@ table th {
   .rdw-history-dropdown,
   .rdw-colorpicker-wrapper {
     display: none;
+  }
+}
+
+.userProfile {
+  background: $primary-color-elts;
+  box-shadow: $primary-elts-shadow;
+  min-height: 300px;
+  margin-bottom: 15px;
+  //padding-bottom: 90px;
+  padding: 15px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 300px 1fr 1fr;
+  grid-column-gap: 5px;
+  align-items: row;
+  .photoProfile {
+    padding: 15px;
+  }
+  img {
+  //border: 1px solid $primary-border-color;
+    
+    border-radius: 50%;
+  }
+  .test {
+    padding: 15px;
+    margin-top: 15px;
+    border: 1px solid $primary-border-color;
+  }
+}
+
+.informationProfile {
+  /*display: grid;
+  align-items: column;
+  justify-content: flex-start;*/
+  padding:15px;
+  //margin-top: 40px;
+  .profileUsername {
+    margin-top: 15px;
+  }
+  .infos {
+    border: 1px solid $primary-border-color;
+    height: 272px;
+    padding: 0px 0px 0px 15px;
+    margin-top: 15px;
+  }
+  .profileEntry {
+    margin: 5px 0px 25px 0px;
+    width: 90%;
+    height:35px;
+    padding: 0 10px;
+    background: $primary-color-elts;
+    border-radius: 4px;
+    border: 1px solid $primary-border-color;
+    input {
+      width: 100%;
+      height: 35px;
+      font-size: 13px;
+      border: none;
+    }
+  }
+}
+
+.profilePermissions {
+  padding: 15px;
+  .profileCRUD {
+    //padding:15px;
+    display: grid;
+    justify-content: flex-start;
+    align-items: row;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    border-bottom: 1px solid $primary-border-color;
+  }
+  .profilePerms {
+    height: 243px;
+    border: 1px solid $primary-border-color;
+    display: grid;
+    justify-content: flex-start;
+    align-items: column;
+    grid-template-rows: 35px 1fr;
+    margin-top: 15px;
+    //padding-bottom: 15px;
+    padding:15px;
+  }
+  .permperms {
+    overflow-y: scroll;
+    //padding-bottom: 15px;
+    width: 560px;
+  }
+  .lol {
+    margin-left: 5px;
+    span {
+    padding: 5px;
+    margin-left: 5px;
+    border: 1px solid $primary-border-color;
+    color:#eee;
+    }
+  }
+  .toto {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    //margin-bottom: 15px;
+    border-bottom: 1px solid $primary-border-color;
+    span:first-child {
+      
+    }
+  }
+  .permTit {
+    display: grid;
+    justify-content: flex-start;
+    justify-self: center;
+    align-items: row;
+    grid-template-columns: 205px 95px 95px 95px 1fr;
+    .fas {
+      font-size: 20px;
+      
+    }
+    .fa-check-circle {
+      color: #3a9838;
+    }
+    .fa-times-circle {
+      color:red;
+    }
+    label {
+      display: inline-block;
+      //padding: 15px;
+      //width: 150px;
+      //border-bottom: 1px solid $primary-border-color;
+      //margin-bottom: 5px;
+    }
+
+  }
+  .createProfile {
+    background-color: #3a9838;
+  }
+  .readProfile {
+    background-color: red;
+  }
+  .updateProfile {
+    background-color: red;
+  }
+  .deleteProfile {
+    background-color: #3a9838;
+  }
+  .check {
+    //margin-left: 40px;
+    span {
+      //padding: 5px;
+      margin-right: 15px;
+      margin-left: 2px;
+    }
+    input {
+      width: 18px;
+      height: 18px;
+    }
   }
 }

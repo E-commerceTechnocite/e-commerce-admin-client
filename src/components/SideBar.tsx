@@ -75,6 +75,11 @@ const SideBar: React.FunctionComponent = () => {
                 Media library
               </NavLink>
             </Granted>
+            <Granted permissions={['r:product-category']}>
+              <NavLink uri="/categories" icon="fas fa-list">
+               Categories
+              </NavLink>
+            </Granted>
             <Granted permissions={['r:user']}>
               <NavLink uri="/users" icon="fas fa-users">
                 Users
@@ -83,23 +88,6 @@ const SideBar: React.FunctionComponent = () => {
             <Granted permissions={['r:role']}>
               <NavLink uri="/roles" icon="fas fa-user-tag">
                 Roles
-              </NavLink>
-            </Granted>
-            <Granted
-              permissions={[
-                'r:tax',
-                'r:tax-rule',
-                'r:tax-rule-group',
-                'r:country',
-              ]}
-            >
-              <NavLink uri="/taxes" icon="fas fa-donate">
-                Taxes
-              </NavLink>
-            </Granted>
-            <Granted permissions={['r:product-category']}>
-              <NavLink uri="/categories" icon="fas fa-list">
-                Categories
               </NavLink>
             </Granted>
             <Granted permissions={[]}>
@@ -117,18 +105,27 @@ const SideBar: React.FunctionComponent = () => {
                 Stock
               </NavLink>
             </Granted>
+            <Granted
+              permissions={[
+                'r:tax',
+                'r:tax-rule',
+                'r:tax-rule-group',
+                'r:country',
+              ]}
+            >
+              <NavLink uri="/taxes" icon="fas fa-donate">
+                Taxes
+              </NavLink>
+            </Granted>
           </ul>
         </div>
         <div>
           <ul>
-            <li className="">
-              <a href="">
-                <span>
-                  <i className="fas fa-id-badge" />
-                </span>
+            <Granted permissions={[]}>
+              <NavLink uri="/profile" icon="fas fa-id-badge">
                 Profile
-              </a>
-            </li>
+              </NavLink>
+            </Granted>
             <li>
               <a href="#" onClick={logout}>
                 <span>

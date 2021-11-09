@@ -49,9 +49,9 @@
   .user-list {
     .legend,
     .user {
-      padding: 20px 30px;
+      padding: 15px 30px;
       display: grid;
-      grid-template-columns: 1fr 1fr 2fr 117px;
+      grid-template-columns: 40px 1fr 1fr 2fr 117px;
       grid-template-rows: 1;
       border-bottom: 1px solid $primary-border-color;
       grid-column-gap: 10px;
@@ -59,25 +59,39 @@
       justify-items: flex-start;
       button {
         justify-self: center;
-        grid-column-start: 4;
-        grid-column-end: 5;
+        grid-column-start: 5;
+        grid-column-end: 6;
         grid-row-start: 1;
         justify-self: flex-end;
       }
       a {
         justify-self: flex-start;
-        grid-column-start: 4;
-        grid-column-end: 5;
+        grid-column-start: 5;
+        grid-column-end: 6;
         grid-row-start: 1;
-      }
+      }     
     }
     .legend {
+      display: grid;
+      justify-content: center;
       padding: 20px 30px;
       font-weight: bold;
-      span:nth-child(2) {
-        margin-left: 15px;
-      }
     }
+    .user {
+      span:first-child {
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 35px;
+        height: 35px;
+        position: relative;
+        border-radius: 50%;
+        img {
+          position: absolute;
+          max-width: 80px;
+        }
+      }
     .user {
       span:nth-child(2) {
         margin-left: 15px;
@@ -91,4 +105,5 @@
       margin-bottom: 20px;
     }
   }
+}
 }

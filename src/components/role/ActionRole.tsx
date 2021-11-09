@@ -293,11 +293,11 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
                       return (
                         <div className="permissions-choices" key={index}>
                           <div className="permissions-choices-title">
-                            <input
+                              <input
                               type="checkbox"
                               name={title}
                               onChange={(e) => togglePermsAll(e.target, title)}
-                            />
+                              />
                             <label>{changeTitleForm(title)}</label>
                           </div>
                           <div className="attrs" id="attrs">
@@ -339,25 +339,25 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
                         name="readToggle"
                         onChange={(e) => toggleCRUDAll(e.target)}
                       />
-                      Read
+                      <label>Read</label>
                       <input
                         type="checkbox"
                         name="createToggle"
                         onChange={(e) => toggleCRUDAll(e.target)}
                       />
-                      Create
+                      <label>Create</label>
                       <input
                         type="checkbox"
                         name="updateToggle"
                         onChange={(e) => toggleCRUDAll(e.target)}
                       />
-                      Update
+                      <label>Update</label>
                       <input
                         type="checkbox"
                         name="deleteToggle"
                         onChange={(e) => toggleCRUDAll(e.target)}
                       />
-                      Delete
+                      <label>Delete</label>
                     </div>
                   </div>
                 </div>

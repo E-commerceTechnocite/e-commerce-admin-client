@@ -165,6 +165,7 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
           </div>
           <div className="user-list">
             <div className="legend">
+              <span></span>
               <span>Username</span>
               <span>Role</span>
               <span>E-mail</span>
@@ -192,24 +193,31 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                     className="user"
                     key={user.id}
                   >
+                    <span>
+                      <img
+                        src={`https://avatars.dicebear.com/api/initials/${user.username}p.svg`}
+                      />
+                    </span>                 
                     <span>{user.username}</span>
                     <span>{user.role.name}</span>
                     <span>{user.email}</span>
                     <Granted permissions={['u:user']}>
+                      {user.role.name !== "Admin" && (
                       <Link
                         to={`/users/edit/${user.id}?page=${query.get('page')}`}
                         className="action"
                       >
                         Edit
-                      </Link>
+                      </Link>)}
                     </Granted>
                     <Granted permissions={['d:user']}>
+                      {user.role.name !== "Admin" && (
                       <button
                         className="delete"
                         onClick={() => deleteUsers(user.id, user.username)}
                       >
                         <i className="fas fa-trash"></i>
-                      </button>
+                      </button>)}
                     </Granted>
                   </motion.div>
                 )
