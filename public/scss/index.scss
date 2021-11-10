@@ -721,7 +721,7 @@ table th {
   padding: 15px;
   position: relative;
   display: grid;
-  grid-template-rows: 190px 1fr 1fr;
+  grid-template-rows: 215px 1fr 1fr;
   align-items: row;
   .photoProfile {
     display: grid;
@@ -744,7 +744,7 @@ table th {
     align-content: center;
     //border: 1px solid lightgray;
     border-radius: 4px;
-    background-color: white
+    //background-color: white
   }
 }
 
