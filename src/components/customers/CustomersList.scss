@@ -101,6 +101,7 @@
         display: none !important;
       }
       .customer {
+        height: auto;
         grid-template-columns: repeat(3, 1fr) !important;
         grid-template-rows: repeat(2, 50px);
         span {

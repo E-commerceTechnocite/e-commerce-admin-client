@@ -142,13 +142,15 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
         if (query.get('page')) {
           history.push({
             pathname: '/products',
-            search: `?page=${query.get('page')}`,
+            search: `?page=${query.get('page')}&s=u&search=${query.get(
+              'search'
+            )}&order=${query.get('order')}`,
             state: { successEdit: true },
           })
         } else {
           history.push({
             pathname: '/products',
-            search: '?page=1',
+            search: '?page=1&s=u',
             state: { success: true },
           })
         }
@@ -352,16 +354,12 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                       <div className="current-images">
                         <picture>
                           {!thumbnail && (
-                            <div
-                              className="placeholder"
-                            >
+                            <div className="placeholder">
                               Select an image to set the thumbnail
                             </div>
                           )}
                           {thumbnail && (
-                            <div
-                              className="placeholder"
-                            >
+                            <div className="placeholder">
                               <img
                                 src={`${config.api + thumbnail.uri}`}
                                 alt={thumbnail.title}
@@ -429,7 +427,9 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                       )}
                       {isSubmit && <LoadingButton />}
                     </div>
-                    {submitError && <div className="global-error">{submitError}</div>}
+                    {submitError && (
+                      <div className="global-error">{submitError}</div>
+                    )}
                   </form>
                 )
               }}

@@ -16,6 +16,7 @@ import { Formik } from 'formik'
 import { stockSchema } from '../../util/validation/productValidation'
 import NumberInput from '../inputs/NumberInput'
 import StocksSkeleton from './skeleton/StocksSkeleton'
+import Legend from '../legend/legend'
 
 interface IStocksProps {
   success?: boolean | undefined
@@ -43,7 +44,11 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
    */
   const stocksRequest = () => {
     return http.get<PaginationModel<ProductModel>>(
-      `${config.api}/v1/product?page=${query.get('page')}&limit=10`,
+      `${config.api}/v1/product${
+        query.get('search')
+          ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
+          : '?'
+      }page=${query.get('page')}&limit=10`,
       {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -61,6 +66,10 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
         history.push('/not-found')
         return
       }
+      if (error.statusCode === 405) {
+        // TODO when feature available
+        // redirect if search incorrect
+      }
       history.push('/login')
     }
     setStock(data.data)
@@ -72,12 +81,7 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
    * @param id
    */
   const setEditing = (id: string) => {
-    if (editArray.includes(id)) {
-      /* const array = [...editArray]
-      array.splice(editArray.indexOf(id), 1)
-      setEditArray(array) */
-      // setSubmitEdit(!submitEdit)
-    } else {
+    if (!editArray.includes(id)) {
       setEditArray((array) => [...array, id])
     }
   }
@@ -114,7 +118,7 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
     }
     if (query.get('s')) window.scrollTo(0, 0)
     submitStocks().then()
-  }, [query.get('page'), submitEdit])
+  }, [query.get('page'), submitEdit, query.get('search'), query.get('order')])
 
   // Check if a has been added and sends a confirmation toast
   useEffect(() => {
@@ -149,10 +153,22 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                 <div className="stocks-list">
                   <div className="legend">
                     <span>Image</span>
-                    <span>Product</span>
-                    <span>Physical</span>
-                    <span>Incoming</span>
-                    <span>Pending</span>
+                    <Legend uri={`/stock`} name={`Product`} search={`title`} />
+                    <Legend
+                      uri={`/stock`}
+                      name={`Physical`}
+                      search={`stock.physical`}
+                    />
+                    <Legend
+                      uri={`/stock`}
+                      name={`Incoming`}
+                      search={`stock.incoming`}
+                    />
+                    <Legend
+                      uri={`/stock`}
+                      name={`Pending`}
+                      search={`stock.pending`}
+                    />
                   </div>
                   <motion.div
                     variants={{
@@ -191,7 +207,6 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                           </span>
                         )}
                         <span>{stock.title}</span>
-
                         {!editArray.includes(stock.id) && (
                           <>
                             {stock.stock && stock.stock.physical ? (
@@ -199,19 +214,16 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                             ) : (
                               <span>0</span>
                             )}
-
                             {stock.stock && stock.stock.incoming ? (
                               <span>{stock.stock.incoming}</span>
                             ) : (
                               <span>0</span>
                             )}
-
                             {stock.stock && stock.stock.pending ? (
                               <span>{stock.stock.pending}</span>
                             ) : (
                               <span>0</span>
                             )}
-
                             <Granted permissions={['u:product']}>
                               <button
                                 type="button"
