@@ -61,11 +61,12 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
       )
     } else {
       return http.get<PaginationModel<CategoryModel>>(
-        `${config.api}/v1/product-category/search?q=${searchedValue}&page=${
+        `${config.api}/v1/product-category/search${
           query.get('search')
             ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
             : '?'
-        }page=${query.get('page')}${number ? '&limit=' + number : ''}`,
+        }page=${query.get('page')}${number ? '&limit=' + number : ''
+      }${searchedValue ? '&q=' + searchedValue : ''}`,
         {
           headers: {
             'Content-Type': 'application/json',

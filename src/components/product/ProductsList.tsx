@@ -65,13 +65,13 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
       )
     } else {
       return http.get<PaginationModel<ProductModel>>(
-        `${config.api}/v1/product/search?q=${searchedValue}&page=${
+        `${config.api}/v1/product/search${
           query.get('search')
             ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
             : '?'
         }page=${pagination ? query.get('page') : '1'}${
           number ? '&limit=' + number : ''
-        }`,
+        }${searchedValue ? '&q=' + searchedValue : ''}`,
         {
           headers: {
             'Content-Type': 'application/json',

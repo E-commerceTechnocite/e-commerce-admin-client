@@ -50,11 +50,11 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
       })
     } else {
       return http.get<PaginationModel<CustomerModel>>(
-        `${config.api}/v1/customers/search?q=${searchedValue}&page=${
+        `${config.api}/v1/customers/search${
           query.get('search')
           ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
           : '?'
-      }page=${query.get('page')}`,
+      }page=${query.get('page')}${searchedValue ? '&q=' + searchedValue : ''}`,
       {
         headers: {
           'Content-Type': 'application/json',
