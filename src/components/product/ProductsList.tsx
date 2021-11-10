@@ -15,7 +15,7 @@ import Granted from '../Granted'
 import { auth } from '../../util/helpers/auth'
 import './ProductsList.scss'
 import ProductsListSkeleton from './skeleton/ProductsListSkeleton'
-import _ from 'lodash';
+import _ from 'lodash'
 import { useQuery } from '../../util/hook/useQuery'
 import Legend from '../legend/legend'
 
@@ -34,7 +34,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 }) => {
   const [products, setProducts] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [searchedValue, setSearchedValue] = useState("")
+  const [searchedValue, setSearchedValue] = useState('')
   const [toast, setToast] = useState(false)
   const [toastEdit, setToastEdit] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
@@ -47,7 +47,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
    * @returns request
    */
   const pageRequest = () => {
-    if(searchedValue === "") {
+    if (searchedValue === '') {
       return http.get<PaginationModel<ProductModel>>(
         `${config.api}/v1/product${
           query.get('search')
@@ -81,23 +81,6 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
       )
     }
   }
-
-  /*const pageRequest = () =>
-    http.get<PaginationModel<ProductModel>>(
-      `${config.api}/v1/product${
-        query.get('search')
-          ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
-          : '?'
-      }page=${pagination ? query.get('page') : '1'}${
-        number ? '&limit=' + number : ''
-      }`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          ...auth.headers,
-        },
-      }
-    )*/
   /**
    * Submits to get the page of the product list
    */
@@ -145,10 +128,10 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
   const debounce = useCallback(
     _.debounce((searchValue: string) => {
-      setSearchedValue(searchValue);
+      setSearchedValue(searchValue)
     }, 500),
     []
-  );
+  )
 
   // Check if product has been added and if so displays a toast
   useEffect(() => {
@@ -178,13 +161,13 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   }, [refreshPage, query.get('page'), query.get('search'), query.get('order')])
 
   useEffect(() => {
-    if(pagination) {
-      if(meta) {
-        if(meta.currentPage === 1) {
+    if (pagination) {
+      if (meta) {
+        if (meta.currentPage === 1) {
           setRefreshPage(!refreshPage)
         }
       }
-    } 
+    }
   }, [searchedValue])
 
   return (
@@ -198,7 +181,11 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
             {pagination && (
               <div className="search">
                 <i className="fas fa-search" />
-                <input type="text" placeholder="Search..." onChange={(e) => debounce(e.target.value)}/>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  onChange={(e) => debounce(e.target.value)}
+                />
               </div>
             )}
             <Granted permissions={['c:product']}>
@@ -242,7 +229,11 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                 name={`Description`}
                 search={`description`}
               />
-              <Legend uri={`/products`} name={`Category`} search={`category.label`} />
+              <Legend
+                uri={`/products`}
+                name={`Category`}
+                search={`category.label`}
+              />
               <Legend uri={`/products`} name={`Price`} search={`price`} />
             </div>
             <motion.div
@@ -258,7 +249,11 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
               initial="hidden"
               animate="show"
             >
-              {products.length === 0 && <div className="notfound"><label>Product not found</label></div>}
+              {products.length === 0 && (
+                <div className="notfound">
+                  <label>Product not found</label>
+                </div>
+              )}
               {products.map((product) => {
                 const strippedHtml = htmlToText(product.description)
                 return (
