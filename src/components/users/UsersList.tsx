@@ -14,6 +14,7 @@ import './UsersList.scss'
 import UsersListSkeleton from './skeleton/UsersListSkeleton'
 import Granted from '../Granted'
 import { useQuery } from '../../util/hook/useQuery'
+import Legend from '../legend/legend'
 
 interface IUsersListProps {
   number?: number
@@ -42,9 +43,11 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
    */
   const pageRequest = () =>
     http.get<PaginationModel<UserModel>>(
-      `${config.api}/v1/user?page=${query.get('page')}${
-        number ? '&limit=' + number : ''
-      }`,
+      `${config.api}/v1/user${
+        query.get('search')
+          ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
+          : '?'
+      }page=${query.get('page')}${number ? '&limit=' + number : ''}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -63,6 +66,10 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
       if (error.statusCode === 404) {
         history.push('/not-found')
         return
+      }
+      if (error.statusCode === 405) {
+        // TODO when feature available
+        // redirect if search incorrect
       }
       history.push('/login')
     }
@@ -121,7 +128,7 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
     }
     if (query.get('s')) window.scrollTo(0, 0)
     getUsers().then()
-  }, [refreshPage, query.get('page')])
+  }, [refreshPage, query.get('page'), query.get('search'), query.get('order')])
 
   return (
     <>
@@ -149,19 +156,24 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
               </div>
             )}
             {successEdit && (
-              <div className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}>
+              <div
+                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
+              >
                 {' '}
                 <i className="fas fa-check" />
                 User Edited
-                <i className="fas fa-times" onClick={() => setToastEdit(false)} />
+                <i
+                  className="fas fa-times"
+                  onClick={() => setToastEdit(false)}
+                />
               </div>
             )}
           </div>
           <div className="user-list">
             <div className="legend">
-              <span>Username</span>
-              <span>Role</span>
-              <span>E-mail</span>
+              <Legend uri={`/users`} name={`Username`} search={`username`} />
+              <Legend uri={`/users`} name={`Role`} search={`role`} />
+              <Legend uri={`/users`} name={`Email`} search={`email`} />
             </div>
             <motion.div
               variants={{
@@ -191,7 +203,13 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                     <span>{user.email}</span>
                     <Granted permissions={['u:user']}>
                       <Link
-                        to={`/users/edit/${user.id}?page=${query.get('page')}`}
+                        to={`/users/edit/${user.id}?page=${query.get('page')}${
+                          query.get('search') && query.get('order')
+                            ? `&search=${query.get('search')}&order=${query.get(
+                                'order'
+                              )}`
+                            : ``
+                        }`}
                         className="action"
                       >
                         Edit

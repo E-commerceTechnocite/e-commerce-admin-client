@@ -12,16 +12,33 @@ import { countrySchema } from '../../util/validation/taxValidation'
 import Granted from '../Granted'
 import { useQuery } from '../../util/hook/useQuery'
 import LoadingButton from '../loading/LoadingButton'
+import './ActionCountry.scss'
 
 interface IActionCountryProps {}
 
 const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
-  const [initialValues, seInitialValues] = useState({ name: '', code: null })
+  const [initialValues, seInitialValues] = useState({ name: '', code: '' })
   const [country, setCountry] = useState<CountryModel>()
   const params: { slug: string } = useParams()
   const history = useHistory()
   const query = useQuery()
   const [isSubmit, setIsSubmit] = useState(false)
+  const querySearch =
+    query.get('search') && query.get('order')
+      ? `&search=${query.get('search')}&order=${query.get('order')}`
+      : ''
+  const queryGroup =
+    query.get('searchGroup') && query.get('orderGroup')
+      ? `&searchGroup=${query.get('searchGroup')}&orderGroup=${query.get(
+          'orderGroup'
+        )}`
+      : ''
+  const queryCountry =
+    query.get('searchCountry') && query.get('orderCountry')
+      ? `&searchCountry=${query.get('searchCountry')}&orderCountry=${query.get(
+          'orderCountry'
+        )}`
+      : ''
 
   /**
    * Returns post or patch request for new country
@@ -58,7 +75,9 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
         pathname: '/taxes',
         search: `?rule=${query.get('rule')}&group=${query.get(
           'group'
-        )}&country=${query.get('country')}`,
+        )}&country=${query.get(
+          'country'
+        )}${querySearch}${queryGroup}${queryCountry}`,
         state: { successCountryEdit: true },
       })
     } else {
@@ -66,7 +85,7 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
         pathname: '/taxes',
         search: `?rule=${query.get('rule')}&group=${query.get(
           'group'
-        )}&country=1`,
+        )}&country=1${querySearch}${queryGroup}`,
         state: { successCountry: true },
       })
     }
@@ -76,7 +95,7 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
    * Returns get request for country
    * @returns
    */
-  const currentTaxRateRequest = () => {
+  const currentCountryRequest = () => {
     return http.get<CountryModel>(`${config.api}/v1/country/${params.slug}`, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -86,8 +105,8 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
   /**
    * Submits get request for country
    */
-  const submitCurrentTaxRate = async () => {
-    let { data, error } = await sendRequest(currentTaxRateRequest)
+  const submitCurrentCountry = async () => {
+    let { data, error } = await sendRequest(currentCountryRequest)
     if (error) {
       history.push('/login')
     }
@@ -96,7 +115,7 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
 
   useEffect(() => {
     if (params.slug) {
-      submitCurrentTaxRate().then()
+      submitCurrentCountry().then()
     }
   }, [params.slug])
   useEffect(() => {
@@ -110,7 +129,7 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
   return (
     <>
       <Previous />
-      <div className="action-tax-rate">
+      <div className="action-tax-country">
         <Formik
           enableReinitialize
           initialValues={initialValues}

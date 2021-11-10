@@ -40,6 +40,22 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   const params: { slug: string } = useParams()
   const [initialValues, setInitialValues] = useState<InitialValues>()
   const query = useQuery()
+  const querySearch =
+    query.get('search') && query.get('order')
+      ? `&search=${query.get('search')}&order=${query.get('order')}`
+      : ''
+  const queryGroup =
+    query.get('searchGroup') && query.get('orderGroup')
+      ? `&searchGroup=${query.get('searchGroup')}&orderGroup=${query.get(
+          'orderGroup'
+        )}`
+      : ''
+  const queryCountry =
+    query.get('searchCountry') && query.get('orderCountry')
+      ? `&searchCountry=${query.get('searchCountry')}&orderCountry=${query.get(
+          'orderCountry'
+        )}`
+      : ''
 
   /**
    * Returns post or patch request for new tax rule
@@ -85,7 +101,9 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
         pathname: '/taxes',
         search: `?rule=${query.get('rule')}&group=${query.get(
           'group'
-        )}&country=${query.get('country')}`,
+        )}&country=${query.get(
+          'country'
+        )}&s=u${querySearch}${queryGroup}${queryCountry}`,
         state: { successEdit: true },
       })
     } else {
@@ -93,7 +111,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
         pathname: '/taxes',
         search: `?rule=1&group=${query.get('group')}&country=${query.get(
           'country'
-        )}`,
+        )}&s=u${queryGroup}${queryCountry}`,
         state: { success: true },
       })
     }
@@ -206,7 +224,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
               submitTaxRulePost(data)
             }}
           >
-            {({ handleSubmit}) => {
+            {({ handleSubmit }) => {
               return (
                 <>
                   <form onSubmit={handleSubmit}>
@@ -234,15 +252,20 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
                     {!params.slug && (
                       <Granted permissions={['c:tax-rule']}>
                         {!isSubmit && (
-                          <button type="submit" className="action">submit</button>
-                        )}{/*  */}
+                          <button type="submit" className="action">
+                            submit
+                          </button>
+                        )}
+                        {/*  */}
                         {isSubmit && <LoadingButton />}
                       </Granted>
                     )}
                     {params.slug && (
                       <Granted permissions={['u:tax-rule']}>
                         {!isSubmit && (
-                          <button type="submit" className="action">submit</button>
+                          <button type="submit" className="action">
+                            submit
+                          </button>
                         )}
                         {isSubmit && <LoadingButton />}
                       </Granted>

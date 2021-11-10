@@ -17,6 +17,7 @@ import { TaxRuleModel } from '../../models/product/tax-rule.model'
 import { ProductModel } from '../../models/product/product.model'
 import TaxGroupSkeleton from './skeleton/TaxGroupSkeleton'
 import { useQuery } from '../../util/hook/useQuery'
+import Legend from '../legend/legend'
 
 interface ITaxGroupProps {
   successGroup?: boolean | undefined
@@ -39,6 +40,22 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   const [isDeleted, setIsDeleted] = useState<boolean>(false)
   const history = useHistory()
   const query = useQuery()
+  const querySearch =
+    query.get('search') && query.get('order')
+      ? `&search=${query.get('search')}&order=${query.get('order')}`
+      : ''
+  const queryGroup =
+    query.get('searchGroup') && query.get('orderGroup')
+      ? `&searchGroup=${query.get('searchGroup')}&orderGroup=${query.get(
+          'orderGroup'
+        )}`
+      : ''
+  const queryCountry =
+    query.get('searchCountry') && query.get('orderCountry')
+      ? `&searchCountry=${query.get('searchCountry')}&orderCountry=${query.get(
+          'orderCountry'
+        )}`
+      : ''
 
   /**
    * Returns the get request for tax rule group
@@ -46,7 +63,13 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
    */
   const TaxRuleGroupRequest = () => {
     return http.get<PaginationModel<TaxRuleGroupModel>>(
-      `${config.api}/v1/tax-rule-group?page=${query.get('group')}&limit=5`,
+      `${config.api}/v1/tax-rule-group${
+        query.get('searchGroup')
+          ? `?orderBy=${query.get('searchGroup')}&order=${query.get(
+              'orderGroup'
+            )}&`
+          : '?'
+      }page=${query.get('group')}&limit=5`,
       {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -63,6 +86,10 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
       if (error.statusCode === 404) {
         history.push('/not-found')
         return
+      }
+      if (error.statusCode === 405) {
+        // TODO when feature available
+        // redirect if search incorrect
       }
       history.push('/login')
     }
@@ -120,7 +147,12 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
       return
     }
     SubmitTaxRuleGroup().then()
-  }, [refreshPage, query.get('group')])
+  }, [
+    refreshPage,
+    query.get('group'),
+    query.get('searchGroup'),
+    query.get('orderGroup'),
+  ])
 
   // Check if a tax group has been added and sends a confirmation toast
   useEffect(() => {
@@ -165,7 +197,9 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
               <Link
                 to={`/taxes/add-tax-group?rule=${query.get(
                   'rule'
-                )}&country=${query.get('country')}`}
+                )}&country=${query.get(
+                  'country'
+                )}${querySearch}${queryCountry}`}
                 className="action"
               >
                 New Group
@@ -227,7 +261,16 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
               </div>
             )}
             <div className="legend">
-              <span>Name</span>
+              <Legend
+                uri={`/taxes`}
+                name={`Name`}
+                search={`name`}
+                customQuery={`rule=${query.get(
+                  'rule'
+                )}&group=1&country=${query.get('country')}`}
+                customSearch={`searchGroup`}
+                customOrder={`orderGroup`}
+              />
             </div>
             <motion.div
               variants={{
@@ -259,7 +302,7 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
                         'rule'
                       )}&group=${query.get('group')}&country=${query.get(
                         'country'
-                      )}`}
+                      )}${querySearch}${queryGroup}${queryCountry}`}
                       className="action edit"
                     >
                       Edit
@@ -281,6 +324,8 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
             meta={meta}
             uri={`taxes?rule=${query.get('rule')}&group=`}
             restUri={`&country=${query.get('country')}`}
+            customSearch={`searchGroup`}
+            customOrder={`orderGroup`}
           />
         </div>
       )}

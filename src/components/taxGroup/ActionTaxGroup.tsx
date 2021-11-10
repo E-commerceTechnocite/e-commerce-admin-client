@@ -23,6 +23,22 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
   const history = useHistory()
   const query = useQuery()
   const [isSubmit, setIsSubmit] = useState(false)
+  const querySearch =
+    query.get('search') && query.get('order')
+      ? `&search=${query.get('search')}&order=${query.get('order')}`
+      : ''
+  const queryGroup =
+    query.get('searchGroup') && query.get('orderGroup')
+      ? `&searchGroup=${query.get('searchGroup')}&orderGroup=${query.get(
+          'orderGroup'
+        )}`
+      : ''
+  const queryCountry =
+    query.get('searchCountry') && query.get('orderCountry')
+      ? `&searchCountry=${query.get('searchCountry')}&orderCountry=${query.get(
+          'orderCountry'
+        )}`
+      : ''
 
   /**
    * Returns post or patch request for new tax group
@@ -63,7 +79,9 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
         pathname: '/taxes',
         search: `?rule=${query.get('rule')}&group=${query.get(
           'group'
-        )}&country=${query.get('country')}`,
+        )}&country=${query.get(
+          'country'
+        )}${querySearch}${queryGroup}${queryCountry}`,
         state: { successGroupEdit: true },
       })
     } else {
@@ -71,7 +89,7 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
         pathname: '/taxes',
         search: `?rule=${query.get('rule')}&group=1&country=${query.get(
           'country'
-        )}`,
+        )}${querySearch}${queryCountry}`,
         state: { successGroup: true },
       })
     }

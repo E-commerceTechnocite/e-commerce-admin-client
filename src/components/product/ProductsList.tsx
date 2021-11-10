@@ -16,6 +16,7 @@ import { auth } from '../../util/helpers/auth'
 import './ProductsList.scss'
 import ProductsListSkeleton from './skeleton/ProductsListSkeleton'
 import { useQuery } from '../../util/hook/useQuery'
+import Legend from '../legend/legend'
 
 interface IProductsListProps {
   number?: number
@@ -45,7 +46,11 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
    */
   const pageRequest = () =>
     http.get<PaginationModel<ProductModel>>(
-      `${config.api}/v1/product?page=${pagination ? query.get('page') : '1'}${
+      `${config.api}/v1/product${
+        query.get('search')
+          ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
+          : '?'
+      }page=${pagination ? query.get('page') : '1'}${
         number ? '&limit=' + number : ''
       }`,
       {
@@ -64,6 +69,10 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
       if (error.statusCode === 404) {
         history.push('/not-found')
         return
+      }
+      if (error.statusCode === 405) {
+        // TODO when feature available
+        // redirect if search incorrect
       }
       history.push('/login')
     }
@@ -113,8 +122,6 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   }, [success, successEdit])
 
   useEffect(() => {
-    if (query.get('scroll')) {
-    }
     if (!query.get('page')) {
       if (window.location.pathname === '/admin/products') {
         history.push('/products?page=1&s=u')
@@ -124,7 +131,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
     if (query.get('s')) window.scrollTo(0, 0)
 
     getProducts().then()
-  }, [refreshPage, query.get('page')])
+  }, [refreshPage, query.get('page'), query.get('search'), query.get('order')])
 
   return (
     <>
@@ -170,11 +177,19 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
           <div className="product-list">
             <div className="legend">
               <span>Image</span>
-              <span>Title</span>
-              <span>Reference</span>
-              <span>Description</span>
-              <span>Category</span>
-              <span>Price</span>
+              <Legend uri={`/products`} name={`Title`} search={`title`} />
+              <Legend
+                uri={`/products`}
+                name={`Reference`}
+                search={`reference`}
+              />
+              <Legend
+                uri={`/products`}
+                name={`Description`}
+                search={`description`}
+              />
+              <Legend uri={`/products`} name={`Category`} search={`category`} />
+              <Legend uri={`/products`} name={`Price`} search={`price`} />
             </div>
             <motion.div
               variants={{
@@ -227,7 +242,13 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                       <Link
                         to={`/products/edit/${product.id}?page=${query.get(
                           'page'
-                        )}`}
+                        )}${
+                          query.get('search') && query.get('order')
+                            ? `&search=${query.get('search')}&order=${query.get(
+                                'order'
+                              )}`
+                            : ``
+                        }`}
                         className="action"
                       >
                         Edit
@@ -248,7 +269,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                 )
               })}
             </motion.div>
-            {pagination && <Pagination meta={meta} uri="/products?page=" />}
+            {pagination && <Pagination meta={meta} uri={`/products?page=`} />}
           </div>
         </div>
       )}
