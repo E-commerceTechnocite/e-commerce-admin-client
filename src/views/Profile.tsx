@@ -23,8 +23,7 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
   const [email, setEmail] = useState("")
   const [role, setRole] = useState('')
   const perms = {}
-  //const nameLabel: any = document.querySelectorAll('input[name=username]')
-  //const emailLabel: any = document.querySelectorAll('input[name=email]')
+
   const permissionsRequest = () => {
     return http.get<string[]>(`${config.api}/v1/o-auth/permissions`, {
       headers: {
@@ -36,7 +35,7 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
   const SubmitPermissions = async () => {
     let { data, error } = await sendRequest(permissionsRequest)
     if (error) {
-      //history.push('/login') !!!!!!!!!!!!!
+      //history.push('/login') !!!!!!!!!!!!!!!!!!!
     }
     setAllPermissions(data)
   }
@@ -83,14 +82,24 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
   return (
     <div className="userProfile">
         <div className="photoProfile">
-            <div><h4>Profile photo</h4></div>
-            {/*<img src="../../images/profile.jpg"></img>*/}
-            <div className="test"><img src={`https://avatars.dicebear.com/api/initials/${username}p.svg`}></img></div>
+            {/*<div>
+                <h4>Profile photo</h4>
+            </div>*/}
+            <div className="test">
+                <img 
+                className="userPhoto"   
+                src={`https://avatars.dicebear.com/api/initials/${username}p.svg`}>
+                </img>
+            </div>
         </div>
         <div className="informationProfile">
-            <div><h4>Profile informations</h4></div>
+            <div>
+                <h4>Profile informations</h4>
+            </div>
             <div className="infos">
-                <div className="profileUsername"><h4><label>Username</label></h4></div>
+                <div className="profileUsername">
+                    <h4>Username</h4>
+                </div>
                 <div className="profileEntry">
                     <input
                     type="text"
@@ -102,7 +111,9 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
                     onChange={(e) => setUsername(e.target.value)}
                     />
                 </div>
-                <div className="profileUsername"><h4><label>E-mail</label></h4></div>
+                <div className="profileUsername">
+                    <h4>E-mail</h4>
+                </div>
                 <div className="profileEntry">
                     <input
                     type="text"
@@ -114,7 +125,9 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
                     onChange={(e) => setEmail(e.target.value)}
                     />
                 </div>
-                <div className="profileUsername"><h4><label>Role</label></h4></div>
+                <div className="profileUsername">
+                    <h4>Role</h4>
+                </div>
                 <div className="profileEntry">
                     <input
                     type="text"
@@ -138,37 +151,35 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
                     <span><h4>Update</h4></span>
                     <span><h4>Delete</h4></span>
                 </div>
-                <div className="permperms">
+                <div className="scroll-permissions-list">
                     {Object.entries(perms).map(([title, arr], index) => {
                       return (
-                        <div className="toto">
-                            <div className="permTit">
-                                <span>{title}</span>
-                                {Object.values(arr)[0]?.name === 'r' && (
-                                    <span><i className="fas fa-check-circle"></i></span>
-                                )}
-                                {Object.values(arr)[0]?.name !== 'r' && (
-                                    <span><i className="fas fa-times-circle"></i></span>
-                                )}
-                                {Object.values(arr)[1]?.name === 'c' && (
-                                    <span><i className="fas fa-check-circle"></i></span>
-                                )}
-                                {Object.values(arr)[1]?.name !== 'c' && (
-                                    <span><i className="fas fa-times-circle"></i></span>
-                                )}
-                                {Object.values(arr)[2]?.name === 'u' && (
-                                    <span><i className="fas fa-check-circle"></i></span>
-                                )}
-                                {Object.values(arr)[2]?.name !== 'u' && (
-                                    <span><i className="fas fa-times-circle"></i></span>
-                                )}
-                                {Object.values(arr)[3]?.name === 'd' && (
-                                    <span><i className="fas fa-check-circle"></i></span>
-                                )}
-                                {Object.values(arr)[3]?.name !== 'd' && (
-                                    <span><i className="fas fa-times-circle"></i></span>
-                                )}
-                            </div>
+                        <div className="permTit">
+                            <span>{title}</span>
+                            {Object.values(arr)[0]?.name === 'r' && (
+                                <span><i className="fas fa-check-circle"></i></span>
+                            )}
+                            {Object.values(arr)[0]?.name !== 'r' && (
+                                <span><i className="fas fa-times-circle"></i></span>
+                            )}
+                            {Object.values(arr)[1]?.name === 'c' && (
+                                <span><i className="fas fa-check-circle"></i></span>
+                            )}
+                            {Object.values(arr)[1]?.name !== 'c' && (
+                                <span><i className="fas fa-times-circle"></i></span>
+                            )}
+                            {Object.values(arr)[2]?.name === 'u' && (
+                                <span><i className="fas fa-check-circle"></i></span>
+                            )}
+                            {Object.values(arr)[2]?.name !== 'u' && (
+                                <span><i className="fas fa-times-circle"></i></span>
+                            )}
+                            {Object.values(arr)[3]?.name === 'd' && (
+                                <span><i className="fas fa-check-circle"></i></span>
+                            )}
+                            {Object.values(arr)[3]?.name !== 'd' && (
+                                <span><i className="fas fa-times-circle"></i></span>
+                            )}
                         </div>
                       )})}
                 </div>
