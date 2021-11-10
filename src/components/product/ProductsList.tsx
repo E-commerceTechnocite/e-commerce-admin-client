@@ -285,7 +285,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                     )}
                     <span>{product.title}</span>
                     <span>{product.reference}</span>
-                    <span>
+                    <span title={product.description}>
                       {strippedHtml.length >= 100
                         ? strippedHtml.substr(0, 50) + '...'
                         : strippedHtml}

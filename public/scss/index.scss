@@ -393,8 +393,8 @@ button {
     margin-left: 5px;
   }
   .user-info .user-img {
-    width: 38px;
-    height: 38px;
+    width: 35px;
+    height: 35px;
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -716,20 +716,25 @@ table th {
 .userProfile {
   background: $primary-color-elts;
   box-shadow: $primary-elts-shadow;
-  min-height: 237px;
+  //min-height: 237px;
   margin-bottom: 15px;
   padding: 15px;
   position: relative;
   display: grid;
-  grid-template-rows: 225px 1fr 1fr;
+  grid-template-rows: 190px 1fr 1fr;
   align-items: row;
   .photoProfile {
-    padding:15px;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    margin: 15px;
+    border: 1px solid lightgray;
   }
   .userPhoto {
-    height: 150px;
-    width: 150px;
+    height: 155px;
+    width: 155px;
     border-radius: 50%;
+    margin: 15px;
   }
   .test {
     height: 100%;
@@ -737,14 +742,14 @@ table th {
     display: grid;
     justify-content: center;
     align-content: center;
-    border: 1px solid lightgray;
+    //border: 1px solid lightgray;
     border-radius: 4px;
-    background-color: #eeea
+    background-color: white
   }
 }
 
 .informationProfile {
-  padding:15px;
+  padding: 15px;
   .profileUsername {
     margin-top: 15px;
   }
@@ -754,6 +759,7 @@ table th {
     padding: 0px 15px 0px 15px;
     margin-top: 15px;
     border-radius: 4px;
+    background-color: white
   }
   .profileEntry {
     margin: 5px 0px 25px 0px;
@@ -764,10 +770,12 @@ table th {
     border: 1px solid $primary-border-color;
     input {
       padding: 0 10px;
-      width: 100%;
+      width: 95%;
       height: 35px;
       font-size: 15px;
       border: none;
+      background-color: white;
+      border-radius: 4px;
     }
   }
 }
@@ -782,7 +790,7 @@ table th {
     border-bottom: 1px solid $primary-border-color;
   }
   .profilePerms {
-    height: 243px;
+    max-height: 243px;
     border: 1px solid $primary-border-color;
     display: grid;
     align-items: column;
@@ -790,6 +798,7 @@ table th {
     margin-top: 15px;
     padding:15px;
     border-radius: 4px;
+    background-color: white
   }
   .scroll-permissions-list {
     overflow-y: scroll;
@@ -811,7 +820,7 @@ table th {
     grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
     padding-top: 15px;
     padding-bottom: 15px;
-    background-color: #eeea;
+    background-color: white;
     border-bottom: 1px solid $primary-border-color;
     .fas {
       font-size: 20px;  

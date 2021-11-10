@@ -150,6 +150,7 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
           </div>
           <div className="customer-list">
             <div className="legend">
+              <span></span>
               <Legend
                 uri={`/customers`}
                 name={`Username`}
@@ -196,6 +197,9 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
                     className="customer"
                     key={index}
                   >
+                    <span><img
+                        src={`https://avatars.dicebear.com/api/bottts/${customer.username}p.svg`}
+                      /></span>
                     <span>{customer.username}</span>
                     <span>{customer.email}</span>
                     <span>{customer.phoneNumber}</span>
