@@ -171,20 +171,11 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
           <div className="role-list">
             <div className="legend">
               <span>Role</span>
-              <span>Created at</span>
-              <span>Updated at</span>
             </div>
             {roles.map((role) => {
               return (
                 <div className="role" key={role.id}>
                   <span>{role.name}</span>
-                  <span>{role.createdAt.toString().slice(0,10)} {role.createdAt.toString().slice(11,19)}</span>
-                  {role.createdAt===role.updatedAt && 
-                    <span>-</span>
-                  }
-                  {role.createdAt!==role.updatedAt && 
-                    <span>{role.updatedAt.toString().slice(0,10)} {role.updatedAt.toString().slice(11,19)}</span>
-                  }
                   <Granted permissions={['u:role']}>
                     {role.name !== "Admin" && (
                     <Link
