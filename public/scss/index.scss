@@ -721,14 +721,14 @@ table th {
   padding: 15px;
   position: relative;
   display: grid;
-  grid-template-rows: 250px 1fr 1fr;
+  grid-template-rows: 225px 1fr 1fr;
   align-items: row;
   .photoProfile {
     padding:15px;
   }
   .userPhoto {
-    height: 155px;
-    width: 155;
+    height: 150px;
+    width: 150px;
     border-radius: 50%;
   }
   .test {
