@@ -27,8 +27,9 @@ import Loading from '../loading/Loading'
 import { auth } from '../../util/helpers/auth'
 import { TaxRuleGroupModel } from '../../models/product/tax-rule-group.model'
 import { motion } from 'framer-motion'
-import { useQuery } from '../../util/hook/useQuery'
 import LoadingButton from '../loading/LoadingButton'
+import { useQuery } from '../../util/hook/useQuery'
+import param from '../../util/helpers/queries'
 
 interface FormValuesInterface {
   title: string
@@ -68,6 +69,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
   const [isSubmit, setIsSubmit] = useState<boolean>(false)
   const params: { slug: string } = useParams()
   const query = useQuery()
+  const queries = param()
   const history = useHistory()
 
   let [initialValues, setInitialValues] = useState<FormValuesInterface>({
@@ -142,15 +144,13 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
         if (query.get('page')) {
           history.push({
             pathname: '/products',
-            search: `?page=${query.get('page')}&s=u&search=${query.get(
-              'search'
-            )}&order=${query.get('order')}`,
+            search: `${queries.page}${queries.search}${queries.order}${queries.q}`,
             state: { successEdit: true },
           })
         } else {
           history.push({
             pathname: '/products',
-            search: '?page=1&s=u',
+            search: `${queries.page}&s=u`,
             state: { success: true },
           })
         }
