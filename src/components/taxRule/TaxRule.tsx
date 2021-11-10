@@ -202,7 +202,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
               <Legend
                 uri={`/taxes`}
                 name={`Name`}
-                search={`taxRuleGroup`}
+                search={`taxRuleGroup.name`}
                 customQuery={`rule=1&group=${query.get(
                   'group'
                 )}&country=${query.get('country')}`}
@@ -218,7 +218,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
               <Legend
                 uri={`/taxes`}
                 name={`Country`}
-                search={`country`}
+                search={`country.name`}
                 customQuery={`rule=1&group=${query.get(
                   'group'
                 )}&country=${query.get('country')}`}

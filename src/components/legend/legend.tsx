@@ -26,65 +26,6 @@ const Legend: React.FunctionComponent<ILegendProps> = ({
   const queryOrder = `${customOrder ? customOrder : `order`}`
   return (
     <span className="legend-item">
-      {/* 
-      {(() => {
-        if (!query.get(querySearch) && !query.get(queryOrder)) {
-          return (
-            <Link
-              to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=DESC`}
-            >
-              {name}
-            </Link>
-          )
-        } else if (
-          query.get(querySearch) &&
-          query.get(querySearch) !== search
-        ) {
-          return (
-            <Link
-              to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=DESC`}
-            >
-              {name}
-            </Link>
-          )
-        } else if (
-          query.get(queryOrder) &&
-          (query.get(queryOrder) !== 'DESC' || query.get(queryOrder) !== 'ASC')
-        ) {
-          return (
-            <Link
-              to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=DESC`}
-            >
-              {name}
-            </Link>
-          )
-        } else if (
-          query.get(querySearch) === search &&
-          query.get(queryOrder) == 'ASC'
-        ) {
-          return (
-            <Link
-              to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=DESC`}
-            >
-              {name}
-              <i className="fas fa-sort-up up" />
-            </Link>
-          )
-        } else if (
-          query.get(querySearch) === search &&
-          query.get(queryOrder) == 'DESC'
-        ) {
-          return (
-            <Link
-              to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=ASC`}
-            >
-              {name}
-              <i className="fas fa-sort-down down" />
-            </Link>
-          )
-        }
-      })()} */}
-
       {!query.get(querySearch) && !query.get(queryOrder) && (
         <Link
           to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=DESC`}
@@ -92,7 +33,6 @@ const Legend: React.FunctionComponent<ILegendProps> = ({
           {name}
         </Link>
       )}
-
       {!query.get(querySearch) && query.get(queryOrder) && (
         <>
           {query.get(queryOrder) === 'DESC' && (
@@ -111,7 +51,6 @@ const Legend: React.FunctionComponent<ILegendProps> = ({
           )}
         </>
       )}
-
       {query.get(querySearch) && !query.get(queryOrder) && (
         <>
           {query.get(querySearch) === search && (
@@ -130,7 +69,6 @@ const Legend: React.FunctionComponent<ILegendProps> = ({
           )}
         </>
       )}
-
       {query.get(querySearch) && query.get(queryOrder) && (
         <>
           {query.get(querySearch) === search &&
@@ -169,32 +107,6 @@ const Legend: React.FunctionComponent<ILegendProps> = ({
           )}
         </>
       )}
-
-     {/*  {!query.get(querySearch) && !query.get(queryOrder) && (
-        <Link
-          to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=DESC`}
-        >
-          {name}
-        </Link>
-      )}
-
-      {query.get(querySearch) && query.get(querySearch) !== search && (
-        <Link
-          to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=DESC`}
-        >
-          {name}
-        </Link>
-      )}
-
-      {query.get(queryOrder) &&
-        (query.get(queryOrder) !== 'DESC' ||
-          query.get(queryOrder) !== 'ASC') && (
-          <Link
-            to={`${uri}?${queryParam}&s=u&${querySearch}=${search}&${queryOrder}=DESC`}
-          >
-            {name}
-          </Link>
-        )} */}
     </span>
   )
 }

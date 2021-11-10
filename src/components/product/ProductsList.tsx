@@ -188,7 +188,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                 name={`Description`}
                 search={`description`}
               />
-              <Legend uri={`/products`} name={`Category`} search={`category`} />
+              <Legend uri={`/products`} name={`Category`} search={`category.label`} />
               <Legend uri={`/products`} name={`Price`} search={`price`} />
             </div>
             <motion.div
