@@ -203,7 +203,13 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                     <span>{user.email}</span>
                     <Granted permissions={['u:user']}>
                       <Link
-                        to={`/users/edit/${user.id}?page=${query.get('page')}`}
+                        to={`/users/edit/${user.id}?page=${query.get('page')}${
+                          query.get('search') && query.get('order')
+                            ? `&search=${query.get('search')}&order=${query.get(
+                                'order'
+                              )}`
+                            : ``
+                        }`}
                         className="action"
                       >
                         Edit

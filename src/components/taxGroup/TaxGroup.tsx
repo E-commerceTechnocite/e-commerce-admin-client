@@ -40,6 +40,22 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   const [isDeleted, setIsDeleted] = useState<boolean>(false)
   const history = useHistory()
   const query = useQuery()
+  const querySearch =
+    query.get('search') && query.get('order')
+      ? `&search=${query.get('search')}&order=${query.get('order')}`
+      : ''
+  const queryGroup =
+    query.get('searchGroup') && query.get('orderGroup')
+      ? `&searchGroup=${query.get('searchGroup')}&orderGroup=${query.get(
+          'orderGroup'
+        )}`
+      : ''
+  const queryCountry =
+    query.get('searchCountry') && query.get('orderCountry')
+      ? `&searchCountry=${query.get('searchCountry')}&orderCountry=${query.get(
+          'orderCountry'
+        )}`
+      : ''
 
   /**
    * Returns the get request for tax rule group
@@ -181,7 +197,9 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
               <Link
                 to={`/taxes/add-tax-group?rule=${query.get(
                   'rule'
-                )}&country=${query.get('country')}`}
+                )}&country=${query.get(
+                  'country'
+                )}${querySearch}${queryCountry}`}
                 className="action"
               >
                 New Group
@@ -284,7 +302,7 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
                         'rule'
                       )}&group=${query.get('group')}&country=${query.get(
                         'country'
-                      )}`}
+                      )}${querySearch}${queryGroup}${queryCountry}`}
                       className="action edit"
                     >
                       Edit

@@ -185,7 +185,13 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
                   <span>{role.name}</span>
                   <Granted permissions={['u:role']}>
                     <Link
-                      to={`/roles/edit/${role.id}?page=${query.get('page')}`}
+                      to={`/roles/edit/${role.id}?page=${query.get('page')}${
+                        query.get('search') && query.get('order')
+                          ? `&search=${query.get('search')}&order=${query.get(
+                              'order'
+                            )}`
+                          : ``
+                      }`}
                       className="action"
                     >
                       Edit

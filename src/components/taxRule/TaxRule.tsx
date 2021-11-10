@@ -34,6 +34,22 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
   const [toastEdit, setToastEdit] = useState<boolean>(false)
   const [refreshPage, setRefreshPage] = useState<boolean>(false)
   const history = useHistory()
+  const querySearch =
+    query.get('search') && query.get('order')
+      ? `&search=${query.get('search')}&order=${query.get('order')}`
+      : ''
+  const queryGroup =
+    query.get('searchGroup') && query.get('orderGroup')
+      ? `&searchGroup=${query.get('searchGroup')}&orderGroup=${query.get(
+          'orderGroup'
+        )}`
+      : ''
+  const queryCountry =
+    query.get('searchCountry') && query.get('orderCountry')
+      ? `&searchCountry=${query.get('searchCountry')}&orderCountry=${query.get(
+          'orderCountry'
+        )}`
+      : ''
 
   /**
    * Returns get request for tax rule
@@ -153,7 +169,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
               <Link
                 to={`/taxes/add-tax-rule?group=${query.get(
                   'group'
-                )}&country=${query.get('country')}`}
+                )}&country=${query.get('country')}${queryGroup}${queryCountry}`}
                 className="action"
               >
                 New Tax
@@ -262,7 +278,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
                         'rule'
                       )}&group=${query.get('group')}&country=${query.get(
                         'country'
-                      )}`}
+                      )}${querySearch}${queryGroup}${queryCountry}`}
                       className="action edit"
                     >
                       Edit

@@ -67,7 +67,11 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
     if (query.get('page')) {
       history.push({
         pathname: '/categories',
-        search: `?page=${query.get('page')}&s=u`,
+        search: `?page=${query.get('page')}&s=u${
+          query.get('search') && query.get('order')
+            ? `&search=${query.get('search')}&order=${query.get('order')}`
+            : ``
+        }`,
         state: { successEdit: true },
       })
     } else {

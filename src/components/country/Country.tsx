@@ -45,6 +45,22 @@ const Country: React.FunctionComponent<ICountryProps> = ({
   const [toastEdit, setToastEdit] = useState<boolean>(false)
   const history = useHistory()
   const query = useQuery()
+  const querySearch =
+    query.get('search') && query.get('order')
+      ? `&search=${query.get('search')}&order=${query.get('order')}`
+      : ''
+  const queryGroup =
+    query.get('searchGroup') && query.get('orderGroup')
+      ? `&searchGroup=${query.get('searchGroup')}&orderGroup=${query.get(
+          'orderGroup'
+        )}`
+      : ''
+  const queryCountry =
+    query.get('searchCountry') && query.get('orderCountry')
+      ? `&searchCountry=${query.get('searchCountry')}&orderCountry=${query.get(
+          'orderCountry'
+        )}`
+      : ''
 
   /**
    * Returns the get request for country
@@ -184,7 +200,7 @@ const Country: React.FunctionComponent<ICountryProps> = ({
               <Link
                 to={`/taxes/add-country?rule=${query.get(
                   'rule'
-                )}&group=${query.get('group')}`}
+                )}&group=${query.get('group')}${querySearch}${queryGroup}`}
                 className="action"
               >
                 New country
@@ -283,7 +299,7 @@ const Country: React.FunctionComponent<ICountryProps> = ({
                         'rule'
                       )}&group=${query.get('group')}&country=${query.get(
                         'country'
-                      )}`}
+                      )}${querySearch}${queryGroup}${queryCountry}`}
                       className="action edit"
                     >
                       Edit

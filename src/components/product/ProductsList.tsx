@@ -242,7 +242,13 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                       <Link
                         to={`/products/edit/${product.id}?page=${query.get(
                           'page'
-                        )}`}
+                        )}${
+                          query.get('search') && query.get('order')
+                            ? `&search=${query.get('search')}&order=${query.get(
+                                'order'
+                              )}`
+                            : ``
+                        }`}
                         className="action"
                       >
                         Edit

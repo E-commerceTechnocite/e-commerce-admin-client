@@ -209,7 +209,13 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
                       <Link
                         to={`/categories/edit/${category.id}?page=${query.get(
                           'page'
-                        )}`}
+                        )}${
+                          query.get('search') && query.get('order')
+                            ? `&search=${query.get('search')}&order=${query.get(
+                                'order'
+                              )}`
+                            : ``
+                        }`}
                         className="action edit"
                       >
                         Edit
