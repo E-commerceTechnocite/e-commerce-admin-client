@@ -98,13 +98,13 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   const getCategory = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
+      if (error.statusCode === 400) {
+        history.push('/categories')
+        return
+      }
       if (error.statusCode === 404) {
         history.push('/not-found')
         return
-      }
-      if (error.statusCode === 405) {
-        // TODO when feature available
-        // redirect if search incorrect
       }
       history.push('/login')
     }

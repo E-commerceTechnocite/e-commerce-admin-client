@@ -70,13 +70,13 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
   const getCustomers = async () => {
     let { data, error } = await sendRequest(customersRequest)
     if (error) {
+      if (error.statusCode === 400) {
+        history.push('/stock')
+        return
+      }
       if (error.statusCode === 404) {
         history.push('/not-found')
         return
-      }
-      if (error.statusCode === 405) {
-        // TODO when feature available
-        // redirect if search incorrect
       }
       history.push('/login')
     }

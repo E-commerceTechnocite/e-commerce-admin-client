@@ -75,13 +75,13 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
   const SubmitTaxRule = async () => {
     let { data, error } = await sendRequest(TaxRuleRequest)
     if (error) {
+      if (error.statusCode === 400) {
+        history.push('/taxes')
+        return
+      }
       if (error.statusCode === 404) {
         history.push('/not-found')
         return
-      }
-      if (error.statusCode === 405) {
-        // TODO when feature available
-        // redirect if search incorrect
       }
       history.push('/login')
     }
@@ -202,7 +202,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
               <Legend
                 uri={`/taxes`}
                 name={`Name`}
-                search={`taxRuleGroup`}
+                search={`taxRuleGroup.name`}
                 customQuery={`rule=1&group=${query.get(
                   'group'
                 )}&country=${query.get('country')}`}
@@ -218,7 +218,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
               <Legend
                 uri={`/taxes`}
                 name={`Country`}
-                search={`country`}
+                search={`country.name`}
                 customQuery={`rule=1&group=${query.get(
                   'group'
                 )}&country=${query.get('country')}`}
