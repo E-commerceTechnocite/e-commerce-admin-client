@@ -5,24 +5,16 @@ import { useHistory, useParams } from 'react-router'
 import { http } from '../util/http'
 import { config } from '../index'
 import { sendRequest } from '../util/helpers/refresh'
+import ProfileTextInput from '../components/profile/ProfileTextInput'
 
-interface IProfileProps {
-  location?: {
-    state: {
-      success?: boolean
-      successEdit?: boolean
-    }
-  }
-}
 
-const Profile: React.FunctionComponent<IProfileProps> = (props) => {
-  const [success, setSuccess] = useState<boolean | undefined>()
-  const [successEdit, setSuccessEdit] = useState<boolean | undefined>()
+const Profile: React.FunctionComponent = () => {
   const [allPermissions, setAllPermissions] = useState([])
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState("")
   const [role, setRole] = useState('')
-  const perms = {}
+  const perms = []
+  //const [permissions, setPermissions] = useState([])
 
   const permissionsRequest = () => {
     return http.get<string[]>(`${config.api}/v1/o-auth/permissions`, {
@@ -35,13 +27,19 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
   const SubmitPermissions = async () => {
     let { data, error } = await sendRequest(permissionsRequest)
     if (error) {
-      //history.push('/login') !!!!!!!!!!!!!!!!!!!
+      //history.push('/login') !!!!!!!!!!!!!!!!!!! A REGARDER !!!!!!!!!!!!!!!!!!!
     }
     setAllPermissions(data)
   }
 
   useEffect(() => {
     SubmitPermissions().then()
+  }, [])
+
+  useEffect(() => {
+    setUsername(auth.decodedAccess.username)
+    setEmail(auth.decodedAccess.email)
+    setRole(auth.decodedAccess.roleName)
   }, [])
 
   const capitalizeFirstLetter = (string) => {
@@ -58,87 +56,42 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
     let [operation, title] = item.split(':')
     title = changeTitleForm(title)
     if (!perms[title]) perms[title] = []
-    perms[title].push({
-      value: item,
-      title: title,
-      name: operation,
-    })
+    perms[title].push(operation)
+    //if (!permissions[title]) permissions[title] = []
+    //setPermissions((permission) => [...permission, operation])
   })
 
-  useEffect(() => {
-    if (props.location.state !== undefined) {
-      if (props.location.state.success) setSuccess(props.location.state.success)
-      if (props.location.state.successEdit)
-        setSuccessEdit(props.location.state.successEdit)
+  const render = (tab : string) => {
+    const elements = ['r', 'c', 'u','d'];
+    const items = []
+    for(let i = 0; i < elements.length; i++) {
+        if(tab.indexOf(elements[i]) !== -1) 
+            items.push(<span><i className="fas fa-check-circle"></i></span>)
+        else 
+            items.push(<span><i className="fas fa-times-circle"></i></span>)
     }
-  }, [])
-
-  useEffect(() => {
-    setUsername(auth.decodedAccess.username)
-    setEmail(auth.decodedAccess.email)
-    setRole(auth.decodedAccess.roleName)
-  }, [])
+    return ( <>
+        {items}
+      </>
+    )
+  }
 
   return (
     <div className="userProfile">
         <div className="photoProfile">
-            {/*<div>
-                <h4>Profile photo</h4>
-            </div>*/}
-            <div className="test">
-                <img 
-                className="userPhoto"   
-                src={`https://avatars.dicebear.com/api/initials/${username}p.svg`}>
-                </img>
-            </div>
+            <img 
+            className="userPhoto"   
+            src={`https://avatars.dicebear.com/api/initials/${username}p.svg`}
+            />
         </div>
         <div className="informationProfile">
             <div>
                 <h4>Profile informations</h4>
             </div>
             <div className="infos">
-                <div className="profileUsername">
-                    <h4>Username</h4>
-                </div>
-                <div className="profileEntry">
-                    <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value={username}
-                    required
-                    disabled
-                    onChange={(e) => setUsername(e.target.value)}
-                    />
-                </div>
-                <div className="profileUsername">
-                    <h4>E-mail</h4>
-                </div>
-                <div className="profileEntry">
-                    <input
-                    type="text"
-                    id="email"
-                    name="email"
-                    value={email}
-                    required
-                    disabled
-                    onChange={(e) => setEmail(e.target.value)}
-                    />
-                </div>
-                <div className="profileUsername">
-                    <h4>Role</h4>
-                </div>
-                <div className="profileEntry">
-                    <input
-                    type="text"
-                    id="role"
-                    name="role"
-                    value={role}
-                    required
-                    disabled
-                    onChange={(e) => setRole(e.target.value)}
-                    />
-                </div>
+                <ProfileTextInput label="Username" information={username}/>
+                <ProfileTextInput label="E-mail" information={email}/>
+                <ProfileTextInput label="Role" information={role}/>
             </div>
         </div>
         <div className="profilePermissions">
@@ -152,34 +105,11 @@ const Profile: React.FunctionComponent<IProfileProps> = (props) => {
                     <span><h4>Delete</h4></span>
                 </div>
                 <div className="scroll-permissions-list">
-                    {Object.entries(perms).map(([title, arr], index) => {
+                    {Object.entries(perms).map(([title, array], index) => {
                       return (
                         <div className="permTit">
                             <span>{title}</span>
-                            {Object.values(arr)[0]?.name === 'r' && (
-                                <span><i className="fas fa-check-circle"></i></span>
-                            )}
-                            {Object.values(arr)[0]?.name !== 'r' && (
-                                <span><i className="fas fa-times-circle"></i></span>
-                            )}
-                            {Object.values(arr)[1]?.name === 'c' && (
-                                <span><i className="fas fa-check-circle"></i></span>
-                            )}
-                            {Object.values(arr)[1]?.name !== 'c' && (
-                                <span><i className="fas fa-times-circle"></i></span>
-                            )}
-                            {Object.values(arr)[2]?.name === 'u' && (
-                                <span><i className="fas fa-check-circle"></i></span>
-                            )}
-                            {Object.values(arr)[2]?.name !== 'u' && (
-                                <span><i className="fas fa-times-circle"></i></span>
-                            )}
-                            {Object.values(arr)[3]?.name === 'd' && (
-                                <span><i className="fas fa-check-circle"></i></span>
-                            )}
-                            {Object.values(arr)[3]?.name !== 'd' && (
-                                <span><i className="fas fa-times-circle"></i></span>
-                            )}
+                            {render(array)}
                         </div>
                       )})}
                 </div>
