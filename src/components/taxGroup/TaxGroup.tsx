@@ -83,13 +83,13 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   const SubmitTaxRuleGroup = async () => {
     let { data, error } = await sendRequest(TaxRuleGroupRequest)
     if (error) {
+      if (error.statusCode === 400) {
+        history.push('/taxes')
+        return
+      }
       if (error.statusCode === 404) {
         history.push('/not-found')
         return
-      }
-      if (error.statusCode === 405) {
-        // TODO when feature available
-        // redirect if search incorrect
       }
       history.push('/login')
     }

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useEffect, useState, useCallback } from 'react'
-import { useHistory, useLocation, useParams } from 'react-router'
+import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 import Pagination from '../pagination/Pagination'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
@@ -15,8 +15,9 @@ import Granted from '../Granted'
 import { auth } from '../../util/helpers/auth'
 import './ProductsList.scss'
 import ProductsListSkeleton from './skeleton/ProductsListSkeleton'
-import _ from 'lodash';
+import _ from 'lodash'
 import { useQuery } from '../../util/hook/useQuery'
+import param from '../../util/helpers/queries'
 import Legend from '../legend/legend'
 
 interface IProductsListProps {
@@ -34,83 +35,48 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 }) => {
   const [products, setProducts] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [searchedValue, setSearchedValue] = useState("")
   const [toast, setToast] = useState(false)
   const [toastEdit, setToastEdit] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const query = useQuery()
+  const queries = param()
   const history = useHistory()
-  const [isMounted, setIsMounted] = useState(false)
 
   /**
    * Returns request to get the page of the product list
    * @returns request
    */
   const pageRequest = () => {
-    if(searchedValue === "") {
-      return http.get<PaginationModel<ProductModel>>(
-        `${config.api}/v1/product${
+    const request = !query.get('q')
+      ? `${config.api}/v1/product${
           query.get('search')
             ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
             : '?'
         }page=${pagination ? query.get('page') : '1'}${
           number ? '&limit=' + number : ''
-        }`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            ...auth.headers,
-          },
-        }
-      )
-    } else {
-      return http.get<PaginationModel<ProductModel>>(
-        `${config.api}/v1/product/search${
-          query.get('search')
-            ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
-            : '?'
-        }page=${pagination ? query.get('page') : '1'}${
-          number ? '&limit=' + number : ''
-        }${searchedValue ? '&q=' + searchedValue : ''}`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            ...auth.headers,
-          },
-        }
-      )
-    }
-  }
+        }`
+      : `${config.api}/v1/product/search?page=${
+          pagination ? query.get('page') : '1'
+        }${number ? '&limit=' + number : ''}${
+          query.get('q') ? `&q=${query.get('q')}` : ''
+        }`
 
-  /*const pageRequest = () =>
-    http.get<PaginationModel<ProductModel>>(
-      `${config.api}/v1/product${
-        query.get('search')
-          ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
-          : '?'
-      }page=${pagination ? query.get('page') : '1'}${
-        number ? '&limit=' + number : ''
-      }`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          ...auth.headers,
-        },
-      }
-    )*/
+    return http.get<PaginationModel<ProductModel>>(request, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...auth.headers,
+      },
+    })
+  }
   /**
    * Submits to get the page of the product list
    */
   const getProducts = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
-      if (error.statusCode === 404) {
-        history.push('/not-found')
+      if (error.statusCode === 400 || error.statusCode === 404) {
+        history.push('/products')
         return
-      }
-      if (error.statusCode === 405) {
-        // TODO when feature available
-        // redirect if search incorrect
       }
       history.push('/login')
     }
@@ -143,12 +109,18 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
     }
   }
 
+  /**
+   * Search products by input value search
+   */
   const debounce = useCallback(
     _.debounce((searchValue: string) => {
-      setSearchedValue(searchValue);
+      history.push({
+        pathname: '/products',
+        search: `?page=1&s=u${searchValue ? `&q=${searchValue}` : ''}`,
+      })
     }, 500),
     []
-  );
+  )
 
   // Check if product has been added and if so displays a toast
   useEffect(() => {
@@ -175,17 +147,13 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
     }
     if (query.get('s')) window.scrollTo(0, 0)
     getProducts().then()
-  }, [refreshPage, query.get('page'), query.get('search'), query.get('order')])
-
-  useEffect(() => {
-    if(pagination) {
-      if(meta) {
-        if(meta.currentPage === 1) {
-          setRefreshPage(!refreshPage)
-        }
-      }
-    } 
-  }, [searchedValue])
+  }, [
+    refreshPage,
+    query.get('page'),
+    query.get('search'),
+    query.get('order'),
+    query.get('q'),
+  ])
 
   return (
     <>
@@ -197,8 +165,16 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
           <div className="top-container">
             {pagination && (
               <div className="search">
-                <i className="fas fa-search" />
-                <input type="text" placeholder="Search..." onChange={(e) => debounce(e.target.value)}/>
+                <i
+                  className="fas fa-search"
+                  onClick={() => debounce(query.get('q'))}
+                />
+                <input
+                  type="text"
+                  defaultValue={query.get('q')}
+                  placeholder="Search..."
+                  onChange={(e) => debounce(e.target.value)}
+                />
               </div>
             )}
             <Granted permissions={['c:product']}>
@@ -242,7 +218,11 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                 name={`Description`}
                 search={`description`}
               />
-              <Legend uri={`/products`} name={`Category`} search={`category`} />
+              <Legend
+                uri={`/products`}
+                name={`Category`}
+                search={`category.label`}
+              />
               <Legend uri={`/products`} name={`Price`} search={`price`} />
             </div>
             <motion.div
@@ -258,7 +238,11 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
               initial="hidden"
               animate="show"
             >
-              {products.length === 0 && <div className="notfound"><label>Product not found</label></div>}
+              {products.length === 0 && (
+                <div className="notfound">
+                  <label>Product not found</label>
+                </div>
+              )}
               {products.map((product) => {
                 const strippedHtml = htmlToText(product.description)
                 return (
@@ -295,15 +279,11 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
                     <Granted permissions={['u:product']}>
                       <Link
-                        to={`/products/edit/${product.id}?page=${query.get(
-                          'page'
-                        )}${
+                        to={`/products/edit/${product.id}${queries.page}${
                           query.get('search') && query.get('order')
-                            ? `&search=${query.get('search')}&order=${query.get(
-                                'order'
-                              )}`
+                            ? `${queries.search}${queries.order}`
                             : ``
-                        }`}
+                        }${queries.q}`}
                         className="action"
                       >
                         Edit
