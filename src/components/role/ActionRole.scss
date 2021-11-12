@@ -37,6 +37,32 @@
       padding: 15px;
       margin-top: 10px;
       border: 1px solid $primary-border-color;
+      input[type="checkbox"] {
+        -webkit-appearance: none;
+        background: white;
+        border: 1px solid #00000093;
+        position: relative;
+        border-radius: 15%;
+      }
+      input[type="checkbox"]:checked {
+        -webkit-appearance: none;
+      }
+      input[type="checkbox"]::before {
+        content: '';
+        position: absolute;
+        opacity: 0;
+        width: 10px;
+        height: 10px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-image: url('https://www.biondays.com/wp-content/uploads/2021/01/icone-check.svg');
+      }
+      input[type="checkbox"]:checked::before {
+        opacity: 1;
+      }
     }
     .permissions-list {
       display: grid;
@@ -63,32 +89,6 @@
         height:17px;
         margin-right: 4px;
       }
-      input[type="checkbox"] {
-        -webkit-appearance: none;
-        background: white;
-        border: 1px solid #00000093;
-        position: relative;
-        border-radius: 15%;
-      }
-      input[type="checkbox"]:checked {
-        -webkit-appearance: none;
-      }
-      input[type="checkbox"]::before {
-        content: '';
-        position: absolute;
-        opacity: 0;
-        width: 10px;
-        height: 10px;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-image: url('https://www.biondays.com/wp-content/uploads/2021/01/icone-check.svg');
-      }
-      input[type="checkbox"]:checked::before {
-        opacity: 1;
-      }
      label {
         color: #eee;
       }
@@ -111,32 +111,6 @@
         margin-right: 4px;
         margin-left: 5px;
       }
-      input[type="checkbox"] {
-        -webkit-appearance: none;
-        background: white;
-        position: relative;
-        border: 1px solid #00000093;
-        border-radius: 15%;
-      }
-      input[type="checkbox"]:checked {
-        -webkit-appearance: none;
-      }
-      input[type="checkbox"]::before {
-        content: '';
-        position: absolute;
-        opacity: 0;
-        width: 10px;
-        height: 10px;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-image: url('https://www.biondays.com/wp-content/uploads/2021/01/icone-check.svg');
-      }
-      input[type="checkbox"]:checked::before {
-        opacity: 1;
-      }
     }
   }
   .perms-button {
@@ -154,7 +128,6 @@
     padding: 3px;
     gap: 15px;
     margin-top: 15px;
-    //border-top: 1px solid $primary-border-color;
     .all {
       display:flex;
       flex-direction: row;
@@ -166,32 +139,6 @@
         width: 17px;
         height: 17px;
         margin-right: 3px;
-      }
-      input[type="checkbox"] {
-        -webkit-appearance: none;
-        background: white;
-        border: 1px solid #00000093;
-        position: relative;
-        border-radius: 15%;
-      }
-      input[type="checkbox"]:checked {
-        -webkit-appearance: none;
-      }
-      input[type="checkbox"]::before {
-        content: '';
-        position: absolute;
-        opacity: 0;
-        width: 10px;
-        height: 10px;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-image: url('https://www.biondays.com/wp-content/uploads/2021/01/icone-check.svg');
-      }
-      input[type="checkbox"]:checked::before {
-        opacity: 1;
       }
     }
     .crud {
@@ -205,32 +152,6 @@
         width: 16px;
         height: 16px;
         margin-right: 3px;
-      }
-      input[type="checkbox"] {
-        -webkit-appearance: none;
-        background: white;
-        position: relative;
-        border: 1px solid #00000093;
-        border-radius: 15%;
-      }
-      input[type="checkbox"]:checked {
-        -webkit-appearance: none;
-      }
-      input[type="checkbox"]::before {
-        content: '';
-        position: absolute;
-        opacity: 0;
-        width: 10px;
-        height: 10px;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-image: url('https://www.biondays.com/wp-content/uploads/2021/01/icone-check.svg');
-      }
-      input[type="checkbox"]:checked::before {
-        opacity: 1;
       }
       label {
         margin-right: 15px;

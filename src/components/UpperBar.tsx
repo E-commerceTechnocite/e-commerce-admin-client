@@ -23,10 +23,8 @@ const UpperBar: React.FunctionComponent = () => {
     if (treatedPath[0] === '')
       treatedPath[0] = treatedPath[0].replace('', 'Home')
     setBreadcrumbs(treatedPath)
-    //setUsername("John Doe")
     try {
     setUsername(auth.decodedAccess.username) // PEUT ETRE SUJET A ERREUR !
-    console.log(auth.decodedAccess)
     } catch (e) {
     console.log("username error")
     setUsername("John Doe")

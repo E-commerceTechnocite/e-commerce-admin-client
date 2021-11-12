@@ -106,17 +106,11 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
       history.push('/login')
     }
     setRolePermissions(data.permissions)
-    setName(data.name)
+    setMyInputValue(data.name)
   }
 
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1)
-  }
-
-  const setName = (name) => {
-    const nameLabel: any = document.querySelectorAll('input[name=name]')
-    nameLabel[0].value = name
-    setMyInputValue(name)
   }
 
   const toggleCRUDAllCheckbox = (crud: string, id: string) => {
@@ -261,6 +255,20 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
     changeAllCheckboxes(checkboxes, source)
   }
 
+  const toggleAllComponents = (name : string ,
+                 changeToggle : any,
+                 label: string) => {
+    return ( <>
+        <input
+        type="checkbox"
+        name={name}
+        onChange={(e) => changeToggle(e.target)}
+        />
+        {label}
+      </> 
+    )
+  }
+
   return (
     <>
       {allPermissions && (
@@ -281,6 +289,7 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
                     type="text"
                     id="name"
                     name="name"
+                    value={myInputValue}
                     placeholder="Type here..."
                     required
                     onChange={(e) => setMyInputValue(e.target.value)}
@@ -330,38 +339,13 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
                   </div>
                   <div className="toggleAll">
                     <div className="all">
-                      <input
-                        type="checkbox"
-                        name="toggleAll"
-                        onChange={(e) => toggleAll(e.target)}
-                      />
-                      All permissions
+                      {toggleAllComponents("toggleAll",toggleAll,"All Permissions")}
                     </div>
                     <div className="crud">
-                      <input
-                        type="checkbox"
-                        name="readToggle"
-                        onChange={(e) => toggleCRUDAll(e.target)}
-                      />
-                      <label>Read</label>
-                      <input
-                        type="checkbox"
-                        name="createToggle"
-                        onChange={(e) => toggleCRUDAll(e.target)}
-                      />
-                      <label>Create</label>
-                      <input
-                        type="checkbox"
-                        name="updateToggle"
-                        onChange={(e) => toggleCRUDAll(e.target)}
-                      />
-                      <label>Update</label>
-                      <input
-                        type="checkbox"
-                        name="deleteToggle"
-                        onChange={(e) => toggleCRUDAll(e.target)}
-                      />
-                      <label>Delete</label>
+                      {toggleAllComponents("readToggle",toggleCRUDAll,"Read")}
+                      {toggleAllComponents("createToggle",toggleCRUDAll,"Create")}
+                      {toggleAllComponents("updateToggle",toggleCRUDAll,"Update")}
+                      {toggleAllComponents("deleteToggle",toggleCRUDAll,"Delete")}
                     </div>
                   </div>
                 </div>

@@ -100,7 +100,10 @@ const SideBar: React.FunctionComponent = () => {
                 Orders
               </NavLink>
             </Granted>
-            <Granted permissions={[]}>
+            <Granted permissions={[
+              'r:stock',
+              'r:product',
+            ]}>
               <NavLink uri="/stock" icon="fas fa-dolly">
                 Stock
               </NavLink>
