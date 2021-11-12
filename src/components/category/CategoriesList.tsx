@@ -168,6 +168,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
                 />
                 <input
                   type="text"
+                  defaultValue={query.get('q')}
                   placeholder="Search..."
                   onChange={(e) => debounce(e.target.value)}
                 />

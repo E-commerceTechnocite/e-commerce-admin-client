@@ -54,23 +54,21 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
   productId = null,
   submitButtonContent = 'Add product',
 }) => {
-  const [categoryId, setCategoryId] = useState<string>('')
-  const [categoryOptions, setCategoryOptions] = useState<
-    ProductCategoryModel[]
-  >([])
-  const [taxRuleGroupId, setTaxRuleGroupId] = useState<string>('')
-  const [taxOptions, setTaxOptions] = useState<TaxRuleGroupModel[]>([])
   const [thumbnail, setThumbnail] = useState<PictureModel | null>(null)
+  const [taxOptions, setTaxOptions] = useState<TaxRuleGroupModel[]>([])
+  const [libraryData, setLibraryData] = useState<PictureModel[]>([])
   const [picturesId, setPicturesId] = useState<string[]>([])
   const [fileError, setFileError] = useState<boolean>(false)
   const [submitError, setSubmitError] = useState<string>('')
-  const [libraryData, setLibraryData] = useState<PictureModel[]>([])
   const [product, setProduct] = useState<ProductModel>()
   const [isSubmit, setIsSubmit] = useState<boolean>(false)
+  const [categoryOptions, setCategoryOptions] = useState<
+    ProductCategoryModel[]
+  >([])
   const params: { slug: string } = useParams()
+  const history = useHistory()
   const query = useQuery()
   const queries = param()
-  const history = useHistory()
 
   let [initialValues, setInitialValues] = useState<FormValuesInterface>({
     title: '',
@@ -183,7 +181,6 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
       // TODO show error on client (does not have permission)
       history.push('/login')
     }
-    setTaxRuleGroupId(data.data[0].id)
     setTaxOptions([...data.data])
   }
 
@@ -208,7 +205,6 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
       // TODO show error on client (does not have permission)
       history.push('/login')
     }
-    setCategoryId(data.data[0].id)
     setCategoryOptions([...data.data])
   }
 
