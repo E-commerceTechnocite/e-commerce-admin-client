@@ -179,7 +179,7 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
             <div className="legend">
               <span></span>
               <Legend uri={`/users`} name={`Username`} search={`username`} />
-              <Legend uri={`/users`} name={`Role`} search={`role`} />
+              <Legend uri={`/users`} name={`Role`} search={`role.name`} />
               <Legend uri={`/users`} name={`Email`} search={`email`} />
             </div>
             <motion.div

@@ -1,24 +1,24 @@
-import * as React from 'react'
-import { useEffect, useState, useCallback } from 'react'
-import { useHistory } from 'react-router'
-import { Link } from 'react-router-dom'
-import Pagination from '../pagination/Pagination'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
-import { ProductModel } from '../../models/product/product.model'
-import { config } from '../../index'
-import { sendRequest } from '../../util/helpers/refresh'
-import { http } from '../../util/http'
-import { htmlToText } from 'html-to-text'
-import { motion } from 'framer-motion'
-import Granted from '../Granted'
-import { auth } from '../../util/helpers/auth'
-import './ProductsList.scss'
 import ProductsListSkeleton from './skeleton/ProductsListSkeleton'
-import _ from 'lodash'
+import { ProductModel } from '../../models/product/product.model'
+import { useEffect, useState, useCallback } from 'react'
+import { sendRequest } from '../../util/helpers/refresh'
 import { useQuery } from '../../util/hook/useQuery'
+import Pagination from '../pagination/Pagination'
+import { auth } from '../../util/helpers/auth'
 import param from '../../util/helpers/queries'
+import { useHistory } from 'react-router'
+import { htmlToText } from 'html-to-text'
+import { Link } from 'react-router-dom'
+import { http } from '../../util/http'
+import { motion } from 'framer-motion'
 import Legend from '../legend/legend'
+import { config } from '../../index'
+import Granted from '../Granted'
+import * as React from 'react'
+import './ProductsList.scss'
+import _ from 'lodash'
 
 interface IProductsListProps {
   number?: number
@@ -35,12 +35,12 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 }) => {
   const [products, setProducts] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [toast, setToast] = useState(false)
-  const [toastEdit, setToastEdit] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
+  const [toastEdit, setToastEdit] = useState(false)
+  const [toast, setToast] = useState(false)
+  const history = useHistory()
   const query = useQuery()
   const queries = param()
-  const history = useHistory()
 
   /**
    * Returns request to get the page of the product list
