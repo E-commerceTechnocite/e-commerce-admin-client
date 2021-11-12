@@ -2,12 +2,12 @@ import { PaginationMetadataModel } from '../../models/pagination/pagination-meta
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import CategoriesListSkeleton from './skeleton/CategoriesListSkeleton'
 import { CategoryModel } from '../../models/category/category.model'
+import param, { requestParams } from '../../util/helpers/queries'
 import { useEffect, useState, useCallback } from 'react'
 import { sendRequest } from '../../util/helpers/refresh'
 import { useQuery } from '../../util/hook/useQuery'
 import Pagination from '../pagination/Pagination'
 import { auth } from '../../util/helpers/auth'
-import param from '../../util/helpers/queries'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
@@ -37,24 +37,22 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   const [toast, setToast] = useState(false)
   const [toastEdit, setToastEdit] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
+  const requestParam = requestParams()
   const history = useHistory()
   const query = useQuery()
   const queries = param()
-
   /**
    * Returns get request for product categories
    * @returns request
    */
   const pageRequest = () => {
     const request = !query.get('q')
-      ? `${config.api}/v1/product-category${
-          query.get('search')
-            ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
-            : '?'
-        }page=${query.get('page')}${number ? '&limit=' + number : ''}`
-      : `${config.api}/v1/product-category/search?page=${query.get('page')}${
+      ? `${config.api}/v1/product-category${requestParam.getOrderBy}${
+        requestParam.getPage
+        }${number ? '&limit=' + number : ''}`
+      : `${config.api}/v1/product-category/search${requestParam.getPage}${
           number ? '&limit=' + number : ''
-        }${query.get('q') ? `&q=${query.get('q')}` : ''}`
+        }${requestParam.getSearch}`
 
     return http.get<PaginationModel<CategoryModel>>(request, {
       headers: {

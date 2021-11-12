@@ -2,12 +2,12 @@ import { PaginationMetadataModel } from '../../models/pagination/pagination-meta
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import ProductsListSkeleton from './skeleton/ProductsListSkeleton'
 import { ProductModel } from '../../models/product/product.model'
+import param, { requestParams } from '../../util/helpers/queries'
 import { useEffect, useState, useCallback } from 'react'
 import { sendRequest } from '../../util/helpers/refresh'
 import { useQuery } from '../../util/hook/useQuery'
 import Pagination from '../pagination/Pagination'
 import { auth } from '../../util/helpers/auth'
-import param from '../../util/helpers/queries'
 import { useHistory } from 'react-router'
 import { htmlToText } from 'html-to-text'
 import { Link } from 'react-router-dom'
@@ -41,6 +41,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   const history = useHistory()
   const query = useQuery()
   const queries = param()
+  const requestParam = requestParams()
 
   /**
    * Returns request to get the page of the product list
@@ -48,18 +49,12 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
    */
   const pageRequest = () => {
     const request = !query.get('q')
-      ? `${config.api}/v1/product${
-          query.get('search')
-            ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
-            : '?'
-        }page=${pagination ? query.get('page') : '1'}${
-          number ? '&limit=' + number : ''
-        }`
+      ? `${config.api}/v1/product${requestParam.getOrderBy}page=${
+          pagination ? query.get('page') : '1'
+        }${number ? '&limit=' + number : ''}`
       : `${config.api}/v1/product/search?page=${
           pagination ? query.get('page') : '1'
-        }${number ? '&limit=' + number : ''}${
-          query.get('q') ? `&q=${query.get('q')}` : ''
-        }`
+        }${number ? '&limit=' + number : ''}${requestParam.getSearch}`
 
     return http.get<PaginationModel<ProductModel>>(request, {
       headers: {
