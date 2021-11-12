@@ -69,7 +69,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
       if (error.statusCode === 400 || error.statusCode === 404) {
-        history.push('/products')
+        history.push('/categories')
         return
       }
       history.push('/login')
