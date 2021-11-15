@@ -141,12 +141,12 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
       {roles && meta && (
         <div className="roles">
           <div className="top-container">
-            {pagination && (
+            {/* {pagination && (
               <div className="search">
                 <i className="fas fa-search" />
                 <input type="text" placeholder="Search..." />
               </div>
-            )}
+            )} */}
             <Granted permissions={['c:role']}>
               <Link to="/roles/addroles" className="action">
                 New Role

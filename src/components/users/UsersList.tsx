@@ -141,12 +141,13 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
       {users && meta && (
         <div className="users">
           <div className="top-container">
+            {/* 
             {pagination && (
               <div className="search">
                 <i className="fas fa-search"></i>
                 <input type="text" placeholder="Search..." />
               </div>
-            )}
+            )} */}
             <Granted permissions={['c:user']}>
               <Link to="/users/addusers" className="action">
                 New User
