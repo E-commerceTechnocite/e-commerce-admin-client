@@ -1,8 +1,7 @@
-import { Dispatch, FunctionComponent, SetStateAction } from 'react'
-import { Link } from 'react-router-dom'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
-import { useQuery } from '../../util/hook/useQuery'
 import param from '../../util/helpers/queries'
+import { FunctionComponent } from 'react'
+import { Link } from 'react-router-dom'
 import './pagination.scss'
 
 export interface PaginationPropsInterface {
@@ -10,7 +9,7 @@ export interface PaginationPropsInterface {
   uri?: string
   restUri?: string
   customSearch?: string
-  customOrder?: string
+  customQ?: string
 }
 
 const Pagination: FunctionComponent<PaginationPropsInterface> = ({
@@ -18,21 +17,13 @@ const Pagination: FunctionComponent<PaginationPropsInterface> = ({
   uri,
   restUri,
   customSearch,
-  customOrder,
+  customQ,
 }) => {
-  const query = useQuery()
   const queries = param()
-  const paramSearch = `${customSearch ? customSearch : 'search'}`
-  const paramOrder = `${customOrder ? customOrder : 'order'}`
-  const querySearch = `${paramSearch}=${query.get(`${paramSearch}`)}`
-  const queryOrder = `${paramOrder}=${query.get(`${paramOrder}`)}`
-  const search = `${
-    query.get(paramSearch) &&
-    query.get(paramOrder) &&
-    (query.get(paramOrder) == 'ASC' || query.get(paramOrder) == 'DESC')
-      ? `&${querySearch}&${queryOrder}`
-      : ``
-  }`
+  const search = customSearch
+    ? customSearch
+    : queries.searchOrder('search', 'order')
+  const q = customQ ? customQ : queries.q('q')
   const endUri = restUri ? restUri : ''
   return (
     <>
@@ -40,42 +31,42 @@ const Pagination: FunctionComponent<PaginationPropsInterface> = ({
         <div className="pagination-component">
           {meta.prevPage && (
             <>
-              <Link to={`${uri}1${endUri}${search}`}>
+              <Link to={`${uri}1${endUri}${search}${q}`}>
                 <i className="fas fa-angle-double-left" />
               </Link>
-              <Link to={`${uri}${meta.prevPage}${endUri}${search}${queries.q}`}>
+              <Link to={`${uri}${meta.prevPage}${endUri}${search}${q}`}>
                 <i className="fas fa-angle-left" />
               </Link>
               {meta.prevPage - 1 > 0 && (
-                <Link to={`${uri}${meta.prevPage - 1}${endUri}${search}${queries.q}`}>
+                <Link to={`${uri}${meta.prevPage - 1}${endUri}${search}${q}`}>
                   {meta.prevPage - 1}
                 </Link>
               )}
-              <Link to={`${uri}${meta.prevPage}${endUri}${search}${queries.q}`}>
+              <Link to={`${uri}${meta.prevPage}${endUri}${search}${q}`}>
                 {meta.prevPage}
               </Link>
             </>
           )}
           <Link
-            to={`${uri}${meta.currentPage}${endUri}${search}${queries.q}`}
+            to={`${uri}${meta.currentPage}${endUri}${search}${q}`}
             className="current"
           >
             {meta.currentPage}
           </Link>
           {meta.nextPage && (
             <>
-              <Link to={`${uri}${meta.nextPage}${endUri}${search}${queries.q}`}>
+              <Link to={`${uri}${meta.nextPage}${endUri}${search}${q}`}>
                 {meta.nextPage}
               </Link>
               {meta.nextPage + 1 <= meta.maxPages && (
-                <Link to={`${uri}${meta.nextPage + 1}${endUri}${search}${queries.q}`}>
+                <Link to={`${uri}${meta.nextPage + 1}${endUri}${search}${q}`}>
                   {meta.nextPage + 1}
                 </Link>
               )}
-              <Link to={`${uri}${meta.nextPage}${endUri}${search}${queries.q}`}>
+              <Link to={`${uri}${meta.nextPage}${endUri}${search}${q}`}>
                 <i className="fas fa-angle-right" />
               </Link>
-              <Link to={`${uri}${meta.maxPages}${endUri}${search}${queries.q}`}>
+              <Link to={`${uri}${meta.maxPages}${endUri}${search}${q}`}>
                 <i className="fas fa-angle-double-right" />
               </Link>
             </>

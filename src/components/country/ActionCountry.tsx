@@ -1,17 +1,19 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { countrySchema } from '../../util/validation/taxValidation'
 import { CountryModel } from '../../models/product/country.model'
+import { useHistory, useParams } from 'react-router-dom'
+import { sendRequest } from '../../util/helpers/refresh'
+import LoadingButton from '../loading/LoadingButton'
+import { useQuery } from '../../util/hook/useQuery'
+import { auth } from '../../util/helpers/auth'
+import param from '../../util/helpers/queries'
+import Previous from '../previous/Previous'
+import { useEffect, useState } from 'react'
+import TextInput from '../inputs/TextInput'
 import { http } from '../../util/http'
 import { config } from '../../index'
-import { sendRequest } from '../../util/helpers/refresh'
-import Previous from '../previous/Previous'
-import { Formik } from 'formik'
-import TextInput from '../inputs/TextInput'
-import { countrySchema } from '../../util/validation/taxValidation'
 import Granted from '../Granted'
-import { useQuery } from '../../util/hook/useQuery'
-import LoadingButton from '../loading/LoadingButton'
+import { Formik } from 'formik'
+import * as React from 'react'
 import './ActionCountry.scss'
 
 interface IActionCountryProps {}
@@ -19,26 +21,11 @@ interface IActionCountryProps {}
 const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
   const [initialValues, seInitialValues] = useState({ name: '', code: '' })
   const [country, setCountry] = useState<CountryModel>()
+  const [isSubmit, setIsSubmit] = useState(false)
   const params: { slug: string } = useParams()
   const history = useHistory()
   const query = useQuery()
-  const [isSubmit, setIsSubmit] = useState(false)
-  const querySearch =
-    query.get('search') && query.get('order')
-      ? `&search=${query.get('search')}&order=${query.get('order')}`
-      : ''
-  const queryGroup =
-    query.get('searchGroup') && query.get('orderGroup')
-      ? `&searchGroup=${query.get('searchGroup')}&orderGroup=${query.get(
-          'orderGroup'
-        )}`
-      : ''
-  const queryCountry =
-    query.get('searchCountry') && query.get('orderCountry')
-      ? `&searchCountry=${query.get('searchCountry')}&orderCountry=${query.get(
-          'orderCountry'
-        )}`
-      : ''
+  const queries = param()
 
   /**
    * Returns post or patch request for new country
@@ -50,14 +37,14 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
       return http.patch(`${config.api}/v1/country/${params.slug}`, data, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          ...auth.headers,
         },
       })
     }
     return http.post(`${config.api}/v1/country`, data, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -73,19 +60,30 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
     if (query.get('country')) {
       history.push({
         pathname: '/taxes',
-        search: `?rule=${query.get('rule')}&group=${query.get(
+        search: `${queries.page('rule', 1)}${queries.page(
           'group'
-        )}&country=${query.get(
-          'country'
-        )}${querySearch}${queryGroup}${queryCountry}`,
+        )}${queries.page('country')}${queries.searchOrder(
+          'search',
+          'order'
+        )}${queries.searchOrder(
+          'searchGroup',
+          'orderGroup'
+        )}${queries.searchOrder('searchCountry', 'orderCountry')}${queries.q(
+          'q'
+        )}${queries.q('q')}${queries.q('qGroup')}`,
         state: { successCountryEdit: true },
       })
     } else {
       history.push({
         pathname: '/taxes',
-        search: `?rule=${query.get('rule')}&group=${query.get(
+        search: `${queries.page('rule', 1)}${queries.page(
           'group'
-        )}&country=1${querySearch}${queryGroup}`,
+        )}&country=1${queries.searchOrder(
+          'search',
+          'order'
+        )}${queries.searchOrder('searchGroup', 'orderGroup')}${queries.q(
+          'q'
+        )}${queries.q('qGroup')}`,
         state: { successCountry: true },
       })
     }

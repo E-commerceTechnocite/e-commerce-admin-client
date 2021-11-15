@@ -1,23 +1,24 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { useHistory } from 'react-router'
-import { sendRequest } from '../../util/helpers/refresh'
-import { http } from '../../util/http'
-import { config } from '../../index'
-import { PaginationModel } from '../../models/pagination/pagination.model'
-import { TaxRuleGroupModel } from '../../models/product/tax-rule-group.model'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
-import Pagination from '../pagination/Pagination'
-import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
-import './TaxGroup.scss'
-import Granted from '../Granted'
-import { auth } from '../../util/helpers/auth'
+import { TaxRuleGroupModel } from '../../models/product/tax-rule-group.model'
+import { PaginationModel } from '../../models/pagination/pagination.model'
 import { TaxRuleModel } from '../../models/product/tax-rule.model'
 import { ProductModel } from '../../models/product/product.model'
 import TaxGroupSkeleton from './skeleton/TaxGroupSkeleton'
+import { sendRequest } from '../../util/helpers/refresh'
 import { useQuery } from '../../util/hook/useQuery'
+import Pagination from '../pagination/Pagination'
+import { auth } from '../../util/helpers/auth'
+import { useEffect, useState } from 'react'
+import { useHistory } from 'react-router'
+import { Link } from 'react-router-dom'
+import { http } from '../../util/http'
+import { motion } from 'framer-motion'
 import Legend from '../legend/legend'
+import { config } from '../../index'
+import Granted from '../Granted'
+import * as React from 'react'
+import './TaxGroup.scss'
+import param, { requestParams } from '../../util/helpers/queries'
 
 interface ITaxGroupProps {
   successGroup?: boolean | undefined
@@ -30,49 +31,42 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   successGroupEdit,
   groupToParent,
 }) => {
-  const [group, setGroup] = useState<TaxRuleGroupModel[]>()
-  const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [toast, setToast] = useState<boolean>(false)
-  const [toastEdit, setToastEdit] = useState<boolean>(false)
-  const [refreshPage, setRefreshPage] = useState(false)
   const [taxRulesDeleted, setTaxRulesDeleted] = useState<TaxRuleModel[]>()
   const [productsDeleted, setProductsDeleted] = useState<ProductModel[]>()
+  const [meta, setMeta] = useState<PaginationMetadataModel>()
+  const [toastEdit, setToastEdit] = useState<boolean>(false)
   const [isDeleted, setIsDeleted] = useState<boolean>(false)
+  const [group, setGroup] = useState<TaxRuleGroupModel[]>()
+  const [refreshPage, setRefreshPage] = useState(false)
+  const [toast, setToast] = useState<boolean>(false)
+  const requestParam = requestParams()
   const history = useHistory()
   const query = useQuery()
-  const querySearch =
-    query.get('search') && query.get('order')
-      ? `&search=${query.get('search')}&order=${query.get('order')}`
-      : ''
-  const queryGroup =
-    query.get('searchGroup') && query.get('orderGroup')
-      ? `&searchGroup=${query.get('searchGroup')}&orderGroup=${query.get(
-          'orderGroup'
-        )}`
-      : ''
-  const queryCountry =
-    query.get('searchCountry') && query.get('orderCountry')
-      ? `&searchCountry=${query.get('searchCountry')}&orderCountry=${query.get(
-          'orderCountry'
-        )}`
-      : ''
+  const queries = param()
 
   /**
    * Returns the get request for tax rule group
    * @returns request
    */
   const TaxRuleGroupRequest = () => {
+    const request = !query.get('qGroup')
+      ? `${config.api}/v1/tax-rule-group${requestParam.getOrderBy(
+          'searchGroup',
+          'orderGroup'
+        )}${requestParam.getPage('group')}`
+      : `${config.api}/v1/tax-rule-group/search${requestParam.getPage(
+          'group',
+          'qGroup'
+        )}${requestParam.getQ('qGroup')}`
+
     return http.get<PaginationModel<TaxRuleGroupModel>>(
-      `${config.api}/v1/tax-rule-group${
-        query.get('searchGroup')
-          ? `?orderBy=${query.get('searchGroup')}&order=${query.get(
-              'orderGroup'
-            )}&`
-          : '?'
-      }page=${query.get('group')}&limit=5`,
+      `${config.api}/v1/tax-rule-group${requestParam.getOrderBy(
+        'searchGroup',
+        'orderGroup'
+      )}${requestParam.getPage('group')}&limit=5`,
       {
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          ...auth.headers,
         },
       }
     )
@@ -83,12 +77,8 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   const SubmitTaxRuleGroup = async () => {
     let { data, error } = await sendRequest(TaxRuleGroupRequest)
     if (error) {
-      if (error.statusCode === 400) {
-        history.push('/taxes')
-        return
-      }
-      if (error.statusCode === 404) {
-        history.push('/not-found')
+      if (error.statusCode === 400 || error.statusCode === 404) {
+        history.push('/categories')
         return
       }
       history.push('/login')
@@ -152,6 +142,7 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
     query.get('group'),
     query.get('searchGroup'),
     query.get('orderGroup'),
+    query.get('qGroup'),
   ])
 
   // Check if a tax group has been added and sends a confirmation toast
@@ -195,11 +186,16 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
             </div>
             <Granted permissions={['c:tax-rule-group']}>
               <Link
-                to={`/taxes/add-tax-group?rule=${query.get(
-                  'rule'
-                )}&country=${query.get(
-                  'country'
-                )}${querySearch}${queryCountry}`}
+                to={`/taxes/add-tax-group${queries.page(
+                  'rule',
+                  1
+                )}${queries.page('country')}${queries.searchOrder(
+                  'search',
+                  'order'
+                )}${queries.searchOrder(
+                  'searchCountry',
+                  'orderCountry'
+                )}${queries.q('q')}${queries.q('qCountry')}`}
                 className="action"
               >
                 New Group
@@ -298,11 +294,23 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
                   <span>{group.name}</span>
                   <Granted permissions={['u:tax-rule-group']}>
                     <Link
-                      to={`/taxes/edit-tax-group/${group.id}?rule=${query.get(
-                        'rule'
-                      )}&group=${query.get('group')}&country=${query.get(
+                      to={`/taxes/edit-tax-group/${group.id}${queries.page(
+                        'rule',
+                        1
+                      )}${queries.page('group')}${queries.page(
                         'country'
-                      )}${querySearch}${queryGroup}${queryCountry}`}
+                      )}${queries.searchOrder(
+                        'search',
+                        'order'
+                      )}${queries.searchOrder(
+                        'searchGroup',
+                        'orderGroup'
+                      )}${queries.searchOrder(
+                        'searchCountry',
+                        'orderCountry'
+                      )}${queries.q('q')}${queries.q('qGroup')}${queries.q(
+                        'qCountry'
+                      )}`}
                       className="action edit"
                     >
                       Edit
@@ -322,10 +330,18 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
           </div>
           <Pagination
             meta={meta}
-            uri={`taxes?rule=${query.get('rule')}&group=`}
-            restUri={`&country=${query.get('country')}`}
-            customSearch={`searchGroup`}
-            customOrder={`orderGroup`}
+            uri={`taxes${queries.page('rule', 1)}&group=`}
+            restUri={`${queries.page('country')}`}
+            customSearch={`${queries.searchOrder(
+              'search',
+              'order'
+            )}${queries.searchOrder(
+              'searchGroup',
+              'orderGroup'
+            )}${queries.searchOrder('searchCountry', 'orderCountry')}`}
+            customQ={`${queries.q('q')}${queries.q('qGroup')}${queries.q(
+              'qCountry'
+            )}`}
           />
         </div>
       )}

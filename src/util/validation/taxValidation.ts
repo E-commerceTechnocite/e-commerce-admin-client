@@ -12,9 +12,9 @@ export const taxRuleSchema = yup.object().shape({
   behavior: yup.number().required('Required'),
   description: yup
     .string()
-    .min(2, 'Must contain between 2 and 10 characters.')
-    .max(10, 'Must contain between 2 and 10 characters.')
-    .required('Must contain between 2 and 10 characters.'),
+    .min(2, 'Must contain between 2 and 255 characters.')
+    .max(255, 'Must contain between 2 and 255 characters.')
+    .required('Must contain between 2 and 255 characters.'),
 })
 
 export const taxGroupSchema = yup.object().shape({

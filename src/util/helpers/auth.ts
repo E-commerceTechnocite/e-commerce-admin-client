@@ -12,6 +12,7 @@ type entity =
   | 'tax-rule-group'
   | 'user'
   | 'file'
+  | 'stock'
 export type Permission =
   | `r:${entity}`
   | `c:${entity}`

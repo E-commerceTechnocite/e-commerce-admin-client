@@ -1,24 +1,24 @@
-import * as React from 'react'
-import { useEffect, useState, useCallback } from 'react'
-import { useHistory } from 'react-router'
-import { Link } from 'react-router-dom'
-import Pagination from '../pagination/Pagination'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
-import { ProductModel } from '../../models/product/product.model'
-import { config } from '../../index'
-import { sendRequest } from '../../util/helpers/refresh'
-import { http } from '../../util/http'
-import { htmlToText } from 'html-to-text'
-import { motion } from 'framer-motion'
-import Granted from '../Granted'
-import { auth } from '../../util/helpers/auth'
-import './ProductsList.scss'
 import ProductsListSkeleton from './skeleton/ProductsListSkeleton'
-import _ from 'lodash'
+import { ProductModel } from '../../models/product/product.model'
+import param, { requestParams } from '../../util/helpers/queries'
+import { useEffect, useState, useCallback } from 'react'
+import { sendRequest } from '../../util/helpers/refresh'
 import { useQuery } from '../../util/hook/useQuery'
-import param from '../../util/helpers/queries'
+import Pagination from '../pagination/Pagination'
+import { auth } from '../../util/helpers/auth'
+import { useHistory } from 'react-router'
+import { htmlToText } from 'html-to-text'
+import { Link } from 'react-router-dom'
+import { http } from '../../util/http'
+import { motion } from 'framer-motion'
 import Legend from '../legend/legend'
+import { config } from '../../index'
+import Granted from '../Granted'
+import * as React from 'react'
+import './ProductsList.scss'
+import _ from 'lodash'
 
 interface IProductsListProps {
   number?: number
@@ -35,12 +35,13 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 }) => {
   const [products, setProducts] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [toast, setToast] = useState(false)
-  const [toastEdit, setToastEdit] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
+  const [toastEdit, setToastEdit] = useState(false)
+  const [toast, setToast] = useState(false)
+  const requestParam = requestParams()
+  const history = useHistory()
   const query = useQuery()
   const queries = param()
-  const history = useHistory()
 
   /**
    * Returns request to get the page of the product list
@@ -48,18 +49,12 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
    */
   const pageRequest = () => {
     const request = !query.get('q')
-      ? `${config.api}/v1/product${
-          query.get('search')
-            ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
-            : '?'
-        }page=${pagination ? query.get('page') : '1'}${
-          number ? '&limit=' + number : ''
-        }`
+      ? `${config.api}/v1/product${requestParam.getOrderBy('search', 'order')}page=${
+          pagination ? query.get('page') : '1'
+        }${number ? '&limit=' + number : ''}`
       : `${config.api}/v1/product/search?page=${
           pagination ? query.get('page') : '1'
-        }${number ? '&limit=' + number : ''}${
-          query.get('q') ? `&q=${query.get('q')}` : ''
-        }`
+        }${number ? '&limit=' + number : ''}${requestParam.getQ('q')}`
 
     return http.get<PaginationModel<ProductModel>>(request, {
       headers: {
@@ -171,7 +166,6 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                 />
                 <input
                   type="text"
-                  defaultValue={query.get('q')}
                   placeholder="Search..."
                   onChange={(e) => debounce(e.target.value)}
                 />
@@ -279,11 +273,11 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
                     <Granted permissions={['u:product']}>
                       <Link
-                        to={`/products/edit/${product.id}${queries.page}${
+                        to={`/products/edit/${product.id}${queries.page('page')}${
                           query.get('search') && query.get('order')
-                            ? `${queries.search}${queries.order}`
+                            ? `${queries.search('search')}${queries.order('order')}`
                             : ``
-                        }${queries.q}`}
+                        }${queries.q('q')}`}
                         className="action"
                       >
                         Edit

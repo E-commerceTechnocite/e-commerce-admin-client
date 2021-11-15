@@ -1,42 +1,45 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router'
-import { http } from '../../util/http'
-import { config } from '../../index'
 import { sendRequest } from '../../util/helpers/refresh'
 import { RoleModel } from '../../models/role/role.model'
-import Previous from '../previous/Previous'
-import './ActionRole.scss'
-import { useQuery } from '../../util/hook/useQuery'
 import LoadingButton from '../loading/LoadingButton'
+import { useHistory, useParams } from 'react-router'
+import { useQuery } from '../../util/hook/useQuery'
+import { auth } from '../../util/helpers/auth'
+import param from '../../util/helpers/queries'
+import Previous from '../previous/Previous'
+import { useEffect, useState } from 'react'
+import { http } from '../../util/http'
+import { config } from '../../index'
+import * as React from 'react'
+import './ActionRole.scss'
 
 interface IActionRoleProps {}
 
 const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
-  const history = useHistory()
   const [rolePermissions, setRolePermissions] = useState<string[]>([])
+  const [submitError, setSubmitError] = useState<string>(null)
+  const [isSubmit, setIsSubmit] = useState<boolean>(false)
   const [allPermissions, setAllPermissions] = useState([])
   const [myInputValue, setMyInputValue] = useState('')
-  const [submitError, setSubmitError] = useState<string>(null)
   const allCheckbox: any = document.querySelectorAll('input[name=toggleAll]')
   const params: { slug: string } = useParams()
-  const [isSubmit, setIsSubmit] = useState<boolean>(false)
-  const perms = {}
+  const history = useHistory()
   const query = useQuery()
+  const queries = param()
+  const perms = {}
 
   const rolePostRequest = (data: RoleModel) => {
     if (params.slug) {
       return http.patch(`${config.api}/v1/role/${params.slug}`, data, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          ...auth.headers,
         },
       })
     }
     return http.post(`${config.api}/v1/role`, data, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -50,11 +53,9 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
     if (query.get('page')) {
       history.push({
         pathname: '/roles',
-        search: `?page=${query.get('page')}&s=u${
-          query.get('search') && query.get('order')
-            ? `&search=${query.get('search')}&order=${query.get('order')}`
-            : ``
-        }`,
+        search: `${queries.page('page')}${queries.search(
+          'search'
+        )}${queries.order('order')}${queries.q('q')}`,
         state: { successEdit: true },
       })
       return
@@ -79,7 +80,7 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
   const permissionsRequest = () => {
     return http.get<string[]>(`${config.api}/v1/role/permissions`, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -95,7 +96,7 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
   const currentPermissionsRequest = () => {
     return http.get<RoleModel>(`${config.api}/v1/role/${params.slug}`, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -297,11 +298,11 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
                       return (
                         <div className="permissions-choices" key={index}>
                           <div className="permissions-choices-title">
-                              <input
+                            <input
                               type="checkbox"
                               name={title}
                               onChange={(e) => togglePermsAll(e.target, title)}
-                              />
+                            />
                             <label>{changeTitleForm(title)}</label>
                           </div>
                           <div className="attrs" id="attrs">

@@ -1,20 +1,22 @@
-import * as React from 'react'
+import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
+import { PaginationModel } from '../../models/pagination/pagination.model'
+import param, { requestParams } from '../../util/helpers/queries'
+import UsersListSkeleton from './skeleton/UsersListSkeleton'
+import { UserModel } from '../../models/user/user.model'
+import { sendRequest } from '../../util/helpers/refresh'
+import { useQuery } from '../../util/hook/useQuery'
+import Pagination from '../pagination/Pagination'
+import { auth } from '../../util/helpers/auth'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
-import Pagination from '../pagination/Pagination'
-import { motion } from 'framer-motion'
-import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
-import { PaginationModel } from '../../models/pagination/pagination.model'
-import { config } from '../../index'
-import { sendRequest } from '../../util/helpers/refresh'
 import { http } from '../../util/http'
-import { UserModel } from '../../models/user/user.model'
-import './UsersList.scss'
-import UsersListSkeleton from './skeleton/UsersListSkeleton'
-import Granted from '../Granted'
-import { useQuery } from '../../util/hook/useQuery'
+import { motion } from 'framer-motion'
 import Legend from '../legend/legend'
+import { config } from '../../index'
+import Granted from '../Granted'
+import * as React from 'react'
+import './UsersList.scss'
 
 interface IUsersListProps {
   number?: number
@@ -29,32 +31,37 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
   success,
   successEdit,
 }) => {
-  const [users, setUsers] = useState<UserModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [toast, setToast] = useState(false)
-  const [toastEdit, setToastEdit] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
+  const [users, setUsers] = useState<UserModel[]>()
+  const [toastEdit, setToastEdit] = useState(false)
+  const [toast, setToast] = useState(false)
+  const requestParam = requestParams()
   const history = useHistory()
   const query = useQuery()
+  const queries = param()
 
   /**
    * Returns get request for users list
    * @returns request
    */
-  const pageRequest = () =>
-    http.get<PaginationModel<UserModel>>(
-      `${config.api}/v1/user${
-        query.get('search')
-          ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
-          : '?'
-      }page=${query.get('page')}${number ? '&limit=' + number : ''}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-        },
-      }
-    )
+  const pageRequest = () => {
+    const request = !query.get('q')
+      ? `${config.api}/v1/user${requestParam.getOrderBy(
+          'search',
+          'order'
+        )}${requestParam.getPage('page')}${number ? '&limit=' + number : ''}`
+      : `${config.api}/v1/user/search${requestParam.getPage('page', 'q')}${
+          number ? '&limit=' + number : ''
+        }${requestParam.getQ('search')}`
+
+    return http.get<PaginationModel<UserModel>>(request, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...auth.headers,
+      },
+    })
+  }
 
   /**
    * Submits get request for users list
@@ -63,12 +70,8 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
   const getUsers = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
-      if (error.statusCode === 400) {
+      if (error.statusCode === 400 || error.statusCode === 404) {
         history.push('/users')
-        return
-      }
-      if (error.statusCode === 404) {
-        history.push('/not-found')
         return
       }
       history.push('/login')
@@ -85,7 +88,7 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
   const deleteRequest = (id: string) => {
     return http.delete(`${config.api}/v1/user/${id}`, null, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -99,13 +102,10 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
     if (confirm(`Delete user: ${username}?`)) {
       let { error } = await sendRequest(deleteRequest, id)
       if (error) {
-        console.log(error.message)
         //history.push('/login')
         alert('WARNING : AN ERROR OCCURED !')
         if (error.message === 'Error 500 Internal Server Error')
-          alert(
-            "You can't delete this user"
-          )
+          alert("You can't delete this user")
       }
       setRefreshPage(!refreshPage)
     }
@@ -142,12 +142,13 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
       {users && meta && (
         <div className="users">
           <div className="top-container">
+            {/* 
             {pagination && (
               <div className="search">
                 <i className="fas fa-search"></i>
                 <input type="text" placeholder="Search..." />
               </div>
-            )}
+            )} */}
             <Granted permissions={['c:user']}>
               <Link to="/users/addusers" className="action">
                 New User
@@ -179,7 +180,7 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
             <div className="legend">
               <span></span>
               <Legend uri={`/users`} name={`Username`} search={`username`} />
-              <Legend uri={`/users`} name={`Role`} search={`role`} />
+              <Legend uri={`/users`} name={`Role`} search={`role.name`} />
               <Legend uri={`/users`} name={`Email`} search={`email`} />
             </div>
             <motion.div
@@ -209,33 +210,35 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                       <img
                         src={`https://avatars.dicebear.com/api/initials/${user.username}p.svg`}
                       />
-                    </span>                 
+                    </span>
                     <span>{user.username}</span>
                     <span>{user.role.name}</span>
                     <span>{user.email}</span>
                     <Granted permissions={['u:user']}>
-                      {user.role.name !== "Admin" && (
-                      <Link
-                        to={`/users/edit/${user.id}?page=${query.get('page')}${
-                          query.get('search') && query.get('order')
-                            ? `&search=${query.get('search')}&order=${query.get(
-                                'order'
-                              )}`
-                            : ``
-                        }`}
-                        className="action"
-                      >
-                        Edit
-                      </Link>)}
+                      {user.role.name !== 'Admin' && (
+                        <Link
+                          to={`/users/edit/${user.id}${queries.page('page')}${
+                            query.get('search') && query.get('order')
+                              ? `${queries.search('search')}${queries.order(
+                                  'order'
+                                )}`
+                              : ``
+                          }`}
+                          className="action"
+                        >
+                          Edit
+                        </Link>
+                      )}
                     </Granted>
                     <Granted permissions={['d:user']}>
-                      {user.role.name !== "Admin" && (
-                      <button
-                        className="delete"
-                        onClick={() => deleteUsers(user.id, user.username)}
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>)}
+                      {user.role.name !== 'Admin' && (
+                        <button
+                          className="delete"
+                          onClick={() => deleteUsers(user.id, user.username)}
+                        >
+                          <i className="fas fa-trash"></i>
+                        </button>
+                      )}
                     </Granted>
                   </motion.div>
                 )
