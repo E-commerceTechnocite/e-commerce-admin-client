@@ -166,7 +166,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                 />
                 <input
                   type="text"
-                  defaultValue={query.get('q')}
+                  value={query.get('q') ? query.get('q') : ''}
                   placeholder="Search..."
                   onChange={(e) => debounce(e.target.value)}
                 />

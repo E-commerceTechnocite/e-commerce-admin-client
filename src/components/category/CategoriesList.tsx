@@ -20,14 +20,12 @@ import './CategoriesList.scss'
 import _ from 'lodash'
 
 interface ICategoriesListProps {
-  number?: number
   pagination?: boolean
   success?: boolean | undefined
   successEdit?: boolean | undefined
 }
 
 const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
-  number,
   pagination,
   success,
   successEdit,
@@ -47,12 +45,8 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
    */
   const pageRequest = () => {
     const request = !query.get('q')
-      ? `${config.api}/v1/product-category${requestParam.getOrderBy}${
-        requestParam.getPage
-        }${number ? '&limit=' + number : ''}`
-      : `${config.api}/v1/product-category/search${requestParam.getPage}${
-          number ? '&limit=' + number : ''
-        }${requestParam.getSearch}`
+      ? `${config.api}/v1/product-category${requestParam.getOrderBy}${requestParam.getPage}`
+      : `${config.api}/v1/product-category/search${requestParam.getPage}${requestParam.getSearch}`
 
     return http.get<PaginationModel<CategoryModel>>(request, {
       headers: {
@@ -167,7 +161,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
                 />
                 <input
                   type="text"
-                  defaultValue={query.get('q')}
+                  value={query.get('q') ? query.get('q') : ''}
                   placeholder="Search..."
                   onChange={(e) => debounce(e.target.value)}
                 />
