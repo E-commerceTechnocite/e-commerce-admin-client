@@ -21,7 +21,6 @@ interface IRequestParams {
 const param = (): IParam => {
   const query = useQuery()
   return {
-
     /**
      * Returns query param page
      * @param {string} page
@@ -57,13 +56,14 @@ const param = (): IParam => {
 
     /**
      * Returns query param search and order
-     * @param {string} search 
-     * @param {string} order 
-     * @returns 
+     * @param {string} search
+     * @param {string} order
+     * @returns
      */
-    searchOrder: function(search: string, order: string): string {
-      return query.get(search) && query.get(order) ? `&${search}=${query.get(search)}&${order}=${query.get(order)}`
-      : ''
+    searchOrder: function (search: string, order: string): string {
+      return query.get(search) && query.get(order)
+        ? `&${search}=${query.get(search)}&${order}=${query.get(order)}`
+        : ''
     },
 
     /**

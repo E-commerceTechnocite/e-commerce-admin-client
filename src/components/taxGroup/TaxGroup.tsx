@@ -332,8 +332,16 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
             meta={meta}
             uri={`taxes${queries.page('rule', 1)}&group=`}
             restUri={`${queries.page('country')}`}
-            customSearch={`searchGroup`}
-            customOrder={`orderGroup`}
+            customSearch={`${queries.searchOrder(
+              'search',
+              'order'
+            )}${queries.searchOrder(
+              'searchGroup',
+              'orderGroup'
+            )}${queries.searchOrder('searchCountry', 'orderCountry')}`}
+            customQ={`${queries.q('q')}${queries.q('qGroup')}${queries.q(
+              'qCountry'
+            )}`}
           />
         </div>
       )}

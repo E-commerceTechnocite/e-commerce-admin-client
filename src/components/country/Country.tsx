@@ -326,8 +326,16 @@ const Country: React.FunctionComponent<ICountryProps> = ({
             uri={`/taxes${queries.page('rule', 1)}${queries.page(
               'group'
             )}&country=`}
-            customSearch={`searchCountry`}
-            customOrder={`orderCountry`}
+            customSearch={`${queries.searchOrder(
+              'search',
+              'order'
+            )}${queries.searchOrder(
+              'searchGroup',
+              'orderGroup'
+            )}${queries.searchOrder('searchCountry', 'orderCountry')}`}
+            customQ={`${queries.q('q')}${queries.q('qGroup')}${queries.q(
+              'qCountry'
+            )}`}
           />
         </div>
       )}

@@ -336,6 +336,16 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
             meta={meta}
             uri={`taxes?rule=`}
             restUri={`${queries.page('group')}${queries.page('country')}`}
+            customSearch={`${queries.searchOrder(
+              'search',
+              'order'
+            )}${queries.searchOrder(
+              'searchGroup',
+              'orderGroup'
+            )}${queries.searchOrder('searchCountry', 'orderCountry')}`}
+            customQ={`${queries.q('q')}${queries.q('qGroup')}${queries.q(
+              'qCountry'
+            )}`}
           />
         </div>
       )}
