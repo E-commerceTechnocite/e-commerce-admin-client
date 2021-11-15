@@ -1,21 +1,21 @@
-import * as React from 'react'
+import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
+import { PaginationModel } from '../../models/pagination/pagination.model'
+import param, { requestParams } from '../../util/helpers/queries'
+import RolesListSkeleton from './skeleton/RolesListSkeleton'
+import { sendRequest } from '../../util/helpers/refresh'
+import { RoleModel } from '../../models/role/role.model'
+import { useQuery } from '../../util/hook/useQuery'
+import Pagination from '../pagination/Pagination'
+import { auth } from '../../util/helpers/auth'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
-import Loading from '../loading/Loading'
-import Pagination from '../pagination/Pagination'
-import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
-import { PaginationModel } from '../../models/pagination/pagination.model'
-import { config } from '../../index'
-import { sendRequest } from '../../util/helpers/refresh'
 import { http } from '../../util/http'
-import { RoleModel } from '../../models/role/role.model'
-import { auth } from '../../util/helpers/auth'
-import Granted from '../Granted'
-import './RolesList.scss'
-import { useQuery } from '../../util/hook/useQuery'
-import RolesListSkeleton from './skeleton/RolesListSkeleton'
 import Legend from '../legend/legend'
+import { config } from '../../index'
+import Granted from '../Granted'
+import * as React from 'react'
+import './RolesList.scss'
 
 interface IRolesListProps {
   number?: number
@@ -30,13 +30,15 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
   success,
   successEdit,
 }) => {
-  const [roles, setRoles] = useState<RoleModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [toast, setToast] = useState(false)
-  const [toastEdit, setToastEdit] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
+  const [toastEdit, setToastEdit] = useState(false)
+  const [roles, setRoles] = useState<RoleModel[]>()
+  const [toast, setToast] = useState(false)
+  const requestParam = requestParams()
   const history = useHistory()
   const query = useQuery()
+  const queries = param()
 
   /**
    * Returns get request for roles
@@ -44,11 +46,10 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
    */
   const pageRequest = () =>
     http.get<PaginationModel<RoleModel>>(
-      `${config.api}/v1/role${
-        query.get('search')
-          ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
-          : '?'
-      }page=${query.get('page')}${number ? '&limit=' + number : ''}`,
+      `${config.api}/v1/role${requestParam.getOrderBy(
+        'search',
+        'order'
+      )}${requestParam.getPage('page')}${number ? '&limit=' + number : ''}`,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -64,12 +65,8 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
   const getRoles = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
-      if (error.statusCode === 400) {
+      if (error.statusCode === 400 || error.statusCode === 404) {
         history.push('/roles')
-        return
-      }
-      if (error.statusCode === 404) {
-        history.push('/not-found')
         return
       }
       history.push('/login')
@@ -86,7 +83,7 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
   const deleteRequest = (id: string) => {
     return http.delete(`${config.api}/v1/role/${id}`, null, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -184,28 +181,30 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
                 <div className="role" key={role.id}>
                   <span>{role.name}</span>
                   <Granted permissions={['u:role']}>
-                    {role.name !== "Admin" && (
-                    <Link
-                      to={`/roles/edit/${role.id}?page=${query.get('page')}${
-                        query.get('search') && query.get('order')
-                          ? `&search=${query.get('search')}&order=${query.get(
-                              'order'
-                            )}`
-                          : ``
-                      }`}
-                      className="action"
-                    >
-                      Edit
-                    </Link>)}
+                    {role.name !== 'Admin' && (
+                      <Link
+                        to={`/roles/edit/${role.id}${queries.page('page')}${
+                          query.get('search') && query.get('order')
+                            ? `${queries.search('search')}${queries.order(
+                                'order'
+                              )}`
+                            : ``
+                        }`}
+                        className="action"
+                      >
+                        Edit
+                      </Link>
+                    )}
                   </Granted>
                   <Granted permissions={['d:role']}>
-                    {role.name !== "Admin" && (
-                    <button
-                      className="delete"
-                      onClick={() => deleteRoles(role.id, role.name)}
-                    >
-                      <i className="fas fa-trash" />
-                    </button>)}
+                    {role.name !== 'Admin' && (
+                      <button
+                        className="delete"
+                        onClick={() => deleteRoles(role.id, role.name)}
+                      >
+                        <i className="fas fa-trash" />
+                      </button>
+                    )}
                   </Granted>
                 </div>
               )

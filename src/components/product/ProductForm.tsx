@@ -114,6 +114,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
         )
       : http.post(`${config.api}/v1/product`, data.content, requestOptions)
   }
+
   /**
    * Submits post or patch request for product
    * Check if images and thumbnail are valid before submitting
@@ -142,7 +143,9 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
         if (query.get('page')) {
           history.push({
             pathname: '/products',
-            search: `${queries.page}${queries.search}${queries.order}${queries.q}`,
+            search: `${queries.page('page')}${queries.search(
+              'search'
+            )}${queries.order('order')}${queries.q('q')}`,
             state: { successEdit: true },
           })
         } else {

@@ -30,8 +30,14 @@ const CustomersList: React.FunctionComponent = () => {
    */
   const customersRequest = () => {
     const request = !query.get('q')
-      ? `${config.api}/v1/customers${requestParam.getOrderBy}${requestParam.getPage}`
-      : `${config.api}/v1/customers/search${requestParam.getPage}${requestParam.getSearch}`
+      ? `${config.api}/v1/customers${requestParam.getOrderBy(
+          'search',
+          'order'
+        )}${requestParam.getPage('page')}`
+      : `${config.api}/v1/customers/search${requestParam.getPage(
+          'page',
+          'q'
+        )}${requestParam.getQ('q')}`
 
     return http.get<PaginationModel<CustomerModel>>(request, {
       headers: {

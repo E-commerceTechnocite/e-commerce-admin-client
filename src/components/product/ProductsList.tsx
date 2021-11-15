@@ -49,12 +49,12 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
    */
   const pageRequest = () => {
     const request = !query.get('q')
-      ? `${config.api}/v1/product${requestParam.getOrderBy}page=${
+      ? `${config.api}/v1/product${requestParam.getOrderBy('search', 'order')}page=${
           pagination ? query.get('page') : '1'
         }${number ? '&limit=' + number : ''}`
       : `${config.api}/v1/product/search?page=${
           pagination ? query.get('page') : '1'
-        }${number ? '&limit=' + number : ''}${requestParam.getSearch}`
+        }${number ? '&limit=' + number : ''}${requestParam.getQ('q')}`
 
     return http.get<PaginationModel<ProductModel>>(request, {
       headers: {
@@ -273,11 +273,11 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
                     <Granted permissions={['u:product']}>
                       <Link
-                        to={`/products/edit/${product.id}${queries.page}${
+                        to={`/products/edit/${product.id}${queries.page('page')}${
                           query.get('search') && query.get('order')
-                            ? `${queries.search}${queries.order}`
+                            ? `${queries.search('search')}${queries.order('order')}`
                             : ``
-                        }${queries.q}`}
+                        }${queries.q('q')}`}
                         className="action"
                       >
                         Edit

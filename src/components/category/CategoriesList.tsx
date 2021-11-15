@@ -39,14 +39,21 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   const history = useHistory()
   const query = useQuery()
   const queries = param()
+
   /**
    * Returns get request for product categories
    * @returns request
    */
   const pageRequest = () => {
     const request = !query.get('q')
-      ? `${config.api}/v1/product-category${requestParam.getOrderBy}${requestParam.getPage}`
-      : `${config.api}/v1/product-category/search${requestParam.getPage}${requestParam.getSearch}`
+      ? `${config.api}/v1/product-category${requestParam.getOrderBy(
+          'search',
+          'order'
+        )}${requestParam.getPage('page')}`
+      : `${config.api}/v1/product-category/search${requestParam.getPage(
+          'page',
+          'q'
+        )}${requestParam.getQ('q')}`
 
     return http.get<PaginationModel<CategoryModel>>(request, {
       headers: {
@@ -192,7 +199,6 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
               </div>
             )}
           </div>
-
           <div className="category-list">
             <div className="legend">
               <Legend uri={`/categories`} name={`Category`} search={`label`} />
@@ -228,11 +234,15 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
                     <span>{category.label}</span>
                     <Granted permissions={['u:product-category']}>
                       <Link
-                        to={`/categories/edit/${category.id}${queries.page}${
+                        to={`/categories/edit/${category.id}${queries.page(
+                          'page'
+                        )}${
                           query.get('search') && query.get('order')
-                            ? `${queries.search}${queries.order}`
+                            ? `${queries.search('search')}${queries.order(
+                                'order'
+                              )}`
                             : ``
-                        }${queries.q}`}
+                        }${queries.q('q')}`}
                         className="action edit"
                       >
                         Edit

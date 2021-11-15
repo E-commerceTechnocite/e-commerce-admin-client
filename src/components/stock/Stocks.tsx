@@ -48,8 +48,14 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
    */
   const stocksRequest = () => {
     const request = !query.get('q')
-      ? `${config.api}/v1/product${requestParam.getOrderBy}${requestParam.getPage}`
-      : `${config.api}/v1/product/search${requestParam.getPage}${requestParam.getSearch}`
+      ? `${config.api}/v1/product${requestParam.getOrderBy(
+          'search',
+          'order'
+        )}${requestParam.getPage('page')}`
+      : `${config.api}/v1/product/search${requestParam.getPage(
+          'page',
+          'q'
+        )}${requestParam.getQ('q')}`
 
     return http.get<PaginationModel<ProductModel>>(request, {
       headers: {
@@ -57,20 +63,6 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
         ...auth.headers,
       },
     })
-    /* 
-
-    return http.get<PaginationModel<ProductModel>>(
-      `${config.api}/v1/product${
-        query.get('search')
-          ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
-          : '?'
-      }page=${query.get('page')}&limit=10`,
-      {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-        },
-      }
-    ) */
   }
   /**
    * Submits the get request for Products (Stocks) and sets the state values from response

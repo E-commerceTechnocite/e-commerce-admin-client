@@ -31,7 +31,6 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
   const query = useQuery()
   const queries = param()
 
-
   /**
    * Returns post or patch request for product category
    * @param data
@@ -71,7 +70,9 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
     if (query.get('page')) {
       history.push({
         pathname: '/categories',
-        search: `${queries.page}${queries.search}${queries.order}${queries.q}`,
+        search: `${queries.page('page')}${queries.search(
+          'search'
+        )}${queries.order('order')}${queries.q('q')}`,
         state: { successEdit: true },
       })
     } else {

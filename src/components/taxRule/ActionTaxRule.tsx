@@ -1,24 +1,25 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import Previous from '../previous/Previous'
-import { Formik } from 'formik'
-import { useHistory, useParams } from 'react-router'
-import { config } from '../../index'
-import { http } from '../../util/http'
-import { sendRequest } from '../../util/helpers/refresh'
-import { CountryModel } from '../../models/product/country.model'
-import Select from '../inputs/Select'
-import TextInput from '../inputs/TextInput'
-import { TaxModel } from '../../models/product/tax.model'
 import { TaxRuleGroupModel } from '../../models/product/tax-rule-group.model'
 import { taxRuleSchema } from '../../util/validation/taxValidation'
-import TextAreaInput from '../inputs/TextAreaInput'
-import './ActionTaxRule.scss'
 import { TaxRuleModel } from '../../models/product/tax-rule.model'
-import Granted from '../Granted'
-import NumberInput from '../inputs/NumberInput'
+import { CountryModel } from '../../models/product/country.model'
+import param from '../../util/helpers/queries'
+import { sendRequest } from '../../util/helpers/refresh'
+import { useHistory, useParams } from 'react-router'
 import LoadingButton from '../loading/LoadingButton'
+import TextAreaInput from '../inputs/TextAreaInput'
 import { useQuery } from '../../util/hook/useQuery'
+import NumberInput from '../inputs/NumberInput'
+import { auth } from '../../util/helpers/auth'
+import Previous from '../previous/Previous'
+import { useEffect, useState } from 'react'
+import TextInput from '../inputs/TextInput'
+import { http } from '../../util/http'
+import Select from '../inputs/Select'
+import { config } from '../../index'
+import Granted from '../Granted'
+import { Formik } from 'formik'
+import * as React from 'react'
+import './ActionTaxRule.scss'
 
 interface IActionTaxRuleProps {}
 
@@ -33,29 +34,14 @@ interface InitialValues {
 
 const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   const [taxRuleGroup, setTaxRuleGroup] = useState<TaxRuleGroupModel[]>()
-  const [country, setCountry] = useState<CountryModel[]>()
-  const [submitError, setSubmitError] = useState<string>(null)
-  const [isSubmit, setIsSubmit] = useState<boolean>(false)
-  const history = useHistory()
-  const params: { slug: string } = useParams()
   const [initialValues, setInitialValues] = useState<InitialValues>()
+  const [submitError, setSubmitError] = useState<string>(null)
+  const [country, setCountry] = useState<CountryModel[]>()
+  const [isSubmit, setIsSubmit] = useState<boolean>(false)
+  const params: { slug: string } = useParams()
+  const history = useHistory()
   const query = useQuery()
-  const querySearch =
-    query.get('search') && query.get('order')
-      ? `&search=${query.get('search')}&order=${query.get('order')}`
-      : ''
-  const queryGroup =
-    query.get('searchGroup') && query.get('orderGroup')
-      ? `&searchGroup=${query.get('searchGroup')}&orderGroup=${query.get(
-          'orderGroup'
-        )}`
-      : ''
-  const queryCountry =
-    query.get('searchCountry') && query.get('orderCountry')
-      ? `&searchCountry=${query.get('searchCountry')}&orderCountry=${query.get(
-          'orderCountry'
-        )}`
-      : ''
+  const queries = param()
 
   /**
    * Returns post or patch request for new tax rule
@@ -67,14 +53,14 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
       return http.patch(`${config.api}/v1/tax-rule/${params.slug}`, data, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          ...auth.headers,
         },
       })
     }
     return http.post(`${config.api}/v1/tax-rule`, data, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -99,19 +85,30 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
     if (query.get('rule')) {
       history.push({
         pathname: '/taxes',
-        search: `?rule=${query.get('rule')}&group=${query.get(
+        search: `${queries.page('rule', 1)}${queries.page(
           'group'
-        )}&country=${query.get(
-          'country'
-        )}&s=u${querySearch}${queryGroup}${queryCountry}`,
+        )}${queries.page('country')}&s=u${queries.searchOrder(
+          'search',
+          'order'
+        )}${queries.searchOrder(
+          'searchGroup',
+          'orderGroup'
+        )}${queries.searchOrder('searchCountry', 'orderCountry')}${queries.q(
+          'q'
+        )}${queries.q('qGroup')}${queries.q('qCountry')}`,
         state: { successEdit: true },
       })
     } else {
       history.push({
         pathname: '/taxes',
-        search: `?rule=1&group=${query.get('group')}&country=${query.get(
+        search: `?rule=1${queries.page('group')}${queries.page(
           'country'
-        )}&s=u${queryGroup}${queryCountry}`,
+        )}&s=u${queries.searchOrder(
+          'searchGroup',
+          'orderGroup'
+        )}${queries.searchOrder('searchCountry', 'orderCountry')}${queries.q(
+          'qGroup'
+        )}${queries.q('qCountry')}`,
         state: { success: true },
       })
     }
@@ -126,7 +123,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
       `${config.api}/v1/tax-rule-group/all`,
       {
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          ...auth.headers,
         },
       }
     )
@@ -149,7 +146,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   const countryRequest = () => {
     return http.get<CountryModel[]>(`${config.api}/v1/country/all`, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -172,7 +169,7 @@ const ActionTaxRule: React.FunctionComponent<IActionTaxRuleProps> = () => {
   const currentTaxRequest = () => {
     return http.get<TaxRuleModel>(`${config.api}/v1/tax-rule/${params.slug}`, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }

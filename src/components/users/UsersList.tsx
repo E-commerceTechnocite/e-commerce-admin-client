@@ -39,6 +39,7 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
   const requestParam = requestParams()
   const history = useHistory()
   const query = useQuery()
+  const queries = param()
 
   /**
    * Returns get request for users list
@@ -46,12 +47,13 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
    */
   const pageRequest = () => {
     const request = !query.get('q')
-      ? `${config.api}/v1/user${requestParam.getOrderBy}${
-          requestParam.getPage
-        }${number ? '&limit=' + number : ''}`
-      : `${config.api}/v1/user/search${requestParam.getPage}${
+      ? `${config.api}/v1/user${requestParam.getOrderBy(
+          'search',
+          'order'
+        )}${requestParam.getPage('page')}${number ? '&limit=' + number : ''}`
+      : `${config.api}/v1/user/search${requestParam.getPage('page', 'q')}${
           number ? '&limit=' + number : ''
-        }${requestParam.getSearch}`
+        }${requestParam.getQ('search')}`
 
     return http.get<PaginationModel<UserModel>>(request, {
       headers: {
@@ -86,7 +88,7 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
   const deleteRequest = (id: string) => {
     return http.delete(`${config.api}/v1/user/${id}`, null, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -100,7 +102,6 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
     if (confirm(`Delete user: ${username}?`)) {
       let { error } = await sendRequest(deleteRequest, id)
       if (error) {
-        console.log(error.message)
         //history.push('/login')
         alert('WARNING : AN ERROR OCCURED !')
         if (error.message === 'Error 500 Internal Server Error')
@@ -216,13 +217,11 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                     <Granted permissions={['u:user']}>
                       {user.role.name !== 'Admin' && (
                         <Link
-                          to={`/users/edit/${user.id}?page=${query.get(
-                            'page'
-                          )}${
+                          to={`/users/edit/${user.id}${queries.page('page')}${
                             query.get('search') && query.get('order')
-                              ? `&search=${query.get(
-                                  'search'
-                                )}&order=${query.get('order')}`
+                              ? `${queries.search('search')}${queries.order(
+                                  'order'
+                                )}`
                               : ``
                           }`}
                           className="action"
