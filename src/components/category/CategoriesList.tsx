@@ -107,7 +107,6 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
 
   const debounce = useCallback(
     _.debounce((searchValue: string) => {
-      console.log('hello')
       history.push({
         pathname: '/categories',
         search: `?page=1&s=u${searchValue ? `&q=${searchValue}` : ''}`,
@@ -161,7 +160,6 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
                 />
                 <input
                   type="text"
-                  value={query.get('q') ? query.get('q') : ''}
                   placeholder="Search..."
                   onChange={(e) => debounce(e.target.value)}
                 />

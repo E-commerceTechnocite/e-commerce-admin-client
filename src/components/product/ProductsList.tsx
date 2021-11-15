@@ -38,10 +38,10 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   const [refreshPage, setRefreshPage] = useState(false)
   const [toastEdit, setToastEdit] = useState(false)
   const [toast, setToast] = useState(false)
+  const requestParam = requestParams()
   const history = useHistory()
   const query = useQuery()
   const queries = param()
-  const requestParam = requestParams()
 
   /**
    * Returns request to get the page of the product list
@@ -166,7 +166,6 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                 />
                 <input
                   type="text"
-                  value={query.get('q') ? query.get('q') : ''}
                   placeholder="Search..."
                   onChange={(e) => debounce(e.target.value)}
                 />

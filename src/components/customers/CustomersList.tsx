@@ -95,7 +95,6 @@ const CustomersList: React.FunctionComponent = () => {
               />
               <input
                 type="text"
-                value={query.get('q') ? query.get('q') : ''}
                 placeholder="Search..."
                 onChange={(e) => debounce(e.target.value)}
               />
