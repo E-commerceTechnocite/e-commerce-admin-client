@@ -1,4 +1,3 @@
-import { PaginationModel } from '../../models/pagination/pagination.model'
 import { userSchema } from '../../util/validation/userValidation'
 import { UserModel } from '../../models/user/user.model'
 import { sendRequest } from '../../util/helpers/refresh'
@@ -10,7 +9,7 @@ import TextInput from '../inputs/TextInput'
 import { useEffect, useState } from 'react'
 import Previous from '../previous/Previous'
 import { http } from '../../util/http'
-import { Formik, Field } from 'formik'
+import { Formik } from 'formik'
 import Select from '../inputs/Select'
 import { config } from '../../index'
 import * as React from 'react'
@@ -94,7 +93,7 @@ const ActionUser: React.FunctionComponent = () => {
    * @returns request
    */
   const roleRequest = () => {
-    return http.get<PaginationModel<any>>(`${config.api}/v1/role`, {
+    return http.get<any>(`${config.api}/v1/role/all`, {
       headers: {
         ...auth.headers,
       },
@@ -109,7 +108,7 @@ const ActionUser: React.FunctionComponent = () => {
     if (error) {
       history.push('/login')
     }
-    setRoles(data.data)
+    setRoles(data)
   }
 
   const allRoleRequest = () => {
