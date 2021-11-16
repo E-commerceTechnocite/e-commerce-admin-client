@@ -20,6 +20,7 @@ import { Formik } from 'formik'
 import * as React from 'react'
 import './Stocks.scss'
 import _ from 'lodash'
+import Uri from '../../util/helpers/Uri'
 
 interface IStocksProps {
   success?: boolean | undefined
@@ -33,6 +34,7 @@ interface stock {
 }
 
 const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
+  const [searchStock, setSearchStock] = useState<string>()
   const [submitEdit, setSubmitEdit] = useState<boolean>(false)
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [editArray, setEditArray] = useState<string[]>([])
@@ -47,17 +49,16 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
    * @returns request
    */
   const stocksRequest = () => {
-    const request = !query.get('q')
-      ? `${config.api}/v1/product${requestParam.getOrderBy(
-          'search',
-          'order'
-        )}${requestParam.getPage('page')}`
-      : `${config.api}/v1/product/search${requestParam.getPage(
-          'page',
-          'q'
-        )}${requestParam.getQ('q')}`
+    const url = !query.get('q')
+      ? new Uri('/v1/product')
+      : new Uri('/v1/product/search')
+    url
+      .setQuery('page', query.get('page') ? query.get('page') : '1')
+      .setQuery('orderBy', query.get('search'))
+      .setQuery('order', query.get('order'))
+      .setQuery('q', query.get('q'))
 
-    return http.get<PaginationModel<ProductModel>>(request, {
+    return http.get<PaginationModel<ProductModel>>(url.href, {
       headers: {
         'Content-Type': 'application/json',
         ...auth.headers,
@@ -117,6 +118,7 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
 
   const debounce = useCallback(
     _.debounce((searchValue: string) => {
+      setSearchStock(searchValue)
       history.push({
         pathname: '/stock',
         search: `?page=1&s=u${searchValue ? `&q=${searchValue}` : ''}`,
@@ -160,12 +162,15 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
               <div className="search">
                 <i
                   className="fas fa-search"
-                  onClick={() => debounce(query.get('q'))}
+                  onClick={() => debounce(searchStock)}
                 />
                 <input
                   type="text"
                   placeholder="Search..."
                   onChange={(e) => debounce(e.target.value)}
+                  onKeyPress={(e) =>
+                    e.key === 'Enter' ? debounce(e.currentTarget.value) : ''
+                  }
                 />
               </div>
               <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>

@@ -9,6 +9,7 @@ import Pagination from '../pagination/Pagination'
 import { auth } from '../../util/helpers/auth'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
+import Uri from '../../util/helpers/Uri'
 import { Link } from 'react-router-dom'
 import { http } from '../../util/http'
 import { motion } from 'framer-motion'
@@ -19,14 +20,12 @@ import * as React from 'react'
 import './UsersList.scss'
 
 interface IUsersListProps {
-  number?: number
   pagination?: boolean
   success?: boolean | undefined
   successEdit?: boolean | undefined
 }
 
 const UsersList: React.FunctionComponent<IUsersListProps> = ({
-  number,
   pagination,
   success,
   successEdit,
@@ -46,16 +45,16 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
    * @returns request
    */
   const pageRequest = () => {
-    const request = !query.get('q')
-      ? `${config.api}/v1/user${requestParam.getOrderBy(
-          'search',
-          'order'
-        )}${requestParam.getPage('page')}${number ? '&limit=' + number : ''}`
-      : `${config.api}/v1/user/search${requestParam.getPage('page', 'q')}${
-          number ? '&limit=' + number : ''
-        }${requestParam.getQ('search')}`
+    const url = !query.get('q')
+      ? new Uri('/v1/user')
+      : new Uri('/v1/user/search')
+    url
+      .setQuery('page', query.get('page') ? query.get('page') : '1')
+      .setQuery('orderBy', query.get('search'))
+      .setQuery('order', query.get('order'))
+      .setQuery('q', query.get('q'))
 
-    return http.get<PaginationModel<UserModel>>(request, {
+    return http.get<PaginationModel<UserModel>>(url.href, {
       headers: {
         'Content-Type': 'application/json',
         ...auth.headers,

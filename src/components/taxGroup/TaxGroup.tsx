@@ -4,12 +4,14 @@ import { PaginationModel } from '../../models/pagination/pagination.model'
 import { TaxRuleModel } from '../../models/product/tax-rule.model'
 import { ProductModel } from '../../models/product/product.model'
 import TaxGroupSkeleton from './skeleton/TaxGroupSkeleton'
+import { useCallback, useEffect, useState } from 'react'
 import { sendRequest } from '../../util/helpers/refresh'
 import { useQuery } from '../../util/hook/useQuery'
 import Pagination from '../pagination/Pagination'
 import { auth } from '../../util/helpers/auth'
-import { useEffect, useState } from 'react'
+import param from '../../util/helpers/queries'
 import { useHistory } from 'react-router'
+import Uri from '../../util/helpers/Uri'
 import { Link } from 'react-router-dom'
 import { http } from '../../util/http'
 import { motion } from 'framer-motion'
@@ -18,7 +20,7 @@ import { config } from '../../index'
 import Granted from '../Granted'
 import * as React from 'react'
 import './TaxGroup.scss'
-import param, { requestParams } from '../../util/helpers/queries'
+import _ from 'lodash'
 
 interface ITaxGroupProps {
   successGroup?: boolean | undefined
@@ -31,6 +33,7 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   successGroupEdit,
   groupToParent,
 }) => {
+  const [searchTaxGroup, setSearchTaxGroup] = useState<string>()
   const [taxRulesDeleted, setTaxRulesDeleted] = useState<TaxRuleModel[]>()
   const [productsDeleted, setProductsDeleted] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
@@ -39,7 +42,6 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   const [group, setGroup] = useState<TaxRuleGroupModel[]>()
   const [refreshPage, setRefreshPage] = useState(false)
   const [toast, setToast] = useState<boolean>(false)
-  const requestParam = requestParams()
   const history = useHistory()
   const query = useQuery()
   const queries = param()
@@ -49,27 +51,21 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
    * @returns request
    */
   const TaxRuleGroupRequest = () => {
-    const request = !query.get('qGroup')
-      ? `${config.api}/v1/tax-rule-group${requestParam.getOrderBy(
-          'searchGroup',
-          'orderGroup'
-        )}${requestParam.getPage('group')}`
-      : `${config.api}/v1/tax-rule-group/search${requestParam.getPage(
-          'group',
-          'qGroup'
-        )}${requestParam.getQ('qGroup')}`
+    const url = !query.get('qCountry')
+      ? new Uri('/v1/tax-rule-group')
+      : new Uri('/v1/tax-rule-group/search')
+    url
+      .setQuery('page', query.get('group') ? query.get('group') : '1')
+      .setQuery('orderBy', query.get('searchGroup'))
+      .setQuery('order', query.get('orderGroup'))
+      .setQuery('qCountry', query.get('qGroup'))
+      .setQuery('limit', '5')
 
-    return http.get<PaginationModel<TaxRuleGroupModel>>(
-      `${config.api}/v1/tax-rule-group${requestParam.getOrderBy(
-        'searchGroup',
-        'orderGroup'
-      )}${requestParam.getPage('group')}&limit=5`,
-      {
-        headers: {
-          ...auth.headers,
-        },
-      }
-    )
+    return http.get<PaginationModel<TaxRuleGroupModel>>(url.href, {
+      headers: {
+        ...auth.headers,
+      },
+    })
   }
   /**
    * Sends the get request for tax rule group and sets the state values from response
@@ -119,6 +115,22 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
       groupToParent()
     }
   }
+
+  const debounce = useCallback(
+    _.debounce((searchValue: string) => {
+      setSearchTaxGroup(searchValue)
+      history.push({
+        pathname: '/taxes',
+        search: `${queries.page('rule', 1)}&group=1${queries.page(
+          'country'
+        )}&s=u${searchValue ? `&q=${searchValue}` : ''}${queries.searchOrder(
+          'search',
+          'order'
+        )}${queries.searchOrder('searchCountry', 'orderCountry')}`,
+      })
+    }, 500),
+    []
+  )
 
   /**
    * Close the delete message
@@ -181,8 +193,18 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
         <div className="tax-group">
           <div className="top">
             <div className="search">
-              <i className="fas fa-search"></i>
-              <input type="text" placeholder="Search..." />
+              <i
+                className="fas fa-search"
+                onClick={() => debounce(searchTaxGroup)}
+              />
+              <input
+                type="text"
+                placeholder="Search..."
+                onChange={(e) => debounce(e.target.value)}
+                onKeyPress={(e) =>
+                  e.key === 'Enter' ? debounce(e.currentTarget.value) : ''
+                }
+              />
             </div>
             <Granted permissions={['c:tax-rule-group']}>
               <Link

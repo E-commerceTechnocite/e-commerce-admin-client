@@ -1,15 +1,16 @@
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import { TaxRuleModel } from '../../models/product/tax-rule.model'
-import param, { requestParams } from '../../util/helpers/queries'
 import { CountryModel } from '../../models/product/country.model'
 import CountrySkeleton from './skeleton/CountrySkeleton'
+import { useCallback, useEffect, useState } from 'react'
 import { sendRequest } from '../../util/helpers/refresh'
 import { useQuery } from '../../util/hook/useQuery'
 import { Link, useHistory } from 'react-router-dom'
 import Pagination from '../pagination/Pagination'
 import { auth } from '../../util/helpers/auth'
-import { useEffect, useState } from 'react'
+import param from '../../util/helpers/queries'
+import Uri from '../../util/helpers/Uri'
 import { motion } from 'framer-motion'
 import { http } from '../../util/http'
 import Legend from '../legend/legend'
@@ -17,6 +18,7 @@ import { config } from '../../index'
 import Granted from '../Granted'
 import * as React from 'react'
 import './Country.scss'
+import _ from 'lodash'
 
 interface ICountryProps {
   successCountry?: boolean | undefined
@@ -37,13 +39,13 @@ const Country: React.FunctionComponent<ICountryProps> = ({
   countryToParent,
 }) => {
   const [taxRulesDeleted, setTaxRulesDeleted] = useState<TaxRuleModel[]>()
+  const [searchCountry, setSearchCountry] = useState<string>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [isDeleted, setIsDeleted] = useState<boolean>(false)
   const [toastEdit, setToastEdit] = useState<boolean>(false)
   const [country, setCountry] = useState<CountryModel[]>()
   const [refreshPage, setRefreshPage] = useState(false)
   const [toast, setToast] = useState<boolean>(false)
-  const requestParam = requestParams()
   const history = useHistory()
   const query = useQuery()
   const queries = param()
@@ -53,17 +55,17 @@ const Country: React.FunctionComponent<ICountryProps> = ({
    * @returns request
    */
   const countryRequest = () => {
-    const request = !query.get('q')
-      ? `${config.api}/v1/country${requestParam.getOrderBy(
-          'searchCountry',
-          'orderCountry'
-        )}${requestParam.getPage('country')}&limit=5`
-      : `${config.api}/v1/country/search${requestParam.getPage(
-          'country',
-          'qCountry'
-        )}${requestParam.getQ('qCountry')}&limit=5`
+    const url = !query.get('qCountry')
+      ? new Uri('/v1/country')
+      : new Uri('/v1/country/search')
+    url
+      .setQuery('page', query.get('country') ? query.get('country') : '1')
+      .setQuery('orderBy', query.get('searchCountry'))
+      .setQuery('order', query.get('orderCountry'))
+      .setQuery('qCountry', query.get('qCountry'))
+      .setQuery('limit', '5')
 
-    return http.get<PaginationModel<CountryModel>>(request, {
+    return http.get<PaginationModel<CountryModel>>(url.href, {
       headers: {
         ...auth.headers,
       },
@@ -128,6 +130,24 @@ const Country: React.FunctionComponent<ICountryProps> = ({
     }, 1000)
   }
 
+  const debounce = useCallback(
+    _.debounce((searchValue: string) => {
+      setSearchCountry(searchValue)
+      history.push({
+        pathname: '/taxes',
+        search: `${queries.page('rule', 1)}${queries.page(
+          'group'
+        )}&country=1&s=u${
+          searchValue ? `&q=${searchValue}` : ''
+        }${queries.searchOrder('search', 'order')}${queries.searchOrder(
+          'searchGroup',
+          'orderGroup'
+        )}`,
+      })
+    }, 500),
+    []
+  )
+
   useEffect(() => {
     if (!query.get('country')) {
       history.push('/taxes?rule=1&group=1&country=1&s=u')
@@ -177,8 +197,17 @@ const Country: React.FunctionComponent<ICountryProps> = ({
         <div className="country">
           <div className="top">
             <div className="search">
-              <i className="fas fa-search"></i>
-              <input type="text" placeholder="Search..." />
+              <i
+                className="fas fa-search"
+                onClick={() => debounce(searchCountry)}
+              />
+              <input
+                type="text"
+                placeholder="Search..."
+                onKeyPress={(e) =>
+                  e.key === 'Enter' ? debounce(e.currentTarget.value) : ''
+                }
+              />
             </div>
             <Granted permissions={['c:country']}>
               <Link
