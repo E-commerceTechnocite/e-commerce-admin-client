@@ -2,12 +2,12 @@ import { PaginationMetadataModel } from '../../models/pagination/pagination-meta
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import CategoriesListSkeleton from './skeleton/CategoriesListSkeleton'
 import { CategoryModel } from '../../models/category/category.model'
-import param, { requestParams } from '../../util/helpers/queries'
 import { useEffect, useState, useCallback } from 'react'
 import { sendRequest } from '../../util/helpers/refresh'
 import { useQuery } from '../../util/hook/useQuery'
 import Pagination from '../pagination/Pagination'
 import { auth } from '../../util/helpers/auth'
+import param from '../../util/helpers/queries'
 import { useHistory } from 'react-router'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
@@ -18,6 +18,7 @@ import Granted from '../Granted'
 import * as React from 'react'
 import './CategoriesList.scss'
 import _ from 'lodash'
+import Uri from '../../util/helpers/Uri'
 
 interface ICategoriesListProps {
   pagination?: boolean
@@ -30,12 +31,12 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   success,
   successEdit,
 }) => {
+  const [searchCategory, setSearchCategory] = useState<string>()
   const [categories, setCategories] = useState<CategoryModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [toast, setToast] = useState(false)
   const [toastEdit, setToastEdit] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
-  const requestParam = requestParams()
   const history = useHistory()
   const query = useQuery()
   const queries = param()
@@ -45,17 +46,16 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
    * @returns request
    */
   const pageRequest = () => {
-    const request = !query.get('q')
-      ? `${config.api}/v1/product-category${requestParam.getOrderBy(
-          'search',
-          'order'
-        )}${requestParam.getPage('page')}`
-      : `${config.api}/v1/product-category/search${requestParam.getPage(
-          'page',
-          'q'
-        )}${requestParam.getQ('q')}`
+    const url = !query.get('q')
+      ? new Uri('/v1/product-category')
+      : new Uri('/v1/product-category/search')
+    url
+      .setQuery('page', query.get('page') ? query.get('page') : '1')
+      .setQuery('orderBy', query.get('search'))
+      .setQuery('order', query.get('order'))
+      .setQuery('q', query.get('q'))
 
-    return http.get<PaginationModel<CategoryModel>>(request, {
+    return http.get<PaginationModel<CategoryModel>>(url.href, {
       headers: {
         'Content-Type': 'application/json',
         ...auth.headers,
@@ -114,6 +114,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
 
   const debounce = useCallback(
     _.debounce((searchValue: string) => {
+      setSearchCategory(searchValue)
       history.push({
         pathname: '/categories',
         search: `?page=1&s=u${searchValue ? `&q=${searchValue}` : ''}`,
@@ -163,12 +164,15 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
               <div className="search">
                 <i
                   className="fas fa-search"
-                  onClick={() => debounce(query.get('q'))}
+                  onClick={() => debounce(searchCategory)}
                 />
                 <input
                   type="text"
                   placeholder="Search..."
                   onChange={(e) => debounce(e.target.value)}
+                  onKeyPress={(e) =>
+                    e.key === 'Enter' ? debounce(e.currentTarget.value) : ''
+                  }
                 />
               </div>
             )}

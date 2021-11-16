@@ -2,14 +2,15 @@ import { PaginationMetadataModel } from '../../models/pagination/pagination-meta
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import ProductsListSkeleton from './skeleton/ProductsListSkeleton'
 import { ProductModel } from '../../models/product/product.model'
-import param, { requestParams } from '../../util/helpers/queries'
 import { useEffect, useState, useCallback } from 'react'
 import { sendRequest } from '../../util/helpers/refresh'
 import { useQuery } from '../../util/hook/useQuery'
 import Pagination from '../pagination/Pagination'
 import { auth } from '../../util/helpers/auth'
+import param from '../../util/helpers/queries'
 import { useHistory } from 'react-router'
 import { htmlToText } from 'html-to-text'
+import Uri from '../../util/helpers/Uri'
 import { Link } from 'react-router-dom'
 import { http } from '../../util/http'
 import { motion } from 'framer-motion'
@@ -33,12 +34,12 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   success,
   successEdit,
 }) => {
-  const [products, setProducts] = useState<ProductModel[]>()
+  const [searchProduct, setSeachProduct] = useState<string>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
+  const [products, setProducts] = useState<ProductModel[]>()
   const [refreshPage, setRefreshPage] = useState(false)
   const [toastEdit, setToastEdit] = useState(false)
   const [toast, setToast] = useState(false)
-  const requestParam = requestParams()
   const history = useHistory()
   const query = useQuery()
   const queries = param()
@@ -48,15 +49,17 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
    * @returns request
    */
   const pageRequest = () => {
-    const request = !query.get('q')
-      ? `${config.api}/v1/product${requestParam.getOrderBy('search', 'order')}page=${
-          pagination ? query.get('page') : '1'
-        }${number ? '&limit=' + number : ''}`
-      : `${config.api}/v1/product/search?page=${
-          pagination ? query.get('page') : '1'
-        }${number ? '&limit=' + number : ''}${requestParam.getQ('q')}`
+    const url = !query.get('q')
+      ? new Uri('/v1/product')
+      : new Uri('/v1/product/search')
+    url
+      .setQuery('page', pagination ? query.get('page') : '1')
+      .setQuery('orderBy', query.get('search'))
+      .setQuery('order', query.get('order'))
+      .setQuery('q', query.get('q'))
+      .setQuery('limit', number.toString())
 
-    return http.get<PaginationModel<ProductModel>>(request, {
+    return http.get<PaginationModel<ProductModel>>(url.href, {
       headers: {
         'Content-Type': 'application/json',
         ...auth.headers,
@@ -109,6 +112,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
    */
   const debounce = useCallback(
     _.debounce((searchValue: string) => {
+      setSeachProduct(searchValue)
       history.push({
         pathname: '/products',
         search: `?page=1&s=u${searchValue ? `&q=${searchValue}` : ''}`,
@@ -162,12 +166,15 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
               <div className="search">
                 <i
                   className="fas fa-search"
-                  onClick={() => debounce(query.get('q'))}
+                  onClick={() => debounce(searchProduct)}
                 />
                 <input
                   type="text"
                   placeholder="Search..."
                   onChange={(e) => debounce(e.target.value)}
+                  onKeyPress={(e) =>
+                    e.key === 'Enter' ? debounce(e.currentTarget.value) : ''
+                  }
                 />
               </div>
             )}
@@ -273,9 +280,13 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
                     <Granted permissions={['u:product']}>
                       <Link
-                        to={`/products/edit/${product.id}${queries.page('page')}${
+                        to={`/products/edit/${product.id}${queries.page(
+                          'page'
+                        )}${
                           query.get('search') && query.get('order')
-                            ? `${queries.search('search')}${queries.order('order')}`
+                            ? `${queries.search('search')}${queries.order(
+                                'order'
+                              )}`
                             : ``
                         }${queries.q('q')}`}
                         className="action"

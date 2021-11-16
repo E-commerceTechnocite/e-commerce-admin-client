@@ -1,14 +1,15 @@
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
-import param, { requestParams } from '../../util/helpers/queries'
 import RolesListSkeleton from './skeleton/RolesListSkeleton'
 import { sendRequest } from '../../util/helpers/refresh'
 import { RoleModel } from '../../models/role/role.model'
 import { useQuery } from '../../util/hook/useQuery'
 import Pagination from '../pagination/Pagination'
 import { auth } from '../../util/helpers/auth'
+import param from '../../util/helpers/queries'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
+import Uri from '../../util/helpers/Uri'
 import { Link } from 'react-router-dom'
 import { http } from '../../util/http'
 import Legend from '../legend/legend'
@@ -35,7 +36,6 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
   const [toastEdit, setToastEdit] = useState(false)
   const [roles, setRoles] = useState<RoleModel[]>()
   const [toast, setToast] = useState(false)
-  const requestParam = requestParams()
   const history = useHistory()
   const query = useQuery()
   const queries = param()
@@ -44,19 +44,23 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
    * Returns get request for roles
    * @returns request
    */
-  const pageRequest = () =>
-    http.get<PaginationModel<RoleModel>>(
-      `${config.api}/v1/role${requestParam.getOrderBy(
-        'search',
-        'order'
-      )}${requestParam.getPage('page')}${number ? '&limit=' + number : ''}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          ...auth.headers,
-        },
-      }
-    )
+  const pageRequest = () => {
+    const url = !query.get('q')
+      ? new Uri('/v1/role')
+      : new Uri('/v1/role/search')
+    url
+      .setQuery('page', query.get('page') ? query.get('page') : '1')
+      .setQuery('orderBy', query.get('search'))
+      .setQuery('order', query.get('order'))
+      .setQuery('q', query.get('q'))
+
+    return http.get<PaginationModel<RoleModel>>(url.href, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...auth.headers,
+      },
+    })
+  }
 
   /**
    * Submits get request for roles

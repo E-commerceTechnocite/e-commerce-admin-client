@@ -1,6 +1,5 @@
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
-import param, { requestParams } from '../../util/helpers/queries'
 import { TaxRuleModel } from '../../models/taxRule/taxRule.model'
 import { useCallback, useEffect, useState } from 'react'
 import { sendRequest } from '../../util/helpers/refresh'
@@ -8,7 +7,9 @@ import TaxRuleSkeleton from './skeleton/TaxRuleSkeleton'
 import { useQuery } from '../../util/hook/useQuery'
 import Pagination from '../pagination/Pagination'
 import { auth } from '../../util/helpers/auth'
+import param from '../../util/helpers/queries'
 import { useHistory } from 'react-router'
+import Uri from '../../util/helpers/Uri'
 import { Link } from 'react-router-dom'
 import { http } from '../../util/http'
 import { motion } from 'framer-motion'
@@ -30,12 +31,12 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
   successEdit,
   isUpdated,
 }) => {
-  const [taxRule, setTaxRule] = useState<TaxRuleModel[]>()
+  const [searchTaxRule, setSearchTaxRule] = useState<string>()
   const [refreshPage, setRefreshPage] = useState<boolean>(false)
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [toastEdit, setToastEdit] = useState<boolean>(false)
+  const [taxRule, setTaxRule] = useState<TaxRuleModel[]>()
   const [toast, setToast] = useState<boolean>(false)
-  const requestParam = requestParams()
   const history = useHistory()
   const query = useQuery()
   const queries = param()
@@ -45,17 +46,17 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
    * @returns request
    */
   const TaxRuleRequest = () => {
-    const request = !query.get('q')
-      ? `${config.api}/v1/tax-rule${requestParam.getOrderBy(
-          'search',
-          'order'
-        )}${requestParam.getPage('rule')}&limit=5`
-      : `${config.api}/v1/tax-rule/search${requestParam.getPage(
-          'rule',
-          'q'
-        )}${requestParam.getQ('q')}&limit=5`
+    const url = !query.get('q')
+      ? new Uri('/v1/tax-rule')
+      : new Uri('/v1/tax-rule/search')
+    url
+      .setQuery('page', query.get('rule') ? query.get('rule') : '1')
+      .setQuery('orderBy', query.get('search'))
+      .setQuery('order', query.get('order'))
+      .setQuery('q', query.get('q'))
+      .setQuery('limit', '5')
 
-    return http.get<PaginationModel<TaxRuleModel>>(request, {
+    return http.get<PaginationModel<TaxRuleModel>>(url.href, {
       headers: {
         ...auth.headers,
       },
@@ -114,13 +115,12 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
 
   const debounce = useCallback(
     _.debounce((searchValue: string) => {
+      setSearchTaxRule(searchValue)
       history.push({
         pathname: '/taxes',
-        search: `?rule=1&s=u${
+        search: `?rule=1${queries.page('group')}${queries.page('country')}&s=u${
           searchValue ? `&q=${searchValue}` : ''
-        }${queries.page('group')}${queries.page(
-          'country'
-        )}${queries.searchOrder(
+        }${queries.searchOrder(
           'searchGroup',
           'orderGroup'
         )}${queries.searchOrder('searchCountry', 'orderCountry')}`,
@@ -168,11 +168,17 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
         <div className="tax-rule">
           <div className="top">
             <div className="search">
-              <i className="fas fa-search"></i>
+              <i
+                className="fas fa-search"
+                onClick={() => debounce(searchTaxRule)}
+              />
               <input
                 type="text"
                 placeholder="Search..."
                 onChange={(e) => debounce(e.target.value)}
+                onKeyPress={(e) =>
+                  e.key === 'Enter' ? debounce(e.currentTarget.value) : ''
+                }
               />
             </div>
             <Granted permissions={['c:tax-rule']}>
