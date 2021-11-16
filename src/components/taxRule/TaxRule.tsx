@@ -19,6 +19,7 @@ import Granted from '../Granted'
 import * as React from 'react'
 import './TaxRule.scss'
 import _ from 'lodash'
+import Toast from '../toast/Toast'
 
 interface ITaxRuleProps {
   success?: boolean | undefined
@@ -144,23 +145,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
     query.get('order'),
     query.get('q'),
   ])
-
-  // Check if tax rule has been added
-  useEffect(() => {
-    if (success === true) {
-      setToast(true)
-      setTimeout(() => {
-        setToast(false)
-      }, 10000)
-    }
-    if (successEdit === true) {
-      setToastEdit(true)
-      setTimeout(() => {
-        setToastEdit(false)
-      }, 10000)
-    }
-  }, [success, successEdit])
-
+  
   return (
     <>
       {!taxRule && !meta && <TaxRuleSkeleton />}
@@ -198,26 +183,9 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
                 New Tax
               </Link>
             </Granted>
-            {success && (
-              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-                {' '}
-                <i className="fas fa-check" />
-                Tax Rule Added
-                <i className="fas fa-times" onClick={() => setToast(false)} />
-              </div>
-            )}
+            {success && <Toast success={success} name={`Tax Rule`} />}
             {successEdit && (
-              <div
-                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
-              >
-                {' '}
-                <i className="fas fa-check" />
-                Tax Rule Edited
-                <i
-                  className="fas fa-times"
-                  onClick={() => setToastEdit(false)}
-                />
-              </div>
+              <Toast success={successEdit} name={`Tax Rule`} edit={true} />
             )}
           </div>
           <div className="tax-list">

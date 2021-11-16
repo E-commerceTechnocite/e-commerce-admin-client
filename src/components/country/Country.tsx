@@ -19,6 +19,7 @@ import Granted from '../Granted'
 import * as React from 'react'
 import './Country.scss'
 import _ from 'lodash'
+import Toast from '../toast/Toast'
 
 interface ICountryProps {
   successCountry?: boolean | undefined
@@ -42,10 +43,8 @@ const Country: React.FunctionComponent<ICountryProps> = ({
   const [searchCountry, setSearchCountry] = useState<string>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [isDeleted, setIsDeleted] = useState<boolean>(false)
-  const [toastEdit, setToastEdit] = useState<boolean>(false)
   const [country, setCountry] = useState<CountryModel[]>()
   const [refreshPage, setRefreshPage] = useState(false)
-  const [toast, setToast] = useState<boolean>(false)
   const history = useHistory()
   const query = useQuery()
   const queries = param()
@@ -162,22 +161,6 @@ const Country: React.FunctionComponent<ICountryProps> = ({
     query.get('qCountry'),
   ])
 
-  // Check if a country has been added and sends a confirmation toast
-  useEffect(() => {
-    if (successCountry === true) {
-      setToast(true)
-      setTimeout(() => {
-        setToast(false)
-      }, 10000)
-    }
-    if (successCountryEdit === true) {
-      setToastEdit(true)
-      setTimeout(() => {
-        setToastEdit(false)
-      }, 10000)
-    }
-  }, [successCountry, successCountryEdit])
-
   // Hide delete confirmation message  after 10 seconds
   useEffect(() => {
     if (isDeleted) {
@@ -226,25 +209,14 @@ const Country: React.FunctionComponent<ICountryProps> = ({
               </Link>
             </Granted>
             {successCountry && (
-              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-                {' '}
-                <i className="fas fa-check" />
-                Country Added
-                <i className="fas fa-times" onClick={() => setToast(false)} />
-              </div>
+              <Toast success={successCountry} name={`Tax Group`} />
             )}
             {successCountryEdit && (
-              <div
-                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
-              >
-                {' '}
-                <i className="fas fa-check" />
-                Country Edited
-                <i
-                  className="fas fa-times"
-                  onClick={() => setToastEdit(false)}
-                />
-              </div>
+              <Toast
+                success={successCountryEdit}
+                name={`Tax Group`}
+                edit={true}
+              />
             )}
           </div>
           <div className="country-list">

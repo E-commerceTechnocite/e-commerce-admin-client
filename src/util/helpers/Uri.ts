@@ -16,9 +16,7 @@ export class Uri extends URL {
    * @returns
    */
   public setQuery(key: string, value: string) {
-    if (value) {
-      this.searchParams.set(key, value)
-    }
+    if (value) this.searchParams.set(key, value)
     return this
   }
 }

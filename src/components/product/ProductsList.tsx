@@ -20,6 +20,7 @@ import Granted from '../Granted'
 import * as React from 'react'
 import './ProductsList.scss'
 import _ from 'lodash'
+import Toast from '../toast/Toast'
 
 interface IProductsListProps {
   number?: number
@@ -38,8 +39,6 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [products, setProducts] = useState<ProductModel[]>()
   const [refreshPage, setRefreshPage] = useState(false)
-  const [toastEdit, setToastEdit] = useState(false)
-  const [toast, setToast] = useState(false)
   const history = useHistory()
   const query = useQuery()
   const queries = param()
@@ -121,22 +120,6 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
     []
   )
 
-  // Check if product has been added and if so displays a toast
-  useEffect(() => {
-    if (success === true) {
-      setToast(true)
-      setTimeout(() => {
-        setToast(false)
-      }, 10000)
-    }
-    if (successEdit === true) {
-      setToastEdit(true)
-      setTimeout(() => {
-        setToastEdit(false)
-      }, 10000)
-    }
-  }, [success, successEdit])
-
   useEffect(() => {
     if (!query.get('page')) {
       if (window.location.pathname === '/admin/products') {
@@ -183,26 +166,9 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                 New Product
               </Link>
             </Granted>
-            {success && (
-              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-                {' '}
-                <i className="fas fa-check" />
-                Product Added
-                <i className="fas fa-times" onClick={() => setToast(false)} />
-              </div>
-            )}
+            {success && <Toast success={success} name={`Product`} />}
             {successEdit && (
-              <div
-                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
-              >
-                {' '}
-                <i className="fas fa-check" />
-                Product Edited
-                <i
-                  className="fas fa-times"
-                  onClick={() => setToastEdit(false)}
-                />
-              </div>
+              <Toast success={successEdit} name={`Product`} edit={true} />
             )}
           </div>
           <div className="product-list">
@@ -281,7 +247,8 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                     <Granted permissions={['u:product']}>
                       <Link
                         to={`/products/edit/${product.id}${queries.page(
-                          'page'
+                          'page',
+                          1
                         )}${
                           query.get('search') && query.get('order')
                             ? `${queries.search('search')}${queries.order(

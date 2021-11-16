@@ -8,12 +8,6 @@ interface IParam {
   q: (q: string) => string
 }
 
-interface IRequestParams {
-  getOrderBy: (search: string, order: string) => string
-  getPage: (page: string, q?: string) => string
-  getQ: (q: string) => string
-}
-
 /**
  * Returns functions to get url query parameters
  * @returns {IParam}
@@ -77,50 +71,4 @@ const param = (): IParam => {
   }
 }
 
-/**
- * Returns functions to get queries for fetch request
- * @returns {IRequestParams}
- */
-export const requestParams = (): IRequestParams => {
-  const query = useQuery()
-
-  return {
-    /**
-     * Returns orderBy and order query if search exists
-     * @param {string} search
-     * @param {string} order
-     * @returns
-     */
-    getOrderBy: function (search: string, order: string): string {
-      return query.get(search)
-        ? `?orderBy=${query.get(search)}&order=${query.get(order)}&`
-        : '?'
-    },
-
-    /**
-     * Returns specific page request based on if q exists
-     * @param {string} page
-     * @param {string} search
-     * @returns
-     */
-    getPage: function (page: string, q?: string): string {
-      return query.get(q)
-        ? query.get(page)
-          ? `?page=${query.get(page)}`
-          : '?page=1'
-        : query.get(page)
-        ? `page=${query.get(page)}`
-        : 'page=1'
-    },
-
-    /**
-     * Returns q if it exists
-     * @param {string} search
-     * @returns
-     */
-    getQ: function (q: string): string {
-      return query.get(q) ? `&q=${query.get(q)}` : ''
-    },
-  }
-}
 export default param

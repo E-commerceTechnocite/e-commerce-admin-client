@@ -19,6 +19,7 @@ import * as React from 'react'
 import './CategoriesList.scss'
 import _ from 'lodash'
 import Uri from '../../util/helpers/Uri'
+import Toast from '../toast/Toast'
 
 interface ICategoriesListProps {
   pagination?: boolean
@@ -34,8 +35,6 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   const [searchCategory, setSearchCategory] = useState<string>()
   const [categories, setCategories] = useState<CategoryModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [toast, setToast] = useState(false)
-  const [toastEdit, setToastEdit] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
   const query = useQuery()
@@ -123,21 +122,6 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
     []
   )
 
-  // Check if category has been added and if so displays a toast
-  useEffect(() => {
-    if (success === true) {
-      setToast(true)
-      setTimeout(() => {
-        setToast(false)
-      }, 10000)
-    }
-    if (successEdit === true) {
-      setToastEdit(true)
-      setTimeout(() => {
-        setToastEdit(false)
-      }, 10000)
-    }
-  }, [success, successEdit])
 
   useEffect(() => {
     if (!query.get('page')) {
@@ -181,26 +165,9 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
                 New Category
               </Link>
             </Granted>
-            {success && (
-              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-                {' '}
-                <i className="fas fa-check" />
-                Category Added
-                <i className="fas fa-times" onClick={() => setToast(false)} />
-              </div>
-            )}
+            {success && <Toast success={success} name={`Category`} />}
             {successEdit && (
-              <div
-                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
-              >
-                {' '}
-                <i className="fas fa-check" />
-                Category Edited
-                <i
-                  className="fas fa-times"
-                  onClick={() => setToastEdit(false)}
-                />
-              </div>
+              <Toast success={successEdit} name={`Category`} edit={true} />
             )}
           </div>
           <div className="category-list">
@@ -239,7 +206,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
                     <Granted permissions={['u:product-category']}>
                       <Link
                         to={`/categories/edit/${category.id}${queries.page(
-                          'page'
+                          'page', 1
                         )}${
                           query.get('search') && query.get('order')
                             ? `${queries.search('search')}${queries.order(

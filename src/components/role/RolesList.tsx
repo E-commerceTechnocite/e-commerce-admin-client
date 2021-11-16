@@ -17,6 +17,7 @@ import { config } from '../../index'
 import Granted from '../Granted'
 import * as React from 'react'
 import './RolesList.scss'
+import Toast from '../toast/Toast'
 
 interface IRolesListProps {
   number?: number
@@ -111,22 +112,6 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
     }
   }
 
-  // Check if role has been added and if so displays a toast
-  useEffect(() => {
-    if (success === true) {
-      setToast(true)
-      setTimeout(() => {
-        setToast(false)
-      }, 10000)
-    }
-    if (successEdit === true) {
-      setToastEdit(true)
-      setTimeout(() => {
-        setToastEdit(false)
-      }, 10000)
-    }
-  }, [success, successEdit])
-
   useEffect(() => {
     if (!query.get('page')) {
       history.push('/roles?page=1&s=u')
@@ -153,29 +138,11 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
                 New Role
               </Link>
             </Granted>
-            {success && (
-              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-                {' '}
-                <i className="fas fa-check" />
-                Role Added
-                <i className="fas fa-times" onClick={() => setToast(false)} />
-              </div>
-            )}
+            {success && <Toast success={success} name={`User`} />}
             {successEdit && (
-              <div
-                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
-              >
-                {' '}
-                <i className="fas fa-check" />
-                Role Edited
-                <i
-                  className="fas fa-times"
-                  onClick={() => setToastEdit(false)}
-                />
-              </div>
+              <Toast success={successEdit} name={`User`} edit={true} />
             )}
           </div>
-
           <div className="role-list">
             <div className="legend">
               <Legend uri={`/roles`} name={`Role`} search={`name`} />
@@ -187,7 +154,7 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
                   <Granted permissions={['u:role']}>
                     {role.name !== 'Admin' && (
                       <Link
-                        to={`/roles/edit/${role.id}${queries.page('page')}${
+                        to={`/roles/edit/${role.id}${queries.page('page', 1)}${
                           query.get('search') && query.get('order')
                             ? `${queries.search('search')}${queries.order(
                                 'order'
