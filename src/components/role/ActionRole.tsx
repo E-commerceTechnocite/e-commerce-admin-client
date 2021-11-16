@@ -264,7 +264,7 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
         name={name}
         onChange={(e) => changeToggle(e.target)}
         />
-        {label}
+        <label>{label}</label>
       </> 
     )
   }
