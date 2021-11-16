@@ -1,7 +1,6 @@
 import { ProductCategoryModel } from '../../models/product/product-category.model'
 import { TaxRuleGroupModel } from '../../models/product/tax-rule-group.model'
 import MediaLibraryContainer from '../media-library/MediaLibraryContainer'
-import { PaginationModel } from '../../models/pagination/pagination.model'
 import { ProductModel } from '../../models/product/product.model'
 import { PictureModel } from '../../models/files/picture.model'
 import { sendRequest } from '../../util/helpers/refresh'
@@ -168,8 +167,8 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
    * @returns request
    */
   const requestTax = () => {
-    return http.get<PaginationModel<TaxRuleGroupModel>>(
-      `${config.api}/v1/tax-rule-group`,
+    return http.get<TaxRuleGroupModel[]>(
+      `${config.api}/v1/tax-rule-group/all`,
       {
         headers: { ...auth.headers },
       }
@@ -184,7 +183,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
       // TODO show error on client (does not have permission)
       history.push('/login')
     }
-    setTaxOptions([...data.data])
+    setTaxOptions([...data])
   }
 
   /**
@@ -192,8 +191,8 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
    * @returns request
    */
   const requestCategory = () => {
-    return http.get<PaginationModel<ProductCategoryModel>>(
-      `${config.api}/v1/product-category`,
+    return http.get<ProductCategoryModel[]>(
+      `${config.api}/v1/product-category/all`,
       {
         headers: { ...auth.headers },
       }
@@ -208,7 +207,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
       // TODO show error on client (does not have permission)
       history.push('/login')
     }
-    setCategoryOptions([...data.data])
+    setCategoryOptions([...data])
   }
 
   /**
