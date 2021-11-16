@@ -1,0 +1,22 @@
+@import "./public/scss/variables";
+
+.toast-success {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    background: #ecfbe0;
+    color: #3a9838;
+    border: 1px solid #3a9838;
+    padding: 7px 13px 7px 17px;
+    border-radius: 4px;
+    i {
+      margin-right: 7px;
+      color: #3a9838;
+    }
+    .close {
+      margin: 3px 0 0 15px;
+      font-size: 13px;
+      color: #aec09f;
+      cursor: pointer;
+    }
+  }

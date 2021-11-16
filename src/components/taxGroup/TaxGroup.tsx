@@ -21,6 +21,7 @@ import Granted from '../Granted'
 import * as React from 'react'
 import './TaxGroup.scss'
 import _ from 'lodash'
+import Toast from '../toast/Toast'
 
 interface ITaxGroupProps {
   successGroup?: boolean | undefined
@@ -37,11 +38,9 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
   const [taxRulesDeleted, setTaxRulesDeleted] = useState<TaxRuleModel[]>()
   const [productsDeleted, setProductsDeleted] = useState<ProductModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [toastEdit, setToastEdit] = useState<boolean>(false)
   const [isDeleted, setIsDeleted] = useState<boolean>(false)
   const [group, setGroup] = useState<TaxRuleGroupModel[]>()
   const [refreshPage, setRefreshPage] = useState(false)
-  const [toast, setToast] = useState<boolean>(false)
   const history = useHistory()
   const query = useQuery()
   const queries = param()
@@ -157,22 +156,6 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
     query.get('qGroup'),
   ])
 
-  // Check if a tax group has been added and sends a confirmation toast
-  useEffect(() => {
-    if (successGroup === true) {
-      setToast(true)
-      setTimeout(() => {
-        setToast(false)
-      }, 10000)
-    }
-    if (successGroupEdit === true) {
-      setToastEdit(true)
-      setTimeout(() => {
-        setToastEdit(false)
-      }, 10000)
-    }
-  }, [successGroup, successGroupEdit])
-
   // Hide delete confirmation message after 10 seconds
   useEffect(() => {
     if (isDeleted) {
@@ -224,25 +207,14 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
               </Link>
             </Granted>
             {successGroup && (
-              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-                {' '}
-                <i className="fas fa-check" />
-                Tax Group Added
-                <i className="fas fa-times" onClick={() => setToast(false)} />
-              </div>
+              <Toast success={successGroup} name={`Tax Group`} />
             )}
             {successGroupEdit && (
-              <div
-                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
-              >
-                {' '}
-                <i className="fas fa-check" />
-                Tax Group Edited
-                <i
-                  className="fas fa-times"
-                  onClick={() => setToastEdit(false)}
-                />
-              </div>
+              <Toast
+                success={successGroupEdit}
+                name={`Tax Group`}
+                edit={true}
+              />
             )}
           </div>
           <div className="group-list">

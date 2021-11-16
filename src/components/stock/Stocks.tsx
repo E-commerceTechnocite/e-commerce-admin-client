@@ -2,7 +2,6 @@ import { PaginationMetadataModel } from '../../models/pagination/pagination-meta
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import { stockSchema } from '../../util/validation/productValidation'
 import { ProductModel } from '../../models/product/product.model'
-import { requestParams } from '../../util/helpers/queries'
 import { sendRequest } from '../../util/helpers/refresh'
 import { useCallback, useEffect, useState } from 'react'
 import StocksSkeleton from './skeleton/StocksSkeleton'
@@ -22,9 +21,6 @@ import './Stocks.scss'
 import _ from 'lodash'
 import Uri from '../../util/helpers/Uri'
 
-interface IStocksProps {
-  success?: boolean | undefined
-}
 interface stock {
   stock?: {
     physical?: number
@@ -33,14 +29,12 @@ interface stock {
   }
 }
 
-const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
-  const [searchStock, setSearchStock] = useState<string>()
+const Stocks: React.FunctionComponent = () => {
   const [submitEdit, setSubmitEdit] = useState<boolean>(false)
   const [meta, setMeta] = useState<PaginationMetadataModel>()
+  const [searchStock, setSearchStock] = useState<string>()
   const [editArray, setEditArray] = useState<string[]>([])
   const [stock, setStock] = useState<ProductModel[]>()
-  const [toast, setToast] = useState<boolean>(false)
-  const requestParam = requestParams()
   const history = useHistory()
   const query = useQuery()
 
@@ -142,16 +136,6 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
     query.get('q'),
   ])
 
-  // Check if a has been added and sends a confirmation toast
-  useEffect(() => {
-    if (success === true) {
-      setToast(true)
-      setTimeout(() => {
-        setToast(false)
-      }, 10000)
-    }
-  }, [success])
-
   return (
     <>
       {!stock && !meta && <StocksSkeleton />}
@@ -172,12 +156,6 @@ const Stocks: React.FunctionComponent<IStocksProps> = ({ success }) => {
                     e.key === 'Enter' ? debounce(e.currentTarget.value) : ''
                   }
                 />
-              </div>
-              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-                {' '}
-                <i className="fas fa-check" />
-                Stock Edited
-                <i className="fas fa-times" onClick={() => setToast(false)} />
               </div>
             </div>
             {stock && meta && (

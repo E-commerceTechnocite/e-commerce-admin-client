@@ -1,11 +1,11 @@
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
-import param, { requestParams } from '../../util/helpers/queries'
 import UsersListSkeleton from './skeleton/UsersListSkeleton'
 import { UserModel } from '../../models/user/user.model'
 import { sendRequest } from '../../util/helpers/refresh'
 import { useQuery } from '../../util/hook/useQuery'
 import Pagination from '../pagination/Pagination'
+import param from '../../util/helpers/queries'
 import { auth } from '../../util/helpers/auth'
 import { useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
@@ -18,6 +18,7 @@ import { config } from '../../index'
 import Granted from '../Granted'
 import * as React from 'react'
 import './UsersList.scss'
+import Toast from '../toast/Toast'
 
 interface IUsersListProps {
   pagination?: boolean
@@ -33,9 +34,6 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [refreshPage, setRefreshPage] = useState(false)
   const [users, setUsers] = useState<UserModel[]>()
-  const [toastEdit, setToastEdit] = useState(false)
-  const [toast, setToast] = useState(false)
-  const requestParam = requestParams()
   const history = useHistory()
   const query = useQuery()
   const queries = param()
@@ -110,22 +108,6 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
     }
   }
 
-  // Check if product has been added and if so displays a toast
-  useEffect(() => {
-    if (success === true) {
-      setToast(true)
-      setTimeout(() => {
-        setToast(false)
-      }, 10000)
-    }
-    if (successEdit === true) {
-      setToastEdit(true)
-      setTimeout(() => {
-        setToastEdit(false)
-      }, 10000)
-    }
-  }, [success, successEdit])
-
   useEffect(() => {
     if (!query.get('page')) {
       history.push('/users?page=1&s=u')
@@ -153,26 +135,9 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                 New User
               </Link>
             </Granted>
-            {success && (
-              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-                {' '}
-                <i className="fas fa-check" />
-                User Added
-                <i className="fas fa-times" onClick={() => setToast(false)} />
-              </div>
-            )}
+            {success && <Toast success={success} name={`User`} />}
             {successEdit && (
-              <div
-                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
-              >
-                {' '}
-                <i className="fas fa-check" />
-                User Edited
-                <i
-                  className="fas fa-times"
-                  onClick={() => setToastEdit(false)}
-                />
-              </div>
+              <Toast success={successEdit} name={`User`} edit={true} />
             )}
           </div>
           <div className="user-list">
@@ -216,7 +181,10 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                     <Granted permissions={['u:user']}>
                       {user.role.name !== 'Admin' && (
                         <Link
-                          to={`/users/edit/${user.id}${queries.page('page')}${
+                          to={`/users/edit/${user.id}${queries.page(
+                            'page',
+                            1
+                          )}${
                             query.get('search') && query.get('order')
                               ? `${queries.search('search')}${queries.order(
                                   'order'
