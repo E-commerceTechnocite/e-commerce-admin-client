@@ -1,18 +1,20 @@
-import * as React from 'react'
-import { useHistory, useParams } from 'react-router'
-import { useEffect, useState } from 'react'
-import { http } from '../../util/http'
-import { config } from '../../index'
-import { Formik, Field } from 'formik'
-import TextInput from '../inputs/TextInput'
-import { sendRequest } from '../../util/helpers/refresh'
 import { categorySchema } from '../../util/validation/categoryValidation'
-import './ActionCategory.scss'
-import Previous from '../previous/Previous'
 import { CategoryModel } from '../../models/category/category.model'
-import { useQuery } from '../../util/hook/useQuery'
-import Granted from '../Granted'
+import { sendRequest } from '../../util/helpers/refresh'
 import LoadingButton from '../loading/LoadingButton'
+import { useHistory, useParams } from 'react-router'
+import { useQuery } from '../../util/hook/useQuery'
+import param from '../../util/helpers/queries'
+import { auth } from '../../util/helpers/auth'
+import TextInput from '../inputs/TextInput'
+import { useEffect, useState } from 'react'
+import Previous from '../previous/Previous'
+import { http } from '../../util/http'
+import { Formik } from 'formik'
+import { config } from '../../index'
+import Granted from '../Granted'
+import './ActionCategory.scss'
+import * as React from 'react'
 
 interface IActionUserProps {}
 
@@ -21,12 +23,13 @@ interface InitialValues {
 }
 
 const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
-  const history = useHistory()
-  const [submitError, setSubmitError] = useState<string>(null)
-  const params: { slug: string } = useParams()
   const [initialValues, setInitialValues] = useState<InitialValues>()
-  const query = useQuery()
+  const [submitError, setSubmitError] = useState<string>(null)
   const [isSubmit, setIsSubmit] = useState(false)
+  const params: { slug: string } = useParams()
+  const history = useHistory()
+  const query = useQuery()
+  const queries = param()
 
   /**
    * Returns post or patch request for product category
@@ -41,7 +44,7 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+            ...auth.headers,
           },
         }
       )
@@ -49,7 +52,7 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
     return http.post(`${config.api}/v1/product-category`, data, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -67,11 +70,9 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
     if (query.get('page')) {
       history.push({
         pathname: '/categories',
-        search: `?page=${query.get('page')}&s=u${
-          query.get('search') && query.get('order')
-            ? `&search=${query.get('search')}&order=${query.get('order')}`
-            : ``
-        }`,
+        search: `${queries.page('page')}${queries.search(
+          'search'
+        )}${queries.order('order')}${queries.q('q')}`,
         state: { successEdit: true },
       })
     } else {
@@ -92,7 +93,7 @@ const ActionCategory: React.FunctionComponent<IActionUserProps> = () => {
       `${config.api}/v1/product-category/${params.slug}`,
       {
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          ...auth.headers,
         },
       }
     )

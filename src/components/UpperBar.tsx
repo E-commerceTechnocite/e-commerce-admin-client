@@ -26,7 +26,6 @@ const UpperBar: React.FunctionComponent = () => {
     try {
     setUsername(auth.decodedAccess.username) // PEUT ETRE SUJET A ERREUR !
     } catch (e) {
-    console.log("username error")
     setUsername("John Doe")
     }
   }, [location.pathname])

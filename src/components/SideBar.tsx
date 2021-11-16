@@ -101,7 +101,6 @@ const SideBar: React.FunctionComponent = () => {
               </NavLink>
             </Granted>
             <Granted permissions={[
-              'r:stock',
               'r:product',
             ]}>
               <NavLink uri="/stock" icon="fas fa-dolly">

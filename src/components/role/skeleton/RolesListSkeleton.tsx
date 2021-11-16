@@ -6,7 +6,7 @@ const RolesListSkeleton: React.FunctionComponent = () => {
   return (
     <div className="roles-skeleton">
       <div className="top-container">
-        <div className="search-skeleton"></div>
+        {/* <div className="search-skeleton"></div> */}
         <Granted permissions={['c:role']}>
           <div className="button-skeleton"></div>
         </Granted>

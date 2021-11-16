@@ -27,24 +27,6 @@
         margin-right: 7px;
       }
     }
-    .toast-success {
-      margin-left: 10px;
-      background: #ecfbe0;
-      color: #3a9838;
-      border: 1px solid #3a9838;
-      padding: 7px 17px;
-      border-radius: 4px;
-      i {
-        margin-right: 7px;
-        color: #3a9838;
-      }
-      i:nth-child(2) {
-        margin: 0 0 0 15px;
-        font-size: 13px;
-        color: #aec09f;
-        cursor: pointer;
-      }
-    }
   }
   .user-list {
     .legend,
@@ -76,6 +58,10 @@
       justify-content: center;
       padding: 20px 30px;
       font-weight: bold;
+
+      span:nth-child(2) {
+        grid-row: 1 / 2;
+      }
     }
     .user {
       span:first-child {
@@ -92,11 +78,6 @@
           max-width: 80px;
         }
       }
-    .user {
-      span:nth-child(2) {
-        margin-left: 15px;
-      }
-    }
     .pagination-component {
       position: absolute;
       bottom: 10px;

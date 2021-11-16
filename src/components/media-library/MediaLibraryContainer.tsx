@@ -1,19 +1,19 @@
-import * as React from 'react'
-import { FC, useEffect, useRef, useState } from 'react'
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import { PictureModel } from '../../models/files/picture.model'
-import { useHistory } from 'react-router'
-import { http } from '../../util/http'
-import { config } from '../../index'
-import { sendRequest } from '../../util/helpers/refresh'
-import './MediaLibraryContainer.scss'
-import Skeleton from './skeleton/Skeleton'
-import { auth } from '../../util/helpers/auth'
-import Granted from '../Granted'
-import { motion } from 'framer-motion'
 import PaginationMini from '../pagination/PaginationMini'
+import { sendRequest } from '../../util/helpers/refresh'
+import { FC, useEffect, useRef, useState } from 'react'
 import { useQuery } from '../../util/hook/useQuery'
 import Pagination from '../pagination/Pagination'
+import { auth } from '../../util/helpers/auth'
+import Skeleton from './skeleton/Skeleton'
+import { useHistory } from 'react-router'
+import Uri from '../../util/helpers/Uri'
+import { motion } from 'framer-motion'
+import { http } from '../../util/http'
+import './MediaLibraryContainer.scss'
+import { config } from '../../index'
+import Granted from '../Granted'
 
 interface MediaLibraryContainerPropsInterface {
   numberOfImages?: number
@@ -29,14 +29,14 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   libraryToParent,
 }) => {
   const [pictures, setPictures] = useState<PaginationModel<PictureModel>>(null)
-  const [page, setPage] = useState(1)
-  const [files, setFiles] = useState<File[]>([])
   const [filesSelected, setFilesSelected] = useState<PictureModel[]>([])
   const [imagePending, setImagePending] = useState(false)
+  const [files, setFiles] = useState<File[]>([])
   const inputEl = useRef<HTMLInputElement>()
+  const path = window.location.pathname
+  const [page, setPage] = useState(1)
   const history = useHistory()
   const query = useQuery()
-  const path = window.location.pathname
 
   /**
    * Returns post request of multiple files
@@ -68,15 +68,19 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
    * Returns request files list with page number
    * @returns request
    */
-  const imagesRequest = () =>
-    http.get<PaginationModel<PictureModel>>(
-      `${config.api}/v1/file?mimetype=image&page=${
-        path === '/admin/medias' ? query.get('page') : page
-      }&limit=${numberOfImages}`,
-      {
-        headers: { ...auth.headers },
-      }
-    )
+  const imagesRequest = () => {
+    const url = new Uri('/v1/file')
+    url
+      .setQuery(
+        'page',
+        path === '/admin/medias' ? query.get('page') : page.toString()
+      )
+      .setQuery('limit', numberOfImages.toString())
+
+    return http.get<PaginationModel<PictureModel>>(url.href, {
+      headers: { ...auth.headers },
+    })
+  }
 
   /**
    * Submits request files list with page number
@@ -150,8 +154,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
         history.push('/medias?page=1&s=u')
         return
       }
-    if (query.get('s')) window.scrollTo(0, 0)
-
+      if (query.get('s')) window.scrollTo(0, 0)
     }
     fetchImages().then()
   }, [page, query.get('page'), imagePending])
@@ -215,7 +218,11 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
                         }}
                       >
                         <img
-                          src={pic.uri.startsWith('http') ? pic.uri : `${config.api}` + pic.uri}
+                          src={
+                            pic.uri.startsWith('http')
+                              ? pic.uri
+                              : `${config.api}` + pic.uri
+                          }
                           alt={pic.caption}
                           id={pic.id}
                           onClick={() => {

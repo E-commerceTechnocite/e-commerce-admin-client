@@ -1,20 +1,25 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { http } from '../../util/http'
-import { config } from '../../index'
-import './TaxRule.scss'
-import { useHistory } from 'react-router'
-import { sendRequest } from '../../util/helpers/refresh'
-import { TaxRuleModel } from '../../models/taxRule/taxRule.model'
-import { PaginationModel } from '../../models/pagination/pagination.model'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
-import Pagination from '../pagination/Pagination'
-import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
-import Granted from '../Granted'
+import { PaginationModel } from '../../models/pagination/pagination.model'
+import { TaxRuleModel } from '../../models/taxRule/taxRule.model'
+import { useCallback, useEffect, useState } from 'react'
+import { sendRequest } from '../../util/helpers/refresh'
 import TaxRuleSkeleton from './skeleton/TaxRuleSkeleton'
 import { useQuery } from '../../util/hook/useQuery'
+import Pagination from '../pagination/Pagination'
+import { auth } from '../../util/helpers/auth'
+import param from '../../util/helpers/queries'
+import { useHistory } from 'react-router'
+import Uri from '../../util/helpers/Uri'
+import { Link } from 'react-router-dom'
+import { http } from '../../util/http'
+import { motion } from 'framer-motion'
 import Legend from '../legend/legend'
+import { config } from '../../index'
+import Granted from '../Granted'
+import * as React from 'react'
+import './TaxRule.scss'
+import _ from 'lodash'
+import Toast from '../toast/Toast'
 
 interface ITaxRuleProps {
   success?: boolean | undefined
@@ -27,47 +32,36 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
   successEdit,
   isUpdated,
 }) => {
-  const [taxRule, setTaxRule] = useState<TaxRuleModel[]>()
-  const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const query = useQuery()
-  const [toast, setToast] = useState<boolean>(false)
-  const [toastEdit, setToastEdit] = useState<boolean>(false)
+  const [searchTaxRule, setSearchTaxRule] = useState<string>()
   const [refreshPage, setRefreshPage] = useState<boolean>(false)
+  const [meta, setMeta] = useState<PaginationMetadataModel>()
+  const [toastEdit, setToastEdit] = useState<boolean>(false)
+  const [taxRule, setTaxRule] = useState<TaxRuleModel[]>()
+  const [toast, setToast] = useState<boolean>(false)
   const history = useHistory()
-  const querySearch =
-    query.get('search') && query.get('order')
-      ? `&search=${query.get('search')}&order=${query.get('order')}`
-      : ''
-  const queryGroup =
-    query.get('searchGroup') && query.get('orderGroup')
-      ? `&searchGroup=${query.get('searchGroup')}&orderGroup=${query.get(
-          'orderGroup'
-        )}`
-      : ''
-  const queryCountry =
-    query.get('searchCountry') && query.get('orderCountry')
-      ? `&searchCountry=${query.get('searchCountry')}&orderCountry=${query.get(
-          'orderCountry'
-        )}`
-      : ''
+  const query = useQuery()
+  const queries = param()
 
   /**
    * Returns get request for tax rule
    * @returns request
    */
   const TaxRuleRequest = () => {
-    return http.get<PaginationModel<TaxRuleModel>>(
-      `${config.api}/v1/tax-rule${
-        query.get('search')
-          ? `?orderBy=${query.get('search')}&order=${query.get('order')}&`
-          : '?'
-      }page=${query.get('rule')}&limit=5`,
-      {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-        },
-      }
-    )
+    const url = !query.get('q')
+      ? new Uri('/v1/tax-rule')
+      : new Uri('/v1/tax-rule/search')
+    url
+      .setQuery('page', query.get('rule') ? query.get('rule') : '1')
+      .setQuery('orderBy', query.get('search'))
+      .setQuery('order', query.get('order'))
+      .setQuery('q', query.get('q'))
+      .setQuery('limit', '5')
+
+    return http.get<PaginationModel<TaxRuleModel>>(url.href, {
+      headers: {
+        ...auth.headers,
+      },
+    })
   }
   /**
    * Submits get request for tax rule
@@ -75,12 +69,8 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
   const SubmitTaxRule = async () => {
     let { data, error } = await sendRequest(TaxRuleRequest)
     if (error) {
-      if (error.statusCode === 400) {
-        history.push('/taxes')
-        return
-      }
-      if (error.statusCode === 404) {
-        history.push('/not-found')
+      if (error.statusCode === 400 || error.statusCode === 404) {
+        history.push('/categories')
         return
       }
       history.push('/login')
@@ -97,7 +87,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
   const deleteTaxRequest = (id: string) => {
     return http.delete(`${config.api}/v1/tax-rule/${id}`, null, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -124,6 +114,22 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
     }
   }
 
+  const debounce = useCallback(
+    _.debounce((searchValue: string) => {
+      setSearchTaxRule(searchValue)
+      history.push({
+        pathname: '/taxes',
+        search: `?rule=1${queries.page('group')}${queries.page('country')}&s=u${
+          searchValue ? `&q=${searchValue}` : ''
+        }${queries.searchOrder(
+          'searchGroup',
+          'orderGroup'
+        )}${queries.searchOrder('searchCountry', 'orderCountry')}`,
+      })
+    }, 500),
+    []
+  )
+
   // Call the requests before render
   useEffect(() => {
     if (!query.get('rule')) {
@@ -137,24 +143,9 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
     query.get('rule'),
     query.get('search'),
     query.get('order'),
+    query.get('q'),
   ])
-
-  // Check if tax rule has been added
-  useEffect(() => {
-    if (success === true) {
-      setToast(true)
-      setTimeout(() => {
-        setToast(false)
-      }, 10000)
-    }
-    if (successEdit === true) {
-      setToastEdit(true)
-      setTimeout(() => {
-        setToastEdit(false)
-      }, 10000)
-    }
-  }, [success, successEdit])
-
+  
   return (
     <>
       {!taxRule && !meta && <TaxRuleSkeleton />}
@@ -162,39 +153,39 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
         <div className="tax-rule">
           <div className="top">
             <div className="search">
-              <i className="fas fa-search"></i>
-              <input type="text" placeholder="Search..." />
+              <i
+                className="fas fa-search"
+                onClick={() => debounce(searchTaxRule)}
+              />
+              <input
+                type="text"
+                placeholder="Search..."
+                onChange={(e) => debounce(e.target.value)}
+                onKeyPress={(e) =>
+                  e.key === 'Enter' ? debounce(e.currentTarget.value) : ''
+                }
+              />
             </div>
             <Granted permissions={['c:tax-rule']}>
               <Link
-                to={`/taxes/add-tax-rule?group=${query.get(
-                  'group'
-                )}&country=${query.get('country')}${queryGroup}${queryCountry}`}
+                to={`/taxes/add-tax-rule${queries.page(
+                  'group',
+                  1
+                )}${queries.page('country')}${queries.searchOrder(
+                  'searchGroup',
+                  'orderGroup'
+                )}${queries.searchOrder(
+                  'searchCountry',
+                  'orderCountry'
+                )}${queries.q('qGroup')}${queries.q('qCountry')}`}
                 className="action"
               >
                 New Tax
               </Link>
             </Granted>
-            {success && (
-              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-                {' '}
-                <i className="fas fa-check" />
-                Tax Rule Added
-                <i className="fas fa-times" onClick={() => setToast(false)} />
-              </div>
-            )}
+            {success && <Toast success={success} name={`Tax Rule`} />}
             {successEdit && (
-              <div
-                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
-              >
-                {' '}
-                <i className="fas fa-check" />
-                Tax Rule Edited
-                <i
-                  className="fas fa-times"
-                  onClick={() => setToastEdit(false)}
-                />
-              </div>
+              <Toast success={successEdit} name={`Tax Rule`} edit={true} />
             )}
           </div>
           <div className="tax-list">
@@ -274,11 +265,23 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
                   </span>
                   <Granted permissions={['u:tax-rule']}>
                     <Link
-                      to={`/taxes/edit-tax-rule/${tax.id}?rule=${query.get(
-                        'rule'
-                      )}&group=${query.get('group')}&country=${query.get(
+                      to={`/taxes/edit-tax-rule/${tax.id}${queries.page(
+                        'rule',
+                        1
+                      )}${queries.page('group')}${queries.page(
                         'country'
-                      )}${querySearch}${queryGroup}${queryCountry}`}
+                      )}${queries.searchOrder(
+                        'search',
+                        'order'
+                      )}${queries.searchOrder(
+                        'searchGroup',
+                        'orderGroup'
+                      )}${queries.searchOrder(
+                        'searchCountry',
+                        'orderCountry'
+                      )}${queries.q('q')}${queries.q('qGroup')}${queries.q(
+                        'qCountry'
+                      )}`}
                       className="action edit"
                     >
                       Edit
@@ -306,8 +309,16 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
           <Pagination
             meta={meta}
             uri={`taxes?rule=`}
-            restUri={`&group=${query.get('group')}&country=${query.get(
-              'country'
+            restUri={`${queries.page('group')}${queries.page('country')}`}
+            customSearch={`${queries.searchOrder(
+              'search',
+              'order'
+            )}${queries.searchOrder(
+              'searchGroup',
+              'orderGroup'
+            )}${queries.searchOrder('searchCountry', 'orderCountry')}`}
+            customQ={`${queries.q('q')}${queries.q('qGroup')}${queries.q(
+              'qCountry'
             )}`}
           />
         </div>
