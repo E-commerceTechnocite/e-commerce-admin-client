@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { auth } from '../util/helpers/auth'
-import { useHistory, useParams } from 'react-router'
+import { useHistory } from 'react-router'
 import { http } from '../util/http'
 import { config } from '../index'
 import { sendRequest } from '../util/helpers/refresh'
@@ -13,6 +13,7 @@ const Profile: React.FunctionComponent = () => {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState("")
   const [role, setRole] = useState('')
+  const history = useHistory()
   const perms = []
   //const [permissions, setPermissions] = useState([])
 
@@ -27,7 +28,7 @@ const Profile: React.FunctionComponent = () => {
   const SubmitPermissions = async () => {
     let { data, error } = await sendRequest(permissionsRequest)
     if (error) {
-      //history.push('/login') !!!!!!!!!!!!!!!!!!! A REGARDER !!!!!!!!!!!!!!!!!!!
+      history.push('/login') 
     }
     setAllPermissions(data)
   }
