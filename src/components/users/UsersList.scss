@@ -31,7 +31,7 @@
   .user-list {
     .legend,
     .user {
-      padding: 15px 30px;
+      padding: 20px 30px;
       display: grid;
       grid-template-columns: 40px 1fr 1fr 2fr 117px;
       grid-template-rows: 1;
@@ -64,6 +64,7 @@
       }
     }
     .user {
+      height: 34px;
       span:first-child {
         overflow: hidden;
         display: flex;

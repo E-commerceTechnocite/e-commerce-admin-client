@@ -113,13 +113,13 @@ const GraphicInformation: React.FunctionComponent = () => {
       <motion.div variants={items} className="graphicItem">
           <Line 
             data={salesState}
-            options={salesOptions}
+            // options={salesOptions}
           />
       </motion.div>
       <motion.div variants={items} className="graphicItem">
           <Bar
             data={usersState}
-            options={usersOptions}
+            // options={usersOptions}
           />
       </motion.div>
     </motion.div>
