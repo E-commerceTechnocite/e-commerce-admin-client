@@ -1,21 +1,19 @@
-import * as React from 'react'
-import { useHistory, useParams } from 'react-router'
-import { useEffect, useState } from 'react'
-import { http } from '../../util/http'
-import { config } from '../../index'
-import Select from '../inputs/Select'
-import TextInput from '../inputs/TextInput'
-import { PaginationModel } from '../../models/pagination/pagination.model'
-import { sendRequest } from '../../util/helpers/refresh'
-import { Formik, Field } from 'formik'
-import { UserModel } from '../../models/user/user.model'
 import { userSchema } from '../../util/validation/userValidation'
-import Previous from '../previous/Previous'
-import './ActionUser.scss'
-import { useQuery } from '../../util/hook/useQuery'
+import { UserModel } from '../../models/user/user.model'
+import { sendRequest } from '../../util/helpers/refresh'
 import LoadingButton from '../loading/LoadingButton'
-
-interface IActionUserProps {}
+import { useHistory, useParams } from 'react-router'
+import { useQuery } from '../../util/hook/useQuery'
+import { auth } from '../../util/helpers/auth'
+import TextInput from '../inputs/TextInput'
+import { useEffect, useState } from 'react'
+import Previous from '../previous/Previous'
+import { http } from '../../util/http'
+import { Formik } from 'formik'
+import Select from '../inputs/Select'
+import { config } from '../../index'
+import * as React from 'react'
+import './ActionUser.scss'
 
 interface InitialValues {
   email: string
@@ -23,14 +21,15 @@ interface InitialValues {
   roleId: string
 }
 
-const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
-  const history = useHistory()
-  const [roles, setRoles] = useState([])
-  const [submitError, setSubmitError] = useState<string>(null)
-  const params: { slug: string } = useParams()
-  const query = useQuery()
+const ActionUser: React.FunctionComponent = () => {
   const [initialValues, setInitialValues] = useState<InitialValues>()
+  const [submitError, setSubmitError] = useState<string>(null)
   const [isSubmit, setIsSubmit] = useState<boolean>(false)
+  const [allRoles, setAllRoles] = useState([])
+  const [roles, setRoles] = useState([])
+  const params: { slug: string } = useParams()
+  const history = useHistory()
+  const query = useQuery()
 
   /**
    * Returns post or patch request for user
@@ -42,14 +41,14 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
       return http.patch(`${config.api}/v1/user/${params.slug}`, data, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          ...auth.headers,
         },
       })
     }
     return http.post(`${config.api}/v1/user`, data, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -73,13 +72,17 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
     if (query.get('page')) {
       history.push({
         pathname: '/users',
-        search: `?page=${query.get('page')}`,
+        search: `?page=${query.get('page')}&s=u${
+          query.get('search') && query.get('order')
+            ? `&search=${query.get('search')}&order=${query.get('order')}`
+            : ``
+        }`,
         state: { successEdit: true },
       })
     } else {
       history.push({
         pathname: '/users',
-        search: `?page=1`,
+        search: `?page=1&s=u`,
         state: { success: true },
       })
     }
@@ -90,9 +93,9 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
    * @returns request
    */
   const roleRequest = () => {
-    return http.get<PaginationModel<any>>(`${config.api}/v1/role`, {
+    return http.get<any>(`${config.api}/v1/role/all`, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -105,17 +108,34 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
     if (error) {
       history.push('/login')
     }
-    setRoles(data.data)
+    setRoles(data)
+  }
+
+  const allRoleRequest = () => {
+    return http.get<string[]>(`${config.api}/v1/role/all`, {
+      headers: {
+        ...auth.headers,
+      },
+    })
+  }
+
+  const SubmitAllRole = async () => {
+    let { data, error } = await sendRequest(allRoleRequest)
+    if (error) {
+      history.push('/login')
+    }
+    setAllRoles(data)
   }
 
   useEffect(() => {
     SubmitRole().then()
+    SubmitAllRole().then()
   }, [])
 
   const currentUserRequest = () => {
     return http.get<UserModel>(`${config.api}/v1/user/${params.slug}`, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -165,7 +185,7 @@ const ActionUser: React.FunctionComponent<IActionUserProps> = () => {
                     {params.slug && <label>Edit user</label>}
                     {!params.slug && <label>New user</label>}
                   </div>
-                  <Select name={'roleId'} label={'Role'} options={roles} />
+                  <Select name={'roleId'} label={'Role'} options={allRoles} />
                   <TextInput name={'username'} label={'Username'} />
                   <TextInput name={'email'} label={'E-mail'} />
                   {!isSubmit && (

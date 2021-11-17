@@ -1,0 +1,169 @@
+@import '../../../public/scss/variables.scss';
+
+.customers {
+  background: $primary-color-elts;
+  box-shadow: $primary-elts-shadow;
+  min-height: 870px;
+  margin-bottom: 15px;
+  padding-bottom: 90px;
+  position: relative;
+  .top-container {
+    display: flex;
+    padding: 10px 30px;
+    border-bottom: 1px solid $primary-border-color;
+    .search {
+      display: flex;
+      height: 35px;
+      align-items: center;
+      padding: 0 10px;
+      background: $primary-color-elts;
+      border-radius: 4px;
+      border: 1px solid $primary-border-color;
+      margin-right: 10px;
+      input {
+        width: 130px;
+        border: none;
+      }
+      i {
+        margin-right: 7px;
+      }
+    }
+    .toast-success {
+      margin-left: 10px;
+      background: #ecfbe0;
+      color: #3a9838;
+      border: 1px solid #3a9838;
+      padding: 7px 17px;
+      border-radius: 4px;
+      i {
+        margin-right: 7px;
+        color: #3a9838;
+      }
+      i:nth-child(2) {
+        margin: 0 0 0 15px;
+        font-size: 13px;
+        color: #aec09f;
+        cursor: pointer;
+      }
+    }
+  }
+  .customer-list {
+    .legend,
+    .customer {
+      padding: 20px 30px;
+      display: grid;
+      grid-template-columns: 40px minmax(150px, 300px) minmax(300px, 500px) repeat(
+          3,
+          minmax(190px, 300px)
+        );
+      grid-template-rows: 1;
+      border-bottom: 1px solid $primary-border-color;
+      grid-column-gap: 10px;
+      align-items: center;
+      justify-items: flex-start;
+    }
+    .legend {
+      padding: 20px 30px;
+      font-weight: bold;
+    }
+    .customer {
+      height: 34px;
+      span:first-child {
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 35px;
+        height: 35px;
+        position: relative;
+        border-radius: 50%;
+        img {
+          position: absolute;
+          max-width: 80px;
+        }
+      }
+      button {
+        grid-column-start: 7;
+        grid-column-start: 8;
+        grid-row-start: 1;
+        grid-row-end: 1;
+        justify-self: flex-end;
+      }
+      a {
+        grid-column-start: 7;
+        grid-column-start: 8;
+        grid-row-start: 1;
+        grid-row-end: 1;
+        justify-self: flex-end;
+        margin-right: 38px;
+      }
+    }
+    .pagination-component {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-bottom: 20px;
+    }
+  }
+}
+
+@media screen and (max-width: 1430px) {
+  .customers {
+    .customer-list {
+      .legend {
+        display: none !important;
+      }
+      .customer {
+        height: auto;
+        grid-template-columns: 40px repeat(3, 1fr) !important;
+        grid-template-rows: repeat(2, 50px);
+        span {
+          position: relative;
+        }
+        span::before {
+          position: absolute;
+          top: -17px;
+          font-size: 13px;
+          color: #b3b3b3;
+        }
+        span:nth-child(2)::before {
+          content: 'Username';
+        }
+        span:nth-child(3) {
+          grid-column-start: 3;
+          grid-column-end: 8;
+        }
+        span:nth-child(3)::before {
+          content: 'E-mail';
+        }
+        span:nth-child(4) {
+          grid-row-start: 3;
+          grid-column-start: 4;
+          grid-column-end: 7;
+        }
+        span:nth-child(4)::before {
+          content: 'Phone';
+        }
+        span:nth-child(5) {
+          grid-row-start: 3;
+          grid-column-start: 2;
+          grid-column-end: 4;
+          width: 100%;
+        }
+        span:nth-child(5)::before {
+          content: 'First name';
+        }
+        span:nth-child(6) {
+          grid-row-start: 3;
+          grid-column-start: 3;
+          grid-column-end: 6;
+          width: 100%;
+        }
+        span:nth-child(6)::before {
+          content: 'Last name';
+        }
+      }
+    }
+  }
+}

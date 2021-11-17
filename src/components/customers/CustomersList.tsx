@@ -1,28 +1,25 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { useHistory } from 'react-router'
-import { CustomerModel } from '../../models/customers/customers.model'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
-import { config } from '../../index'
-import './CustomersList.scss'
-import { sendRequest } from '../../util/helpers/refresh'
-import { http } from '../../util/http'
-import { motion } from 'framer-motion'
+import { CustomerModel } from '../../models/customers/customers.model'
 import CustomersListSkeleton from './skeleton/CustomersListSkeleton'
+import { useEffect, useState, useCallback } from 'react'
+import { sendRequest } from '../../util/helpers/refresh'
 import { useQuery } from '../../util/hook/useQuery'
 import Pagination from '../pagination/Pagination'
+import { auth } from '../../util/helpers/auth'
+import { useHistory } from 'react-router'
+import Uri from '../../util/helpers/Uri'
+import { http } from '../../util/http'
+import { motion } from 'framer-motion'
+import Legend from '../legend/legend'
+import * as React from 'react'
+import './CustomersList.scss'
+import _ from 'lodash'
 
-interface ICustomersListProps {
-  number?: number
-  pagination?: boolean
-}
-
-const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
+const CustomersList: React.FunctionComponent = () => {
+  const [searchCustomer, setSearchCustomer] = useState<string>()
   const [customers, setCustomers] = useState<CustomerModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [toast, setToast] = useState(false)
-  const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
   const query = useQuery()
 
@@ -30,16 +27,23 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
    * Returns the get request of the customers list
    * @returns request
    */
-  const customersRequest = () =>
-    http.get<PaginationModel<CustomerModel>>(
-      `${config.api}/v1/customers?page=${query.get('page')}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-        },
-      }
-    )
+  const customersRequest = () => {
+    const url = !query.get('q')
+      ? new Uri('/v1/customers')
+      : new Uri('/v1/customers/search')
+    url
+      .setQuery('page', query.get('page') ? query.get('page') : '1')
+      .setQuery('orderBy', query.get('search'))
+      .setQuery('order', query.get('order'))
+      .setQuery('q', query.get('q'))
+
+    return http.get<PaginationModel<CustomerModel>>(url.href, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...auth.headers,
+      },
+    })
+  }
 
   /**
    * Sends the get request of the customers list and sets customers & pagination state
@@ -47,8 +51,8 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
   const getCustomers = async () => {
     let { data, error } = await sendRequest(customersRequest)
     if (error) {
-      if (error.statusCode === 404) {
-        history.push('/not-found')
+      if (error.statusCode === 400 || error.statusCode === 404) {
+        history.push('/customers')
         return
       }
       history.push('/login')
@@ -57,33 +61,18 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
     setMeta(data.meta)
   }
 
-  /**
-   * Returns the delete request for a specific customer
-   * @return request
-   */
-  const deleteRequest = (id: string) => {
-    return http.delete(`${config.api}/v1/customers/${id}`, null, {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-      },
-    })
-  }
+  const debounce = useCallback(
+    _.debounce((searchValue: string) => {
+      setSearchCustomer(searchValue)
+      history.push({
+        pathname: '/customers',
+        search: `?page=1&s=u${searchValue ? `&q=${searchValue}` : ''}`,
+      })
+    }, 500),
+    []
+  )
 
-  /**
-   * Sends the delete request for a specific customer
-   * @param id :string
-   * @param username :string
-   */
-  const deleteCustomer = async (id: string, username: string) => {
-    if (confirm(`Delete customer: ${username}?`)) {
-      let { error } = await sendRequest(deleteRequest, id)
-      if (error) {
-        history.push('/login')
-      }
-      setRefreshPage(!refreshPage)
-    }
-  }
-
+  // Check if customer has been added and if so displays a toast
   useEffect(() => {
     if (!query.get('page')) {
       history.push('/customers?page=1&s=u')
@@ -91,7 +80,12 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
     }
     if (query.get('s')) window.scrollTo(0, 0)
     getCustomers().then()
-  }, [refreshPage, query.get('page')])
+  }, [
+    query.get('page'),
+    query.get('search'),
+    query.get('order'),
+    query.get('q'),
+  ])
 
   return (
     <>
@@ -100,17 +94,44 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
         <div className="customers">
           <div className="top-container">
             <div className="search">
-              <i className="fas fa-search"></i>
-              <input type="text" placeholder="Search..." />
+              <i
+                className="fas fa-search"
+                onClick={() => debounce(searchCustomer)}
+              />
+              <input
+                type="text"
+                placeholder="Search..."
+                onChange={(e) => debounce(e.target.value)}
+                onKeyPress={(e) =>
+                  e.key === 'Enter' ? debounce(e.currentTarget.value) : ''
+                }
+              />
             </div>
           </div>
           <div className="customer-list">
             <div className="legend">
-              <span>Username</span>
-              <span>E-mail</span>
-              <span>phoneNumber</span>
-              <span>First Name</span>
-              <span>Last Name</span>
+              <span></span>
+              <Legend
+                uri={`/customers`}
+                name={`Username`}
+                search={`username`}
+              />
+              <Legend uri={`/customers`} name={`E-mail`} search={`email`} />
+              <Legend
+                uri={`/customers`}
+                name={`Phone number`}
+                search={`phoneNumber`}
+              />
+              <Legend
+                uri={`/customers`}
+                name={`First name`}
+                search={`firstName`}
+              />
+              <Legend
+                uri={`/customers`}
+                name={`Last name`}
+                search={`lastName`}
+              />
             </div>
             <motion.div
               variants={{
@@ -125,6 +146,11 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
               initial="hidden"
               animate="show"
             >
+              {customers.length === 0 && (
+                <div className="notfound">
+                  <label>Customer not found</label>
+                </div>
+              )}
               {customers?.map((customer, index) => {
                 return (
                   <motion.div
@@ -135,6 +161,11 @@ const CustomersList: React.FunctionComponent<ICustomersListProps> = () => {
                     className="customer"
                     key={index}
                   >
+                    <span>
+                      <img
+                        src={`https://avatars.dicebear.com/api/bottts/${customer.username}p.svg`}
+                      />
+                    </span>
                     <span>{customer.username}</span>
                     <span>{customer.email}</span>
                     <span>{customer.phoneNumber}</span>

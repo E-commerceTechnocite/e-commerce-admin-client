@@ -1,21 +1,26 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { useHistory, useLocation, useParams } from 'react-router'
-import { Link } from 'react-router-dom'
-import Pagination from '../pagination/Pagination'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
-import { ProductModel } from '../../models/product/product.model'
-import { config } from '../../index'
-import { sendRequest } from '../../util/helpers/refresh'
-import { http } from '../../util/http'
-import { htmlToText } from 'html-to-text'
-import { motion } from 'framer-motion'
-import Granted from '../Granted'
-import { auth } from '../../util/helpers/auth'
-import './ProductsList.scss'
 import ProductsListSkeleton from './skeleton/ProductsListSkeleton'
+import { ProductModel } from '../../models/product/product.model'
+import { useEffect, useState, useCallback } from 'react'
+import { sendRequest } from '../../util/helpers/refresh'
 import { useQuery } from '../../util/hook/useQuery'
+import Pagination from '../pagination/Pagination'
+import { auth } from '../../util/helpers/auth'
+import param from '../../util/helpers/queries'
+import { useHistory } from 'react-router'
+import { htmlToText } from 'html-to-text'
+import Uri from '../../util/helpers/Uri'
+import { Link } from 'react-router-dom'
+import { http } from '../../util/http'
+import { motion } from 'framer-motion'
+import Legend from '../legend/legend'
+import { config } from '../../index'
+import Granted from '../Granted'
+import * as React from 'react'
+import './ProductsList.scss'
+import _ from 'lodash'
+import Toast from '../toast/Toast'
 
 interface IProductsListProps {
   number?: number
@@ -30,39 +35,44 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
   success,
   successEdit,
 }) => {
-  const [products, setProducts] = useState<ProductModel[]>()
+  const [searchProduct, setSeachProduct] = useState<string>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [toast, setToast] = useState(false)
-  const [toastEdit, setToastEdit] = useState(false)
+  const [products, setProducts] = useState<ProductModel[]>()
   const [refreshPage, setRefreshPage] = useState(false)
-  const query = useQuery()
   const history = useHistory()
-  const [isMounted, setIsMounted] = useState(false)
+  const query = useQuery()
+  const queries = param()
 
   /**
    * Returns request to get the page of the product list
    * @returns request
    */
-  const pageRequest = () =>
-    http.get<PaginationModel<ProductModel>>(
-      `${config.api}/v1/product?page=${pagination ? query.get('page') : '1'}${
-        number ? '&limit=' + number : ''
-      }`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          ...auth.headers,
-        },
-      }
-    )
+  const pageRequest = () => {
+    const url = !query.get('q')
+      ? new Uri('/v1/product')
+      : new Uri('/v1/product/search')
+    url
+      .setQuery('page', pagination ? query.get('page') : '1')
+      .setQuery('orderBy', query.get('search'))
+      .setQuery('order', query.get('order'))
+      .setQuery('q', query.get('q'))
+      .setQuery('limit', number.toString())
+
+    return http.get<PaginationModel<ProductModel>>(url.href, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...auth.headers,
+      },
+    })
+  }
   /**
    * Submits to get the page of the product list
    */
   const getProducts = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
-      if (error.statusCode === 404) {
-        history.push('/not-found')
+      if (error.statusCode === 400 || error.statusCode === 404) {
+        history.push('/products')
         return
       }
       history.push('/login')
@@ -96,25 +106,21 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
     }
   }
 
-  // Check if product has been added and if so displays a toast
-  useEffect(() => {
-    if (success === true) {
-      setToast(true)
-      setTimeout(() => {
-        setToast(false)
-      }, 10000)
-    }
-    if (successEdit === true) {
-      setToastEdit(true)
-      setTimeout(() => {
-        setToastEdit(false)
-      }, 10000)
-    }
-  }, [success, successEdit])
+  /**
+   * Search products by input value search
+   */
+  const debounce = useCallback(
+    _.debounce((searchValue: string) => {
+      setSeachProduct(searchValue)
+      history.push({
+        pathname: '/products',
+        search: `?page=1&s=u${searchValue ? `&q=${searchValue}` : ''}`,
+      })
+    }, 500),
+    []
+  )
 
   useEffect(() => {
-    if (query.get('scroll')) {
-    }
     if (!query.get('page')) {
       if (window.location.pathname === '/admin/products') {
         history.push('/products?page=1&s=u')
@@ -122,9 +128,14 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
       }
     }
     if (query.get('s')) window.scrollTo(0, 0)
-
     getProducts().then()
-  }, [refreshPage, query.get('page')])
+  }, [
+    refreshPage,
+    query.get('page'),
+    query.get('search'),
+    query.get('order'),
+    query.get('q'),
+  ])
 
   return (
     <>
@@ -136,8 +147,18 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
           <div className="top-container">
             {pagination && (
               <div className="search">
-                <i className="fas fa-search" />
-                <input type="text" placeholder="Search..." />
+                <i
+                  className="fas fa-search"
+                  onClick={() => debounce(searchProduct)}
+                />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  onChange={(e) => debounce(e.target.value)}
+                  onKeyPress={(e) =>
+                    e.key === 'Enter' ? debounce(e.currentTarget.value) : ''
+                  }
+                />
               </div>
             )}
             <Granted permissions={['c:product']}>
@@ -145,36 +166,31 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                 New Product
               </Link>
             </Granted>
-            {success && (
-              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-                {' '}
-                <i className="fas fa-check" />
-                Product Added
-                <i className="fas fa-times" onClick={() => setToast(false)} />
-              </div>
-            )}
+            {success && <Toast success={success} name={`Product`} />}
             {successEdit && (
-              <div
-                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
-              >
-                {' '}
-                <i className="fas fa-check" />
-                Product Edited
-                <i
-                  className="fas fa-times"
-                  onClick={() => setToastEdit(false)}
-                />
-              </div>
+              <Toast success={successEdit} name={`Product`} edit={true} />
             )}
           </div>
           <div className="product-list">
             <div className="legend">
               <span>Image</span>
-              <span>Title</span>
-              <span>Reference</span>
-              <span>Description</span>
-              <span>Category</span>
-              <span>Price</span>
+              <Legend uri={`/products`} name={`Title`} search={`title`} />
+              <Legend
+                uri={`/products`}
+                name={`Reference`}
+                search={`reference`}
+              />
+              <Legend
+                uri={`/products`}
+                name={`Description`}
+                search={`description`}
+              />
+              <Legend
+                uri={`/products`}
+                name={`Category`}
+                search={`category.label`}
+              />
+              <Legend uri={`/products`} name={`Price`} search={`price`} />
             </div>
             <motion.div
               variants={{
@@ -189,6 +205,11 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
               initial="hidden"
               animate="show"
             >
+              {products.length === 0 && (
+                <div className="notfound">
+                  <label>Product not found</label>
+                </div>
+              )}
               {products.map((product) => {
                 const strippedHtml = htmlToText(product.description)
                 return (
@@ -215,7 +236,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                     )}
                     <span>{product.title}</span>
                     <span>{product.reference}</span>
-                    <span>
+                    <span title={product.description}>
                       {strippedHtml.length >= 100
                         ? strippedHtml.substr(0, 50) + '...'
                         : strippedHtml}
@@ -225,9 +246,16 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
 
                     <Granted permissions={['u:product']}>
                       <Link
-                        to={`/products/edit/${product.id}?page=${query.get(
-                          'page'
-                        )}`}
+                        to={`/products/edit/${product.id}${queries.page(
+                          'page',
+                          1
+                        )}${
+                          query.get('search') && query.get('order')
+                            ? `${queries.search('search')}${queries.order(
+                                'order'
+                              )}`
+                            : ``
+                        }${queries.q('q')}`}
                         className="action"
                       >
                         Edit
@@ -248,7 +276,7 @@ const ProductsList: React.FunctionComponent<IProductsListProps> = ({
                 )
               })}
             </motion.div>
-            {pagination && <Pagination meta={meta} uri="/products?page=" />}
+            {pagination && <Pagination meta={meta} uri={`/products?page=`} />}
           </div>
         </div>
       )}

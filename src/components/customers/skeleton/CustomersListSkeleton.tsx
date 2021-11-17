@@ -17,9 +17,9 @@ const CustomersSkeleton: React.FunctionComponent = () => {
             <span></span>
           </div>
           <div>
-            {[...Array(10)].map(() => {
+            {[...Array(10)].map((param, index) => {
               return (
-                <div className="customer-skeleton">
+                <div className="customer-skeleton" key={index}>
                   <span></span>
                   <span></span>
                   <span></span>

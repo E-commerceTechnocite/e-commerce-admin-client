@@ -6,7 +6,7 @@ const UsersListSkeleton: React.FunctionComponent = () => {
   return (
     <div className="users-skeleton">
       <div className="top-container">
-        <div className="search-skeleton"></div>
+        {/* <div className="search-skeleton"></div> */}
         <Granted permissions={['c:user']}>
           <div className="button-skeleton"></div>
         </Granted>

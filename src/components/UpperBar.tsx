@@ -1,9 +1,11 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { auth } from '../util/helpers/auth'
 
 const UpperBar: React.FunctionComponent = () => {
   const [breadcrumbs, setBreadcrumbs] = useState<string[]>([])
+  const [username, setUsername] = useState<string>("")
   const location = useLocation()
   const isFirstOrLast = (array: string[], index: number): boolean => {
     if (index === array.length - 1) return true
@@ -11,15 +13,21 @@ const UpperBar: React.FunctionComponent = () => {
 
   useEffect(() => {
     const crumb = location.pathname
+    
     let treatedPath = crumb.split('/')
     for (let i = 0; i < treatedPath.length; i++) {
       treatedPath[i] =
-        treatedPath[i].charAt(0).toUpperCase() + treatedPath[i].slice(1)
+      treatedPath[i].charAt(0).toUpperCase() + treatedPath[i].slice(1)
     }
     treatedPath.shift()
     if (treatedPath[0] === '')
       treatedPath[0] = treatedPath[0].replace('', 'Home')
     setBreadcrumbs(treatedPath)
+    try {
+    setUsername(auth.decodedAccess.username) // PEUT ETRE SUJET A ERREUR !
+    } catch (e) {
+    setUsername("John Doe")
+    }
   }, [location.pathname])
 
   return (
@@ -40,13 +48,11 @@ const UpperBar: React.FunctionComponent = () => {
         <div className="user">
           <div></div>
           <div>
-            <span>John</span>
-            <span>Doe</span>
-            <i className="fas fa-sort-down"></i>
+            <span>{username}</span>
           </div>
         </div>
         <div className="user-img">
-          <img src="" alt="" />
+          <img src={`https://avatars.dicebear.com/api/initials/${username}p.svg`} alt="" className="user-img2"/>
         </div>
       </div>
     </div>

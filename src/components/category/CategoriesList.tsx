@@ -1,58 +1,66 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { useHistory } from 'react-router'
-import { Link } from 'react-router-dom'
-import Loading from '../loading/Loading'
-import Pagination from '../pagination/Pagination'
-import { motion } from 'framer-motion'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
-import { config } from '../../index'
-import { sendRequest } from '../../util/helpers/refresh'
-import { http } from '../../util/http'
-import { CategoryModel } from '../../models/category/category.model'
-import './CategoriesList.scss'
-import { useQuery } from '../../util/hook/useQuery'
-import Granted from '../Granted'
 import CategoriesListSkeleton from './skeleton/CategoriesListSkeleton'
+import { CategoryModel } from '../../models/category/category.model'
+import { useEffect, useState, useCallback } from 'react'
+import { sendRequest } from '../../util/helpers/refresh'
+import { useQuery } from '../../util/hook/useQuery'
+import Pagination from '../pagination/Pagination'
+import { auth } from '../../util/helpers/auth'
+import param from '../../util/helpers/queries'
+import { useHistory } from 'react-router'
+import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { http } from '../../util/http'
+import Legend from '../legend/legend'
+import { config } from '../../index'
+import Granted from '../Granted'
+import * as React from 'react'
+import './CategoriesList.scss'
+import _ from 'lodash'
+import Uri from '../../util/helpers/Uri'
+import Toast from '../toast/Toast'
 
 interface ICategoriesListProps {
-  number?: number
   pagination?: boolean
   success?: boolean | undefined
   successEdit?: boolean | undefined
 }
 
 const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
-  number,
   pagination,
   success,
   successEdit,
 }) => {
+  const [searchCategory, setSearchCategory] = useState<string>()
   const [categories, setCategories] = useState<CategoryModel[]>()
   const [meta, setMeta] = useState<PaginationMetadataModel>()
-  const [toast, setToast] = useState(false)
-  const [toastEdit, setToastEdit] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
   const query = useQuery()
+  const queries = param()
 
   /**
    * Returns get request for product categories
    * @returns request
    */
-  const pageRequest = () =>
-    http.get<PaginationModel<CategoryModel>>(
-      `${config.api}/v1/product-category?page=${query.get('page')}${
-        number ? '&limit=' + number : ''
-      }`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-        },
-      }
-    )
+  const pageRequest = () => {
+    const url = !query.get('q')
+      ? new Uri('/v1/product-category')
+      : new Uri('/v1/product-category/search')
+    url
+      .setQuery('page', query.get('page') ? query.get('page') : '1')
+      .setQuery('orderBy', query.get('search'))
+      .setQuery('order', query.get('order'))
+      .setQuery('q', query.get('q'))
+
+    return http.get<PaginationModel<CategoryModel>>(url.href, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...auth.headers,
+      },
+    })
+  }
 
   /**
    * Submits get request for product categories
@@ -60,8 +68,8 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
   const getCategory = async () => {
     let { data, error } = await sendRequest(pageRequest)
     if (error) {
-      if (error.statusCode === 404) {
-        history.push('/not-found')
+      if (error.statusCode === 400 || error.statusCode === 404) {
+        history.push('/categories')
         return
       }
       history.push('/login')
@@ -77,9 +85,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
    */
   const deleteRequest = (id: string) => {
     return http.delete(`${config.api}/v1/product-category/${id}`, null, {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-      },
+      headers: { ...auth.headers },
     })
   }
 
@@ -105,21 +111,17 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
     }
   }
 
-  // Check if category has been added and if so displays a toast
-  useEffect(() => {
-    if (success === true) {
-      setToast(true)
-      setTimeout(() => {
-        setToast(false)
-      }, 10000)
-    }
-    if (successEdit === true) {
-      setToastEdit(true)
-      setTimeout(() => {
-        setToastEdit(false)
-      }, 10000)
-    }
-  }, [success, successEdit])
+  const debounce = useCallback(
+    _.debounce((searchValue: string) => {
+      setSearchCategory(searchValue)
+      history.push({
+        pathname: '/categories',
+        search: `?page=1&s=u${searchValue ? `&q=${searchValue}` : ''}`,
+      })
+    }, 500),
+    []
+  )
+
 
   useEffect(() => {
     if (!query.get('page')) {
@@ -128,19 +130,34 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
     }
     if (query.get('s')) window.scrollTo(0, 0)
     getCategory().then()
-  }, [refreshPage, query.get('page')])
+  }, [
+    refreshPage,
+    query.get('page'),
+    query.get('search'),
+    query.get('order'),
+    query.get('q'),
+  ])
 
   return (
     <>
       {!categories && !meta && <CategoriesListSkeleton />}
-      {/* <CategoriesListSkeleton /> */}
       {categories && meta && (
         <div className="categories">
           <div className="top">
             {pagination && (
               <div className="search">
-                <i className="fas fa-search"></i>
-                <input type="text" placeholder="Search..." />
+                <i
+                  className="fas fa-search"
+                  onClick={() => debounce(searchCategory)}
+                />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  onChange={(e) => debounce(e.target.value)}
+                  onKeyPress={(e) =>
+                    e.key === 'Enter' ? debounce(e.currentTarget.value) : ''
+                  }
+                />
               </div>
             )}
             <Granted permissions={['c:product-category']}>
@@ -148,32 +165,14 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
                 New Category
               </Link>
             </Granted>
-            {success && (
-              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-                {' '}
-                <i className="fas fa-check" />
-                Category Added
-                <i className="fas fa-times" onClick={() => setToast(false)} />
-              </div>
-            )}
+            {success && <Toast success={success} name={`Category`} />}
             {successEdit && (
-              <div
-                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
-              >
-                {' '}
-                <i className="fas fa-check" />
-                Category Edited
-                <i
-                  className="fas fa-times"
-                  onClick={() => setToastEdit(false)}
-                />
-              </div>
+              <Toast success={successEdit} name={`Category`} edit={true} />
             )}
           </div>
-
           <div className="category-list">
             <div className="legend">
-              <span>Category</span>
+              <Legend uri={`/categories`} name={`Category`} search={`label`} />
             </div>
             <motion.div
               variants={{
@@ -188,7 +187,12 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
               initial="hidden"
               animate="show"
             >
-              {categories.map((category) => {
+              {categories.length === 0 && (
+                <div className="notfound">
+                  <label>Category not found</label>
+                </div>
+              )}
+              {categories.map((category, index) => {
                 return (
                   <motion.div
                     variants={{
@@ -196,14 +200,20 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
                       show: { opacity: 1 },
                     }}
                     className="category"
-                    key={category.id}
+                    key={index}
                   >
                     <span>{category.label}</span>
                     <Granted permissions={['u:product-category']}>
                       <Link
-                        to={`/categories/edit/${category.id}?page=${query.get(
-                          'page'
-                        )}`}
+                        to={`/categories/edit/${category.id}${queries.page(
+                          'page', 1
+                        )}${
+                          query.get('search') && query.get('order')
+                            ? `${queries.search('search')}${queries.order(
+                                'order'
+                              )}`
+                            : ``
+                        }${queries.q('q')}`}
                         className="action edit"
                       >
                         Edit

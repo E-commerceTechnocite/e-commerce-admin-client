@@ -1,27 +1,31 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
+import { countrySchema } from '../../util/validation/taxValidation'
 import { CountryModel } from '../../models/product/country.model'
+import { useHistory, useParams } from 'react-router-dom'
+import { sendRequest } from '../../util/helpers/refresh'
+import LoadingButton from '../loading/LoadingButton'
+import { useQuery } from '../../util/hook/useQuery'
+import { auth } from '../../util/helpers/auth'
+import param from '../../util/helpers/queries'
+import Previous from '../previous/Previous'
+import { useEffect, useState } from 'react'
+import TextInput from '../inputs/TextInput'
 import { http } from '../../util/http'
 import { config } from '../../index'
-import { sendRequest } from '../../util/helpers/refresh'
-import Previous from '../previous/Previous'
-import { Formik } from 'formik'
-import TextInput from '../inputs/TextInput'
-import { countrySchema } from '../../util/validation/taxValidation'
 import Granted from '../Granted'
-import { useQuery } from '../../util/hook/useQuery'
-import LoadingButton from '../loading/LoadingButton'
+import { Formik } from 'formik'
+import * as React from 'react'
+import './ActionCountry.scss'
 
 interface IActionCountryProps {}
 
 const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
-  const [initialValues, seInitialValues] = useState({ name: '', code: null })
+  const [initialValues, seInitialValues] = useState({ name: '', code: '' })
   const [country, setCountry] = useState<CountryModel>()
+  const [isSubmit, setIsSubmit] = useState(false)
   const params: { slug: string } = useParams()
   const history = useHistory()
   const query = useQuery()
-  const [isSubmit, setIsSubmit] = useState(false)
+  const queries = param()
 
   /**
    * Returns post or patch request for new country
@@ -33,14 +37,14 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
       return http.patch(`${config.api}/v1/country/${params.slug}`, data, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          ...auth.headers,
         },
       })
     }
     return http.post(`${config.api}/v1/country`, data, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -56,17 +60,30 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
     if (query.get('country')) {
       history.push({
         pathname: '/taxes',
-        search: `?rule=${query.get('rule')}&group=${query.get(
+        search: `${queries.page('rule', 1)}${queries.page(
           'group'
-        )}&country=${query.get('country')}`,
+        )}${queries.page('country')}${queries.searchOrder(
+          'search',
+          'order'
+        )}${queries.searchOrder(
+          'searchGroup',
+          'orderGroup'
+        )}${queries.searchOrder('searchCountry', 'orderCountry')}${queries.q(
+          'q'
+        )}${queries.q('q')}${queries.q('qGroup')}`,
         state: { successCountryEdit: true },
       })
     } else {
       history.push({
         pathname: '/taxes',
-        search: `?rule=${query.get('rule')}&group=${query.get(
+        search: `${queries.page('rule', 1)}${queries.page(
           'group'
-        )}&country=1`,
+        )}&country=1${queries.searchOrder(
+          'search',
+          'order'
+        )}${queries.searchOrder('searchGroup', 'orderGroup')}${queries.q(
+          'q'
+        )}${queries.q('qGroup')}`,
         state: { successCountry: true },
       })
     }
@@ -76,7 +93,7 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
    * Returns get request for country
    * @returns
    */
-  const currentTaxRateRequest = () => {
+  const currentCountryRequest = () => {
     return http.get<CountryModel>(`${config.api}/v1/country/${params.slug}`, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem('token')}`,
@@ -86,8 +103,8 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
   /**
    * Submits get request for country
    */
-  const submitCurrentTaxRate = async () => {
-    let { data, error } = await sendRequest(currentTaxRateRequest)
+  const submitCurrentCountry = async () => {
+    let { data, error } = await sendRequest(currentCountryRequest)
     if (error) {
       history.push('/login')
     }
@@ -96,7 +113,7 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
 
   useEffect(() => {
     if (params.slug) {
-      submitCurrentTaxRate().then()
+      submitCurrentCountry().then()
     }
   }, [params.slug])
   useEffect(() => {
@@ -110,7 +127,7 @@ const ActionCountry: React.FunctionComponent<IActionCountryProps> = () => {
   return (
     <>
       <Previous />
-      <div className="action-tax-rate">
+      <div className="action-tax-country">
         <Formik
           enableReinitialize
           initialValues={initialValues}

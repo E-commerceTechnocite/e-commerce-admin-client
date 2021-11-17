@@ -1,20 +1,25 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
-import { CountryModel } from '../../models/product/country.model'
-import { http } from '../../util/http'
-import { config } from '../../index'
-import { sendRequest } from '../../util/helpers/refresh'
-import Pagination from '../pagination/Pagination'
-import { motion } from 'framer-motion'
-import './Country.scss'
-import Granted from '../Granted'
-import { auth } from '../../util/helpers/auth'
 import { TaxRuleModel } from '../../models/product/tax-rule.model'
+import { CountryModel } from '../../models/product/country.model'
 import CountrySkeleton from './skeleton/CountrySkeleton'
+import { useCallback, useEffect, useState } from 'react'
+import { sendRequest } from '../../util/helpers/refresh'
 import { useQuery } from '../../util/hook/useQuery'
+import { Link, useHistory } from 'react-router-dom'
+import Pagination from '../pagination/Pagination'
+import { auth } from '../../util/helpers/auth'
+import param from '../../util/helpers/queries'
+import Uri from '../../util/helpers/Uri'
+import { motion } from 'framer-motion'
+import { http } from '../../util/http'
+import Legend from '../legend/legend'
+import { config } from '../../index'
+import Granted from '../Granted'
+import * as React from 'react'
+import './Country.scss'
+import _ from 'lodash'
+import Toast from '../toast/Toast'
 
 interface ICountryProps {
   successCountry?: boolean | undefined
@@ -34,30 +39,36 @@ const Country: React.FunctionComponent<ICountryProps> = ({
   successCountryEdit,
   countryToParent,
 }) => {
-  const [page, setPage] = useState<number>(1)
-  const [country, setCountry] = useState<CountryModel[]>()
-  const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [taxRulesDeleted, setTaxRulesDeleted] = useState<TaxRuleModel[]>()
-  const [refreshPage, setRefreshPage] = useState(false)
+  const [searchCountry, setSearchCountry] = useState<string>()
+  const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [isDeleted, setIsDeleted] = useState<boolean>(false)
-  const [toast, setToast] = useState<boolean>(false)
-  const [toastEdit, setToastEdit] = useState<boolean>(false)
+  const [country, setCountry] = useState<CountryModel[]>()
+  const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
   const query = useQuery()
+  const queries = param()
 
   /**
    * Returns the get request for country
    * @returns request
    */
   const countryRequest = () => {
-    return http.get<PaginationModel<CountryModel>>(
-      `${config.api}/v1/country?page=${query.get('country')}&limit=5`,
-      {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
-        },
-      }
-    )
+    const url = !query.get('qCountry')
+      ? new Uri('/v1/country')
+      : new Uri('/v1/country/search')
+    url
+      .setQuery('page', query.get('country') ? query.get('country') : '1')
+      .setQuery('orderBy', query.get('searchCountry'))
+      .setQuery('order', query.get('orderCountry'))
+      .setQuery('qCountry', query.get('qCountry'))
+      .setQuery('limit', '5')
+
+    return http.get<PaginationModel<CountryModel>>(url.href, {
+      headers: {
+        ...auth.headers,
+      },
+    })
   }
   /**
    * Submits the get request for country and sets the state values from response
@@ -65,8 +76,8 @@ const Country: React.FunctionComponent<ICountryProps> = ({
   const submitCountry = async () => {
     let { data, error } = await sendRequest(countryRequest)
     if (error) {
-      if (error.statusCode === 404) {
-        history.push('/not-found')
+      if (error.statusCode === 400 || error.statusCode === 404) {
+        history.push('/categories')
         return
       }
       history.push('/login')
@@ -118,29 +129,37 @@ const Country: React.FunctionComponent<ICountryProps> = ({
     }, 1000)
   }
 
+  const debounce = useCallback(
+    _.debounce((searchValue: string) => {
+      setSearchCountry(searchValue)
+      history.push({
+        pathname: '/taxes',
+        search: `${queries.page('rule', 1)}${queries.page(
+          'group'
+        )}&country=1&s=u${
+          searchValue ? `&q=${searchValue}` : ''
+        }${queries.searchOrder('search', 'order')}${queries.searchOrder(
+          'searchGroup',
+          'orderGroup'
+        )}`,
+      })
+    }, 500),
+    []
+  )
+
   useEffect(() => {
     if (!query.get('country')) {
       history.push('/taxes?rule=1&group=1&country=1&s=u')
       return
     }
     submitCountry().then()
-  }, [refreshPage, query.get('country')])
-
-  // Check if a country has been added and sends a confirmation toast
-  useEffect(() => {
-    if (successCountry === true) {
-      setToast(true)
-      setTimeout(() => {
-        setToast(false)
-      }, 10000)
-    }
-    if (successCountryEdit === true) {
-      setToastEdit(true)
-      setTimeout(() => {
-        setToastEdit(false)
-      }, 10000)
-    }
-  }, [successCountry, successCountryEdit])
+  }, [
+    refreshPage,
+    query.get('country'),
+    query.get('searchCountry'),
+    query.get('orderCountry'),
+    query.get('qCountry'),
+  ])
 
   // Hide delete confirmation message  after 10 seconds
   useEffect(() => {
@@ -161,39 +180,43 @@ const Country: React.FunctionComponent<ICountryProps> = ({
         <div className="country">
           <div className="top">
             <div className="search">
-              <i className="fas fa-search"></i>
-              <input type="text" placeholder="Search..." />
+              <i
+                className="fas fa-search"
+                onClick={() => debounce(searchCountry)}
+              />
+              <input
+                type="text"
+                placeholder="Search..."
+                onKeyPress={(e) =>
+                  e.key === 'Enter' ? debounce(e.currentTarget.value) : ''
+                }
+              />
             </div>
             <Granted permissions={['c:country']}>
               <Link
-                to={`/taxes/add-country?rule=${query.get(
-                  'rule'
-                )}&group=${query.get('group')}`}
+                to={`/taxes/add-country${queries.page('rule', 1)}${queries.page(
+                  'group'
+                )}${queries.searchOrder(
+                  'search',
+                  'order'
+                )}${queries.searchOrder(
+                  'searchGroup',
+                  'orderGroup'
+                )}${queries.q('q')}${queries.q('qGroup')}`}
                 className="action"
               >
                 New country
               </Link>
             </Granted>
             {successCountry && (
-              <div className={`toast-success ${!toast ? 'hidden-fade' : ''}`}>
-                {' '}
-                <i className="fas fa-check" />
-                Country Added
-                <i className="fas fa-times" onClick={() => setToast(false)} />
-              </div>
+              <Toast success={successCountry} name={`Tax Group`} />
             )}
             {successCountryEdit && (
-              <div
-                className={`toast-success ${!toastEdit ? 'hidden-fade' : ''}`}
-              >
-                {' '}
-                <i className="fas fa-check" />
-                Country Edited
-                <i
-                  className="fas fa-times"
-                  onClick={() => setToastEdit(false)}
-                />
-              </div>
+              <Toast
+                success={successCountryEdit}
+                name={`Tax Group`}
+                edit={true}
+              />
             )}
           </div>
           <div className="country-list">
@@ -215,8 +238,26 @@ const Country: React.FunctionComponent<ICountryProps> = ({
               </div>
             )}
             <div className="legend">
-              <span>Country</span>
-              <span>Code</span>
+              <Legend
+                uri={`/taxes`}
+                name={`Name`}
+                search={`name`}
+                customQuery={`rule=${query.get(
+                  'rule'
+                )}&group=1&country=${query.get('country')}`}
+                customSearch={`searchCountry`}
+                customOrder={`orderCountry`}
+              />
+              <Legend
+                uri={`/taxes`}
+                name={`Code`}
+                search={`code`}
+                customQuery={`rule=${query.get('rule')}&group=${query.get(
+                  'group'
+                )}&country=1`}
+                customSearch={`searchCountry`}
+                customOrder={`orderCountry`}
+              />
             </div>
             <motion.div
               variants={{
@@ -245,10 +286,22 @@ const Country: React.FunctionComponent<ICountryProps> = ({
                   <span>{country.code}</span>
                   <Granted permissions={['u:country']}>
                     <Link
-                      to={`/taxes/edit-country/${country.id}?rule=${query.get(
-                        'rule'
-                      )}&group=${query.get('group')}&country=${query.get(
+                      to={`/taxes/edit-country/${country.id}${queries.page(
+                        'rule',
+                        1
+                      )}${queries.page('group')}${queries.page(
                         'country'
+                      )}${queries.searchOrder(
+                        'search',
+                        'order'
+                      )}${queries.searchOrder(
+                        'searchGroup',
+                        'orderGroup'
+                      )}${queries.searchOrder(
+                        'searchCountry',
+                        'orderCountry'
+                      )}${queries.q('q')}${queries.q('qGroup')}${queries.q(
+                        'qCountry'
                       )}`}
                       className="action edit"
                     >
@@ -271,9 +324,19 @@ const Country: React.FunctionComponent<ICountryProps> = ({
           </div>
           <Pagination
             meta={meta}
-            uri={`/taxes?rule=${query.get('rule')}&group=${query.get(
+            uri={`/taxes${queries.page('rule', 1)}${queries.page(
               'group'
             )}&country=`}
+            customSearch={`${queries.searchOrder(
+              'search',
+              'order'
+            )}${queries.searchOrder(
+              'searchGroup',
+              'orderGroup'
+            )}${queries.searchOrder('searchCountry', 'orderCountry')}`}
+            customQ={`${queries.q('q')}${queries.q('qGroup')}${queries.q(
+              'qCountry'
+            )}`}
           />
         </div>
       )}

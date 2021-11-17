@@ -1,34 +1,34 @@
-import './ProductForm.scss'
-import 'slick-carousel/slick/slick.css'
+import { ProductCategoryModel } from '../../models/product/product-category.model'
+import { TaxRuleGroupModel } from '../../models/product/tax-rule-group.model'
+import MediaLibraryContainer from '../media-library/MediaLibraryContainer'
+import { ProductModel } from '../../models/product/product.model'
+import { PictureModel } from '../../models/files/picture.model'
+import { sendRequest } from '../../util/helpers/refresh'
+import DraftTestEditor from '../inputs/DraftTextEditor'
+import { useHistory, useParams } from 'react-router'
+import LoadingButton from '../loading/LoadingButton'
+import { useQuery } from '../../util/hook/useQuery'
+import { FC, useEffect, useState } from 'react'
+import NumberInput from '../inputs/NumberInput'
+import param from '../../util/helpers/queries'
+import { auth } from '../../util/helpers/auth'
 import 'slick-carousel/slick/slick-theme.css'
+import TextInput from '../inputs/TextInput'
 import Previous from '../previous/Previous'
+import Loading from '../loading/Loading'
+import 'slick-carousel/slick/slick.css'
+import { http } from '../../util/http'
 import { Field, Formik } from 'formik'
+import { motion } from 'framer-motion'
+import Select from '../inputs/Select'
+import { config } from '../../index'
+import Slider from 'react-slick'
+import * as React from 'react'
+import './ProductForm.scss'
 import {
   imagesSchema,
   productSchema,
 } from '../../util/validation/productValidation'
-import TextInput from '../inputs/TextInput'
-import Select from '../inputs/Select'
-import NumberInput from '../inputs/NumberInput'
-import { config } from '../../index'
-import Slider from 'react-slick'
-import MediaLibraryContainer from '../media-library/MediaLibraryContainer'
-import DraftTestEditor from '../inputs/DraftTextEditor'
-import * as React from 'react'
-import { FC, useEffect, useState } from 'react'
-import { http } from '../../util/http'
-import { sendRequest } from '../../util/helpers/refresh'
-import { PaginationModel } from '../../models/pagination/pagination.model'
-import { ProductCategoryModel } from '../../models/product/product-category.model'
-import { PictureModel } from '../../models/files/picture.model'
-import { useHistory, useParams } from 'react-router'
-import { ProductModel } from '../../models/product/product.model'
-import Loading from '../loading/Loading'
-import { auth } from '../../util/helpers/auth'
-import { TaxRuleGroupModel } from '../../models/product/tax-rule-group.model'
-import { motion } from 'framer-motion'
-import { useQuery } from '../../util/hook/useQuery'
-import LoadingButton from '../loading/LoadingButton'
 
 interface FormValuesInterface {
   title: string
@@ -53,22 +53,21 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
   productId = null,
   submitButtonContent = 'Add product',
 }) => {
-  const [categoryId, setCategoryId] = useState<string>('')
-  const [categoryOptions, setCategoryOptions] = useState<
-    ProductCategoryModel[]
-  >([])
-  const [taxRuleGroupId, setTaxRuleGroupId] = useState<string>('')
-  const [taxOptions, setTaxOptions] = useState<TaxRuleGroupModel[]>([])
   const [thumbnail, setThumbnail] = useState<PictureModel | null>(null)
+  const [taxOptions, setTaxOptions] = useState<TaxRuleGroupModel[]>([])
+  const [libraryData, setLibraryData] = useState<PictureModel[]>([])
   const [picturesId, setPicturesId] = useState<string[]>([])
   const [fileError, setFileError] = useState<boolean>(false)
   const [submitError, setSubmitError] = useState<string>('')
-  const [libraryData, setLibraryData] = useState<PictureModel[]>([])
   const [product, setProduct] = useState<ProductModel>()
   const [isSubmit, setIsSubmit] = useState<boolean>(false)
+  const [categoryOptions, setCategoryOptions] = useState<
+    ProductCategoryModel[]
+  >([])
   const params: { slug: string } = useParams()
-  const query = useQuery()
   const history = useHistory()
+  const query = useQuery()
+  const queries = param()
 
   let [initialValues, setInitialValues] = useState<FormValuesInterface>({
     title: '',
@@ -114,6 +113,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
         )
       : http.post(`${config.api}/v1/product`, data.content, requestOptions)
   }
+
   /**
    * Submits post or patch request for product
    * Check if images and thumbnail are valid before submitting
@@ -142,13 +142,15 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
         if (query.get('page')) {
           history.push({
             pathname: '/products',
-            search: `?page=${query.get('page')}`,
+            search: `${queries.page('page')}${queries.search(
+              'search'
+            )}${queries.order('order')}${queries.q('q')}`,
             state: { successEdit: true },
           })
         } else {
           history.push({
             pathname: '/products',
-            search: '?page=1',
+            search: `${queries.page}&s=u`,
             state: { success: true },
           })
         }
@@ -165,8 +167,8 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
    * @returns request
    */
   const requestTax = () => {
-    return http.get<PaginationModel<TaxRuleGroupModel>>(
-      `${config.api}/v1/tax-rule-group`,
+    return http.get<TaxRuleGroupModel[]>(
+      `${config.api}/v1/tax-rule-group/all`,
       {
         headers: { ...auth.headers },
       }
@@ -181,8 +183,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
       // TODO show error on client (does not have permission)
       history.push('/login')
     }
-    setTaxRuleGroupId(data.data[0].id)
-    setTaxOptions([...data.data])
+    setTaxOptions([...data])
   }
 
   /**
@@ -190,8 +191,8 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
    * @returns request
    */
   const requestCategory = () => {
-    return http.get<PaginationModel<ProductCategoryModel>>(
-      `${config.api}/v1/product-category`,
+    return http.get<ProductCategoryModel[]>(
+      `${config.api}/v1/product-category/all`,
       {
         headers: { ...auth.headers },
       }
@@ -206,8 +207,7 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
       // TODO show error on client (does not have permission)
       history.push('/login')
     }
-    setCategoryId(data.data[0].id)
-    setCategoryOptions([...data.data])
+    setCategoryOptions([...data])
   }
 
   /**
@@ -352,16 +352,12 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                       <div className="current-images">
                         <picture>
                           {!thumbnail && (
-                            <div
-                              className="placeholder"
-                            >
+                            <div className="placeholder">
                               Select an image to set the thumbnail
                             </div>
                           )}
                           {thumbnail && (
-                            <div
-                              className="placeholder"
-                            >
+                            <div className="placeholder">
                               <img
                                 src={`${config.api + thumbnail.uri}`}
                                 alt={thumbnail.title}
@@ -429,7 +425,9 @@ const ProductForm: FC<ProductFormPropsInterface> = ({
                       )}
                       {isSubmit && <LoadingButton />}
                     </div>
-                    {submitError && <div className="global-error">{submitError}</div>}
+                    {submitError && (
+                      <div className="global-error">{submitError}</div>
+                    )}
                   </form>
                 )
               }}

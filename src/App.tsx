@@ -34,6 +34,7 @@ import ActionUser from './components/users/ActionUser'
 import ActionCategory from './components/category/ActionCategory'
 import ActionRole from './components/role/ActionRole'
 import Loading from './components/loading/Loading'
+import Profile from './views/Profile'
 
 const loginCheck = () =>
   http.post(`${config.api}/v1/o-auth/check`, null, {
@@ -150,9 +151,9 @@ export const App = () => {
                   <GuardedRoute exact path="/customers" component={Customers} />
                   <GuardedRoute exact path="/orders" component={Orders} />
                   <GuardedRoute exact path="/stock" component={Stock} />
+                  <GuardedRoute exact path="/profile" component={Profile} />
                   
                   <GuardedRoute path="/not-found" component={NotFound} />
-                  <Redirect to="/not-found" />
                 </Switch>
               </DashboardLayout>
             </GuardProvider>

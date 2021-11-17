@@ -50,7 +50,7 @@ const SideBar: React.FunctionComponent = () => {
     <div className="sidebar">
       <div className="logo">
         <Link to="/">
-          <h1>SHOPTYK</h1>
+          <h1>shoptyk</h1>
         </Link>
       </div>
       <div className="search-bar">
@@ -75,6 +75,11 @@ const SideBar: React.FunctionComponent = () => {
                 Media library
               </NavLink>
             </Granted>
+            <Granted permissions={['r:product-category']}>
+              <NavLink uri="/categories" icon="fas fa-list">
+               Categories
+              </NavLink>
+            </Granted>
             <Granted permissions={['r:user']}>
               <NavLink uri="/users" icon="fas fa-users">
                 Users
@@ -83,6 +88,23 @@ const SideBar: React.FunctionComponent = () => {
             <Granted permissions={['r:role']}>
               <NavLink uri="/roles" icon="fas fa-user-tag">
                 Roles
+              </NavLink>
+            </Granted>
+            <Granted permissions={[]}>
+              <NavLink uri="/customers" icon="fas fa-user-circle">
+                Customers
+              </NavLink>
+            </Granted>
+            <Granted permissions={[]}>
+              <NavLink uri="/orders" icon="fas fa-cart-arrow-down">
+                Orders
+              </NavLink>
+            </Granted>
+            <Granted permissions={[
+              'r:product',
+            ]}>
+              <NavLink uri="/stock" icon="fas fa-dolly">
+                Stock
               </NavLink>
             </Granted>
             <Granted
@@ -97,38 +119,15 @@ const SideBar: React.FunctionComponent = () => {
                 Taxes
               </NavLink>
             </Granted>
-            <Granted permissions={['r:product-category']}>
-              <NavLink uri="/categories" icon="fas fa-list">
-                Categories
-              </NavLink>
-            </Granted>
-            <Granted permissions={[]}>
-              <NavLink uri="/customers" icon="fas fa-user-circle">
-                Customers
-              </NavLink>
-            </Granted>
-            <Granted permissions={[]}>
-              <NavLink uri="/orders" icon="fas fa-cart-arrow-down">
-                Orders
-              </NavLink>
-            </Granted>
-            <Granted permissions={[]}>
-              <NavLink uri="/stock" icon="fas fa-dolly">
-                Stock
-              </NavLink>
-            </Granted>
           </ul>
         </div>
         <div>
           <ul>
-            <li className="">
-              <a href="">
-                <span>
-                  <i className="fas fa-id-badge" />
-                </span>
+            <Granted permissions={[]}>
+              <NavLink uri="/profile" icon="fas fa-id-badge">
                 Profile
-              </a>
-            </li>
+              </NavLink>
+            </Granted>
             <li>
               <a href="#" onClick={logout}>
                 <span>

@@ -1,42 +1,45 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router'
-import { http } from '../../util/http'
-import { config } from '../../index'
 import { sendRequest } from '../../util/helpers/refresh'
 import { RoleModel } from '../../models/role/role.model'
-import Previous from '../previous/Previous'
-import './ActionRole.scss'
-import { useQuery } from '../../util/hook/useQuery'
 import LoadingButton from '../loading/LoadingButton'
+import { useHistory, useParams } from 'react-router'
+import { useQuery } from '../../util/hook/useQuery'
+import { auth } from '../../util/helpers/auth'
+import param from '../../util/helpers/queries'
+import Previous from '../previous/Previous'
+import { useEffect, useState } from 'react'
+import { http } from '../../util/http'
+import { config } from '../../index'
+import * as React from 'react'
+import './ActionRole.scss'
 
 interface IActionRoleProps {}
 
 const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
-  const history = useHistory()
   const [rolePermissions, setRolePermissions] = useState<string[]>([])
+  const [submitError, setSubmitError] = useState<string>(null)
+  const [isSubmit, setIsSubmit] = useState<boolean>(false)
   const [allPermissions, setAllPermissions] = useState([])
   const [myInputValue, setMyInputValue] = useState('')
-  const [submitError, setSubmitError] = useState<string>(null)
   const allCheckbox: any = document.querySelectorAll('input[name=toggleAll]')
   const params: { slug: string } = useParams()
-  const [isSubmit, setIsSubmit] = useState<boolean>(false)
-  const perms = {}
+  const history = useHistory()
   const query = useQuery()
+  const queries = param()
+  const perms = {}
 
   const rolePostRequest = (data: RoleModel) => {
     if (params.slug) {
       return http.patch(`${config.api}/v1/role/${params.slug}`, data, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          ...auth.headers,
         },
       })
     }
     return http.post(`${config.api}/v1/role`, data, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -50,14 +53,16 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
     if (query.get('page')) {
       history.push({
         pathname: '/roles',
-        search: `?page=${query.get('page')}`,
+        search: `${queries.page('page')}${queries.search(
+          'search'
+        )}${queries.order('order')}${queries.q('q')}`,
         state: { successEdit: true },
       })
       return
     }
     history.push({
       pathname: '/roles',
-      search: `?page=1`,
+      search: `?page=1&s=u`,
       state: { success: true },
     })
   }
@@ -75,7 +80,7 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
   const permissionsRequest = () => {
     return http.get<string[]>(`${config.api}/v1/role/permissions`, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -91,7 +96,7 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
   const currentPermissionsRequest = () => {
     return http.get<RoleModel>(`${config.api}/v1/role/${params.slug}`, {
       headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -102,17 +107,11 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
       history.push('/login')
     }
     setRolePermissions(data.permissions)
-    setName(data.name)
+    setMyInputValue(data.name)
   }
 
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1)
-  }
-
-  const setName = (name) => {
-    const nameLabel: any = document.querySelectorAll('input[name=name]')
-    nameLabel[0].value = name
-    setMyInputValue(name)
   }
 
   const toggleCRUDAllCheckbox = (crud: string, id: string) => {
@@ -257,6 +256,20 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
     changeAllCheckboxes(checkboxes, source)
   }
 
+  const toggleAllComponents = (name : string ,
+                 changeToggle : any,
+                 label: string) => {
+    return ( <>
+        <input
+        type="checkbox"
+        name={name}
+        onChange={(e) => changeToggle(e.target)}
+        />
+        <label>{label}</label>
+      </> 
+    )
+  }
+
   return (
     <>
       {allPermissions && (
@@ -277,6 +290,7 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
                     type="text"
                     id="name"
                     name="name"
+                    value={myInputValue}
                     placeholder="Type here..."
                     required
                     onChange={(e) => setMyInputValue(e.target.value)}
@@ -326,38 +340,13 @@ const ActionRole: React.FunctionComponent<IActionRoleProps> = () => {
                   </div>
                   <div className="toggleAll">
                     <div className="all">
-                      <input
-                        type="checkbox"
-                        name="toggleAll"
-                        onChange={(e) => toggleAll(e.target)}
-                      />
-                      All permissions
+                      {toggleAllComponents("toggleAll",toggleAll,"All Permissions")}
                     </div>
                     <div className="crud">
-                      <input
-                        type="checkbox"
-                        name="readToggle"
-                        onChange={(e) => toggleCRUDAll(e.target)}
-                      />
-                      Read
-                      <input
-                        type="checkbox"
-                        name="createToggle"
-                        onChange={(e) => toggleCRUDAll(e.target)}
-                      />
-                      Create
-                      <input
-                        type="checkbox"
-                        name="updateToggle"
-                        onChange={(e) => toggleCRUDAll(e.target)}
-                      />
-                      Update
-                      <input
-                        type="checkbox"
-                        name="deleteToggle"
-                        onChange={(e) => toggleCRUDAll(e.target)}
-                      />
-                      Delete
+                      {toggleAllComponents("readToggle",toggleCRUDAll,"Read")}
+                      {toggleAllComponents("createToggle",toggleCRUDAll,"Create")}
+                      {toggleAllComponents("updateToggle",toggleCRUDAll,"Update")}
+                      {toggleAllComponents("deleteToggle",toggleCRUDAll,"Delete")}
                     </div>
                   </div>
                 </div>

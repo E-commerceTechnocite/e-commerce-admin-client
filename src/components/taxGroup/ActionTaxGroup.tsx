@@ -1,28 +1,31 @@
-import { Formik } from 'formik'
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router'
 import { TaxRuleGroupModel } from '../../models/product/tax-rule-group.model'
-import { sendRequest } from '../../util/helpers/refresh'
-import { http } from '../../util/http'
 import { taxGroupSchema } from '../../util/validation/taxValidation'
+import { sendRequest } from '../../util/helpers/refresh'
+import { useHistory, useParams } from 'react-router'
+import LoadingButton from '../loading/LoadingButton'
+import { useQuery } from '../../util/hook/useQuery'
+import { auth } from '../../util/helpers/auth'
+import param from '../../util/helpers/queries'
+import { useEffect, useState } from 'react'
 import TextInput from '../inputs/TextInput'
 import Previous from '../previous/Previous'
-import './ActionTaxGroup.scss'
+import { http } from '../../util/http'
 import { config } from '../../index'
 import Granted from '../Granted'
-import { useQuery } from '../../util/hook/useQuery'
-import LoadingButton from '../loading/LoadingButton'
+import { Formik } from 'formik'
+import * as React from 'react'
+import './ActionTaxGroup.scss'
 
 interface IActionTaxGroupProps {}
 
 const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
-  const [initialValues, seInitialValues] = useState({ name: '' })
   const [taxRuleGroup, setTaxRuleGroup] = useState<TaxRuleGroupModel>()
+  const [initialValues, seInitialValues] = useState({ name: '' })
+  const [isSubmit, setIsSubmit] = useState(false)
   const params: { slug: string } = useParams()
   const history = useHistory()
   const query = useQuery()
-  const [isSubmit, setIsSubmit] = useState(false)
+  const queries = param()
 
   /**
    * Returns post or patch request for new tax group
@@ -37,7 +40,7 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+            ...auth.headers,
           },
         }
       )
@@ -45,7 +48,7 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
     return http.post(`${config.api}/v1/tax-rule-group`, data, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+        ...auth.headers,
       },
     })
   }
@@ -61,17 +64,28 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
     if (query.get('group')) {
       history.push({
         pathname: '/taxes',
-        search: `?rule=${query.get('rule')}&group=${query.get(
+        search: `${queries.page('rule', 1)}${queries.page(
           'group'
-        )}&country=${query.get('country')}`,
+        )}${queries.page('country')}${queries.searchOrder(
+          'search',
+          'order'
+        )}${queries.searchOrder(
+          'searchGroup',
+          'orderGroup'
+        )}${queries.searchOrder('searchCountry', 'orderCountry')}${queries.q(
+          'q'
+        )}${queries.q('qGroup')}${queries.q('qCountry')}`,
         state: { successGroupEdit: true },
       })
     } else {
       history.push({
         pathname: '/taxes',
-        search: `?rule=${query.get('rule')}&group=1&country=${query.get(
+        search: `${queries.page('rule', 1)}&group=1${queries.page(
           'country'
-        )}`,
+        )}${queries.searchOrder('search', 'order')}${queries.searchOrder(
+          'searchCountry',
+          'orderCountry'
+        )}${queries.q('q')}${queries.q('qCountry')}`,
         state: { successGroup: true },
       })
     }
@@ -86,7 +100,7 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
       `${config.api}/v1/tax-rule-group/${params.slug}`,
       {
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          ...auth.headers,
         },
       }
     )
@@ -147,7 +161,6 @@ const ActionTaxGroup: React.FunctionComponent<IActionTaxGroupProps> = () => {
                       {isSubmit && <LoadingButton />}
                     </Granted>
                   )}
-
                   {/* {submitError && (
                   <div className="global-error">{submitError}</div>
                 )} */}
