@@ -104,25 +104,26 @@ const usersOptions : any = {
 
 const GraphicInformation: React.FunctionComponent = () => {
   return (
-    <motion.div
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="graphic-information"
-    >
-      <motion.div variants={items} className="graphicItem">
-          <Line 
-            data={salesState}
-            options={salesOptions}
-          />
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="graphic-information"
+      >       
+        <motion.div variants={items} className="graphicItem">
+            <Line 
+              data={salesState}
+              options={salesOptions}
+            />
+        </motion.div>
+        
+        <motion.div variants={items} className="graphicItem">
+            <Bar
+              data={usersState}
+              options={usersOptions}
+            />
+        </motion.div>
       </motion.div>
-      <motion.div variants={items} className="graphicItem">
-          <Bar
-            data={usersState}
-            options={usersOptions}
-          />
-      </motion.div>
-    </motion.div>
   )
 }
 export default GraphicInformation
