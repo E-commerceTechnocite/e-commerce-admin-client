@@ -46,7 +46,7 @@ const salesOptions : any = {
         display: true,
         text: "Sales per month",
         font: {
-          size: 14
+          size: 15
         },
         padding: 15
     },
@@ -88,7 +88,7 @@ const usersOptions : any = {
         display: true,
         text: "New users per month",
         font: {
-          size: 14
+          size: 15
         },
         padding: 15
     },
