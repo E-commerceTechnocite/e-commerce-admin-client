@@ -50,7 +50,7 @@ const SideBar: React.FunctionComponent = () => {
     <div className="sidebar">
       <div className="logo">
         <Link to="/">
-          <h1>shoptyk</h1>
+          <h1>Shoptyk</h1>
         </Link>
       </div>
       <div className="search-bar">
