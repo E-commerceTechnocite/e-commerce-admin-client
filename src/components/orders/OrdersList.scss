@@ -52,7 +52,7 @@
     .customer {
       padding: 20px 30px;
       display: grid;
-      grid-template-columns: 40px minmax(150px, 300px) minmax(300px, 500px) repeat(
+      grid-template-columns: minmax(150px, 300px) minmax(300px, 500px) repeat(
           3,
           minmax(190px, 300px)
         );

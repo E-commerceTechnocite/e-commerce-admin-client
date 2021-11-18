@@ -142,12 +142,12 @@ const OrdersList: React.FunctionComponent<any> = () => {
       {/*{!orders && !meta && <OrdersListSkeleton />}
       {orders && meta && (*/}
         <div className="customers">
-          <div className="top-container">
+          {/*<div className="top-container">
             <div className="search">
               <i className="fas fa-search"></i>
               <input type="text" placeholder="Search..."/>
-            </div>
-          </div>
+              </div>
+          </div>*/}
           <div className="customer-list">
             <div className="legend">
               <span>Order number</span>
