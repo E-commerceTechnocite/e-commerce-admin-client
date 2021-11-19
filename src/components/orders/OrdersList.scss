@@ -2,7 +2,7 @@
 
 .orders-buttons {
   display: grid;
-  grid-template-columns: repeat(2, 200px);
+  grid-template-columns: repeat(2, 150px);
   border-bottom: 2px solid $primary-button;
 
   .action:hover {

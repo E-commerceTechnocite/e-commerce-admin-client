@@ -150,14 +150,14 @@ const OrdersList: React.FunctionComponent<any> = () => {
           className={group ? 'action' : 'second-action'}*/
           className="action"
           >
-          Orders in process
+          Pending
           </button>
           <button
           /*onClick={() => switchTabs('country')}
           className={country ? 'action' : 'second-action'}*/
           className="second-action"
           >
-          Orders done
+          Done
           </button>
         </div>
         <div className="orders">
