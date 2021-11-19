@@ -4,7 +4,7 @@ import { useHistory } from 'react-router'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
 import { config } from '../../index'
-import '../customers/CustomersList.tsx'
+import '../orders/OrdersList.scss'
 import { sendRequest } from '../../util/helpers/refresh'
 import { http } from '../../util/http'
 import { motion } from 'framer-motion'
@@ -28,6 +28,9 @@ const OrdersList: React.FunctionComponent<any> = () => {
   const [refreshPage, setRefreshPage] = useState(false)
   const history = useHistory()
   const query = useQuery()
+  const isActive = (uri: string, exact = false): boolean => {
+    return exact ? location.pathname === uri : location.pathname.startsWith(uri)
+  }
 
   /**
    * Returns the get request of the customers list
@@ -141,17 +144,33 @@ const OrdersList: React.FunctionComponent<any> = () => {
     <>
       {/*{!orders && !meta && <OrdersListSkeleton />}
       {orders && meta && (*/}
-        <div className="customers">
-          {/*<div className="top-container">
-            <div className="search">
-              <i className="fas fa-search"></i>
-              <input type="text" placeholder="Search..."/>
-              </div>
-          </div>*/}
-          <div className="customer-list">
+        <div className="orders-buttons">
+          <button
+          /*onClick={() => switchTabs('group')}
+          className={group ? 'action' : 'second-action'}*/
+          className="action"
+          >
+          Orders in process
+          </button>
+          <button
+          /*onClick={() => switchTabs('country')}
+          className={country ? 'action' : 'second-action'}*/
+          className="second-action"
+          >
+          Orders done
+          </button>
+        </div>
+        <div className="orders">
+          <div className="top-container">
+            {/*<div className="process"><label>Orders in process</label></div>
+            <div className="done"><label>Orders done</label></div>*/}
+            
+          </div>
+          <div className="order-list">
             <div className="legend">
-              <span>Order number</span>
+              <span>Order ID</span>
               <span>Customer</span>
+              <span>Date</span>
               <span>Product</span>
               <span>Quantity</span>
               <span>Price</span>
@@ -201,7 +220,7 @@ const OrdersList: React.FunctionComponent<any> = () => {
                       hidden: { opacity: 0 },
                       show: { opacity: 1 },
                     }}
-                    className="customer"
+                    className="order"
                     key={index}
                   >
                     <span><img

@@ -217,6 +217,7 @@ button {
     margin: 0 0 30px 20px;
   }
   .logo h1 {
+    padding-left: 15px;;
     font-size: 30px;
     font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     color: white;
@@ -510,7 +511,7 @@ button {
     .buttons {
       display: grid;
       grid-template-columns: repeat(2, 150px);
-    border-bottom: 2px solid $primary-button;
+      border-bottom: 2px solid $primary-button;
 
       .action:hover {
         background: $primary-button;

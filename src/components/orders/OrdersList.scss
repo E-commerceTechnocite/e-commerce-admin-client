@@ -1,61 +1,40 @@
 @import '../../../public/scss/variables.scss';
 
-.customers {
+.orders-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 200px);
+  border-bottom: 2px solid $primary-button;
+
+  .action:hover {
+    background: $primary-button;
+  }
+  .second-action {
+    //border-left: 1px solid #fff;
+  }
+  button {
+    border-radius: 0;
+  }
+  button:nth-child(1) {
+    border-radius: 4px 0 0 0 ;
+  }
+  button:nth-child(2) {
+    border-radius: 0 4px 0 0 ;
+  }
+}
+
+.orders {
   background: $primary-color-elts;
   box-shadow: $primary-elts-shadow;
   min-height: 870px;
   margin-bottom: 15px;
   padding-bottom: 90px;
   position: relative;
-  .top-container {
-    display: flex;
-    padding: 10px 30px;
-    border-bottom: 1px solid $primary-border-color;
-    .search {
-      display: flex;
-      height: 35px;
-      align-items: center;
-      padding: 0 10px;
-      background: $primary-color-elts;
-      border-radius: 4px;
-      border: 1px solid $primary-border-color;
-      margin-right: 10px;
-      input {
-        width: 130px;
-        border: none;
-      }
-      i {
-        margin-right: 7px;
-      }
-    }
-    .toast-success {
-      margin-left: 10px;
-      background: #ecfbe0;
-      color: #3a9838;
-      border: 1px solid #3a9838;
-      padding: 7px 17px;
-      border-radius: 4px;
-      i {
-        margin-right: 7px;
-        color: #3a9838;
-      }
-      i:nth-child(2) {
-        margin: 0 0 0 15px;
-        font-size: 13px;
-        color: #aec09f;
-        cursor: pointer;
-      }
-    }
-  }
-  .customer-list {
+  .order-list {
     .legend,
-    .customer {
+    .order {
       padding: 20px 30px;
       display: grid;
-      grid-template-columns: minmax(150px, 300px) minmax(300px, 500px) repeat(
-          3,
-          minmax(190px, 300px)
-        );
+      grid-template-columns: repeat(6,1fr);
       grid-template-rows: 1;
       border-bottom: 1px solid $primary-border-color;
       grid-column-gap: 10px;
@@ -66,7 +45,7 @@
       padding: 20px 30px;
       font-weight: bold;
     }
-    .customer {
+    /*.customer {
       height: 34px;
       span:first-child {
         overflow: hidden;
@@ -104,7 +83,7 @@
       left: 50%;
       transform: translateX(-50%);
       margin-bottom: 20px;
-    }
+    }*/
   }
 }
 
