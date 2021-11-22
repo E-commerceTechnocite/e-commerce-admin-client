@@ -158,144 +158,140 @@ const Stocks: React.FunctionComponent = () => {
                 />
               </div>
             </div>
-            {stock && meta && (
-              <>
-                <div className="stocks-list">
-                  <div className="legend">
-                    <span>Image</span>
-                    <Legend uri={`/stock`} name={`Product`} search={`title`} />
-                    <Legend
-                      uri={`/stock`}
-                      name={`Physical`}
-                      search={`stock.physical`}
-                    />
-                    <Legend
-                      uri={`/stock`}
-                      name={`Incoming`}
-                      search={`stock.incoming`}
-                    />
-                    <Legend
-                      uri={`/stock`}
-                      name={`Pending`}
-                      search={`stock.pending`}
-                    />
+            <div className="stocks-list">
+              <div className="legend">
+                <span>Image</span>
+                <Legend uri={`/stock`} name={`Product`} search={`title`} />
+                <Legend
+                  uri={`/stock`}
+                  name={`Physical`}
+                  search={`stock.physical`}
+                />
+                <Legend
+                  uri={`/stock`}
+                  name={`Incoming`}
+                  search={`stock.incoming`}
+                />
+                <Legend
+                  uri={`/stock`}
+                  name={`Pending`}
+                  search={`stock.pending`}
+                />
+              </div>
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.01,
+                    },
+                  },
+                }}
+                initial="hidden"
+                animate="show"
+                className="content"
+              >
+                {stock.length === 0 && (
+                  <div className="notfound">
+                    <label>Stock not found</label>
                   </div>
+                )}
+                {stock.map((stock, index) => (
                   <motion.div
                     variants={{
                       hidden: { opacity: 0 },
-                      show: {
-                        opacity: 1,
-                        transition: {
-                          staggerChildren: 0.01,
-                        },
-                      },
+                      show: { opacity: 1 },
                     }}
-                    initial="hidden"
-                    animate="show"
-                    className="content"
+                    className="item"
+                    key={index}
                   >
-                    {stock.length === 0 && (
-                      <div className="notfound">
-                        <label>Stock not found</label>
-                      </div>
+                    {stock.thumbnail && stock.thumbnail.uri && (
+                      <span>
+                        <img
+                          src={config.api + stock.thumbnail.uri}
+                          alt={stock.thumbnail.title}
+                        />
+                      </span>
                     )}
-                    {stock.map((stock, index) => (
-                      <motion.div
-                        variants={{
-                          hidden: { opacity: 0 },
-                          show: { opacity: 1 },
-                        }}
-                        className="item"
-                        key={index}
-                      >
-                        {stock.thumbnail && stock.thumbnail.uri && (
-                          <span>
-                            <img
-                              src={config.api + stock.thumbnail.uri}
-                              alt={stock.thumbnail.title}
-                            />
-                          </span>
+                    {!stock.thumbnail && (
+                      <span className="placeholder">
+                        <img />
+                      </span>
+                    )}
+                    <span>{stock.title}</span>
+                    {!editArray.includes(stock.id) && (
+                      <>
+                        {stock.stock && stock.stock.physical ? (
+                          <span>{stock.stock.physical}</span>
+                        ) : (
+                          <span>0</span>
                         )}
-                        {!stock.thumbnail && (
-                          <span className="placeholder">
-                            <img />
-                          </span>
+                        {stock.stock && stock.stock.incoming ? (
+                          <span>{stock.stock.incoming}</span>
+                        ) : (
+                          <span>0</span>
                         )}
-                        <span>{stock.title}</span>
-                        {!editArray.includes(stock.id) && (
-                          <>
-                            {stock.stock && stock.stock.physical ? (
-                              <span>{stock.stock.physical}</span>
-                            ) : (
-                              <span>0</span>
-                            )}
-                            {stock.stock && stock.stock.incoming ? (
-                              <span>{stock.stock.incoming}</span>
-                            ) : (
-                              <span>0</span>
-                            )}
-                            {stock.stock && stock.stock.pending ? (
-                              <span>{stock.stock.pending}</span>
-                            ) : (
-                              <span>0</span>
-                            )}
-                            <Granted permissions={['u:product']}>
-                              <button
-                                type="button"
-                                className="action edit"
-                                onClick={() => setEditing(stock.id)}
-                              >
-                                Edit
-                              </button>
-                            </Granted>
-                          </>
+                        {stock.stock && stock.stock.pending ? (
+                          <span>{stock.stock.pending}</span>
+                        ) : (
+                          <span>0</span>
                         )}
-                        {editArray.includes(stock.id) && (
-                          <>
-                            <Formik
-                              enableReinitialize
-                              initialValues={{
-                                stock: {
-                                  physical: stock.stock.physical,
-                                  incoming: stock.stock.incoming,
-                                  pending: stock.stock.pending,
-                                },
-                              }}
-                              validationSchema={stockSchema}
-                              onSubmit={(data) => {
-                                submitStockPatch(data, stock.id)
-                                const array = [...editArray]
-                                array.splice(editArray.indexOf(stock.id), 1)
-                                setEditArray(array)
-                              }}
-                            >
-                              {({ handleSubmit }) => {
-                                return (
-                                  <form onSubmit={handleSubmit}>
-                                    <NumberInput name={'stock.physical'} />
-                                    <NumberInput name={'stock.incoming'} />
-                                    <NumberInput name={'stock.pending'} />
-                                    <Granted permissions={['u:product']}>
-                                      <button
-                                        className="action edit"
-                                        onClick={() => setEditing(stock.id)}
-                                      >
-                                        Submit
-                                      </button>
-                                    </Granted>
-                                  </form>
-                                )
-                              }}
-                            </Formik>
-                          </>
-                        )}
-                      </motion.div>
-                    ))}
+                        <Granted permissions={['u:product']}>
+                          <button
+                            type="button"
+                            className="action edit"
+                            onClick={() => setEditing(stock.id)}
+                          >
+                            Edit
+                          </button>
+                        </Granted>
+                      </>
+                    )}
+                    {editArray.includes(stock.id) && (
+                      <>
+                        <Formik
+                          enableReinitialize
+                          initialValues={{
+                            stock: {
+                              physical: stock.stock.physical,
+                              incoming: stock.stock.incoming,
+                              pending: stock.stock.pending,
+                            },
+                          }}
+                          validationSchema={stockSchema}
+                          onSubmit={(data) => {
+                            submitStockPatch(data, stock.id)
+                            const array = [...editArray]
+                            array.splice(editArray.indexOf(stock.id), 1)
+                            setEditArray(array)
+                          }}
+                        >
+                          {({ handleSubmit }) => {
+                            return (
+                              <form onSubmit={handleSubmit}>
+                                <NumberInput name={'stock.physical'} />
+                                <NumberInput name={'stock.incoming'} />
+                                <NumberInput name={'stock.pending'} />
+                                <Granted permissions={['u:product']}>
+                                  <button
+                                    className="action edit"
+                                    onClick={() => setEditing(stock.id)}
+                                  >
+                                    Submit
+                                  </button>
+                                </Granted>
+                              </form>
+                            )
+                          }}
+                        </Formik>
+                      </>
+                    )}
                   </motion.div>
-                </div>
-                <Pagination meta={meta} uri={`/stock?page=`} />
-              </>
-            )}
+                ))}
+              </motion.div>
+            </div>
+            <Pagination meta={meta} uri={`/stock?page=`} />
           </div>
         </>
       )}
