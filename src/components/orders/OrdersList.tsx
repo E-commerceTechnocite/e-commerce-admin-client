@@ -1,33 +1,31 @@
-import * as React from 'react'
-import { useEffect, useState, useCallback } from 'react'
-import { useHistory } from 'react-router'
 import { PaginationMetadataModel } from '../../models/pagination/pagination-metadata.model'
 import { PaginationModel } from '../../models/pagination/pagination.model'
-import { config } from '../../index'
-import '../orders/OrdersList.scss'
-import { sendRequest } from '../../util/helpers/refresh'
-import { http } from '../../util/http'
-import { motion } from 'framer-motion'
 import OrdersListSkeleton from './skeleton/OrdersListSkeleton'
-import _ from 'lodash'
+import { OrderModel } from '../../models/orders/order.model'
+import { sendRequest } from '../../util/helpers/refresh'
+import { useEffect, useState, useCallback } from 'react'
 import { useQuery } from '../../util/hook/useQuery'
 import Pagination from '../pagination/Pagination'
+import { useHistory } from 'react-router'
+import { http } from '../../util/http'
+import { motion } from 'framer-motion'
 import Legend from '../legend/legend'
-import { OrderModel } from '../../models/orders/order.model'
+import { config } from '../../index'
+import '../orders/OrdersList.scss'
+import * as React from 'react'
+import _ from 'lodash'
 
-/*nterface IOrdersListProps {
-  number?: number
-  pagination?: boolean
-}*/
 
-const OrdersList: React.FunctionComponent<any> = () => {
-  const [orders, setOrders] = useState<[]>()
-  //const [meta, setMeta] = useState<PaginationMetadataModel>()
+
+const OrdersList: React.FunctionComponent = () => {
+  const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [searchedValue, setSearchedValue] = useState("")
-  const [toast, setToast] = useState(false)
   const [refreshPage, setRefreshPage] = useState(false)
+  const [orders, setOrders] = useState<[]>()
+  const [toast, setToast] = useState(false)
   const history = useHistory()
   const query = useQuery()
+
   const isActive = (uri: string, exact = false): boolean => {
     return exact ? location.pathname === uri : location.pathname.startsWith(uri)
   }
@@ -36,7 +34,6 @@ const OrdersList: React.FunctionComponent<any> = () => {
    * Returns the get request of the customers list
    * @returns request
    */
-
   /*const ordersRequest = () => {
   if(searchedValue === "") {
     return http.get<PaginationModel<OrderModel>>(
