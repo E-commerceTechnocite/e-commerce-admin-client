@@ -21,7 +21,7 @@ import { OrderModel } from '../../models/orders/order.model'
 }*/
 
 const OrdersList: React.FunctionComponent<any> = () => {
-  //const [orders, setOrders] = useState<OrderModel[]>()
+  const [orders, setOrders] = useState<[]>()
   //const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [searchedValue, setSearchedValue] = useState("")
   const [toast, setToast] = useState(false)
@@ -37,7 +37,7 @@ const OrdersList: React.FunctionComponent<any> = () => {
    * @returns request
    */
 
-  const ordersRequest = () => {
+  /*const ordersRequest = () => {
   if(searchedValue === "") {
     return http.get<PaginationModel<OrderModel>>(
       `${config.api}/v1/order-product${
@@ -65,27 +65,27 @@ const OrdersList: React.FunctionComponent<any> = () => {
         },
       })
     }
-  }
+  }*/
 
   /**
    * Sends the get request of the customers list and sets customers & pagination state
    */
-  const getOrders = async () => {
+  /*const getOrders = async () => {
     let { data, error } = await sendRequest(ordersRequest)
     if (error) {
       /*if (error.statusCode === 400) {
         history.push('/stock')
         return
       }*/
-      if (error.statusCode === 404) {
+      /*if (error.statusCode === 404) {
         history.push('/not-found')
         return
       }
       history.push('/login')
     }
-   //setOrders(data.data)
+   setOrders(data)
     //setMeta(data.meta)
-  }
+  }*/
 
   /**
    * Returns the delete request for a specific customer
@@ -131,6 +131,7 @@ const OrdersList: React.FunctionComponent<any> = () => {
     getOrders().then()
   }, [refreshPage, query.get('page'), query.get('search'), query.get('order')])
 
+
   /*useEffect(() => {
     if(meta) {
       if(meta.currentPage === 1) {
@@ -173,7 +174,7 @@ const OrdersList: React.FunctionComponent<any> = () => {
               <span>Date</span>
               <span>Product</span>
               <span>Quantity</span>
-              <span>Price</span>
+              <span>Total price</span>
               {/*<Legend
                 uri={`/orders`}
                 name={`Customer`}
