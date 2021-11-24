@@ -172,9 +172,8 @@ const OrdersList: React.FunctionComponent<any> = () => {
               <span>Order ID</span>
               <span>Customer</span>
               <span>Date</span>
-              <span>Product</span>
-              <span>Quantity</span>
-              <span>Total price</span>
+              <span>Details</span>
+              <span>Amount</span>
               {/*<Legend
                 uri={`/orders`}
                 name={`Customer`}
