@@ -30,6 +30,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
 }) => {
   const [pictures, setPictures] = useState<PaginationModel<PictureModel>>(null)
   const [filesSelected, setFilesSelected] = useState<PictureModel[]>([])
+  const [errorFile, setErrorFile] = useState<boolean>(false)
   const [imagePending, setImagePending] = useState(false)
   const [files, setFiles] = useState<File[]>([])
   const inputEl = useRef<HTMLInputElement>()
@@ -59,6 +60,11 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
     setImagePending(true)
     let { error } = await sendRequest(request)
     if (error) {
+      if (error.statusCode === 400) {
+        setImagePending(false)
+        setErrorFile(true)
+        return
+      }
       history.push('/login')
     }
     setImagePending(false)
@@ -142,6 +148,15 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
     }
   }
 
+  // Close the error modal after 4 sec
+  useEffect(() => {
+    if (errorFile) {
+      setTimeout(() => {
+        setErrorFile(false)
+      }, 4000)
+    }
+  }, [errorFile])
+
   // Upload files when new ones uploaded
   useEffect(() => {
     if (files.length) sendFiles().then()
@@ -162,6 +177,22 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   return (
     <>
       <div className="media-library-container-component">
+        {errorFile && (
+          <motion.div
+            initial={{ opacity: 0, top: '-6%' }}
+            animate={{ opacity: 1, top: '-4%' }}
+            exit={{ opacity: 0, top: '-2%' }}
+            className="error-modal"
+          >
+            <div className="error-content">
+              Error: Wrong file type
+              <i
+                className="fas fa-times close"
+                onClick={() => setErrorFile(false)}
+              />
+            </div>
+          </motion.div>
+        )}
         <div className="top">
           <div className="search">
             <i className="fas fa-search" />
