@@ -5,6 +5,12 @@
   margin-bottom: 15px;
   padding-bottom: 90px;
   position: relative;
+  .error {
+    display: inline;
+    left: unset;
+    right: 0;
+    width: 156px;
+  }
   .top {
     display: flex;
     padding: 10px 30px;
