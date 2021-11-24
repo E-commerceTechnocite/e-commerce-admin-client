@@ -2,7 +2,7 @@ import { PaginationModel } from '../../models/pagination/pagination.model'
 import { PictureModel } from '../../models/files/picture.model'
 import PaginationMini from '../pagination/PaginationMini'
 import { sendRequest } from '../../util/helpers/refresh'
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC, useCallback, useEffect, useRef, useState } from 'react'
 import { useQuery } from '../../util/hook/useQuery'
 import Pagination from '../pagination/Pagination'
 import { auth } from '../../util/helpers/auth'
@@ -92,13 +92,13 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
    * Submits request files list with page number
    * @returns
    */
-  const fetchImages = async () => {
+  const fetchImages = useCallback(async () => {
     const { data, error } = await sendRequest(imagesRequest)
     if (error) {
       history.push('/login')
     }
     setPictures(data)
-  }
+  }, [pictures])
 
   /**
    * Pass selected files to parent component
