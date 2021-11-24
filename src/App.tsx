@@ -153,7 +153,8 @@ export const App = () => {
                   <GuardedRoute exact path="/stock" component={Stock} />
                   <GuardedRoute exact path="/profile" component={Profile} />
                   
-                  <GuardedRoute path="/not-found" component={NotFound} />
+                  <GuardedRoute exact path="/not-found" component={NotFound} />
+                  <Redirect to="/not-found" />
                 </Switch>
               </DashboardLayout>
             </GuardProvider>

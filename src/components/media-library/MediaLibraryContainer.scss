@@ -1,6 +1,7 @@
-@import "../../../public/scss/variables.scss";
+@import '../../../public/scss/variables.scss';
 
 .media-library-container-component {
+  position: relative;
   min-width: 450px;
   max-width: 1700px;
   width: 100%;
@@ -10,7 +11,31 @@
   background: $primary-color-elts;
   border-top: 1px solid $primary-border-color;
   border-bottom: 1px solid $primary-border-color;
-
+  .error-modal {
+    position: absolute;
+    top: -4%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    padding: 20px;
+    background: rgb(255, 241, 241);
+    border: 1px solid $delete-button;
+    text-align: center;
+    border-radius: 4px;
+    opacity: 0;
+    .error-content {
+      position: relative;
+      color: $delete-button;
+      i {
+        position: absolute;
+        cursor: pointer;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $delete-button;
+      }
+    }
+  }
   .top {
     // background: red;
     display: flex;
@@ -66,7 +91,7 @@
     }
 
     .selected::before {
-      content: "";
+      content: '';
       position: absolute;
       opacity: 0.2;
       background: $primary-button;
@@ -87,7 +112,6 @@
       img {
         width: 100px;
       }
-
     }
   }
 

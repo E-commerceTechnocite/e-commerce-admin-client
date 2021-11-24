@@ -436,10 +436,13 @@ button {
   }
 }
 
-.home .products,
-.home .products-skeleton{
-  min-height: auto;
-  padding-bottom: 60px;
+.home {
+  .products,
+  .products-skeleton{
+    min-height: auto;
+    padding-bottom: 60px;
+  }
+
 }
 
 .media-library-view {
