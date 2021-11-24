@@ -15,10 +15,10 @@ import { http } from '../../util/http'
 import { motion } from 'framer-motion'
 import Legend from '../legend/legend'
 import { config } from '../../index'
+import Toast from '../toast/Toast'
 import Granted from '../Granted'
 import * as React from 'react'
 import './UsersList.scss'
-import Toast from '../toast/Toast'
 
 interface IUsersListProps {
   pagination?: boolean
@@ -123,13 +123,6 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
       {users && meta && (
         <div className="users">
           <div className="top-container">
-            {/* 
-            {pagination && (
-              <div className="search">
-                <i className="fas fa-search"></i>
-                <input type="text" placeholder="Search..." />
-              </div>
-            )} */}
             <Granted permissions={['c:user']}>
               <Link to="/users/addusers" className="action">
                 New User
@@ -179,7 +172,7 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                     <span>{user.role.name}</span>
                     <span>{user.email}</span>
                     <Granted permissions={['u:user']}>
-                      {user.role.name !== 'Admin' && (
+                      {!user.role.superAdmin && (
                         <Link
                           to={`/users/edit/${user.id}${queries.page(
                             'page',
@@ -198,7 +191,7 @@ const UsersList: React.FunctionComponent<IUsersListProps> = ({
                       )}
                     </Granted>
                     <Granted permissions={['d:user']}>
-                      {user.role.name !== 'Admin' && (
+                      {!user.role.superAdmin  && (
                         <button
                           className="delete"
                           onClick={() => deleteUsers(user.id, user.username)}

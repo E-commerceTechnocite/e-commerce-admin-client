@@ -14,29 +14,25 @@ import { Link } from 'react-router-dom'
 import { http } from '../../util/http'
 import Legend from '../legend/legend'
 import { config } from '../../index'
+import Toast from '../toast/Toast'
 import Granted from '../Granted'
 import * as React from 'react'
 import './RolesList.scss'
-import Toast from '../toast/Toast'
 
 interface IRolesListProps {
-  number?: number
   pagination?: boolean
   success?: boolean | undefined
   successEdit?: boolean | undefined
 }
 
 const RolesList: React.FunctionComponent<IRolesListProps> = ({
-  number,
   pagination,
   success,
   successEdit,
 }) => {
   const [meta, setMeta] = useState<PaginationMetadataModel>()
   const [refreshPage, setRefreshPage] = useState(false)
-  const [toastEdit, setToastEdit] = useState(false)
   const [roles, setRoles] = useState<RoleModel[]>()
-  const [toast, setToast] = useState(false)
   const history = useHistory()
   const query = useQuery()
   const queries = param()
@@ -127,12 +123,6 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
       {roles && meta && (
         <div className="roles">
           <div className="top-container">
-            {/* {pagination && (
-              <div className="search">
-                <i className="fas fa-search" />
-                <input type="text" placeholder="Search..." />
-              </div>
-            )} */}
             <Granted permissions={['c:role']}>
               <Link to="/roles/addroles" className="action">
                 New Role
@@ -152,7 +142,7 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
                 <div className="role" key={role.id}>
                   <span>{role.name}</span>
                   <Granted permissions={['u:role']}>
-                    {role.name !== 'Admin' && (
+                    {!role.superAdmin && (
                       <Link
                         to={`/roles/edit/${role.id}${queries.page('page', 1)}${
                           query.get('search') && query.get('order')
@@ -168,7 +158,7 @@ const RolesList: React.FunctionComponent<IRolesListProps> = ({
                     )}
                   </Granted>
                   <Granted permissions={['d:role']}>
-                    {role.name !== 'Admin' && (
+                    {!role.superAdmin && (
                       <button
                         className="delete"
                         onClick={() => deleteRoles(role.id, role.name)}
