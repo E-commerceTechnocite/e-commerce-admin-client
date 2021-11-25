@@ -24,7 +24,7 @@ const Users: React.FunctionComponent<IUsersProps> = (props) => {
 
   return (
     <>
-      <UsersList number={10} pagination={true} success={success} successEdit={successEdit} />
+      <UsersList pagination={true} success={success} successEdit={successEdit} />
     </>
   )
 }

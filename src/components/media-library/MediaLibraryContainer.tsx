@@ -92,13 +92,13 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
    * Submits request files list with page number
    * @returns
    */
-  const fetchImages = useCallback(async () => {
+  const fetchImages = async () => {
     const { data, error } = await sendRequest(imagesRequest)
     if (error) {
       history.push('/login')
     }
     setPictures(data)
-  }, [pictures])
+  }
 
   /**
    * Pass selected files to parent component
