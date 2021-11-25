@@ -1,21 +1,19 @@
-import * as React from 'react'
+import ProfileTextInput from '../components/profile/ProfileTextInput'
+import { sendRequest } from '../util/helpers/refresh'
 import { useEffect, useState } from 'react'
 import { auth } from '../util/helpers/auth'
 import { useHistory } from 'react-router'
 import { http } from '../util/http'
 import { config } from '../index'
-import { sendRequest } from '../util/helpers/refresh'
-import ProfileTextInput from '../components/profile/ProfileTextInput'
-
+import * as React from 'react'
 
 const Profile: React.FunctionComponent = () => {
   const [allPermissions, setAllPermissions] = useState([])
   const [username, setUsername] = useState('')
-  const [email, setEmail] = useState("")
+  const [email, setEmail] = useState('')
   const [role, setRole] = useState('')
   const history = useHistory()
   const perms = []
-  //const [permissions, setPermissions] = useState([])
 
   const permissionsRequest = () => {
     return http.get<string[]>(`${config.api}/v1/o-auth/permissions`, {
@@ -28,7 +26,7 @@ const Profile: React.FunctionComponent = () => {
   const SubmitPermissions = async () => {
     let { data, error } = await sendRequest(permissionsRequest)
     if (error) {
-      history.push('/login') 
+      history.push('/login')
     }
     setAllPermissions(data)
   }
@@ -58,64 +56,78 @@ const Profile: React.FunctionComponent = () => {
     title = changeTitleForm(title)
     if (!perms[title]) perms[title] = []
     perms[title].push(operation)
-    //if (!permissions[title]) permissions[title] = []
-    //setPermissions((permission) => [...permission, operation])
   })
 
-  const render = (tab : string) => {
-    const elements = ['r', 'c', 'u','d'];
+  const render = (tab: string) => {
+    const elements = ['r', 'c', 'u', 'd']
     const items = []
-    for(let i = 0; i < elements.length; i++) {
-        if(tab.indexOf(elements[i]) !== -1) 
-            items.push(<span><i className="fas fa-check-circle"></i></span>)
-        else 
-            items.push(<span><i className="fas fa-times-circle"></i></span>)
+    for (let i = 0; i < elements.length; i++) {
+      if (tab.indexOf(elements[i]) !== -1)
+        items.push(
+          <span key={i}>
+            <i className="fas fa-check-circle"></i>
+          </span>
+        )
+      else
+        items.push(
+          <span key={i}>
+            <i className="fas fa-times-circle"></i>
+          </span>
+        )
     }
-    return ( <>
-        {items}
-      </>
-    )
+    return <>{items}</>
   }
 
   return (
     <div className="userProfile">
-        <div className="photoProfile">
-            <img 
-            className="userPhoto"   
-            src={`https://avatars.dicebear.com/api/initials/${username}p.svg`}
-            />
+      <div className="photoProfile">
+        <img
+          className="userPhoto"
+          src={`https://avatars.dicebear.com/api/initials/${username}p.svg`}
+        />
+      </div>
+      <div className="informationProfile">
+        <div>
+          <h4>Profile informations</h4>
         </div>
-        <div className="informationProfile">
-            <div>
-                <h4>Profile informations</h4>
-            </div>
-            <div className="infos">
-                <ProfileTextInput label="Username" information={username}/>
-                <ProfileTextInput label="E-mail" information={email}/>
-                <ProfileTextInput label="Role" information={role}/>
-            </div>
+        <div className="infos">
+          <ProfileTextInput label="Username" information={username} />
+          <ProfileTextInput label="E-mail" information={email} />
+          <ProfileTextInput label="Role" information={role} />
         </div>
-        <div className="profilePermissions">
-            <h4>Profile permissions</h4>
-            <div className="profilePerms">
-                <div className="profileCRUD">
-                    <span><h4>Permissions</h4></span>
-                    <span><h4>Read</h4></span>
-                    <span><h4>Create</h4></span>
-                    <span><h4>Update</h4></span>
-                    <span><h4>Delete</h4></span>
+      </div>
+      <div className="profilePermissions">
+        <h4>Profile permissions</h4>
+        <div className="profilePerms">
+          <div className="profileCRUD">
+            <span>
+              <h4>Permissions</h4>
+            </span>
+            <span>
+              <h4>Read</h4>
+            </span>
+            <span>
+              <h4>Create</h4>
+            </span>
+            <span>
+              <h4>Update</h4>
+            </span>
+            <span>
+              <h4>Delete</h4>
+            </span>
+          </div>
+          <div className="scroll-permissions-list">
+            {Object.entries(perms).map(([title, array], index) => {
+              return (
+                <div className="permTit" key={index}>
+                  <span>{title}</span>
+                  {render(array)}
                 </div>
-                <div className="scroll-permissions-list">
-                    {Object.entries(perms).map(([title, array], index) => {
-                      return (
-                        <div className="permTit">
-                            <span>{title}</span>
-                            {render(array)}
-                        </div>
-                      )})}
-                </div>
-            </div>
+              )
+            })}
+          </div>
         </div>
+      </div>
     </div>
   )
 }
