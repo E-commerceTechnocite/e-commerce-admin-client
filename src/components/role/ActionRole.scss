@@ -67,7 +67,7 @@
     }
     .permissions-list {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       grid-column-gap: 75px;
       grid-row-gap: 25px;
       justify-items: stretch;
