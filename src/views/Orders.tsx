@@ -4,6 +4,10 @@ import OrdersList from '../components/orders/OrdersList'
 
 const Orders: React.FunctionComponent = () => {
   const history = useHistory()
-  return <OrdersList />
+  return (
+    <>
+      <OrdersList />
+    </>
+  )
 }
 export default Orders

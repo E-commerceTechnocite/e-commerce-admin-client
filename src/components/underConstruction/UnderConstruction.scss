@@ -6,12 +6,6 @@
   }
 }
 
-@keyframes barberpoleInv {
-  100% {
-    background-position: 100% 100%;
-  }
-}
-
 .content {
   
   .orders {
@@ -41,7 +35,7 @@
           #fff 30px,
           #fff 45px
         );
-        animation: barberpoleInv 60s linear infinite reverse;
+        animation: barberpole 60s linear infinite reverse;
         background-size: 200% 200%;
       }
       .bottom-roll {
