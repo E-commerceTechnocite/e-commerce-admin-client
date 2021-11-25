@@ -9,7 +9,7 @@ import { auth } from '../../util/helpers/auth'
 import Skeleton from './skeleton/Skeleton'
 import { useHistory } from 'react-router'
 import Uri from '../../util/helpers/Uri'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { http } from '../../util/http'
 import './MediaLibraryContainer.scss'
 import { config } from '../../index'
@@ -177,22 +177,28 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   return (
     <>
       <div className="media-library-container-component">
-        {errorFile && (
-          <motion.div
-            initial={{ opacity: 0, top: '-6%' }}
-            animate={{ opacity: 1, top: '-4%' }}
-            exit={{ opacity: 0, top: '-2%' }}
-            className="error-modal"
-          >
-            <div className="error-content">
-              Error: Wrong file type
-              <i
-                className="fas fa-times close"
-                onClick={() => setErrorFile(false)}
-              />
-            </div>
-          </motion.div>
-        )}
+        <AnimatePresence
+          initial={false}
+          exitBeforeEnter={true}
+          onExitComplete={() => null}
+        >
+          {errorFile && (
+            <motion.div
+              initial={{ opacity: 0, top: '-6%' }}
+              animate={{ opacity: 1, top: '-4%' }}
+              exit={{ opacity: 0, top: '-2%' }}
+              className="error-modal"
+            >
+              <div className="error-content">
+                Error: Wrong file type
+                <i
+                  className="fas fa-times close"
+                  onClick={() => setErrorFile(false)}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div className="top">
           <div className="search">
             <i className="fas fa-search" />
