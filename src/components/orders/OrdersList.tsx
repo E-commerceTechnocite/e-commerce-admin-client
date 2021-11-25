@@ -1,13 +1,14 @@
-import { motion } from 'framer-motion';
-import * as React from 'react';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Granted from '../Granted';
-import Legend from '../legend/legend';
-import Pagination from '../pagination/Pagination';
+import { motion } from 'framer-motion'
+import * as React from 'react'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import Granted from '../Granted'
+import Legend from '../legend/legend'
+import Pagination from '../pagination/Pagination'
+import { config } from '../../index'
+import UnderConstruction from '../underConstruction/UnderConstruction'
 
-interface IOrdersProps {
-}
+interface IOrdersProps {}
 
 const Orders: React.FunctionComponent<IOrdersProps> = (props) => {
   const [orders, setOrders] = useState([])
@@ -15,11 +16,14 @@ const Orders: React.FunctionComponent<IOrdersProps> = (props) => {
   const deleteOrders = (id: string) => {
     return
   }
-  
+
   return (
     <>
+      <div className="orders">
+        <UnderConstruction />
+      </div>
       {/* {orders && meta && ( */}
-        <div className="users">
+      {/* <div className="users">
           <div className="top-container">
           </div>
           <div className="user-list">
@@ -70,11 +74,10 @@ const Orders: React.FunctionComponent<IOrdersProps> = (props) => {
             </motion.div>
             {meta && <Pagination meta={meta} uri="/users?page=" />}
           </div>
-        </div>
+        </div> */}
       {/* )} */}
     </>
   )
-};
+}
 
-export default Orders;
-
+export default Orders
