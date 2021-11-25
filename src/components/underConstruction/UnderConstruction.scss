@@ -1,0 +1,87 @@
+@import '../../scss/variables.scss';
+
+@keyframes barberpole {
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+@keyframes barberpoleInv {
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+.content {
+  
+  .orders {
+    height: 90vh;
+    background: $primary-color-elts;
+    box-shadow: $primary-elts-shadow;
+    border-radius: 4px;
+    // background: blue;
+    .under-construction {
+      position: relative;
+      text-align: center;
+      height: 100%;
+      // background: red;
+      .top-roll,
+      .bottom-roll {
+        position: absolute;
+        width: 100%;
+        height: 5%;
+        border-radius: 4px;
+      }
+      .top-roll {
+        top: 0;
+        background: repeating-linear-gradient(
+          -50deg,
+          $secondary-color,
+          $secondary-color 30px,
+          #fff 30px,
+          #fff 45px
+        );
+        animation: barberpoleInv 60s linear infinite reverse;
+        background-size: 200% 200%;
+      }
+      .bottom-roll {
+        background: repeating-linear-gradient(
+          -50deg,
+          $secondary-color,
+          $secondary-color 30px,
+          #fff 30px,
+          #fff 45px
+        );
+        animation: barberpole 60s linear infinite;
+        background-size: 200% 200%;
+        bottom: 0;
+      }
+      h1,
+      h2,
+      h3,
+      img {
+        position: relative;
+      }
+      h1 {
+        top: 10%;
+        font-size: 30px;
+      }
+      h2 {
+        top: 40%;
+        transform: translateY(-50%);
+        font-size: 70px;
+        margin-bottom: 50px;
+      }
+      h3 {
+        top: 35%;
+      }
+      img {
+        top: 30%;
+        color: $primary-color-font;
+        filter: invert(30%) sepia(0%) saturate(0%) hue-rotate(168deg)
+          brightness(98%) contrast(83%);
+        width: 100px;
+      }
+    }
+  }
+}
