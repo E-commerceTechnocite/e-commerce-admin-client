@@ -70,7 +70,7 @@ const TaxRule: React.FunctionComponent<ITaxRuleProps> = ({
     let { data, error } = await sendRequest(TaxRuleRequest)
     if (error) {
       if (error.statusCode === 400 || error.statusCode === 404) {
-        history.push('/categories')
+        history.push('/taxes')
         return
       }
       history.push('/login')

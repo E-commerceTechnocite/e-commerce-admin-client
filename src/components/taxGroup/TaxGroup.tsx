@@ -73,7 +73,7 @@ const TaxGroup: React.FunctionComponent<ITaxGroupProps> = ({
     let { data, error } = await sendRequest(TaxRuleGroupRequest)
     if (error) {
       if (error.statusCode === 400 || error.statusCode === 404) {
-        history.push('/categories')
+        history.push('/taxes')
         return
       }
       history.push('/login')
