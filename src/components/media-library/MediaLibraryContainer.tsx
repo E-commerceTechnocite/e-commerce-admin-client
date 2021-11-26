@@ -65,7 +65,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
         setErrorFile(true)
         return
       }
-      history.push('/medias')
+      history.push('/login')
     }
     setImagePending(false)
   }
@@ -95,7 +95,8 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
   const fetchImages = async () => {
     const { data, error } = await sendRequest(imagesRequest)
     if (error) {
-      history.push('/login')
+      history.push('/medias')
+      return
     }
     setPictures(data)
   }
