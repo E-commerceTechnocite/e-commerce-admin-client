@@ -62,6 +62,11 @@ const ActionUser: React.FunctionComponent = () => {
     setSubmitError(null)
     let { error } = await sendRequest(userPostRequest, data)
     if (error) {
+      if (error.statusCode === 403) {
+        setIsSubmit(false)
+        setSubmitError(`Can't assign super admin to new or existing user.`)
+        return
+      }
       if (error.statusCode === 400) {
         setIsSubmit(false)
         setSubmitError('Username or Email already used')

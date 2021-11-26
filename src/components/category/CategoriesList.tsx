@@ -96,7 +96,7 @@ const CategoriesList: React.FunctionComponent<ICategoriesListProps> = ({
    * @returns void
    */
   const deleteCategories = async (id: string, category: string) => {
-    if (confirm(`Delete category: ${category}?`)) {
+    if (confirm(`Delete category: ${category}?\n⚠️⚠️⚠️ It will automatically delete all the related products. ⚠️⚠️⚠️`)) {
       let { error } = await sendRequest(deleteRequest, id)
       if (error) {
         if (error.message === 'Error 500 Internal Server Error') {
