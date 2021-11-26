@@ -90,7 +90,7 @@ const SideBar: React.FunctionComponent = () => {
                 Roles
               </NavLink>
             </Granted>
-            <Granted permissions={[]}>
+            <Granted permissions={['r:customer']}>
               <NavLink uri="/customers" icon="fas fa-user-circle">
                 Customers
               </NavLink>
