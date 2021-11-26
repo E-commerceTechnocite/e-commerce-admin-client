@@ -24,7 +24,7 @@ const Roles: React.FunctionComponent<IRolesProps> = (props) => {
 
   return (
     <>
-      <RolesList number={10} pagination={true} success={success} successEdit={successEdit} />
+      <RolesList pagination={true} success={success} successEdit={successEdit} />
     </>
   )
 }

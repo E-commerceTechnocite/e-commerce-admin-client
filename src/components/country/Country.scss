@@ -1,6 +1,7 @@
-@import '../../../public/scss/variables.scss';
+@import '../../scss/variables.scss';
 
 .country {
+  overflow: hidden;
   .top {
     display: flex;
     padding: 10px 30px;

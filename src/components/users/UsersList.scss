@@ -1,6 +1,7 @@
-@import '../../../public/scss/variables.scss';
+@import '../../scss/variables.scss';
 
 .users {
+  overflow: hidden;
   background: $primary-color-elts;
   box-shadow: $primary-elts-shadow;
   min-height: 870px;

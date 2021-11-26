@@ -1,22 +1,23 @@
-@import '../../../public/scss/variables.scss';
-  
-  .profileLabel {
-    margin-top: 15px;
-  }
-  .profileEntry {
-    margin: 5px 0px 25px 0px;
-    width: 100%;
+@import '../../scss/variables.scss';
+
+.profileLabel {
+  margin-top: 15px;
+}
+.profileEntry {
+  overflow: hidden;
+  margin: 5px 0px 25px 0px;
+  width: 100%;
+  height: 35px;
+  background: $primary-color-elts;
+  border-radius: 4px;
+  border: 1px solid $primary-border-color;
+  input {
+    padding: 0 10px;
+    width: 95%;
     height: 35px;
-    background: $primary-color-elts;
+    font-size: 15px;
+    border: none;
+    background-color: white;
     border-radius: 4px;
-    border: 1px solid $primary-border-color;
-    input {
-      padding: 0 10px;
-      width: 95%;
-      height: 35px;
-      font-size: 15px;
-      border: none;
-      background-color: white;
-      border-radius: 4px;
-    }
   }
+}

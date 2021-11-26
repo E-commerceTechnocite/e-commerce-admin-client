@@ -77,7 +77,7 @@ const Country: React.FunctionComponent<ICountryProps> = ({
     let { data, error } = await sendRequest(countryRequest)
     if (error) {
       if (error.statusCode === 400 || error.statusCode === 404) {
-        history.push('/categories')
+        history.push('/taxes')
         return
       }
       history.push('/login')
@@ -109,6 +109,12 @@ const Country: React.FunctionComponent<ICountryProps> = ({
     ) {
       let { data, error } = await sendRequest(deleteCountryRequest, id)
       if (error) {
+        if (error.statusCode === 400) {
+          alert(
+            'Country cannot be deleted because it is bound to at least one address'
+          )
+          return
+        }
         history.push('/login')
         return
       }
@@ -209,12 +215,12 @@ const Country: React.FunctionComponent<ICountryProps> = ({
               </Link>
             </Granted>
             {successCountry && (
-              <Toast success={successCountry} name={`Tax Group`} />
+              <Toast success={successCountry} name={`Country`} />
             )}
             {successCountryEdit && (
               <Toast
                 success={successCountryEdit}
-                name={`Tax Group`}
+                name={`Country`}
                 edit={true}
               />
             )}

@@ -1,6 +1,7 @@
-@import '../../../public/scss/variables.scss';
+@import '../../scss/variables.scss';
 
 .tax-group {
+  overflow: hidden;
   .top {
     display: flex;
     padding: 10px 30px;

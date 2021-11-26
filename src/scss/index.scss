@@ -217,7 +217,9 @@ button {
     margin: 0 0 30px 20px;
   }
   .logo h1 {
-    font-size: 30px;
+    //padding-left: 15px;;
+    font-size: 25px;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     color: white;
   }
   .search-bar {
@@ -434,14 +436,13 @@ button {
   }
 }
 
-.home .products,
-.home .products-skeleton{
-  min-height: auto;
-  padding-bottom: 60px;
-}
+.home {
+  .products,
+  .products-skeleton{
+    min-height: auto;
+    padding-bottom: 58px;
+  }
 
-.media-library-view {
-  box-shadow: $primary-elts-shadow;
 }
 
 /* Add Product */
@@ -509,7 +510,7 @@ button {
     .buttons {
       display: grid;
       grid-template-columns: repeat(2, 150px);
-    border-bottom: 2px solid $primary-button;
+      border-bottom: 2px solid $primary-button;
 
       .action:hover {
         background: $primary-button;

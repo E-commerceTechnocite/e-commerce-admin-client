@@ -1,10 +1,17 @@
-@import '../../../public/scss/variables.scss';
+@import '../../scss/variables.scss';
 
 .stocks {
+  overflow: hidden;
   min-height: 870px;
   margin-bottom: 15px;
   padding-bottom: 90px;
   position: relative;
+  .error {
+    display: inline;
+    left: unset;
+    right: 0;
+    width: 156px;
+  }
   .top {
     display: flex;
     padding: 10px 30px;
@@ -73,17 +80,18 @@
       }
     }
     .content .item {
+      padding: 5px 30px;
       span:nth-child(1) {
-        max-width: 50px;
-        max-height: 50px;
+        width: 65px;
+        height: 65px;
+        overflow: hidden;
         display: flex;
         justify-content: center;
         align-items: center;
         position: relative;
         img {
           position: absolute;
-          max-height: 65px;
-          max-width: 65px;
+          max-width: 80px;
         }
       }
       span:nth-child(1)::before {
@@ -158,9 +166,6 @@
 
 @media screen and (max-width: 1080px) {
   .stocks {
-    /* .legend {
-      display: none !important;
-    } */
     .legend {
       grid-template-columns: repeat(4, 1fr) !important;
       grid-template-rows: repeat(1, 34px) !important;
@@ -214,9 +219,9 @@
       }
     }
     .content .item {
-      grid-template-rows: repeat(2, 1fr);
+      grid-template-rows: repeat(2, minmax(50px, 1fr));
       position: relative;
-
+      padding: 20px 30px;
       span {
         position: relative;
       }

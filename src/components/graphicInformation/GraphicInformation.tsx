@@ -40,13 +40,13 @@ const salesState = {
   ]
 }
 
-const salesOptions = {
+const salesOptions : any = {
   plugins: {
     title: { 
         display: true,
         text: "Sales per month",
         font: {
-          size: 14
+          size: 15
         },
         padding: 15
     },
@@ -82,13 +82,13 @@ const usersState = {
   ]
 }
 
-const usersOptions = {
+const usersOptions : any = {
   plugins: {
     title: { 
         display: true,
         text: "New users per month",
         font: {
-          size: 14
+          size: 15
         },
         padding: 15
     },
@@ -104,25 +104,26 @@ const usersOptions = {
 
 const GraphicInformation: React.FunctionComponent = () => {
   return (
-    <motion.div
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="graphic-information"
-    >
-      <motion.div variants={items} className="graphicItem">
-          <Line 
-            data={salesState}
-            // options={salesOptions}
-          />
+      <motion.div
+        variants={container}
+        initial="hidden"
+        animate="show"
+        className="graphic-information"
+      >       
+        <motion.div variants={items} className="graphicItem">
+            <Line 
+              data={salesState}
+              options={salesOptions}
+            />
+        </motion.div>
+        
+        <motion.div variants={items} className="graphicItem">
+            <Bar
+              data={usersState}
+              options={usersOptions}
+            />
+        </motion.div>
       </motion.div>
-      <motion.div variants={items} className="graphicItem">
-          <Bar
-            data={usersState}
-            // options={usersOptions}
-          />
-      </motion.div>
-    </motion.div>
   )
 }
 export default GraphicInformation

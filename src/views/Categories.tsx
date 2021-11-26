@@ -25,7 +25,7 @@ const Categories: React.FunctionComponent<IRolesProps> = (props) => {
 
   return (
     <>
-      <CategoriesList number={10} pagination={true} success={success} successEdit={successEdit}/>
+      <CategoriesList pagination={true} success={success} successEdit={successEdit}/>
     </>
   )
 }

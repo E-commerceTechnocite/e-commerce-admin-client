@@ -1,6 +1,7 @@
-@import '../../../public/scss/variables.scss';
+@import '../../scss/variables.scss';
 
 .tax-rule {
+  overflow: hidden;
   min-height: 500px;
   position: relative;
   padding-bottom: 90px;
