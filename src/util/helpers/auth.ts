@@ -13,6 +13,7 @@ type entity =
   | 'user'
   | 'file'
   | 'stock'
+  | 'customer'
 export type Permission =
   | `r:${entity}`
   | `c:${entity}`

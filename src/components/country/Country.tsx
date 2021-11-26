@@ -77,7 +77,7 @@ const Country: React.FunctionComponent<ICountryProps> = ({
     let { data, error } = await sendRequest(countryRequest)
     if (error) {
       if (error.statusCode === 400 || error.statusCode === 404) {
-        history.push('/categories')
+        history.push('/taxes')
         return
       }
       history.push('/login')

@@ -65,7 +65,7 @@ const MediaLibraryContainer: FC<MediaLibraryContainerPropsInterface> = ({
         setErrorFile(true)
         return
       }
-      history.push('/login')
+      history.push('/medias')
     }
     setImagePending(false)
   }
