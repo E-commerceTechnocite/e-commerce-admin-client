@@ -80,7 +80,7 @@ const Taxes: React.FunctionComponent<ITaxesProps> = (props) => {
     }
   }, [])
   return (
-    <div className="taxes">
+    <div className="taxes" style={{overflow: 'hidden'}}>
       <Granted permissions={['r:tax-rule']}>
         <TaxRule
           success={success}

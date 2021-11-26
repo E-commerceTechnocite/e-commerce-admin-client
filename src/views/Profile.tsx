@@ -79,7 +79,7 @@ const Profile: React.FunctionComponent = () => {
   }
 
   return (
-    <div className="userProfile">
+    <div className="userProfile" style={{overflow: 'hidden'}}>
       <div className="photoProfile">
         <img
           className="userPhoto"
